@@ -183,17 +183,43 @@ Le R² fortement négatif révèle un problème de distribution shift : la méta
 - Le `trend_ratio` est une feature globale alors qu'on cherche à prédire mois par mois
 - Une version dynamique des features (calculées uniquement sur les 90 jours précédant T) améliorerait significativement le signal
 
-## Phase 4 — Interface Streamlit + NLP combos
-*(à venir)*
-- Dashboard Streamlit : score méta, graphe interactif, simulation de ban
-- YouTube / Whisper : transcrire les commentaires de gameplay pour extraire les séquences de combo
-  - Noms de cartes très spécifiques → extractibles avec regex dans un premier temps
-  - Chaque combo modélisé comme graphe orienté : carte A → carte B → carte C → board final
+## Phase 4 ✅ — Interface Streamlit + NLP combos
 
-## Phase 5 — Front-end React
+### Dashboard Streamlit (app.py)
+- 6 pages : Tier List (S/A/B/C/D), Évolution temporelle, Graphe synergies, Simulateur ban, Cartes bridge, Prédictions RF
+- Dépendances : `pip install streamlit plotly`
+- Lancement : `streamlit run app.py`
+- Script de setup DB : `python scripts/setup_impact_tables.py` (génère `ban_impact` + `card_impact`)
+
+### NLP Combos (notebooks/08_nlp_combos.ipynb)
+- `youtube_transcript_api` v1.x (instance method `.fetch()`, pas de clé API)
+- Matching longest-first sur 13 791 noms de cartes de la DB
+- Segmentation temporelle en séquences (fenêtre 30s)
+- Graphe orienté A→B→C via NetworkX + visualisation pyvis
+- Tables DB : `combo_mentions`, `combo_edges`
+- Résultat vidéo test (MsZb-dJAGHo, commentaire tournoi) : 49 mentions, 20 cartes, 29 séquences
+  - Vraie séquence détectée : Fiendish Chain → Fallen of Albaz → Branded Fusion ✓
+  - Faux positifs : mots anglais courants qui sont aussi des noms de cartes (NEXT, Return, Fine, Question...)
+- **Blacklist à appliquer** : `{'NEXT', 'Fine', 'Return', 'Question', 'Last Turn', 'Honest', 'Typhoon', 'Recycle'}`
+- **Prochaine étape NLP** : vidéos combo guide (ex: "Branded combo guide 2026") → beaucoup plus de signal
+
+## Phase 5 — MVP : Front-end React + Back-end API
 *(à venir)*
 - Interface web complète pour présenter le produit V2
 - Visualisation des combos, score méta, impact des nouvelles cartes et banlists
+
+### Outil prévu : BMAD Method
+Utiliser **BMAD** (Breakthrough Method for Agile AI-Driven Development) pour structurer la Phase 5.
+BMAD donne accès à des agents spécialisés (PM, Architecte, Dev, QA) dans Claude Code pour piloter le build de manière spec-first.
+
+Workflow prévu :
+1. Générer un PRD à partir des outputs des phases 1-4 (meta_score, graphe co-occurrence, prédictions, card_impact, ban_impact)
+2. Définir les endpoints API (FastAPI ou Flask) : `/meta-scores`, `/graph/{archetype}`, `/predict`, `/card-impact`, `/ban-impact`
+3. Découper en user stories et itérer feature par feature
+4. Front React : tier list dynamique, graphe interactif, simulateur de ban
+
+Installation : `claude install bmad-method` (Claude Code CLI, pas Cowork)
+Référence : https://github.com/bmad-code-org/bmad-method
 
 ---
 

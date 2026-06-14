@@ -46,6 +46,9 @@ Le produit doit permettre de :
 - `scripts/init_db.py` : charge cards.json dans SQLite (3 tables : cards, card_sets, card_prices)
 - Base peuplée : 13 797 cartes, 43 145 sets, 13 797 prix
 - `notebooks/01_exploration.ipynb` : exploration Pandas (types, attributs, archetypes, banlist, prix)
+- `scripts/fetch_tournament_decks.py` : scrape l'API yugiohmeta.com (découverte via Playwright)
+- Base enrichie : 9 330 decklists de tournoi TCG (2024-2026), 395 006 entrées de cartes
+- Top archetypes méta : Maliss, Dracotail, Snake-Eye, Ryzeal, Tenpai Dragon, Yummy, Branded...
 
 ## Structure du projet
 ```

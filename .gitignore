@@ -1,4 +1,17 @@
+# Données brutes (trop lourdes pour Git)
 data/raw/
 data/*.db
+
+# Environnement Python
 .venv/
-data/yugioh.db
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Fichiers temporaires
+data/*.tmp
+data/*.png
+
+# OS
+.DS_Store

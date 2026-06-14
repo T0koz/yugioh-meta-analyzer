@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 700px;
+                 background-color: #1a1a2e;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#e94560", "font": {"color": "white"}, "id": "Maliss P March Hare", "label": "Maliss P March Hare", "shape": "dot", "size": 44.31929505888115, "title": "Centralit\u00e9: 8.21"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Bystial Baldrake", "label": "Bystial Baldrake", "shape": "dot", "size": 35.38589097291671, "title": "Centralit\u00e9: 5.71"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Dimension Shifter", "label": "Dimension Shifter", "shape": "dot", "size": 17.33764312100741, "title": "Centralit\u00e9: 0.65"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Allure of Darkness", "label": "Allure of Darkness", "shape": "dot", "size": 42.184878666040774, "title": "Centralit\u00e9: 7.61"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss P Chessy Cat", "label": "Maliss P Chessy Cat", "shape": "dot", "size": 42.50096944710901, "title": "Centralit\u00e9: 7.70"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss C MTP-07", "label": "Maliss C MTP-07", "shape": "dot", "size": 48.60527175133171, "title": "Centralit\u00e9: 9.41"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss in the Mirror", "label": "Maliss in the Mirror", "shape": "dot", "size": 43.517103087944164, "title": "Centralit\u00e9: 7.98"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Terraforming", "label": "Terraforming", "shape": "dot", "size": 40.402626691430086, "title": "Centralit\u00e9: 7.11"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss P Dormouse", "label": "Maliss P Dormouse", "shape": "dot", "size": 48.60527175133171, "title": "Centralit\u00e9: 9.41"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss P White Rabbit", "label": "Maliss P White Rabbit", "shape": "dot", "size": 49.90463701859298, "title": "Centralit\u00e9: 9.77"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Bystial Druiswurm", "label": "Bystial Druiswurm", "shape": "dot", "size": 39.84580688613589, "title": "Centralit\u00e9: 6.96"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Gold Sarcophagus", "label": "Gold Sarcophagus", "shape": "dot", "size": 36.52917525562789, "title": "Centralit\u00e9: 6.03"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Wizard @Ignister", "label": "Wizard @Ignister", "shape": "dot", "size": 48.60527175133171, "title": "Centralit\u00e9: 9.41"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Backup @Ignister", "label": "Backup @Ignister", "shape": "dot", "size": 43.37888033961263, "title": "Centralit\u00e9: 7.95"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss C GWC-06", "label": "Maliss C GWC-06", "shape": "dot", "size": 19.782435659326083, "title": "Centralit\u00e9: 1.34"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss in Underground", "label": "Maliss in Underground", "shape": "dot", "size": 50.0, "title": "Centralit\u00e9: 9.80"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Maliss C TB-11", "label": "Maliss C TB-11", "shape": "dot", "size": 35.58983203053248, "title": "Centralit\u00e9: 5.76"}]);
+                  edges = new vis.DataSet([{"from": "Maliss P March Hare", "title": "Jaccard: 0.97 (95 decks)", "to": "Maliss P Chessy Cat", "value": 0.9652}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.93 (95 decks)", "to": "Backup @Ignister", "value": 0.9262}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.92 (89 decks)", "to": "Allure of Darkness", "value": 0.9181}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.88 (95 decks)", "to": "Maliss in Underground", "value": 0.8845}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.88 (95 decks)", "to": "Maliss P White Rabbit", "value": 0.8757}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.46 (95 decks)", "to": "Wizard @Ignister", "value": 0.4645}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.46 (95 decks)", "to": "Maliss P Dormouse", "value": 0.4645}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.46 (95 decks)", "to": "Maliss C MTP-07", "value": 0.4645}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.41 (91 decks)", "to": "Maliss in the Mirror", "value": 0.4127}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.40 (95 decks)", "to": "Gold Sarcophagus", "value": 0.3984}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.39 (88 decks)", "to": "Bystial Druiswurm", "value": 0.3884}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.37 (87 decks)", "to": "Terraforming", "value": 0.3745}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.35 (58 decks)", "to": "Bystial Baldrake", "value": 0.3462}, {"from": "Maliss P March Hare", "title": "Jaccard: 0.33 (83 decks)", "to": "Maliss C TB-11", "value": 0.3255}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.54 (58 decks)", "to": "Maliss P Dormouse", "value": 0.5435}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.54 (58 decks)", "to": "Maliss C MTP-07", "value": 0.5435}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.54 (58 decks)", "to": "Wizard @Ignister", "value": 0.5435}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.52 (58 decks)", "to": "Maliss in Underground", "value": 0.516}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.52 (58 decks)", "to": "Maliss P White Rabbit", "value": 0.5156}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.50 (92 decks)", "to": "Bystial Druiswurm", "value": 0.5026}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.38 (53 decks)", "to": "Allure of Darkness", "value": 0.3847}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.38 (58 decks)", "to": "Backup @Ignister", "value": 0.38}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.38 (58 decks)", "to": "Maliss P Chessy Cat", "value": 0.378}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.36 (69 decks)", "to": "Terraforming", "value": 0.3629}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.35 (58 decks)", "to": "Gold Sarcophagus", "value": 0.3547}, {"from": "Bystial Baldrake", "title": "Jaccard: 0.34 (55 decks)", "to": "Maliss in the Mirror", "value": 0.3365}, {"from": "Dimension Shifter", "title": "Jaccard: 0.33 (88 decks)", "to": "Maliss in Underground", "value": 0.3278}, {"from": "Dimension Shifter", "title": "Jaccard: 0.33 (88 decks)", "to": "Maliss P White Rabbit", "value": 0.3267}, {"from": "Allure of Darkness", "title": "Jaccard: 0.95 (89 decks)", "to": "Maliss P Chessy Cat", "value": 0.9546}, {"from": "Allure of Darkness", "title": "Jaccard: 0.92 (89 decks)", "to": "Backup @Ignister", "value": 0.9186}, {"from": "Allure of Darkness", "title": "Jaccard: 0.84 (89 decks)", "to": "Maliss in Underground", "value": 0.8419}, {"from": "Allure of Darkness", "title": "Jaccard: 0.83 (89 decks)", "to": "Maliss P White Rabbit", "value": 0.8342}, {"from": "Allure of Darkness", "title": "Jaccard: 0.43 (89 decks)", "to": "Maliss C MTP-07", "value": 0.4319}, {"from": "Allure of Darkness", "title": "Jaccard: 0.43 (89 decks)", "to": "Maliss P Dormouse", "value": 0.4319}, {"from": "Allure of Darkness", "title": "Jaccard: 0.43 (89 decks)", "to": "Wizard @Ignister", "value": 0.4319}, {"from": "Allure of Darkness", "title": "Jaccard: 0.38 (92 decks)", "to": "Gold Sarcophagus", "value": 0.3846}, {"from": "Allure of Darkness", "title": "Jaccard: 0.38 (82 decks)", "to": "Bystial Druiswurm", "value": 0.3777}, {"from": "Allure of Darkness", "title": "Jaccard: 0.36 (85 decks)", "to": "Maliss in the Mirror", "value": 0.3617}, {"from": "Allure of Darkness", "title": "Jaccard: 0.34 (81 decks)", "to": "Terraforming", "value": 0.3395}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.96 (95 decks)", "to": "Backup @Ignister", "value": 0.9638}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.86 (95 decks)", "to": "Maliss in Underground", "value": 0.8571}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.85 (95 decks)", "to": "Maliss P White Rabbit", "value": 0.8494}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.43 (95 decks)", "to": "Wizard @Ignister", "value": 0.4286}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.43 (95 decks)", "to": "Maliss P Dormouse", "value": 0.4286}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.43 (95 decks)", "to": "Maliss C MTP-07", "value": 0.4286}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.38 (95 decks)", "to": "Gold Sarcophagus", "value": 0.3765}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.37 (88 decks)", "to": "Bystial Druiswurm", "value": 0.3658}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.36 (91 decks)", "to": "Maliss in the Mirror", "value": 0.3627}, {"from": "Maliss P Chessy Cat", "title": "Jaccard: 0.34 (87 decks)", "to": "Terraforming", "value": 0.3409}, {"from": "Maliss C MTP-07", "title": "Jaccard: 1.00 (95 decks)", "to": "Maliss P Dormouse", "value": 1.0}, {"from": "Maliss C MTP-07", "title": "Jaccard: 1.00 (95 decks)", "to": "Wizard @Ignister", "value": 1.0}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.88 (91 decks)", "to": "Maliss in the Mirror", "value": 0.8762}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.71 (83 decks)", "to": "Maliss C TB-11", "value": 0.7055}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.68 (87 decks)", "to": "Terraforming", "value": 0.6786}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.67 (95 decks)", "to": "Maliss P White Rabbit", "value": 0.6687}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.67 (95 decks)", "to": "Maliss in Underground", "value": 0.6667}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.66 (88 decks)", "to": "Bystial Druiswurm", "value": 0.6552}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.51 (95 decks)", "to": "Gold Sarcophagus", "value": 0.5083}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.44 (95 decks)", "to": "Backup @Ignister", "value": 0.4356}, {"from": "Maliss C MTP-07", "title": "Jaccard: 0.35 (20 decks)", "to": "Maliss C GWC-06", "value": 0.3456}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.88 (91 decks)", "to": "Maliss P Dormouse", "value": 0.8762}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.88 (91 decks)", "to": "Wizard @Ignister", "value": 0.8762}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.80 (81 decks)", "to": "Maliss C TB-11", "value": 0.8006}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.58 (83 decks)", "to": "Terraforming", "value": 0.5806}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.57 (84 decks)", "to": "Bystial Druiswurm", "value": 0.5673}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.56 (91 decks)", "to": "Maliss P White Rabbit", "value": 0.5624}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.56 (91 decks)", "to": "Maliss in Underground", "value": 0.561}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.45 (91 decks)", "to": "Gold Sarcophagus", "value": 0.4454}, {"from": "Maliss in the Mirror", "title": "Jaccard: 0.36 (91 decks)", "to": "Backup @Ignister", "value": 0.3648}, {"from": "Terraforming", "title": "Jaccard: 0.68 (87 decks)", "to": "Wizard @Ignister", "value": 0.6786}, {"from": "Terraforming", "title": "Jaccard: 0.68 (87 decks)", "to": "Maliss P Dormouse", "value": 0.6786}, {"from": "Terraforming", "title": "Jaccard: 0.55 (79 decks)", "to": "Maliss C TB-11", "value": 0.548}, {"from": "Terraforming", "title": "Jaccard: 0.50 (87 decks)", "to": "Maliss P White Rabbit", "value": 0.5037}, {"from": "Terraforming", "title": "Jaccard: 0.50 (87 decks)", "to": "Maliss in Underground", "value": 0.5036}, {"from": "Terraforming", "title": "Jaccard: 0.49 (105 decks)", "to": "Bystial Druiswurm", "value": 0.4944}, {"from": "Terraforming", "title": "Jaccard: 0.38 (88 decks)", "to": "Gold Sarcophagus", "value": 0.3848}, {"from": "Terraforming", "title": "Jaccard: 0.34 (87 decks)", "to": "Backup @Ignister", "value": 0.3414}, {"from": "Terraforming", "title": "Jaccard: 0.30 (19 decks)", "to": "Maliss C GWC-06", "value": 0.3022}, {"from": "Maliss P Dormouse", "title": "Jaccard: 1.00 (95 decks)", "to": "Wizard @Ignister", "value": 1.0}, {"from": "Maliss P Dormouse", "title": "Jaccard: 0.71 (83 decks)", "to": "Maliss C TB-11", "value": 0.7055}, {"from": "Maliss P Dormouse", "title": "Jaccard: 0.67 (95 decks)", "to": "Maliss P White Rabbit", "value": 0.6687}, {"from": "Maliss P Dormouse", "title": "Jaccard: 0.67 (95 decks)", "to": "Maliss in Underground", "value": 0.6667}, {"from": "Maliss P Dormouse", "title": "Jaccard: 0.66 (88 decks)", "to": "Bystial Druiswurm", "value": 0.6552}, {"from": "Maliss P Dormouse", "title": "Jaccard: 0.51 (95 decks)", "to": "Gold Sarcophagus", "value": 0.5083}, {"from": "Maliss P Dormouse", "title": "Jaccard: 0.44 (95 decks)", "to": "Backup @Ignister", "value": 0.4356}, {"from": "Maliss P Dormouse", "title": "Jaccard: 0.35 (20 decks)", "to": "Maliss C GWC-06", "value": 0.3456}, {"from": "Maliss P White Rabbit", "title": "Jaccard: 1.00 (95 decks)", "to": "Maliss in Underground", "value": 0.9955}, {"from": "Maliss P White Rabbit", "title": "Jaccard: 0.84 (95 decks)", "to": "Backup @Ignister", "value": 0.8422}, {"from": "Maliss P White Rabbit", "title": "Jaccard: 0.67 (95 decks)", "to": "Wizard @Ignister", "value": 0.6687}, {"from": "Maliss P White Rabbit", "title": "Jaccard: 0.53 (88 decks)", "to": "Bystial Druiswurm", "value": 0.5295}, {"from": "Maliss P White Rabbit", "title": "Jaccard: 0.50 (95 decks)", "to": "Gold Sarcophagus", "value": 0.5042}, {"from": "Maliss P White Rabbit", "title": "Jaccard: 0.43 (83 decks)", "to": "Maliss C TB-11", "value": 0.4275}, {"from": "Bystial Druiswurm", "title": "Jaccard: 0.66 (88 decks)", "to": "Wizard @Ignister", "value": 0.6552}, {"from": "Bystial Druiswurm", "title": "Jaccard: 0.53 (88 decks)", "to": "Maliss in Underground", "value": 0.5292}, {"from": "Bystial Druiswurm", "title": "Jaccard: 0.46 (78 decks)", "to": "Maliss C TB-11", "value": 0.4556}, {"from": "Bystial Druiswurm", "title": "Jaccard: 0.41 (90 decks)", "to": "Gold Sarcophagus", "value": 0.4123}, {"from": "Bystial Druiswurm", "title": "Jaccard: 0.37 (88 decks)", "to": "Backup @Ignister", "value": 0.368}, {"from": "Gold Sarcophagus", "title": "Jaccard: 0.51 (95 decks)", "to": "Wizard @Ignister", "value": 0.5083}, {"from": "Gold Sarcophagus", "title": "Jaccard: 0.50 (95 decks)", "to": "Maliss in Underground", "value": 0.5041}, {"from": "Gold Sarcophagus", "title": "Jaccard: 0.38 (95 decks)", "to": "Backup @Ignister", "value": 0.3793}, {"from": "Gold Sarcophagus", "title": "Jaccard: 0.36 (83 decks)", "to": "Maliss C TB-11", "value": 0.3586}, {"from": "Wizard @Ignister", "title": "Jaccard: 0.71 (83 decks)", "to": "Maliss C TB-11", "value": 0.7055}, {"from": "Wizard @Ignister", "title": "Jaccard: 0.67 (95 decks)", "to": "Maliss in Underground", "value": 0.6667}, {"from": "Wizard @Ignister", "title": "Jaccard: 0.44 (95 decks)", "to": "Backup @Ignister", "value": 0.4356}, {"from": "Wizard @Ignister", "title": "Jaccard: 0.35 (20 decks)", "to": "Maliss C GWC-06", "value": 0.3456}, {"from": "Backup @Ignister", "title": "Jaccard: 0.85 (95 decks)", "to": "Maliss in Underground", "value": 0.8503}, {"from": "Backup @Ignister", "title": "Jaccard: 0.30 (83 decks)", "to": "Maliss C TB-11", "value": 0.3042}, {"from": "Maliss in Underground", "title": "Jaccard: 0.43 (83 decks)", "to": "Maliss C TB-11", "value": 0.4283}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"forceAtlas2Based": {"gravitationalConstant": -80, "springLength": 120}, "solver": "forceAtlas2Based"}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

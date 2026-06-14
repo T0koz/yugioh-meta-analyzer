@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 700px;
+                 background-color: #1a1a2e;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#4a90d9", "font": {"color": "white"}, "id": "Onomatokage", "label": "Onomatokage", "shape": "dot", "size": 27.774122092644475, "title": "Centralit\u00e9: 2.24"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Ryzeal Cross", "label": "Ryzeal Cross", "shape": "dot", "size": 44.19383998957587, "title": "Centralit\u00e9: 5.12"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Onomatopaira", "label": "Onomatopaira", "shape": "dot", "size": 40.551094533845855, "title": "Centralit\u00e9: 4.48"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Sword Ryzeal", "label": "Sword Ryzeal", "shape": "dot", "size": 50.0, "title": "Centralit\u00e9: 6.14"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Node Ryzeal", "label": "Node Ryzeal", "shape": "dot", "size": 45.56143722718092, "title": "Centralit\u00e9: 5.36"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Ice Ryzeal", "label": "Ice Ryzeal", "shape": "dot", "size": 36.564597042152585, "title": "Centralit\u00e9: 3.78"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Dodododo Warrior", "label": "Dodododo Warrior", "shape": "dot", "size": 39.326584793797636, "title": "Centralit\u00e9: 4.27"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Ext Ryzeal", "label": "Ext Ryzeal", "shape": "dot", "size": 46.630317936021896, "title": "Centralit\u00e9: 5.55"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Bonfire", "label": "Bonfire", "shape": "dot", "size": 34.31738223988533, "title": "Centralit\u00e9: 3.39"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Star Ryzeal", "label": "Star Ryzeal", "shape": "dot", "size": 33.43776467522314, "title": "Centralit\u00e9: 3.23"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Unbreakable Xyz Barrier", "label": "Unbreakable Xyz Barrier", "shape": "dot", "size": 27.58542901817708, "title": "Centralit\u00e9: 2.21"}, {"color": "#4a90d9", "font": {"color": "white"}, "id": "Gogogo Goblindbergh", "label": "Gogogo Goblindbergh", "shape": "dot", "size": 28.45136490976611, "title": "Centralit\u00e9: 2.36"}]);
+                  edges = new vis.DataSet([{"from": "Onomatokage", "title": "Jaccard: 0.93 (16 decks)", "to": "Gogogo Goblindbergh", "value": 0.9306}, {"from": "Onomatokage", "title": "Jaccard: 0.56 (16 decks)", "to": "Onomatopaira", "value": 0.5643}, {"from": "Onomatokage", "title": "Jaccard: 0.44 (15 decks)", "to": "Dodododo Warrior", "value": 0.4366}, {"from": "Onomatokage", "title": "Jaccard: 0.31 (14 decks)", "to": "Sword Ryzeal", "value": 0.3093}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.84 (22 decks)", "to": "Star Ryzeal", "value": 0.8422}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.83 (30 decks)", "to": "Ext Ryzeal", "value": 0.8286}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.78 (26 decks)", "to": "Node Ryzeal", "value": 0.7826}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.71 (30 decks)", "to": "Sword Ryzeal", "value": 0.7098}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.48 (9 decks)", "to": "Unbreakable Xyz Barrier", "value": 0.4822}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.41 (24 decks)", "to": "Bonfire", "value": 0.4051}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.36 (26 decks)", "to": "Ice Ryzeal", "value": 0.3638}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.36 (14 decks)", "to": "Dodododo Warrior", "value": 0.357}, {"from": "Ryzeal Cross", "title": "Jaccard: 0.35 (14 decks)", "to": "Onomatopaira", "value": 0.3498}, {"from": "Onomatopaira", "title": "Jaccard: 0.95 (14 decks)", "to": "Dodododo Warrior", "value": 0.9507}, {"from": "Onomatopaira", "title": "Jaccard: 0.64 (16 decks)", "to": "Gogogo Goblindbergh", "value": 0.6389}, {"from": "Onomatopaira", "title": "Jaccard: 0.49 (14 decks)", "to": "Ice Ryzeal", "value": 0.4924}, {"from": "Onomatopaira", "title": "Jaccard: 0.46 (14 decks)", "to": "Sword Ryzeal", "value": 0.4609}, {"from": "Onomatopaira", "title": "Jaccard: 0.36 (13 decks)", "to": "Bonfire", "value": 0.359}, {"from": "Onomatopaira", "title": "Jaccard: 0.34 (14 decks)", "to": "Node Ryzeal", "value": 0.3355}, {"from": "Onomatopaira", "title": "Jaccard: 0.33 (14 decks)", "to": "Ext Ryzeal", "value": 0.3306}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.84 (32 decks)", "to": "Ext Ryzeal", "value": 0.8362}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.81 (28 decks)", "to": "Node Ryzeal", "value": 0.8053}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.71 (28 decks)", "to": "Ice Ryzeal", "value": 0.7136}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.59 (22 decks)", "to": "Star Ryzeal", "value": 0.5939}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.54 (26 decks)", "to": "Bonfire", "value": 0.5395}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.48 (14 decks)", "to": "Dodododo Warrior", "value": 0.4789}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.39 (9 decks)", "to": "Unbreakable Xyz Barrier", "value": 0.3905}, {"from": "Sword Ryzeal", "title": "Jaccard: 0.30 (14 decks)", "to": "Gogogo Goblindbergh", "value": 0.3017}, {"from": "Node Ryzeal", "title": "Jaccard: 0.95 (28 decks)", "to": "Ext Ryzeal", "value": 0.9541}, {"from": "Node Ryzeal", "title": "Jaccard: 0.66 (21 decks)", "to": "Star Ryzeal", "value": 0.6614}, {"from": "Node Ryzeal", "title": "Jaccard: 0.52 (23 decks)", "to": "Bonfire", "value": 0.5216}, {"from": "Node Ryzeal", "title": "Jaccard: 0.51 (24 decks)", "to": "Ice Ryzeal", "value": 0.5051}, {"from": "Node Ryzeal", "title": "Jaccard: 0.45 (9 decks)", "to": "Unbreakable Xyz Barrier", "value": 0.4529}, {"from": "Node Ryzeal", "title": "Jaccard: 0.34 (14 decks)", "to": "Dodododo Warrior", "value": 0.3425}, {"from": "Ice Ryzeal", "title": "Jaccard: 0.64 (26 decks)", "to": "Bonfire", "value": 0.6375}, {"from": "Ice Ryzeal", "title": "Jaccard: 0.56 (28 decks)", "to": "Ext Ryzeal", "value": 0.5611}, {"from": "Ice Ryzeal", "title": "Jaccard: 0.51 (14 decks)", "to": "Dodododo Warrior", "value": 0.5093}, {"from": "Dodododo Warrior", "title": "Jaccard: 0.49 (14 decks)", "to": "Gogogo Goblindbergh", "value": 0.4884}, {"from": "Dodododo Warrior", "title": "Jaccard: 0.37 (13 decks)", "to": "Bonfire", "value": 0.3664}, {"from": "Dodododo Warrior", "title": "Jaccard: 0.34 (14 decks)", "to": "Ext Ryzeal", "value": 0.3375}, {"from": "Ext Ryzeal", "title": "Jaccard: 0.70 (22 decks)", "to": "Star Ryzeal", "value": 0.6978}, {"from": "Ext Ryzeal", "title": "Jaccard: 0.56 (26 decks)", "to": "Bonfire", "value": 0.5595}, {"from": "Ext Ryzeal", "title": "Jaccard: 0.44 (9 decks)", "to": "Unbreakable Xyz Barrier", "value": 0.4431}, {"from": "Star Ryzeal", "title": "Jaccard: 0.44 (8 decks)", "to": "Unbreakable Xyz Barrier", "value": 0.439}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"forceAtlas2Based": {"gravitationalConstant": -80, "springLength": 120}, "solver": "forceAtlas2Based"}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

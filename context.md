@@ -49,6 +49,9 @@ Le produit doit permettre de :
 - `scripts/fetch_tournament_decks.py` : scrape l'API yugiohmeta.com (découverte via Playwright)
 - Base enrichie : 9 330 decklists de tournoi TCG (2024-2026), 395 006 entrées de cartes
 - Top archetypes méta : Maliss, Dracotail, Snake-Eye, Ryzeal, Tenpai Dragon, Yummy, Branded...
+- `notebooks/02_cooccurrence.ipynb` : matrice deck×carte, score Jaccard, 15 184 paires, staples identifiées
+- `notebooks/03_graph.ipynb` : graphe NetworkX (682 nœuds, 3 580 arêtes, 61 communautés = archetypes)
+- Simulation de ban fonctionnelle : impact quantifié carte par carte
 
 ## Structure du projet
 ```

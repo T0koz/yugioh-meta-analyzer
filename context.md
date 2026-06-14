@@ -226,11 +226,13 @@ Référence : https://github.com/bmad-code-org/bmad-method
 ## Structure du projet
 ```
 yugioh-meta-analyzer/
+├── app.py                          # Dashboard Streamlit (6 pages)
 ├── scripts/
 │   ├── fetch_cards.py              # YGOPRODeck API → data/raw/cards.json
 │   ├── init_db.py                  # cards.json → yugioh.db
 │   ├── fetch_tournament_decks.py   # yugiohmeta.com → yugioh.db
-│   └── explore_limitless.py        # outil d'exploration Playwright (diagnostic)
+│   ├── explore_limitless.py        # outil d'exploration Playwright (diagnostic)
+│   └── setup_impact_tables.py      # génère ban_impact + card_impact dans yugioh.db
 ├── data/
 │   ├── raw/cards.json              # ~31 MB, 13 797 cartes TCG (non tracké Git)
 │   ├── yugioh.db                   # base SQLite principale (non trackée Git)
@@ -238,11 +240,16 @@ yugioh-meta-analyzer/
 │   ├── graph_tenpai.html
 │   ├── graph_ryzeal.html
 │   ├── graph_branded.html
+│   ├── graph_combo_MsZb_dJAGHo.html  # graphe combo NLP (vidéo test)
 │   └── SOURCES.md                  # documentation des sources de data
 ├── notebooks/
 │   ├── 01_exploration.ipynb        # exploration cartes
 │   ├── 02_cooccurrence.ipynb       # co-occurrence + Jaccard
-│   └── 03_graph.ipynb              # graphe NetworkX + Pyvis
+│   ├── 03_graph.ipynb              # graphe NetworkX + Pyvis
+│   ├── 04_meta_score.ipynb         # score méta + trends
+│   ├── 05_meta_prediction.ipynb    # modèle prédictif sklearn (R²≈-37)
+│   ├── 06_card_ban_impact.ipynb    # bridge score + détection ban
+│   └── 08_nlp_combos.ipynb         # NLP combos via transcripts YouTube
 └── .venv/
 ```
 
@@ -255,6 +262,13 @@ yugioh-meta-analyzer/
 - `tournament_decks` : id, author, archetype, tournament_type, tournament_location, placement, created, uploaded, ocg, illegal, incomplete
 - `deck_cards` : id, deck_id, card_name, amount, zone (main/extra/side)
 - `card_cooccurrence` : card_a, card_b, jaccard, cooc_count
+- `card_cooccurrence_side` : card_a, card_b, jaccard, cooc_count (side deck uniquement)
+- `meta_scores` : month, archetype, meta_score, share, avg_placement, placement_score_norm
+- `archetype_trend` : archetype, meta_score_recent, meta_score_past, trend_ratio, label
+- `ban_impact` : card, ban_status, ban_month_inferred, peak_usage, drop_ratio, top_archetype, delta_meta_score, n_archetypes_affected, total_appearances
+- `card_impact` : card_name, release_month, n_archetypes_3m, total_decks_3m, bridge_score, top_archetype, delta_meta_score_top_arch
+- `combo_mentions` : video_id, card_name, mention_count (NLP)
+- `combo_edges` : video_id, card_a, card_b, weight (NLP, DiGraph)
 
 ---
 

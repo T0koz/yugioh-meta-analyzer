@@ -1,3 +1,4 @@
 data/raw/
 data/*.db
 .venv/
+data/yugioh.db

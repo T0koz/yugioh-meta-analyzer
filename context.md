@@ -136,11 +136,52 @@ Idée : clustériser les decks (pas les cartes) selon leur composition pour assi
 
 ---
 
-## Phase 3 — Score méta + modèle prédictif
-*(à venir)*
-- Score méta par archetype : fréquence tournoi × pondération placement × trend temporel (fenêtre 3 mois)
-- Modèle prédictif sklearn : prédire l'impact d'une nouvelle carte sur la méta (insertion dans un graphe de synergies existant)
-- Détection d'impact de ban : quantifier la chute d'un archetype suite à un ban via le graphe
+## Phase 3 ✅ — Score méta + modèle prédictif
+
+### Ce qui a été fait
+
+**Score méta (notebooks/04_meta_score.ipynb)**
+- `placement_score = 1 / avg_placement` par (archetype, mois)
+- `placement_score_norm` : normalisé par le max du mois (0 → 1)
+- `meta_score = sqrt(share × placement_score_norm)` — moyenne géométrique qui pénalise les archetypes qui jouent beaucoup mais ne gagnent pas
+- Table `meta_scores` créée : 462 lignes (29 mois × ~16 archetypes/mois)
+- **Trend** : fenêtre 60 jours récente vs 60 jours précédente → `trend_ratio = meta_score_recent / meta_score_past`
+- Labels : ⬇️ chute forte / ↘️ déclin / ➡️ stable / ↗️ montée / ⬆️ émergence
+- Table `archetype_trend` : 86 archetypes
+- Résultats clés : DoomZ trend_ratio 4.217 (plus forte émergence), Blue-Eyes pic à 0.569 en fév 2025 puis disparu
+
+**Modèle prédictif (notebooks/05_meta_prediction.ipynb)**
+- Dataset : paires (T, T+1) pour 247 exemples (split temporel : train 2024-2025 / test 2026)
+- 11 features : `meta_score`, `share`, `avg_placement`, `trend_ratio`, `n_banned`, `n_limited`, `n_semilimited`, `n_staples`, `avg_jaccard`, `n_pairs`, `max_jaccard`
+- 3 modèles : Ridge (α=1.0), RandomForest (200 arbres, depth=5), GradientBoosting (200 arbres, depth=3, lr=0.05)
+- Feature importance RF : avg_placement (42%), share (33%), meta_score (15%) — les features statiques (banlist, co-occurrence) sont marginales
+- **Performances :** RMSE ~0.21 pour les 3 modèles, **R² ≈ -37 à -41** (très négatif)
+
+### Ce qu'on n'a pas exploité (à revisiter)
+
+**Problème central du modèle — Distribution shift**
+Le R² fortement négatif révèle un problème de distribution shift : la méta 2026 est structurellement différente de 2024-2025. Le modèle régresse vers la moyenne d'entraînement au lieu de capturer la dynamique réelle. Causes identifiées :
+- **Features statiques** : banlist, co-occurrence et trend_ratio sont calculés sur toute la période, pas par mois → pas de signal temporel fin
+- **Manque de momentum** : il faudrait des features glissantes (meta_score des 3 derniers mois, momentum à court terme, accélération) pour capturer la dynamique
+- **Trop peu de données** : 99 exemples d'entraînement sur 29 mois pour 86 archetypes → underfitting sévère
+
+**Améliorations prioritaires du modèle**
+- Ajouter des features lag temporelles : `meta_score_t-1`, `meta_score_t-2`, `meta_score_t-3` par archetype au moment de la prédiction
+- Calculer trend_ratio par fenêtre glissante mensuelle (pas sur toute la période)
+- Ajouter une feature `months_since_debut` (âge de l'archetype dans la méta)
+- Utiliser un modèle séquentiel (LSTM ou ARIMA par archetype) plutôt qu'une régression cross-sectionnelle
+- Banlist historique : encoder les changements de banlist dans le temps, pas seulement l'état actuel
+
+**Notebook 06 — Détection impact nouvelle carte / ban (à faire)**
+- Simuler l'insertion d'une nouvelle carte dans le graphe de co-occurrence
+- Mesurer le raccourci créé : si la carte A se connecte à 3+ archetypes distincts avec Jaccard > 0.2, elle est "pont stratégique"
+- Simuler un ban : supprimer un nœud du graphe, recalculer les composantes et mesurer la chute de méta_score prédite
+- Source de signal : views_week (YGOPRODeck) comme signal précoce avant tournoi
+
+**Sur la qualité des données**
+- Les features de co-occurrence (`avg_jaccard`, `n_pairs`) sont calculées sur l'ensemble du corpus 2024-2026, pas dynamiquement par mois → bruit temporel
+- Le `trend_ratio` est une feature globale alors qu'on cherche à prédire mois par mois
+- Une version dynamique des features (calculées uniquement sur les 90 jours précédant T) améliorerait significativement le signal
 
 ## Phase 4 — Interface Streamlit + NLP combos
 *(à venir)*

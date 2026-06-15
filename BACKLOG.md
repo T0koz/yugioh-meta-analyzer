@@ -22,7 +22,7 @@ Priorités : `🔴 High` · `🟠 Medium` · `🟢 Low` · `⚪ Sans priorité`
 
 | ID | Item | Statut | Priorité | Notes |
 |----|------|--------|----------|-------|
-| P2-G | Intégrer les decklists OCG (7 322 déjà en DB) | | 🔴 High | Signal 3-6 mois d'avance sur TCG — valider corrélation OCG→TCG d'abord |
+| P2-G | Intégrer les decklists OCG (7 322 déjà en DB) | ✅ Done | 🔴 High | r=0.771 lag 4 mois validé (p<0.0001, n=43) |
 | P2-H | Co-occurrence sur fenêtre glissante 90j | | 🔴 High | Tout le corpus traité à égalité aujourd'hui |
 | P2-Q | Récupérer la tier list yugiohmeta.com (`/api/v1/tier-list`) | | 🔴 High | À confirmer via Playwright |
 | P2-I | Pondération co-occurrence par placement (`1/placement`) | | 🟠 Medium | Un Top 1 doit peser plus qu'un Top 50 |
@@ -62,7 +62,7 @@ Priorités : `🔴 High` · `🟠 Medium` · `🟢 Low` · `⚪ Sans priorité`
 
 | ID | Item | Statut | Priorité | Notes |
 |----|------|--------|----------|-------|
-| SB-Z | Croiser OCG + views_week → score d'alerte précoce boutiques | | 🔴 High | Dépend validation corrélation P2-G |
+| SB-Z | Croiser OCG + views_week → score d'alerte précoce boutiques | ✅ Done | 🔴 High | Kewl Tune 100/100 — Fydraulis Harmonia signal clé |
 | SB-AA | Intégrer historique prix Cardmarket comme signal d'achat | | 🟠 Medium | Dépend de P1-D |
 | SB-AB | Dashboard boutique dédié (différent du dashboard joueur) | | 🟢 Low | Cible B2B 150€/mois |
 

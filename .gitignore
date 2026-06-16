@@ -12,6 +12,10 @@ __pycache__/
 # Fichiers temporaires
 data/*.tmp
 data/*.png
+data/graph_combo_*.html
+
+# Libs JS tierces (pyvis), régénérables
+notebooks/lib/
 
 # OS
 .DS_Store

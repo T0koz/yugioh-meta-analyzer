@@ -1,17 +1,15 @@
 """
-Yu-Gi-Oh! Meta Analyzer — Dashboard Streamlit
+Yu-Gi-Oh! Meta Analyzer — Dashboard Streamlit v2
 Run: streamlit run app.py
 """
 
-import sqlite3
-import os
+import sqlite3, os
 import pandas as pd
 import numpy as np
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 
-# ─── Config ───────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="YGO Meta Analyzer",
     page_icon="🃏",
@@ -21,124 +19,127 @@ st.set_page_config(
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "yugioh.db")
 
-TREND_COLORS = {
-    "⬆️ émergence": "#2ecc71",
-    "↗️ montée":     "#27ae60",
-    "➡️ stable":     "#95a5a6",
-    "↘️ déclin":     "#e67e22",
-    "⬇️ chute forte": "#e74c3c",
-}
+def db():
+    return sqlite3.connect(DB_PATH)
 
-# ─── Data loading ─────────────────────────────────────────────────────────────
+# ─── Loaders ──────────────────────────────────────────────────────────────────
+
 @st.cache_data(ttl=300)
 def load_meta_scores():
-    conn = sqlite3.connect(DB_PATH)
     df = pd.read_sql_query(
         "SELECT month, archetype, meta_score, share, avg_placement, deck_count FROM meta_scores",
-        conn, parse_dates=["month"]
+        db(), parse_dates=["month"]
     )
-    conn.close()
     df["month"] = df["month"].dt.to_period("M")
     return df
 
 @st.cache_data(ttl=300)
-def load_trend():
-    conn = sqlite3.connect(DB_PATH)
-    df = pd.read_sql_query(
-        "SELECT archetype, trend_ratio, trend_label FROM archetype_trend ORDER BY trend_ratio DESC",
-        conn
-    )
-    conn.close()
-    return df
-
-@st.cache_data(ttl=300)
-def load_ban_impact():
-    conn = sqlite3.connect(DB_PATH)
+def load_tier_list():
     try:
-        df = pd.read_sql_query("SELECT * FROM ban_impact ORDER BY peak_usage DESC", conn)
+        return pd.read_sql_query(
+            "SELECT archetype, tier, deck_count, share_pct FROM meta_tier_list WHERE format='TCG'",
+            db()
+        )
     except Exception:
-        df = pd.DataFrame()
-    conn.close()
-    return df
-
-@st.cache_data(ttl=300)
-def load_card_impact():
-    conn = sqlite3.connect(DB_PATH)
-    try:
-        df = pd.read_sql_query("SELECT * FROM card_impact ORDER BY bridge_score DESC", conn)
-    except Exception:
-        df = pd.DataFrame()
-    conn.close()
-    return df
+        return pd.DataFrame()
 
 @st.cache_data(ttl=300)
 def load_predictions():
-    """Prédictions next-month via Random Forest (notebook 05)."""
-    conn = sqlite3.connect(DB_PATH)
-    ms = pd.read_sql_query(
-        "SELECT month, archetype, meta_score, share, avg_placement FROM meta_scores",
-        conn, parse_dates=["month"]
-    )
-    conn.close()
-    ms["month"] = ms["month"].dt.to_period("M")
-
     try:
-        from sklearn.ensemble import RandomForestRegressor
-
-        # Features T → T+1 (simplifié sans features externes)
-        ms_sorted = ms.sort_values(["archetype", "month"])
-        ms_sorted["next_score"] = ms_sorted.groupby("archetype")["meta_score"].shift(-1)
-        dataset = ms_sorted.dropna(subset=["next_score"])
-
-        features = ["meta_score", "share", "avg_placement"]
-        X = dataset[features]
-        y = dataset["next_score"]
-
-        # Train sur tout sauf dernier mois
-        last_month = ms["month"].max()
-        train_mask = dataset["month"] < last_month
-        X_train, y_train = X[train_mask], y[train_mask]
-
-        if len(X_train) < 10:
-            return pd.DataFrame()
-
-        rf = RandomForestRegressor(n_estimators=200, max_depth=5, random_state=42)
-        rf.fit(X_train, y_train)
-
-        # Prédiction du mois prochain
-        current = ms[ms["month"] == last_month].copy()
-        X_pred = current[features]
-        current = current.copy()
-        current["predicted_next"] = rf.predict(X_pred)
-        current["delta_predicted"] = current["predicted_next"] - current["meta_score"]
-
-        return current[["archetype", "meta_score", "predicted_next", "delta_predicted"]].sort_values(
-            "delta_predicted", ascending=False
+        return pd.read_sql_query(
+            "SELECT archetype, data_month, meta_score_current, pred_delta, pred_meta_score, pred_direction "
+            "FROM meta_predictions ORDER BY pred_meta_score DESC",
+            db()
         )
-    except ImportError:
+    except Exception:
         return pd.DataFrame()
 
+@st.cache_data(ttl=300)
+def load_early_signals():
+    try:
+        return pd.read_sql_query(
+            "SELECT card_name, archetype, views_week, signal_views, signal_text, signal_ocg, "
+            "early_score_100, best_meta_match FROM early_card_signals ORDER BY early_score_100 DESC",
+            db()
+        )
+    except Exception:
+        return pd.DataFrame()
+
+@st.cache_data(ttl=300)
+def load_combos():
+    try:
+        return pd.read_sql_query(
+            "SELECT archetype, card_a, card_b, weight FROM combo_edges_global ORDER BY weight DESC",
+            db()
+        )
+    except Exception:
+        return pd.DataFrame()
+
+@st.cache_data(ttl=300)
+def load_banlist_history():
+    try:
+        return pd.read_sql_query(
+            "SELECT list_name, effective_date, end_date, card_name, status FROM banlist_history",
+            db(), parse_dates=["effective_date", "end_date"]
+        )
+    except Exception:
+        return pd.DataFrame()
+
+@st.cache_data(ttl=300)
+def load_ban_impact():
+    try:
+        return pd.read_sql_query("SELECT * FROM ban_impact ORDER BY peak_usage DESC", db())
+    except Exception:
+        return pd.DataFrame()
+
+@st.cache_data(ttl=300)
+def load_card_impact():
+    try:
+        return pd.read_sql_query("SELECT * FROM card_impact ORDER BY bridge_score DESC", db())
+    except Exception:
+        return pd.DataFrame()
+
+@st.cache_data(ttl=300)
+def load_trend():
+    try:
+        return pd.read_sql_query(
+            "SELECT archetype, trend_ratio, trend_label FROM archetype_trend ORDER BY trend_ratio DESC",
+            db()
+        )
+    except Exception:
+        return pd.DataFrame(columns=["archetype", "trend_ratio", "trend_label"])
 
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
-st.sidebar.image(
-    "https://ygoprodeck.com/images/logo.png",
-    use_column_width=True,
-)
+
 st.sidebar.title("🃏 YGO Meta Analyzer")
 st.sidebar.markdown("---")
 
-page = st.sidebar.radio(
-    "Navigation",
-    ["📊 Tier List", "📈 Évolution", "🕸️ Graphe synergies", "🚫 Simulateur ban", "🌉 Cartes bridge", "🔮 Prédictions"],
-)
+page = st.sidebar.radio("Navigation", [
+    "📊 Tier List",
+    "📈 Évolution",
+    "🔮 Prédictions",
+    "🚨 Signal précoce",
+    "🎮 Combos NLP",
+    "📜 Banlist historique",
+    "🕸️ Graphe synergies",
+    "🚫 Simulateur ban",
+])
 
-ms_df   = load_meta_scores()
+ms_df    = load_meta_scores()
+tier_ytm = load_tier_list()
 trend_df = load_trend()
-ban_df   = load_ban_impact()
-card_df  = load_card_impact()
 
 all_months = sorted(ms_df["month"].unique(), reverse=True)
 month_str  = [str(m) for m in all_months]
+
+TIER_COLOR = {"T1": "#e74c3c", "T2": "#e67e22", "T3": "#f1c40f", "field": "#95a5a6"}
+
+def assign_tier_local(score):
+    if score >= 0.25: return "S"
+    if score >= 0.18: return "A"
+    if score >= 0.12: return "B"
+    if score >= 0.07: return "C"
+    return "D"
 
 # ─── Page : Tier List ─────────────────────────────────────────────────────────
 if page == "📊 Tier List":
@@ -154,119 +155,338 @@ if page == "📊 Tier List":
     tier = ms_df[ms_df["month"] == selected_month].copy()
     tier = tier[tier["meta_score"] >= min_score].sort_values("meta_score", ascending=False)
 
-    # Ajouter trend
-    tier = tier.merge(trend_df[["archetype", "trend_ratio", "trend_label"]], on="archetype", how="left")
-    tier["trend_label"] = tier["trend_label"].fillna("➡️ stable")
+    if not trend_df.empty:
+        tier = tier.merge(trend_df[["archetype", "trend_label"]], on="archetype", how="left")
+        tier["trend_label"] = tier["trend_label"].fillna("➡️ stable")
+    else:
+        tier["trend_label"] = "➡️ stable"
 
-    # Tier labels
-    def assign_tier(score):
-        if score >= 0.25: return "S"
-        if score >= 0.18: return "A"
-        if score >= 0.12: return "B"
-        if score >= 0.07: return "C"
-        return "D"
+    # Badge yugiohmeta.com tier
+    if not tier_ytm.empty:
+        tier = tier.merge(tier_ytm[["archetype", "tier", "share_pct"]], on="archetype", how="left")
+        tier["tier"] = tier["tier"].fillna("—")
+    else:
+        tier["tier"] = "—"
 
-    tier["Tier"] = tier["meta_score"].apply(assign_tier)
+    tier["Tier"] = tier["meta_score"].apply(assign_tier_local)
 
-    # KPIs
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Archetypes actifs", len(tier))
     top = tier.iloc[0] if len(tier) else None
     k2.metric("Top meta", top["archetype"] if top is not None else "—",
               f"{top['meta_score']:.3f}" if top is not None else "")
-    emerging = tier[tier["trend_label"] == "⬆️ émergence"]
-    k3.metric("En émergence", len(emerging))
-    declining = tier[tier["trend_label"] == "⬇️ chute forte"]
-    k4.metric("En chute", len(declining))
+    ytm_t1 = tier[tier["tier"] == "T1"]["archetype"].tolist()
+    k3.metric("T1 yugiohmeta", ytm_t1[0] if ytm_t1 else "—")
+    rising = tier[tier["trend_label"].isin(["⬆️ émergence", "↗️ montée"])] if "trend_label" in tier.columns else pd.DataFrame()
+    k4.metric("En hausse", len(rising))
 
     st.markdown("---")
 
-    # Graphe barres
     fig = px.bar(
-        tier,
-        x="meta_score", y="archetype",
-        orientation="h",
+        tier, x="meta_score", y="archetype", orientation="h",
         color="Tier",
         color_discrete_map={"S": "#e74c3c", "A": "#e67e22", "B": "#f1c40f", "C": "#2ecc71", "D": "#95a5a6"},
         text="meta_score",
-        hover_data={"share": ":.1%", "avg_placement": ":.1f", "trend_label": True},
+        hover_data={"share": ":.1%", "avg_placement": ":.1f", "tier": True},
         labels={"meta_score": "Meta Score", "archetype": "Archetype"},
         title=f"Tier List — {selected_month_str}",
         height=max(400, len(tier) * 28),
     )
     fig.update_traces(texttemplate="%{text:.3f}", textposition="outside")
-    fig.update_layout(yaxis={"categoryorder": "total ascending"}, showlegend=True)
+    fig.update_layout(yaxis={"categoryorder": "total ascending"})
     st.plotly_chart(fig, use_container_width=True)
 
-    # Table détaillée
-    st.subheader("Détail")
-    display = tier[["Tier", "archetype", "meta_score", "share", "avg_placement", "deck_count", "trend_label", "trend_ratio"]].copy()
-    display.columns = ["Tier", "Archetype", "Meta Score", "Share", "Avg Placement", "Decks", "Trend", "Trend Ratio"]
+    cols = ["Tier", "archetype", "meta_score", "share", "avg_placement", "deck_count", "tier"]
+    if "trend_label" in tier.columns:
+        cols.append("trend_label")
+    display = tier[cols].copy()
+    rename = {"Tier": "Tier local", "archetype": "Archetype", "meta_score": "Meta Score",
+               "share": "Share", "avg_placement": "Avg Place", "deck_count": "Decks",
+               "tier": "YGOMeta tier", "trend_label": "Trend"}
+    display.rename(columns=rename, inplace=True)
     display["Meta Score"] = display["Meta Score"].round(4)
     display["Share"] = (display["Share"] * 100).round(1).astype(str) + "%"
-    display["Avg Placement"] = display["Avg Placement"].round(1)
-    display["Trend Ratio"] = display["Trend Ratio"].round(2)
+    display["Avg Place"] = display["Avg Place"].round(1)
     st.dataframe(display, use_container_width=True, hide_index=True)
 
 
-# ─── Page : Évolution temporelle ──────────────────────────────────────────────
+# ─── Page : Évolution ─────────────────────────────────────────────────────────
 elif page == "📈 Évolution":
     st.title("📈 Évolution du Meta Score")
 
     all_archetypes = sorted(ms_df["archetype"].unique())
-    default_archetypes = ["Ryzeal", "DoomZ", "Branded", "Dracotail", "Yummy"] if all(
-        a in all_archetypes for a in ["Ryzeal", "DoomZ", "Branded"]
-    ) else all_archetypes[:5]
+    defaults = ["Kewl Tune", "Branded", "DoomZ", "Elfnote", "Dracotail"]
+    defaults = [a for a in defaults if a in all_archetypes] or all_archetypes[:5]
 
-    selected_archetypes = st.multiselect(
-        "Archetypes à comparer",
-        all_archetypes,
-        default=default_archetypes,
-    )
+    selected = st.multiselect("Archetypes", all_archetypes, default=defaults)
 
-    if selected_archetypes:
-        subset = ms_df[ms_df["archetype"].isin(selected_archetypes)].copy()
-        subset["month_str"] = subset["month"].astype(str)
+    if selected:
+        sub = ms_df[ms_df["archetype"].isin(selected)].copy()
+        sub["month_str"] = sub["month"].astype(str)
 
-        fig = px.line(
-            subset,
-            x="month_str", y="meta_score",
-            color="archetype",
-            markers=True,
-            labels={"month_str": "Mois", "meta_score": "Meta Score", "archetype": "Archetype"},
-            title="Meta Score dans le temps",
-            height=500,
-        )
+        fig = px.line(sub, x="month_str", y="meta_score", color="archetype", markers=True,
+                      labels={"month_str": "Mois", "meta_score": "Meta Score"},
+                      title="Meta Score dans le temps", height=500)
         fig.update_layout(xaxis_tickangle=-45, hovermode="x unified")
         st.plotly_chart(fig, use_container_width=True)
 
-        # Share dans le temps
-        fig2 = px.area(
-            subset,
-            x="month_str", y="share",
-            color="archetype",
-            labels={"month_str": "Mois", "share": "Share tournois", "archetype": "Archetype"},
-            title="Share des tournois dans le temps",
-            height=400,
-        )
+        fig2 = px.area(sub, x="month_str", y="share", color="archetype",
+                       labels={"month_str": "Mois", "share": "Share tournois"},
+                       title="Share des tournois dans le temps", height=400)
         fig2.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig2, use_container_width=True)
     else:
         st.info("Sélectionne au moins un archetype.")
 
 
+# ─── Page : Prédictions ───────────────────────────────────────────────────────
+elif page == "🔮 Prédictions":
+    st.title("🔮 Prédictions — Mois prochain")
+    st.markdown(
+        "Modèle : **Ensemble 70% naïf + 30% Ridge** (walk-forward CV, fenêtre 9 mois).  \n"
+        "Métrique validée : **Spearman ρ = +0.317** (vs +0.253 naïf) sur 15 mois de CV.  \n"
+        "Features : lags T-1/T-2/T-3, momentum, ban_severity temporelle (19 features)."
+    )
+
+    pred_df = load_predictions()
+
+    if pred_df.empty:
+        st.error("Table `meta_predictions` absente. Lance le notebook 05.")
+    else:
+        data_month = pred_df["data_month"].iloc[0] if len(pred_df) else "?"
+        st.info(f"Basé sur les données de **{data_month}** — prédiction pour le mois suivant.")
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Archetypes prédits", len(pred_df))
+        c2.metric("En hausse ↑", (pred_df["pred_direction"] == "↑").sum())
+        c3.metric("En baisse ↓", (pred_df["pred_direction"] == "↓").sum())
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.subheader("⬆️ En hausse prédite")
+            rising = pred_df[pred_df["pred_direction"] == "↑"].head(10)
+            fig_r = px.bar(
+                rising, x="pred_delta", y="archetype", orientation="h",
+                color="pred_delta", color_continuous_scale="Greens",
+                hover_data={"meta_score_current": ":.4f", "pred_meta_score": ":.4f"},
+                labels={"pred_delta": "Δprédit", "archetype": "Archetype"},
+                height=400,
+            )
+            fig_r.update_layout(coloraxis_showscale=False, yaxis={"categoryorder": "total ascending"})
+            st.plotly_chart(fig_r, use_container_width=True)
+
+        with col2:
+            st.subheader("⬇️ En baisse prédite")
+            falling = pred_df[pred_df["pred_direction"] == "↓"].sort_values("pred_delta").head(10)
+            fig_f = px.bar(
+                falling, x="pred_delta", y="archetype", orientation="h",
+                color="pred_delta", color_continuous_scale="Reds_r",
+                hover_data={"meta_score_current": ":.4f", "pred_meta_score": ":.4f"},
+                labels={"pred_delta": "Δprédit", "archetype": "Archetype"},
+                height=400,
+            )
+            fig_f.update_layout(coloraxis_showscale=False, yaxis={"categoryorder": "total ascending"})
+            st.plotly_chart(fig_f, use_container_width=True)
+
+        st.subheader("Toutes les prédictions")
+        disp = pred_df[["archetype", "meta_score_current", "pred_delta", "pred_meta_score", "pred_direction"]].copy()
+        disp.columns = ["Archetype", "Score actuel", "Δprédit", "Score prédit", "Direction"]
+        for c in ["Score actuel", "Δprédit", "Score prédit"]:
+            disp[c] = disp[c].round(4)
+        st.dataframe(disp, use_container_width=True, hide_index=True)
+
+
+# ─── Page : Signal précoce ────────────────────────────────────────────────────
+elif page == "🚨 Signal précoce":
+    st.title("🚨 Signal précoce — Nouvelles cartes")
+    st.markdown(
+        "Détecte les cartes qui vont exploser **avant** les decklists de tournoi.  \n"
+        "Score composite : **35% views_week** + **35% text synergy meta** + **30% OCG alert score**."
+    )
+
+    sig_df = load_early_signals()
+
+    if sig_df.empty:
+        st.error("Table `early_card_signals` absente. Lance le notebook 11.")
+    else:
+        top_n = st.slider("Top N cartes", 5, 30, 15)
+        sig_df_top = sig_df.head(top_n)
+
+        fig = px.bar(
+            sig_df_top, x="early_score_100", y="card_name", orientation="h",
+            color="signal_ocg",
+            color_continuous_scale="Reds",
+            text="early_score_100",
+            hover_data={"archetype": True, "views_week": True, "signal_text": ":.2f",
+                        "best_meta_match": True},
+            labels={"early_score_100": "Score /100", "card_name": "Carte", "signal_ocg": "Signal OCG"},
+            title=f"Top {top_n} cartes — Score d'alerte précoce",
+            height=max(400, top_n * 32),
+        )
+        fig.update_traces(texttemplate="%{text:.1f}", textposition="outside")
+        fig.update_layout(yaxis={"categoryorder": "total ascending"})
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Scatter views vs text synergy
+        st.subheader("Views vs Synérgie textuelle")
+        fig2 = px.scatter(
+            sig_df.head(50), x="signal_views", y="signal_text",
+            size="early_score_100", color="signal_ocg",
+            color_continuous_scale="Reds",
+            text="card_name",
+            hover_data={"archetype": True, "views_week": True, "early_score_100": True},
+            labels={"signal_views": "Signal views", "signal_text": "Signal texte", "signal_ocg": "OCG"},
+            height=500,
+        )
+        fig2.update_traces(textposition="top center")
+        st.plotly_chart(fig2, use_container_width=True)
+
+        st.subheader("Tableau complet")
+        disp = sig_df_top[["card_name", "archetype", "views_week", "signal_views",
+                             "signal_text", "signal_ocg", "early_score_100", "best_meta_match"]].copy()
+        disp.columns = ["Carte", "Archetype", "Views/sem", "Sig. Views",
+                        "Sig. Texte", "Sig. OCG", "Score /100", "Meilleur match méta"]
+        for c in ["Sig. Views", "Sig. Texte", "Sig. OCG"]:
+            disp[c] = disp[c].round(3)
+        st.dataframe(disp, use_container_width=True, hide_index=True)
+
+
+# ─── Page : Combos NLP ────────────────────────────────────────────────────────
+elif page == "🎮 Combos NLP":
+    st.title("🎮 Combos NLP — Extraits YouTube")
+    st.markdown(
+        "Combos extraits automatiquement depuis les transcripts YouTube (ASR + regex).  \n"
+        "Chaque arête = co-mention dans un guide combo. Poids = fréquence normalisée."
+    )
+
+    combo_df = load_combos()
+
+    if combo_df.empty:
+        st.error("Table `combo_edges_global` absente. Lance le notebook 08.")
+    else:
+        archetypes_combo = sorted(combo_df["archetype"].dropna().unique())
+        selected_arch = st.selectbox("Archetype", archetypes_combo,
+                                     index=archetypes_combo.index("Kewl Tune") if "Kewl Tune" in archetypes_combo else 0)
+
+        sub = combo_df[combo_df["archetype"] == selected_arch].sort_values("weight", ascending=False)
+
+        col1, col2 = st.columns([2, 1])
+
+        with col1:
+            top_n = st.slider("Top N combos", 5, 50, 20)
+            sub_top = sub.head(top_n)
+
+            fig = px.bar(
+                sub_top,
+                x="weight",
+                y=sub_top["card_a"] + " → " + sub_top["card_b"],
+                orientation="h",
+                color="weight",
+                color_continuous_scale="Viridis",
+                labels={"weight": "Poids", "y": "Combo"},
+                title=f"Top {top_n} combos — {selected_arch}",
+                height=max(400, top_n * 28),
+            )
+            fig.update_layout(yaxis={"categoryorder": "total ascending"}, coloraxis_showscale=False)
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            st.subheader("Stats")
+            st.metric("Combos uniques", len(sub))
+            st.metric("Cartes impliquées",
+                      pd.concat([sub["card_a"], sub["card_b"]]).nunique())
+            st.metric("Combo le plus fréquent", f"{sub.iloc[0]['card_a']} → {sub.iloc[0]['card_b']}" if len(sub) else "—")
+
+            st.subheader("Tableau")
+            disp = sub_top[["card_a", "card_b", "weight"]].copy()
+            disp.columns = ["Carte A", "Carte B", "Poids"]
+            disp["Poids"] = disp["Poids"].round(4)
+            st.dataframe(disp, use_container_width=True, hide_index=True)
+
+
+# ─── Page : Banlist historique ────────────────────────────────────────────────
+elif page == "📜 Banlist historique":
+    st.title("📜 Banlist historique TCG (2002 → 2026)")
+    st.markdown("Historique complet des 81 banlists TCG Advanced Format scrapées depuis Yugipedia.")
+
+    bl_df = load_banlist_history()
+
+    if bl_df.empty:
+        st.error("Table `banlist_history` absente. Lance le notebook 09.")
+    else:
+        col1, col2 = st.columns(2)
+
+        with col1:
+            # Recherche par carte
+            st.subheader("🔍 Historique d'une carte")
+            all_cards = sorted(bl_df["card_name"].unique())
+            selected_card = st.selectbox("Carte", all_cards,
+                                         index=all_cards.index("Maxx \"C\"") if "Maxx \"C\"" in all_cards else 0)
+
+            card_hist = bl_df[bl_df["card_name"] == selected_card].sort_values("effective_date")
+            if not card_hist.empty:
+                status_colors = {"Forbidden": "#e74c3c", "Limited": "#e67e22", "Semi-Limited": "#f1c40f"}
+                fig = px.scatter(
+                    card_hist, x="effective_date", y="status",
+                    color="status",
+                    color_discrete_map=status_colors,
+                    size=[10] * len(card_hist),
+                    hover_data={"list_name": True, "end_date": True},
+                    title=f"Historique banlist — {selected_card}",
+                    height=300,
+                )
+                fig.update_layout(yaxis_title="Statut", xaxis_title="Date")
+                st.plotly_chart(fig, use_container_width=True)
+                st.dataframe(
+                    card_hist[["effective_date", "end_date", "status", "list_name"]].rename(
+                        columns={"effective_date": "Début", "end_date": "Fin",
+                                 "status": "Statut", "list_name": "Banlist"}
+                    ),
+                    use_container_width=True, hide_index=True
+                )
+
+        with col2:
+            # Cartes les plus souvent bannies
+            st.subheader("🏆 Cartes les + longtemps Forbidden")
+            forever = (bl_df[bl_df["status"] == "Forbidden"]
+                       .groupby("card_name").size()
+                       .reset_index(name="n_banlists")
+                       .sort_values("n_banlists", ascending=False)
+                       .head(15))
+            fig2 = px.bar(
+                forever, x="n_banlists", y="card_name", orientation="h",
+                color="n_banlists", color_continuous_scale="Reds",
+                labels={"n_banlists": "Nb banlists Forbidden", "card_name": "Carte"},
+                title="Top 15 cartes Forbidden (historique)",
+                height=450,
+            )
+            fig2.update_layout(yaxis={"categoryorder": "total ascending"}, coloraxis_showscale=False)
+            st.plotly_chart(fig2, use_container_width=True)
+
+        st.subheader("📅 Dernière banlist (May 2026)")
+        latest_date = bl_df["effective_date"].max()
+        latest = bl_df[bl_df["effective_date"] == latest_date].sort_values("status")
+        st.info(f"Banlist active depuis **{latest_date.date()}** — {len(latest)} cartes restreintes")
+
+        c1, c2, c3 = st.columns(3)
+        for col, status in zip([c1, c2, c3], ["Forbidden", "Limited", "Semi-Limited"]):
+            sub = latest[latest["status"] == status]["card_name"].tolist()
+            col.markdown(f"**{status}** ({len(sub)})")
+            col.markdown("\n".join(f"- {c}" for c in sub[:20]))
+            if len(sub) > 20:
+                col.caption(f"... et {len(sub)-20} autres")
+
+
 # ─── Page : Graphe synergies ──────────────────────────────────────────────────
 elif page == "🕸️ Graphe synergies":
     st.title("🕸️ Graphe de co-occurrence")
-    st.markdown(
-        "Visualise les cartes qui apparaissent ensemble dans les decks gagnants. "
-        "Chaque arête = Jaccard pondéré > seuil."
-    )
+    st.markdown("Cartes qui apparaissent ensemble dans les decks gagnants. Arête = Jaccard pondéré.")
 
     graph_dir = os.path.join(os.path.dirname(__file__), "data")
     graph_files = {
-        os.path.splitext(f)[0].replace("graph_", "").capitalize(): os.path.join(graph_dir, f)
-        for f in os.listdir(graph_dir) if f.startswith("graph_") and f.endswith(".html")
+        os.path.splitext(f)[0].replace("graph_", "").replace("_", " ").title(): os.path.join(graph_dir, f)
+        for f in sorted(os.listdir(graph_dir)) if f.startswith("graph_") and f.endswith(".html")
     }
 
     if graph_files:
@@ -275,153 +495,43 @@ elif page == "🕸️ Graphe synergies":
             html_content = fh.read()
         st.components.v1.html(html_content, height=700, scrolling=False)
     else:
-        st.warning("Aucun graphe HTML trouvé dans data/. Lance le notebook 03 pour les générer.")
+        st.warning("Aucun graphe HTML trouvé dans data/. Lance le notebook 03.")
 
 
 # ─── Page : Simulateur ban ────────────────────────────────────────────────────
 elif page == "🚫 Simulateur ban":
     st.title("🚫 Simulateur de ban")
-    st.markdown(
-        "Sélectionne une carte bannie/limitée pour voir l'impact estimé "
-        "sur le `meta_score` des archetypes affectés."
-    )
+    st.markdown("Estime l'impact d'un ban sur le `meta_score` des archetypes affectés.")
+
+    ban_df = load_ban_impact()
 
     if ban_df.empty:
         st.error("Table `ban_impact` absente. Lance le notebook 06.")
     else:
-        cards_with_impact = ban_df.dropna(subset=["delta_meta_score"]).sort_values(
-            "peak_usage", ascending=False
-        )
-
-        col1, col2 = st.columns(2)
-        with col1:
-            selected_card = st.selectbox(
-                "Carte bannie/limitée",
-                cards_with_impact["card"].tolist(),
-            )
-
-        row = cards_with_impact[cards_with_impact["card"] == selected_card].iloc[0]
-
-        with col2:
-            st.metric("Statut", row["ban_status"])
+        cards_w = ban_df.dropna(subset=["delta_meta_score"]).sort_values("peak_usage", ascending=False)
+        selected_card = st.selectbox("Carte", cards_w["card"].tolist())
+        row = cards_w[cards_w["card"] == selected_card].iloc[0]
 
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Mois de ban inféré", row["ban_month_inferred"])
-        c2.metric("Peak usage", int(row["peak_usage"]), help="Nb max de decks utilisant la carte en un mois")
-        c3.metric("Archetype principal", row["top_archetype"])
+        c1.metric("Statut", row["ban_status"])
+        c2.metric("Mois de ban", row["ban_month_inferred"])
+        c3.metric("Peak usage", int(row["peak_usage"]))
         delta = row["delta_meta_score"]
         c4.metric("Δmeta_score", f"{delta:+.4f}", delta_color="normal" if delta >= 0 else "inverse")
 
-        st.markdown("---")
-        st.markdown(f"**Interprétation :** Le ban de **{selected_card}** est associé à un Δmeta_score de `{delta:+.4f}` "
-                    f"sur l'archetype **{row['top_archetype']}**. "
-                    + ("L'archetype a décliné après le ban. ⬇️" if delta < 0 else "L'archetype a résisté ou profité du contexte. ↗️"))
+        st.markdown(f"**Archetype principal :** {row['top_archetype']}  \n"
+                    + ("Déclin post-ban ⬇️" if delta < 0 else "Résistance ou bénéfice ↗️"))
 
-        # Top 10 bans par impact négatif
-        st.subheader("Top bans les plus impactants (Δmeta_score le plus négatif)")
+        st.markdown("---")
+        st.subheader("Top bans les plus impactants")
         worst = ban_df.dropna(subset=["delta_meta_score"]).sort_values("delta_meta_score").head(10)
         fig = px.bar(
             worst, x="delta_meta_score", y="card", orientation="h",
             color="delta_meta_score",
             color_continuous_scale=["#e74c3c", "#e67e22", "#f1c40f"],
             labels={"delta_meta_score": "Δmeta_score", "card": "Carte"},
-            title="Impact des bans sur le meta_score de l'archetype principal",
+            title="Impact des bans (Δmeta_score le plus négatif)",
             height=400,
         )
         fig.update_layout(yaxis={"categoryorder": "total ascending"}, coloraxis_showscale=False)
         st.plotly_chart(fig, use_container_width=True)
-
-
-# ─── Page : Cartes bridge ─────────────────────────────────────────────────────
-elif page == "🌉 Cartes bridge":
-    st.title("🌉 Cartes bridge")
-    st.markdown(
-        "Une carte bridge est une carte qui s'insère dans **plusieurs archetypes distincts** "
-        "peu après sa release. `Bridge Score = n_archetypes × log(total_decks_3m)`."
-    )
-
-    if card_df.empty:
-        st.error("Table `card_impact` absente. Lance le notebook 06.")
-    else:
-        top_n = st.slider("Top N cartes", 5, 35, 15)
-        top = card_df.head(top_n)
-
-        fig = px.bar(
-            top, x="bridge_score", y="card_name", orientation="h",
-            color="n_archetypes_3m",
-            color_continuous_scale="Blues",
-            labels={"bridge_score": "Bridge Score", "card_name": "Carte", "n_archetypes_3m": "Nb archetypes"},
-            hover_data={"release_month": True, "top_archetype": True, "total_decks_3m": True},
-            title=f"Top {top_n} cartes bridge (90j post-release)",
-            height=max(400, top_n * 30),
-        )
-        fig.update_layout(yaxis={"categoryorder": "total ascending"})
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.dataframe(
-            top[["card_name", "release_month", "n_archetypes_3m", "total_decks_3m", "bridge_score", "top_archetype"]].rename(
-                columns={"card_name": "Carte", "release_month": "Release", "n_archetypes_3m": "Archetypes (3m)",
-                         "total_decks_3m": "Decks (3m)", "bridge_score": "Bridge Score", "top_archetype": "Archetype principal"}
-            ),
-            use_container_width=True, hide_index=True
-        )
-
-
-# ─── Page : Prédictions ───────────────────────────────────────────────────────
-elif page == "🔮 Prédictions":
-    st.title("🔮 Prédictions — Mois prochain")
-    st.markdown(
-        "Prédictions `meta_score` du mois prochain via **Random Forest** (notebook 05). "
-        "⚠️ R² négatif sur le test set — à interpréter comme signal relatif, pas valeur absolue."
-    )
-
-    with st.spinner("Calcul des prédictions…"):
-        pred_df = load_predictions()
-
-    if pred_df.empty:
-        st.error("scikit-learn non disponible ou données insuffisantes.")
-    else:
-        last_month = ms_df["month"].max()
-        st.info(f"Prédiction pour le mois suivant : **{last_month + 1}** (basé sur les données de {last_month})")
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.subheader("⬆️ Archetypes en hausse prédite")
-            rising = pred_df[pred_df["delta_predicted"] > 0].head(8)
-            fig_r = px.bar(
-                rising, x="delta_predicted", y="archetype", orientation="h",
-                color="delta_predicted", color_continuous_scale="Greens",
-                labels={"delta_predicted": "Δprédit", "archetype": "Archetype"},
-                height=350,
-            )
-            fig_r.update_layout(coloraxis_showscale=False,
-                                yaxis={"categoryorder": "total ascending"})
-            st.plotly_chart(fig_r, use_container_width=True)
-
-        with col2:
-            st.subheader("⬇️ Archetypes en baisse prédite")
-            falling = pred_df[pred_df["delta_predicted"] < 0].tail(8).sort_values("delta_predicted")
-            fig_f = px.bar(
-                falling, x="delta_predicted", y="archetype", orientation="h",
-                color="delta_predicted", color_continuous_scale="Reds_r",
-                labels={"delta_predicted": "Δprédit", "archetype": "Archetype"},
-                height=350,
-            )
-            fig_f.update_layout(coloraxis_showscale=False,
-                                yaxis={"categoryorder": "total ascending"})
-            st.plotly_chart(fig_f, use_container_width=True)
-
-        st.subheader("Toutes les prédictions")
-        pred_display = pred_df.copy()
-        pred_display["meta_score"] = pred_display["meta_score"].round(4)
-        pred_display["predicted_next"] = pred_display["predicted_next"].round(4)
-        pred_display["delta_predicted"] = pred_display["delta_predicted"].round(4)
-        pred_display.columns = ["Archetype", "Score actuel", "Score prédit", "Δprédit"]
-        st.dataframe(pred_display, use_container_width=True, hide_index=True)
-
-        st.caption(
-            "Modèle : RandomForest (n_estimators=200, max_depth=5). "
-            "Features : meta_score, share, avg_placement. "
-            "Limitation : R²≈-37 sur test 2026 (distribution shift 2024→2026)."
-        )

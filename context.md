@@ -130,10 +130,13 @@ Le produit doit permettre de :
 - **Blacklist** : 64 termes (faux positifs anglais + noms ambigus)
 - **ASR_CORRECTIONS** : `{'Cool Tune' → 'Kewl Tune'}` — YouTube auto-transcrit mal les noms YGO
 - **ARCHETYPE_NICKNAMES** : expansion des abréviations orales par archetype (ex: "Mix" → "Kewl Tune Mix")
-- **Résultats validés — Kewl Tune (ct9CxAYU5ZM, 41min)** : 161 mentions, 20 cartes, 24 combos, 44 arêtes
-  - Top starters : Kewl Tune Mix (×35), Rotary (×29), Fydraulis Harmonia (×23), Clip (×17)
-  - Combo principal : Mix → Remix → Track Maker (flux central détecté)
-- **Leçon clé** : sans normalisation, seulement 20 mentions (×8 moins) — `ARCHETYPE_NICKNAMES` est indispensable
+- **Résultats — 1 vidéo (ct9CxAYU5ZM, 41min)** : 161 mentions, 20 cartes, 24 combos, 44 arêtes
+- **Résultats — 3 vidéos agrégées (TOK-28)** : 528 mentions, 38 cartes, 66 combos, 37 nœuds, 117 arêtes
+  - Table `combo_edges_global` : poids statistiquement fiables sur 3 vidéos
+  - Combo central : Mix→Remix (×20), Mix→Clip (×17), Remix→Mix (×12), Clip→Mix (×11)
+  - Boss monster flow : Red Nova → Rotary (×5) après la montée Synchro
+  - Handtrap line : Remix→Called by the Grave (×3)
+- **Leçon clé** : sans normalisation ASR, seulement 20 mentions (×8 moins)
 
 ---
 

@@ -124,11 +124,16 @@ Le produit doit permettre de :
 - 6 pages : Tier List, Évolution temporelle, Graphe synergies, Simulateur ban, Cartes bridge, Prédictions RF
 - Lancement : `streamlit run app.py` ou `bash run.sh`
 
-### NLP Combos (notebooks/08_nlp_combos.ipynb)
-- `youtube_transcript_api` v1.x, matching sur 13 791 noms de cartes
-- Graphe orienté A→B→C, tables `combo_mentions`, `combo_edges`
-- **Blacklist à appliquer** : `{'NEXT', 'Fine', 'Return', 'Question', 'Last Turn', 'Honest', 'Typhoon', 'Recycle'}`
-- **Prochaine étape NLP** : vidéos combo guide (ex: "Kewl Tune combo guide 2026")
+### NLP Combos (notebooks/08_nlp_combos.ipynb) ✅ TOK-26 + TOK-27
+- `youtube_transcript_api` v1.x, matching sur 13 777 noms de cartes (blacklist 64 termes)
+- Graphe orienté A→B→C, tables `combo_mentions`, `combo_edges` (idempotent par video_id)
+- **Blacklist** : 64 termes (faux positifs anglais + noms ambigus)
+- **ASR_CORRECTIONS** : `{'Cool Tune' → 'Kewl Tune'}` — YouTube auto-transcrit mal les noms YGO
+- **ARCHETYPE_NICKNAMES** : expansion des abréviations orales par archetype (ex: "Mix" → "Kewl Tune Mix")
+- **Résultats validés — Kewl Tune (ct9CxAYU5ZM, 41min)** : 161 mentions, 20 cartes, 24 combos, 44 arêtes
+  - Top starters : Kewl Tune Mix (×35), Rotary (×29), Fydraulis Harmonia (×23), Clip (×17)
+  - Combo principal : Mix → Remix → Track Maker (flux central détecté)
+- **Leçon clé** : sans normalisation, seulement 20 mentions (×8 moins) — `ARCHETYPE_NICKNAMES` est indispensable
 
 ---
 
@@ -247,10 +252,9 @@ yugioh-meta-analyzer/
 ---
 
 ## Prochaines priorités (backlog)
-1. **P1-B** — NLP sur texte des effets `desc` (synergies textuelles, notebook 07)
-2. **P2-H** — Co-occurrence sur fenêtre glissante 90j
-3. **P2-Q** — Récupérer la tier list yugiohmeta.com
-4. **P3-R** — Features lag temporelles pour corriger le R²≈-37
-5. **P4-W** — Appliquer la blacklist NLP dans notebook 08
+1. **P2-H (TOK-11)** — Co-occurrence sur fenêtre glissante 90j
+2. **P2-Q** — Récupérer la tier list yugiohmeta.com
+3. **P3-R (TOK-21)** — Features lag temporelles pour corriger le R²≈-37
+4. **P4-Y (TOK-28)** — Pipeline NLP multi-vidéos / chaîne YouTube entière
 
 *Dernière mise à jour : juin 2026*

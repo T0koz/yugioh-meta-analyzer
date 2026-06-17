@@ -66,6 +66,27 @@ def load_early_signals():
         return pd.DataFrame()
 
 @st.cache_data(ttl=300)
+def load_buy_signals():
+    try:
+        return pd.read_sql_query(
+            "SELECT * FROM boutique_buy_signals ORDER BY buy_score_100 DESC",
+            db()
+        )
+    except Exception:
+        return pd.DataFrame()
+
+@st.cache_data(ttl=300)
+def load_price_history():
+    try:
+        return pd.read_sql_query(
+            "SELECT card_name, snapshot_date, cardmarket_price, tcgplayer_price "
+            "FROM card_price_history ORDER BY snapshot_date",
+            db(), parse_dates=["snapshot_date"]
+        )
+    except Exception:
+        return pd.DataFrame()
+
+@st.cache_data(ttl=300)
 def load_combos():
     try:
         return pd.read_sql_query(
@@ -119,6 +140,7 @@ page = st.sidebar.radio("Navigation", [
     "📈 Évolution",
     "🔮 Prédictions",
     "🚨 Signal précoce",
+    "🛒 Signal boutique",
     "🎮 Combos NLP",
     "📜 Banlist historique",
     "🕸️ Graphe synergies",
@@ -349,6 +371,136 @@ elif page == "🚨 Signal précoce":
                         "Sig. Texte", "Sig. OCG", "Score /100", "Meilleur match méta"]
         for c in ["Sig. Views", "Sig. Texte", "Sig. OCG"]:
             disp[c] = disp[c].round(3)
+        st.dataframe(disp, use_container_width=True, hide_index=True)
+
+
+# ─── Page : Signal boutique ───────────────────────────────────────────────────
+elif page == "🛒 Signal boutique":
+    st.title("🛒 Signal boutique — Cartes à acheter maintenant")
+    st.markdown(
+        "Score composite **60% signal OCG** + **40% prix bas** — identifie les cartes "
+        "core des archetypes émergents encore bon marché avant l'explosion TCG.  \n"
+        "Prix mis à jour quotidiennement (Cardmarket). Snapshot : `python scripts/snapshot_prices.py`"
+    )
+
+    buy_df   = load_buy_signals()
+    hist_df  = load_price_history()
+
+    if buy_df.empty:
+        st.error("Table `boutique_buy_signals` absente.")
+    else:
+        computed = buy_df["computed_at"].iloc[0] if "computed_at" in buy_df.columns else "?"
+        st.caption(f"Calculé le {computed}")
+
+        # ── KPIs ──
+        k1, k2, k3, k4 = st.columns(4)
+        fire   = buy_df[buy_df["buy_label"] == "🔥 Acheter maintenant"]
+        good   = buy_df[buy_df["buy_label"] == "✅ Bon signal"]
+        cheap  = buy_df[buy_df["cm_price"] <= 1.0]
+        k1.metric("🔥 Acheter maintenant", len(fire))
+        k2.metric("✅ Bon signal", len(good))
+        k3.metric("Prix < 1€ avec signal", len(cheap[cheap["card_alert_score"] > 1.5]))
+        k4.metric("Archetypes couverts", buy_df["archetype"].nunique())
+
+        st.markdown("---")
+
+        # ── Filtre archetype ──
+        archs = ["Tous"] + sorted(buy_df["archetype"].unique())
+        sel_arch = st.selectbox("Filtrer par archetype", archs)
+        if sel_arch != "Tous":
+            view = buy_df[buy_df["archetype"] == sel_arch]
+        else:
+            view = buy_df
+
+        top_n = st.slider("Top N cartes", 10, 50, 20)
+        view_top = view.head(top_n)
+
+        # ── Graphe principal ──
+        fig = px.bar(
+            view_top,
+            x="buy_score_100",
+            y="card_name",
+            color="buy_label",
+            color_discrete_map={
+                "🔥 Acheter maintenant": "#e74c3c",
+                "✅ Bon signal":         "#2ecc71",
+                "👀 À surveiller":       "#f1c40f",
+                "⏸️ Attendre":           "#95a5a6",
+            },
+            text="cm_price",
+            hover_data={
+                "archetype": True,
+                "card_alert_score": ":.3f",
+                "cm_price": ":.2f",
+                "tcg_entry_estimated": True,
+            },
+            labels={"buy_score_100": "Buy Score /100", "card_name": "Carte", "cm_price": "Prix CM (€)"},
+            title=f"Top {top_n} cartes — Signal boutique",
+            orientation="h",
+            height=max(450, top_n * 30),
+        )
+        fig.update_traces(texttemplate="%{text:.2f}€", textposition="outside")
+        fig.update_layout(yaxis={"categoryorder": "total ascending"}, legend_title="Signal")
+        st.plotly_chart(fig, use_container_width=True)
+
+        # ── Scatter prix vs signal ──
+        st.subheader("Prix actuel vs Force du signal OCG")
+        fig2 = px.scatter(
+            view,
+            x="cm_price",
+            y="card_alert_score",
+            color="buy_label",
+            color_discrete_map={
+                "🔥 Acheter maintenant": "#e74c3c",
+                "✅ Bon signal":         "#2ecc71",
+                "👀 À surveiller":       "#f1c40f",
+                "⏸️ Attendre":           "#95a5a6",
+            },
+            size="buy_score_100",
+            text="card_name",
+            hover_data={"archetype": True, "buy_score_100": True, "tcg_entry_estimated": True},
+            labels={"cm_price": "Prix Cardmarket (€)", "card_alert_score": "Signal OCG"},
+            title="Idéal = en haut à gauche (fort signal, prix bas)",
+            log_x=True,
+            height=500,
+        )
+        fig2.update_traces(textposition="top center")
+        # Quadrant lines
+        fig2.add_vline(x=1.0, line_dash="dash", line_color="gray", opacity=0.5)
+        fig2.add_hline(y=view["card_alert_score"].median(),
+                       line_dash="dash", line_color="gray", opacity=0.5)
+        st.plotly_chart(fig2, use_container_width=True)
+
+        # ── Suivi prix ──
+        if not hist_df.empty:
+            st.subheader("📈 Suivi des prix dans le temps")
+            cards_with_hist = hist_df["card_name"].unique()
+            sel_cards = st.multiselect(
+                "Cartes à suivre",
+                list(cards_with_hist),
+                default=list(cards_with_hist[:5]),
+            )
+            if sel_cards:
+                ph = hist_df[hist_df["card_name"].isin(sel_cards)]
+                fig3 = px.line(
+                    ph, x="snapshot_date", y="cardmarket_price",
+                    color="card_name", markers=True,
+                    labels={"snapshot_date": "Date", "cardmarket_price": "Prix CM (€)", "card_name": "Carte"},
+                    title="Évolution du prix Cardmarket",
+                    height=400,
+                )
+                st.plotly_chart(fig3, use_container_width=True)
+            else:
+                st.info("Accumule des snapshots quotidiens pour voir les courbes de prix.")
+
+        # ── Table complète ──
+        st.subheader("Tableau complet")
+        disp = view_top[["buy_label", "card_name", "archetype", "cm_price", "tcp_price",
+                          "card_alert_score", "buy_score_100", "tcg_entry_estimated"]].copy()
+        disp.columns = ["Signal", "Carte", "Archetype", "CM (€)", "TCP ($)",
+                        "Alert Score", "Buy /100", "Entrée TCG estimée"]
+        for c in ["CM (€)", "TCP ($)", "Alert Score"]:
+            disp[c] = disp[c].round(2)
         st.dataframe(disp, use_container_width=True, hide_index=True)
 
 

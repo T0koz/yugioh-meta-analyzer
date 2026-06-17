@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 700px;
+                 background-color: #1a1a2e;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#e94560", "font": {"color": "white"}, "id": "Albion the Branded Dragon", "label": "Albion the Branded Dragon", "shape": "dot", "size": 20, "title": "Albion the Branded Dragon"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Fallen of Albaz", "label": "Fallen of Albaz", "shape": "dot", "size": 12, "title": "Fallen of Albaz"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Lost", "label": "Branded Lost", "shape": "dot", "size": 20, "title": "Branded Lost"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded in White", "label": "Branded in White", "shape": "dot", "size": 20, "title": "Branded in White"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "D/D Vice Typhon", "label": "D/D Vice Typhon", "shape": "dot", "size": 12, "title": "D/D Vice Typhon"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Expulsion", "label": "Branded Expulsion", "shape": "dot", "size": 20, "title": "Branded Expulsion"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Bond", "label": "Branded Bond", "shape": "dot", "size": 20, "title": "Branded Bond"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Fusion", "label": "Branded Fusion", "shape": "dot", "size": 20, "title": "Branded Fusion"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Brightest, Blazing, Branded King", "label": "Brightest, Blazing, Brand\u2026", "shape": "dot", "size": 20, "title": "Brightest, Blazing, Branded King"}, {"color": "#e94560", "font": {"color": "white"}, "id": "The Fallen \u0026amp; The Virtuous", "label": "The Fallen \u0026amp; The Virt\u2026", "shape": "dot", "size": 20, "title": "The Fallen \u0026amp; The Virtuous"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Screams of the Branded", "label": "Screams of the Branded", "shape": "dot", "size": 20, "title": "Screams of the Branded"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded in Red", "label": "Branded in Red", "shape": "dot", "size": 20, "title": "Branded in Red"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded in High Spirits", "label": "Branded in High Spirits", "shape": "dot", "size": 20, "title": "Branded in High Spirits"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Retribution", "label": "Branded Retribution", "shape": "dot", "size": 20, "title": "Branded Retribution"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Loss", "label": "Branded Loss", "shape": "dot", "size": 20, "title": "Branded Loss"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Light of the Branded", "label": "Light of the Branded", "shape": "dot", "size": 20, "title": "Light of the Branded"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Judgment of the Branded", "label": "Judgment of the Branded", "shape": "dot", "size": 20, "title": "Judgment of the Branded"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Banishment", "label": "Branded Banishment", "shape": "dot", "size": 20, "title": "Branded Banishment"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Regained", "label": "Branded Regained", "shape": "dot", "size": 20, "title": "Branded Regained"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Disposable Learner Device", "label": "Disposable Learner Device", "shape": "dot", "size": 12, "title": "Disposable Learner Device"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "The White Stone of Ancients", "label": "The White Stone of Ancien\u2026", "shape": "dot", "size": 12, "title": "The White Stone of Ancients"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Red-Eyes Fusion", "label": "Red-Eyes Fusion", "shape": "dot", "size": 12, "title": "Red-Eyes Fusion"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "El Shaddoll Fusion", "label": "El Shaddoll Fusion", "shape": "dot", "size": 12, "title": "El Shaddoll Fusion"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Rahu Dracotail", "label": "Rahu Dracotail", "shape": "dot", "size": 12, "title": "Rahu Dracotail"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded in Central Dogmatika", "label": "Branded in Central Dogmat\u2026", "shape": "dot", "size": 20, "title": "Branded in Central Dogmatika"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Magical Meltdown", "label": "Magical Meltdown", "shape": "dot", "size": 12, "title": "Magical Meltdown"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Dragonroid", "label": "Dragonroid", "shape": "dot", "size": 12, "title": "Dragonroid"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Disciple", "label": "Branded Disciple", "shape": "dot", "size": 20, "title": "Branded Disciple"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Frightfur Fusion", "label": "Frightfur Fusion", "shape": "dot", "size": 12, "title": "Frightfur Fusion"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Magicalized Fusion", "label": "Magicalized Fusion", "shape": "dot", "size": 12, "title": "Magicalized Fusion"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Miracle Fusion", "label": "Miracle Fusion", "shape": "dot", "size": 12, "title": "Miracle Fusion"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Dragon\u0027s Mirror", "label": "Dragon\u0027s Mirror", "shape": "dot", "size": 12, "title": "Dragon\u0027s Mirror"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Absorb Fusion", "label": "Absorb Fusion", "shape": "dot", "size": 12, "title": "Absorb Fusion"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Overload Fusion", "label": "Overload Fusion", "shape": "dot", "size": 12, "title": "Overload Fusion"}, {"color": "#e94560", "font": {"color": "white"}, "id": "Branded Opening", "label": "Branded Opening", "shape": "dot", "size": 20, "title": "Branded Opening"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Evil Assault", "label": "Evil Assault", "shape": "dot", "size": 12, "title": "Evil Assault"}, {"color": "#0f3460", "font": {"color": "white"}, "id": "Predapractice", "label": "Predapractice", "shape": "dot", "size": 12, "title": "Predapractice"}]);
+                  edges = new vis.DataSet([{"from": "Albion the Branded Dragon", "to": "Fallen of Albaz", "width": 0.5}, {"from": "Albion the Branded Dragon", "to": "Branded Lost", "width": 0.25}, {"from": "Albion the Branded Dragon", "to": "Branded in White", "width": 0.2264}, {"from": "Albion the Branded Dragon", "to": "D/D Vice Typhon", "width": 0.1508}, {"from": "Fallen of Albaz", "to": "Branded Expulsion", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded Bond", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded Fusion", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Brightest, Blazing, Branded King", "width": 0.5}, {"from": "Fallen of Albaz", "to": "The Fallen \u0026amp; The Virtuous", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Screams of the Branded", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded in White", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded in Red", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded in High Spirits", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded Retribution", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded Lost", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Branded Loss", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Light of the Branded", "width": 0.5}, {"from": "Fallen of Albaz", "to": "Judgment of the Branded", "width": 0.5}, {"from": "Branded Expulsion", "to": "Branded Banishment", "width": 0.1667}, {"from": "Branded Expulsion", "to": "Branded Loss", "width": 0.1667}, {"from": "Branded Expulsion", "to": "Branded Fusion", "width": 0.1667}, {"from": "Branded Bond", "to": "Screams of the Branded", "width": 0.3759}, {"from": "Branded Bond", "to": "Branded Regained", "width": 0.1667}, {"from": "Branded Bond", "to": "Disposable Learner Device", "width": 0.1525}, {"from": "Branded Bond", "to": "The White Stone of Ancients", "width": 0.1517}, {"from": "Branded Fusion", "to": "Branded Loss", "width": 0.25}, {"from": "Branded Fusion", "to": "Branded Banishment", "width": 0.25}, {"from": "Branded Fusion", "to": "Screams of the Branded", "width": 0.1667}, {"from": "Branded Fusion", "to": "Light of the Branded", "width": 0.1667}, {"from": "Branded Fusion", "to": "Red-Eyes Fusion", "width": 0.164}, {"from": "Branded Fusion", "to": "El Shaddoll Fusion", "width": 0.1632}, {"from": "Branded Fusion", "to": "Rahu Dracotail", "width": 0.1578}, {"from": "Brightest, Blazing, Branded King", "to": "Branded in High Spirits", "width": 0.2779}, {"from": "Screams of the Branded", "to": "Judgment of the Branded", "width": 0.2701}, {"from": "Screams of the Branded", "to": "Branded in White", "width": 0.2388}, {"from": "Screams of the Branded", "to": "Branded Loss", "width": 0.1667}, {"from": "Screams of the Branded", "to": "Branded Banishment", "width": 0.1667}, {"from": "Screams of the Branded", "to": "Branded in Central Dogmatika", "width": 0.15}, {"from": "Branded Lost", "to": "Magical Meltdown", "width": 0.1831}, {"from": "Branded Lost", "to": "Dragonroid", "width": 0.1675}, {"from": "Branded Loss", "to": "Branded Banishment", "width": 0.25}, {"from": "Branded Loss", "to": "Light of the Branded", "width": 0.1667}, {"from": "Light of the Branded", "to": "Branded Banishment", "width": 0.1667}, {"from": "Judgment of the Branded", "to": "Branded Disciple", "width": 0.1875}, {"from": "Branded Banishment", "to": "Frightfur Fusion", "width": 0.1616}, {"from": "Branded Banishment", "to": "Magicalized Fusion", "width": 0.1598}, {"from": "Branded Banishment", "to": "Miracle Fusion", "width": 0.157}, {"from": "Branded Banishment", "to": "Dragon\u0027s Mirror", "width": 0.1538}, {"from": "Branded Banishment", "to": "Absorb Fusion", "width": 0.1532}, {"from": "Branded Banishment", "to": "Overload Fusion", "width": 0.1511}, {"from": "Branded Opening", "to": "Evil Assault", "width": 0.161}, {"from": "Branded Opening", "to": "Predapractice", "width": 0.1502}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"forceAtlas2Based": {"springLength": 120}, "solver": "forceAtlas2Based"}, "edges": {"smooth": {"type": "continuous"}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

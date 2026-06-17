@@ -132,6 +132,23 @@ Le produit doit permettre de :
 
 ---
 
+## NLP texte des effets ✅ — TOK-6 (notebooks/07_nlp_text_synergies.ipynb)
+
+- **3 signaux** : références explicites entre cartes (guillemets), tags mécaniques (Banish/Negate/Tuner…), TF-IDF cosine similarity
+- **Score composite** : `0.5 × ref_score + 0.25 × kw_jaccard + 0.25 × tfidf_sim`
+- Tables DB : `text_synergies` (55 072 paires), `card_mechanic_tags` (13 797 cartes taguées)
+- Graphes HTML : `data/graph_text_kewl_tune.html`, `graph_text_branded.html`, `graph_text_tenpai_dragon.html`
+
+## Signal précoce nouvelles cartes ✅ — TOK-5 + TOK-6 + SB-Z (notebooks/11_early_card_signal.ipynb)
+
+- **Formule** : `early_score = 0.35 × signal_views + 0.35 × signal_text + 0.30 × signal_ocg`
+- Scope : cartes TCG sorties depuis jan 2026 OU OCG depuis juin 2025 (467 cartes)
+- **Bug à éviter** : `ban_tcg IS NULL` = carte légale en SQLite — ne pas utiliser `!= 'Forbidden'` seul
+- Table DB : `early_card_signals` (467 lignes, recomputer périodiquement)
+- Résultats juin 2026 : Kewl Tune domine (triple signal), Elfnote #2, Nervedo Power Patron détecté via text_synergy seul
+
+---
+
 ## Signal boutiques ✅ — SB-Z
 
 **Score d'alerte (notebooks/10_boutique_alert_score.ipynb)**

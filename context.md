@@ -108,10 +108,13 @@ Le produit doit permettre de :
 - Table `archetype_trend` : 86 archetypes avec trend_ratio
 - Résultats clés : DoomZ trend_ratio 4.217, Blue-Eyes pic fév 2025 puis disparu
 
-**Modèle prédictif (notebooks/05_meta_prediction.ipynb)**
-- 3 modèles (Ridge, RF, GB), R² ≈ -37 à -41 → distribution shift 2024→2026
-- Feature importance : avg_placement (42%), share (33%), meta_score (15%)
-- À corriger : features lag temporelles (P3-R), banlist historique (P3-V)
+**Modèle prédictif (notebooks/05_meta_prediction.ipynb) ✅ TOK-21**
+- Walk-forward CV (fenêtre glissante 9 mois) + Spearman ρ comme métrique principale
+- Features lag : T-1/T-2/T-3, delta_1m, accel, roll_mean_3m, rank_month (percentile)
+- **Découverte clé** : méta "sticky" — naïf "no change" = ρ +0.508 en 2026
+- Ensemble : 70% naïf + 30% Ridge(α=50, δ) → meilleur en walk-forward CV
+- Prédictions filtrées aux archetypes actifs dans les 4 derniers mois
+- Table DB : `meta_predictions` (score courant + delta prédit + direction)
 
 **Détection impact (notebooks/06_card_ban_impact.ipynb)**
 - `bridge_score`, `delta_meta_score` → tables `ban_impact`, `card_impact`

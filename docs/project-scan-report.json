@@ -1,0 +1,14 @@
+{
+  "workflow_version": "1.2.0",
+  "timestamps": {"started": "2026-06-19T09:00:00Z", "last_updated": "2026-06-19T09:00:00Z"},
+  "mode": "initial_scan",
+  "scan_level": "exhaustive",
+  "project_root": "/Users/thomascozian/code/yugioh-meta-analyzer",
+  "project_knowledge": "/Users/thomascozian/code/yugioh-meta-analyzer/docs",
+  "project_types": [{"part_id": "main", "project_type_id": "data", "display_name": "Data / ML Pipeline + Streamlit Dashboard"}],
+  "completed_steps": [],
+  "current_step": "step_1",
+  "findings": {},
+  "outputs_generated": ["project-scan-report.json"],
+  "resume_instructions": "Starting from step 1"
+}

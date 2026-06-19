@@ -22,28 +22,30 @@ DB_FILE    = Path("data/yugioh.db")
 # ── Schéma SQL ────────────────────────────────────────────────────────────────
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS cards (
-    id          INTEGER PRIMARY KEY,
-    name        TEXT NOT NULL,
-    type        TEXT,
-    frame_type  TEXT,
-    desc        TEXT,
-    archetype   TEXT,
-    atk         INTEGER,
-    def         INTEGER,
-    level       INTEGER,
-    race        TEXT,
-    attribute   TEXT,
-    link_val    INTEGER,
-    scale       INTEGER,
-    ban_tcg     TEXT,
-    ban_ocg     TEXT,
-    ban_goat    TEXT,
-    tcg_date    TEXT,
-    ocg_date    TEXT,
-    has_effect  INTEGER,
-    views       INTEGER,
-    views_week  INTEGER,
-    md_rarity   TEXT
+    id              INTEGER PRIMARY KEY,
+    name            TEXT NOT NULL,
+    type            TEXT,
+    frame_type      TEXT,
+    desc            TEXT,
+    archetype       TEXT,
+    atk             INTEGER,
+    def             INTEGER,
+    level           INTEGER,
+    race            TEXT,
+    attribute       TEXT,
+    link_val        INTEGER,
+    scale           INTEGER,
+    ban_tcg         TEXT,
+    ban_ocg         TEXT,
+    ban_goat        TEXT,
+    tcg_date        TEXT,
+    ocg_date        TEXT,
+    has_effect      INTEGER,
+    views           INTEGER,
+    views_week      INTEGER,
+    md_rarity       TEXT,
+    image_url       TEXT,
+    image_url_small TEXT
 );
 
 CREATE TABLE IF NOT EXISTS card_sets (
@@ -76,6 +78,7 @@ def insert_card(cur, card):
     banlist = card.get("banlist_info", {})
     misc_list = card.get("misc_info", [])
     misc = misc_list[0] if misc_list else {}
+    imgs = card.get("card_images", [{}])[0] if card.get("card_images") else {}
 
     cur.execute("""
         INSERT OR REPLACE INTO cards VALUES (
@@ -84,31 +87,34 @@ def insert_card(cur, card):
             :link_val, :scale,
             :ban_tcg, :ban_ocg, :ban_goat,
             :tcg_date, :ocg_date, :has_effect,
-            :views, :views_week, :md_rarity
+            :views, :views_week, :md_rarity,
+            :image_url, :image_url_small
         )
     """, {
-        "id":         card["id"],
-        "name":       card["name"],
-        "type":       card.get("type"),
-        "frame_type": card.get("frameType"),
-        "desc":       card.get("desc"),
-        "archetype":  card.get("archetype"),
-        "atk":        card.get("atk"),
-        "def":        card.get("def"),
-        "level":      card.get("level"),
-        "race":       card.get("race"),
-        "attribute":  card.get("attribute"),
-        "link_val":   card.get("linkval"),
-        "scale":      card.get("scale"),
-        "ban_tcg":    banlist.get("ban_tcg"),
-        "ban_ocg":    banlist.get("ban_ocg"),
-        "ban_goat":   banlist.get("ban_goat"),
-        "tcg_date":   misc.get("tcg_date"),
-        "ocg_date":   misc.get("ocg_date"),
-        "has_effect": misc.get("has_effect"),
-        "views":      misc.get("views"),
-        "views_week": misc.get("viewsweek"),
-        "md_rarity":  misc.get("md_rarity"),
+        "id":              card["id"],
+        "name":            card["name"],
+        "type":            card.get("type"),
+        "frame_type":      card.get("frameType"),
+        "desc":            card.get("desc"),
+        "archetype":       card.get("archetype"),
+        "atk":             card.get("atk"),
+        "def":             card.get("def"),
+        "level":           card.get("level"),
+        "race":            card.get("race"),
+        "attribute":       card.get("attribute"),
+        "link_val":        card.get("linkval"),
+        "scale":           card.get("scale"),
+        "ban_tcg":         banlist.get("ban_tcg"),
+        "ban_ocg":         banlist.get("ban_ocg"),
+        "ban_goat":        banlist.get("ban_goat"),
+        "tcg_date":        misc.get("tcg_date"),
+        "ocg_date":        misc.get("ocg_date"),
+        "has_effect":      misc.get("has_effect"),
+        "views":           misc.get("views"),
+        "views_week":      misc.get("viewsweek"),
+        "md_rarity":       misc.get("md_rarity"),
+        "image_url":       imgs.get("image_url"),
+        "image_url_small": imgs.get("image_url_small"),
     })
 
 def insert_sets(cur, card_id, sets):

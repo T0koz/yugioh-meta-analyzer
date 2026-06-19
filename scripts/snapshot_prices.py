@@ -1,13 +1,16 @@
 """
-Snapshot quotidien des prix Cardmarket/TCGPlayer pour les cartes boutique.
+Snapshot quotidien des prix Cardmarket/TCGPlayer pour toutes les cartes.
+Fetch bulk en 1 seul appel API (toutes les cartes à la fois).
 Lance depuis run.sh ou en cron : python scripts/snapshot_prices.py
 """
 
 import sqlite3, requests, datetime, time, os
-from urllib.parse import quote
 
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'yugioh.db')
 TODAY   = datetime.date.today().isoformat()
+API_URL = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
+HEADERS = {'User-Agent': 'Mozilla/5.0'}
+
 
 def run():
     con = sqlite3.connect(DB_PATH)
@@ -31,42 +34,40 @@ def run():
         con.close()
         return
 
-    # Cartes boutique + leur id
-    cards = con.execute("""
-        SELECT DISTINCT c.id, c.name
-        FROM boutique_card_alerts bca
-        JOIN cards c ON c.name = bca.card_name
-        ORDER BY c.name
-    """).fetchall()
+    print(f"[snapshot_prices] Fetch bulk toutes les cartes ({TODAY})…")
+    t0 = time.time()
+    try:
+        r = requests.get(API_URL, params={"misc": "yes", "format": "tcg"}, headers=HEADERS, timeout=60)
+        r.raise_for_status()
+        cards = r.json().get("data", [])
+    except Exception as e:
+        print(f"[snapshot_prices] Erreur API: {e}")
+        con.close()
+        return
 
-    print(f"[snapshot_prices] {len(cards)} cartes à pricer ({TODAY})")
-
-    rows    = []
-    errors  = 0
-    headers = {'User-Agent': 'Mozilla/5.0'}
-
-    for cid, cname in cards:
-        try:
-            url = f"https://db.ygoprodeck.com/api/v7/cardinfo.php?name={quote(cname)}"
-            r   = requests.get(url, headers=headers, timeout=15)
-            if r.status_code != 200:
-                errors += 1
-                continue
-            data   = r.json().get("data", [{}])[0]
-            prices = data.get("card_prices", [{}])[0] if data.get("card_prices") else {}
-            cm  = float(prices.get("cardmarket_price", 0) or 0)
-            tcp = float(prices.get("tcgplayer_price",  0) or 0)
-            rows.append((cid, cname, TODAY, cm, tcp))
-            time.sleep(0.15)
-        except Exception as e:
-            errors += 1
+    rows = []
+    for card in cards:
+        prices = card.get("card_prices", [{}])[0] if card.get("card_prices") else {}
+        cm  = _safe_float(prices.get("cardmarket_price"))
+        tcp = _safe_float(prices.get("tcgplayer_price"))
+        if cm is not None or tcp is not None:
+            rows.append((card["id"], card["name"], TODAY, cm, tcp))
 
     con.executemany(
         "INSERT OR IGNORE INTO card_price_history VALUES (?,?,?,?,?)", rows
     )
     con.commit()
-    print(f"[snapshot_prices] {len(rows)} prix sauvegardés ({errors} erreurs)")
     con.close()
+    print(f"[snapshot_prices] {len(rows)} prix sauvegardés en {time.time()-t0:.1f}s")
+
+
+def _safe_float(val):
+    try:
+        f = float(val)
+        return f if f > 0 else None
+    except (TypeError, ValueError):
+        return None
+
 
 if __name__ == "__main__":
     run()

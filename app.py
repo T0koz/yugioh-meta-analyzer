@@ -390,52 +390,63 @@ elif page == "🛒 Signal boutique":
         st.error("Table `boutique_buy_signals` absente.")
     else:
         computed = buy_df["computed_at"].iloc[0] if "computed_at" in buy_df.columns else "?"
-        st.caption(f"Calculé le {computed}")
+        st.caption(f"Calculé le {computed} · Scores ajustés pour compatibilité banlist TCG")
+
+        LABEL_COLORS = {"Fort": "#2ecc71", "Modéré": "#f1c40f", "Faible": "#95a5a6"}
 
         # ── KPIs ──
         k1, k2, k3, k4 = st.columns(4)
-        fire   = buy_df[buy_df["buy_label"] == "🔥 Acheter maintenant"]
-        good   = buy_df[buy_df["buy_label"] == "✅ Bon signal"]
-        cheap  = buy_df[buy_df["cm_price"] <= 1.0]
-        k1.metric("🔥 Acheter maintenant", len(fire))
-        k2.metric("✅ Bon signal", len(good))
-        k3.metric("Prix < 1€ avec signal", len(cheap[cheap["card_alert_score"] > 1.5]))
+        n_fort   = len(buy_df[buy_df["buy_label"] == "Fort"])
+        n_mod    = len(buy_df[buy_df["buy_label"] == "Modéré"])
+        n_ban    = buy_df["ban_tcg"].notna().sum() if "ban_tcg" in buy_df.columns else 0
+        k1.metric("Signal Fort", n_fort)
+        k2.metric("Signal Modéré", n_mod)
+        k3.metric("⚠️ Cartes Limited/Semi", n_ban)
         k4.metric("Archetypes couverts", buy_df["archetype"].nunique())
+
+        if n_ban > 0:
+            st.warning(
+                f"**{n_ban} cartes Limited ou Semi-Limited** en TCG apparaissent dans les signaux. "
+                "Elles sont jouables (1-2 copies max) mais leur impact en TCG est réduit par rapport à l'OCG. "
+                "Elles sont marquées ⚠️ dans le tableau."
+            )
 
         st.markdown("---")
 
         # ── Filtre archetype ──
         archs = ["Tous"] + sorted(buy_df["archetype"].unique())
         sel_arch = st.selectbox("Filtrer par archetype", archs)
-        if sel_arch != "Tous":
-            view = buy_df[buy_df["archetype"] == sel_arch]
-        else:
-            view = buy_df
+        view = buy_df[buy_df["archetype"] == sel_arch] if sel_arch != "Tous" else buy_df
 
         top_n = st.slider("Top N cartes", 10, 50, 20)
-        view_top = view.head(top_n)
+        view_top = view.head(top_n).copy()
+
+        # Colonne affichage avec flag banlist
+        if "ban_tcg" in view_top.columns:
+            view_top["carte_label"] = view_top.apply(
+                lambda r: f"⚠️ {r['card_name']} ({r['ban_tcg']})" if pd.notna(r.get("ban_tcg")) else r["card_name"],
+                axis=1,
+            )
+        else:
+            view_top["carte_label"] = view_top["card_name"]
 
         # ── Graphe principal ──
         fig = px.bar(
             view_top,
             x="buy_score_100",
-            y="card_name",
+            y="carte_label",
             color="buy_label",
-            color_discrete_map={
-                "🔥 Acheter maintenant": "#e74c3c",
-                "✅ Bon signal":         "#2ecc71",
-                "👀 À surveiller":       "#f1c40f",
-                "⏸️ Attendre":           "#95a5a6",
-            },
+            color_discrete_map=LABEL_COLORS,
             text="cm_price",
             hover_data={
                 "archetype": True,
                 "card_alert_score": ":.3f",
                 "cm_price": ":.2f",
                 "tcg_entry_estimated": True,
+                "ban_tcg": True,
             },
-            labels={"buy_score_100": "Buy Score /100", "card_name": "Carte", "cm_price": "Prix CM (€)"},
-            title=f"Top {top_n} cartes — Signal boutique",
+            labels={"buy_score_100": "Buy Score /100", "carte_label": "Carte", "cm_price": "Prix CM (€)"},
+            title=f"Top {top_n} cartes — Signal boutique (⚠️ = Limited/Semi TCG)",
             orientation="h",
             height=max(450, top_n * 30),
         )
@@ -450,22 +461,16 @@ elif page == "🛒 Signal boutique":
             x="cm_price",
             y="card_alert_score",
             color="buy_label",
-            color_discrete_map={
-                "🔥 Acheter maintenant": "#e74c3c",
-                "✅ Bon signal":         "#2ecc71",
-                "👀 À surveiller":       "#f1c40f",
-                "⏸️ Attendre":           "#95a5a6",
-            },
+            color_discrete_map=LABEL_COLORS,
             size="buy_score_100",
             text="card_name",
-            hover_data={"archetype": True, "buy_score_100": True, "tcg_entry_estimated": True},
+            hover_data={"archetype": True, "buy_score_100": True, "tcg_entry_estimated": True, "ban_tcg": True},
             labels={"cm_price": "Prix Cardmarket (€)", "card_alert_score": "Signal OCG"},
             title="Idéal = en haut à gauche (fort signal, prix bas)",
             log_x=True,
             height=500,
         )
         fig2.update_traces(textposition="top center")
-        # Quadrant lines
         fig2.add_vline(x=1.0, line_dash="dash", line_color="gray", opacity=0.5)
         fig2.add_hline(y=view["card_alert_score"].median(),
                        line_dash="dash", line_color="gray", opacity=0.5)
@@ -495,12 +500,21 @@ elif page == "🛒 Signal boutique":
 
         # ── Table complète ──
         st.subheader("Tableau complet")
-        disp = view_top[["buy_label", "card_name", "archetype", "cm_price", "tcp_price",
-                          "card_alert_score", "buy_score_100", "tcg_entry_estimated"]].copy()
-        disp.columns = ["Signal", "Carte", "Archetype", "CM (€)", "TCP ($)",
-                        "Alert Score", "Buy /100", "Entrée TCG estimée"]
+        cols = ["buy_label", "card_name", "archetype", "cm_price", "tcp_price",
+                "card_alert_score", "buy_score_100", "tcg_entry_estimated"]
+        if "ban_tcg" in view_top.columns:
+            cols.insert(2, "ban_tcg")
+        disp = view_top[cols].copy()
+        rename = {"buy_label": "Signal", "card_name": "Carte", "ban_tcg": "Banlist TCG",
+                  "archetype": "Archetype", "cm_price": "CM (€)", "tcp_price": "TCP ($)",
+                  "card_alert_score": "Alert Score", "buy_score_100": "Buy /100",
+                  "tcg_entry_estimated": "Entrée TCG estimée"}
+        disp.rename(columns=rename, inplace=True)
         for c in ["CM (€)", "TCP ($)", "Alert Score"]:
-            disp[c] = disp[c].round(2)
+            if c in disp.columns:
+                disp[c] = disp[c].round(2)
+        if "Banlist TCG" in disp.columns:
+            disp["Banlist TCG"] = disp["Banlist TCG"].fillna("✅ Légale")
         st.dataframe(disp, use_container_width=True, hide_index=True)
 
 

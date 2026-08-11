@@ -1,4 +1,5 @@
 import type {
+  BanRadarResponse,
   BanSimResult,
   BoutiqueResponse,
   EarlySignalsResponse,
@@ -23,6 +24,7 @@ export const api = {
   predictions: () => apiFetch<PredictionsResponse>("/meta/predictions"),
   boutiqueSignals: () => apiFetch<BoutiqueResponse>("/boutique/signals"),
   earlySignals: () => apiFetch<EarlySignalsResponse>("/early-signals"),
+  banRadar: (limit = 50) => apiFetch<BanRadarResponse>(`/ban-radar?limit=${limit}`),
   graphSynergies: (params?: { limit?: number; minJaccard?: number }) => {
     const query = new URLSearchParams();
     if (params?.limit) query.set("limit", String(params.limit));

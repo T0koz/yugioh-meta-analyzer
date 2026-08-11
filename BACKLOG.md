@@ -120,25 +120,31 @@ Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 i
 
 ### TOK-47 — Phase C : Data & Features avancées (différenciation)
 
-| TOK | Item | Priorité |
-|-----|------|----------|
-| TOK-53 | Ban Radar — probabilité d'être banni (scoring multi-critères) | 🟠 Medium |
-| TOK-54 | Top cartes à fort impact si bannies (bridge score classé) | 🟠 Medium |
-| TOK-55 | Ban Predictor vs History — track record public | 🟠 Medium |
-| TOK-56 | Comparateur archétypes côte à côte | 🟠 Medium |
-| TOK-57 | Watchlist personnelle | 🟢 Low |
-| TOK-58 | Deck Builder + meta score temps réel | 🟠 Medium |
-| TOK-59 | Combo Visualizer intégré (graphe orienté) | 🟠 Medium |
-| TOK-60 | Deck vs Meta — analyse comparative vs top decklists | 🟠 Medium |
-| TOK-61 | Deck Score radar chart | 🟢 Low |
-| TOK-62 | Import YDKe / code deck | 🟢 Low |
-| TOK-63 | Suggestions "cartes qui amélioreraient ton deck" | 🟢 Low |
-| TOK-64 | Partage de deck → lien unique avec score + combos | 🟢 Low |
-| TOK-65 | Referral boutique — commission sur carte vendue | 🟠 Medium |
-| TOK-66 | Boutique partenaire — listing premium | 🟢 Low |
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-53 | Ban Radar — score de risque de ban (scoring multi-critères) | ✅ Done | 🟠 Medium |
+| TOK-54 | Top cartes à fort impact si bannies (bridge score classé) | 🔜 À faire | 🟠 Medium |
+| TOK-55 | Ban Predictor vs History — track record public | 🔜 À faire | 🟠 Medium |
+| TOK-56 | Comparateur archétypes côte à côte | 🔜 À faire | 🟠 Medium |
+| TOK-57 | Watchlist personnelle | 🔜 À faire | 🟢 Low |
+| TOK-58 | Deck Builder + meta score temps réel | 🔜 À faire | 🟠 Medium |
+| TOK-59 | Combo Visualizer intégré (graphe orienté) | 🔜 À faire | 🟠 Medium |
+| TOK-60 | Deck vs Meta — analyse comparative vs top decklists | 🔜 À faire | 🟠 Medium |
+| TOK-61 | Deck Score radar chart | 🔜 À faire | 🟢 Low |
+| TOK-62 | Import YDKe / code deck | 🔜 À faire | 🟢 Low |
+| TOK-63 | Suggestions "cartes qui amélioreraient ton deck" | 🔜 À faire | 🟢 Low |
+| TOK-64 | Partage de deck → lien unique avec score + combos | 🔜 À faire | 🟢 Low |
+| TOK-65 | Referral boutique — commission sur carte vendue | 🔜 À faire | 🟠 Medium |
+| TOK-66 | Boutique partenaire — listing premium | 🔜 À faire | 🟢 Low |
+
+**TOK-53 livré** : table `ban_radar` (`scripts/build_ban_radar.py`), endpoint
+`GET /api/v1/ban-radar`, page `/ban-radar`. Score de risque 0-100 sur 6 critères
+pondérés. Backtesté contre la banlist du 2026-05-18 : 8 des 11 cartes touchées
+dans le quart supérieur, rang médian 128/922. Le critère décisif est le nombre
+moyen d'exemplaires joués, pas l'omniprésence. Détail dans le docstring du script.
 
 Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historique de decks, Social (profils créateurs, Deck Feed, rating, tournoi mensuel), Marketplace de decks guides.
 
 ---
 
-*Dernière mise à jour : 2026-08-05*
+*Dernière mise à jour : 2026-08-11*

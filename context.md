@@ -165,11 +165,32 @@ frontend/src/
 
 **`InfoTooltip`** (`components/ui/info-tooltip.tsx`) : bulle ⓘ ouverte vers le **bas** (`top-full`, pas `bottom-full`) — sinon coupée par un ancêtre `overflow-hidden` (ex: conteneur de tableau). Ne pas revenir à `bottom-full` sans vérifier qu'aucun ancêtre ne clippe.
 
+**Ban Radar (TOK-53)** — `scripts/build_ban_radar.py` → table `ban_radar` →
+`GET /api/v1/ban-radar` → page `/ban-radar`. Score de risque 0-100 sur 6 critères
+pondérés, avec décomposition par critère renvoyée au front (barre colorée).
+
+Deux pièges à ne pas refaire si le scoring est retouché :
+- **L'omniprésence seule ne prédit rien.** Konami ne frappe pas les staples les
+  plus jouées mais les pièces de moteur des decks qui gagnent. La v1, bâtie sur
+  ubiquité + nombre d'archétypes, plaçait les cartes réellement touchées au rang
+  médian 302/681 — le hasard. Le nombre d'archétypes qui jouent une carte ne
+  discrimine pas du tout (médiane 4 chez les touchées comme chez les autres).
+- **Le critère décisif est le nombre moyen d'exemplaires joués** (2.50 chez les
+  touchées vs 1.10). Le retirer fait tomber le rappel top-10% de 5/10 à 1/10.
+
+Toute modification du scoring doit être repassée au backtest :
+`python scripts/build_ban_radar.py --backtest`. Une seule banlist est exploitable
+(2026-05-18) : avant février 2026 la base ne contient qu'une trentaine de decks
+par mois contre ~350 ensuite, donc trop peu de cartes atteignent le seuil.
+Les poids sont dupliqués entre le script et `backend/app/routers/ban_radar.py`
+(le script calcule, l'API réapplique pour la décomposition) — garder les deux alignés.
+
 ### 🔜 À faire
 
 - **TOK-35** : déploiement Vercel (front) + Railway (back) — nécessite comptes/credentials Thomas
 - **TOK-52** : Mode Joueur / Mode Boutique (toggle UX) — nécessite de trancher ce que chaque mode change concrètement (pas fait en autonome pour cette raison)
-- **Phase B/C (TOK-53 à 67)** : Ban Radar, Deck Builder, Referral boutique, API freemium — voir BACKLOG.md
+- **TOK-55** : Ban Predictor vs History — le backtest de `build_ban_radar.py` en est la brique de base, reste à l'exposer publiquement
+- **Phase B/C (TOK-54 à 67)** : Deck Builder, Referral boutique, API freemium — voir BACKLOG.md
 
 ### ✅ Fait en autonome le 2026-08-05 (pendant absence de Thomas)
 TOK-33 (graphe vis-network interactif), TOK-48 (smart search), TOK-49 (card chips), TOK-50 (archetype thumbnails), TOK-51 (tooltips), + fix thread-safety SQLite critique. Détail dans les descriptions Linear de chaque ticket.
@@ -218,4 +239,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-08-05*
+*Dernière mise à jour : 2026-08-11*

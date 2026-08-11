@@ -5,6 +5,7 @@ from pydantic import BaseModel
 Tier = Literal["T0", "T1", "T2", "T3", "Rogue"]
 Trend = Literal["Rising", "Stable", "Declining"]
 BuyLabel = Literal["Fort", "Modéré", "Faible"]
+RiskLabel = Literal["Critique", "Élevé", "Modéré", "Faible"]
 
 
 class TierEntry(BaseModel):
@@ -93,6 +94,38 @@ class SearchResult(BaseModel):
 
 class SearchResponse(BaseModel):
     data: list[SearchResult]
+
+
+class BanRadarCriteria(BaseModel):
+    """Contribution de chaque critère, déjà pondérée, en points de score final."""
+
+    ubiquity: float
+    carrier: float
+    copies: float
+    restriction: float
+    momentum: float
+    bridge: float
+
+
+class BanRadarEntry(BaseModel):
+    card_name: str
+    ban_risk_score: float
+    risk_label: RiskLabel
+    current_status: str
+    deck_share: float
+    decks: int
+    n_archetypes: int
+    mean_copies: float
+    top_archetype: Optional[str] = None
+    image_url: Optional[str] = None
+    criteria: BanRadarCriteria
+
+
+class BanRadarResponse(BaseModel):
+    data: list[BanRadarEntry]
+    as_of: str
+    n_decks_window: int
+    weights: dict[str, float]
 
 
 class GraphNode(BaseModel):

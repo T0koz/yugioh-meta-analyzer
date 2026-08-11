@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: "/boutique", label: "Signaux Boutique" },
   { href: "/early-signals", label: "Early Signals" },
   { href: "/graph", label: "Graphe" },
+  { href: "/ban-radar", label: "Ban Radar" },
   { href: "/ban-simulator", label: "Simulateur Ban" },
 ];
 

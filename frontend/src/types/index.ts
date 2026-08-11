@@ -1,6 +1,7 @@
 export type Tier = "T0" | "T1" | "T2" | "T3" | "Rogue";
 export type Trend = "Rising" | "Stable" | "Declining";
 export type BuyLabel = "Fort" | "Modéré" | "Faible";
+export type RiskLabel = "Critique" | "Élevé" | "Modéré" | "Faible";
 
 export interface TierEntry {
   archetype: string;
@@ -69,6 +70,37 @@ export interface BanSimResult {
   affected_archetypes: string[];
   community_impact: { community_id: number; fragmentation: number };
   bridge_score: number;
+}
+
+/** Contribution de chaque critère au score, déjà pondérée, en points. */
+export interface BanRadarCriteria {
+  ubiquity: number;
+  carrier: number;
+  copies: number;
+  restriction: number;
+  momentum: number;
+  bridge: number;
+}
+
+export interface BanRadarEntry {
+  card_name: string;
+  ban_risk_score: number;
+  risk_label: RiskLabel;
+  current_status: string;
+  deck_share: number;
+  decks: number;
+  n_archetypes: number;
+  mean_copies: number;
+  top_archetype: string | null;
+  image_url: string | null;
+  criteria: BanRadarCriteria;
+}
+
+export interface BanRadarResponse {
+  data: BanRadarEntry[];
+  as_of: string;
+  n_decks_window: number;
+  weights: Record<string, number>;
 }
 
 export interface GraphNode {

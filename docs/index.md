@@ -1,17 +1,17 @@
 # Project Documentation Index — Yu-Gi-Oh! Meta Analyzer
 
-**Generated:** 2026-06-19 | **Scan level:** Exhaustive | **Type:** Data/ML Monolith + Streamlit
+**Generated:** 2026-06-19 | **Updated:** 2026-08-01 | **Type:** Data/ML Monolith + Streamlit + Next.js (Phase 5)
 
 ---
 
 ## Project Overview
 
-- **Type:** Python monolith (data pipeline + ML + dashboard)
-- **Primary language:** Python 3.13
-- **Architecture:** ETL pipeline → SQLite → Notebooks → Streamlit
+- **Type:** Python monolith (data pipeline + ML) + Next.js public frontend
+- **Languages:** Python 3.13 (backend/analysis) + TypeScript (frontend)
+- **Architecture:** ETL pipeline → SQLite → Notebooks → Streamlit (Phases 1–4) | Next.js → FastAPI → SQLite (Phase 5)
 - **Database:** SQLite, ~150 MB, 35+ tables
-- **Dashboard:** Streamlit, 9 pages (`app.py`)
-- **Status:** Phases 1–4 + boutique signal complete. Phase 5 (React + FastAPI) next.
+- **Dashboard:** Streamlit 9 pages (`app.py`) + Next.js 7 pages (`frontend/`)
+- **Status:** Phases 1–4 done. Phase 5 frontend livré sur mock data. FastAPI (TOK-31) + deploy (TOK-35) next.
 
 ---
 
@@ -19,7 +19,8 @@
 
 | What | Where | Command |
 |------|-------|---------|
-| Launch dashboard | `app.py` | `bash run.sh` |
+| Launch Streamlit dashboard | `app.py` | `bash run.sh` |
+| Launch Next.js frontend | `frontend/` | `cd frontend && npm run dev` |
 | Daily price cron | `scripts/snapshot_prices.py` | Scheduled 09:00 |
 | Full context | `context.md` | Read first |
 | Rebuild DB | See development guide | Notebooks 01→12 |
@@ -89,5 +90,6 @@
 | Co-occurrence + graph | TOK-11 to 20 | ✅ All done |
 | Meta + prediction | TOK-21 to 25 | ✅ All done |
 | NLP + boutique | TOK-26 to 30, 45 | ✅ All done |
-| Phase 5 front-end | TOK-31 to 35 | 🔜 Next |
+| Phase 5 front-end | TOK-32 (✅ mock), TOK-33/34 (🟡 partiel) | 🏗️ En cours |
+| Phase 5 backend | TOK-31 (FastAPI), TOK-35 (deploy) | 🔜 Next |
 | Ideas | TOK-36, 37 | 🔜 Backlog |

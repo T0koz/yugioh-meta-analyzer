@@ -68,15 +68,24 @@ Suivi détaillé sur [Linear](https://linear.app/tokoz).
 
 ---
 
-## Phase 5 — Front-end & API 🔜
+## Phase 5 — Front-end & API 🏗️ En cours
 
-| TOK | Item | Priorité |
-|-----|------|----------|
-| TOK-31 | Définir les endpoints API (FastAPI) | 🔴 High |
-| TOK-32 | Front React — tier list dynamique | 🔴 High |
-| TOK-33 | Front React — graphe synergies interactif | 🟠 Medium |
-| TOK-34 | Front React — simulateur de ban | 🟠 Medium |
-| TOK-35 | Déploiement (Vercel front + Railway/Render back) | 🔴 High |
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-31 | Backend FastAPI — endpoints /meta, /boutique, /graph, /cards | ✅ Done | 🔴 High |
+| TOK-32 | Front Next.js — toutes les pages (mock data) | ✅ Done | 🔴 High |
+| TOK-33 | Front — graphe synergies interactif (vis-network branché API) | ✅ Done | 🟠 Medium |
+| TOK-34 | Front — simulateur de ban (branché API) | 🟡 Partiel | 🟠 Medium |
+| TOK-35 | Déploiement (Vercel front + Railway back) | 🔜 Next | 🔴 High |
+
+**Pages livrées (mock data) :**
+- `/tier-list` — Tier List avec barres de score et trends
+- `/evolution` — Line chart interactif méta mensuel (recharts)
+- `/predictions` — Tableau current vs prédit + delta
+- `/boutique` — Signaux d'achat avec badges banlist TCG
+- `/early-signals` — Score rings + views/semaine
+- `/graph` — Placeholder SVG (full vis-network = TOK-33 post-API)
+- `/ban-simulator` — Formulaire + bridge score + archetypes impactés
 
 ---
 
@@ -89,4 +98,47 @@ Suivi détaillé sur [Linear](https://linear.app/tokoz).
 
 ---
 
-*Dernière mise à jour : 2026-06-19*
+## Site public — Brainstorming 2026-08-05
+
+Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 idées, technique Brain Writing Round Robin). Idées non "Later" converties en tickets Linear.
+
+### TOK-46 — Phase A : UX Fondations (site présentable)
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-48 | Smart Search + autocomplete + card preview au hover | ✅ Done | 🟠 Medium |
+| TOK-49 | Card chip cliquable avec visuel partout sur le site | ✅ Done | 🟠 Medium |
+| TOK-50 | Archetype thumbnails (image emblématique de l'archétype) | ✅ Done | 🟠 Medium |
+| TOK-51 | Tooltip ⓘ "Comment c'est calculé" sur chaque stat | ✅ Done | 🟠 Medium |
+| TOK-52 | Mode Joueur / Mode Boutique (toggle UX) | 🔜 Next | 🟠 Medium |
+
+### Phase B : Backend (données réelles) — rattaché à TOK-43
+
+| TOK | Item | Priorité |
+|-----|------|----------|
+| TOK-67 | API publique freemium + API key boutique premium | 🟠 Medium |
+
+### TOK-47 — Phase C : Data & Features avancées (différenciation)
+
+| TOK | Item | Priorité |
+|-----|------|----------|
+| TOK-53 | Ban Radar — probabilité d'être banni (scoring multi-critères) | 🟠 Medium |
+| TOK-54 | Top cartes à fort impact si bannies (bridge score classé) | 🟠 Medium |
+| TOK-55 | Ban Predictor vs History — track record public | 🟠 Medium |
+| TOK-56 | Comparateur archétypes côte à côte | 🟠 Medium |
+| TOK-57 | Watchlist personnelle | 🟢 Low |
+| TOK-58 | Deck Builder + meta score temps réel | 🟠 Medium |
+| TOK-59 | Combo Visualizer intégré (graphe orienté) | 🟠 Medium |
+| TOK-60 | Deck vs Meta — analyse comparative vs top decklists | 🟠 Medium |
+| TOK-61 | Deck Score radar chart | 🟢 Low |
+| TOK-62 | Import YDKe / code deck | 🟢 Low |
+| TOK-63 | Suggestions "cartes qui amélioreraient ton deck" | 🟢 Low |
+| TOK-64 | Partage de deck → lien unique avec score + combos | 🟢 Low |
+| TOK-65 | Referral boutique — commission sur carte vendue | 🟠 Medium |
+| TOK-66 | Boutique partenaire — listing premium | 🟢 Low |
+
+Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historique de decks, Social (profils créateurs, Deck Feed, rating, tournoi mensuel), Marketplace de decks guides.
+
+---
+
+*Dernière mise à jour : 2026-08-05*

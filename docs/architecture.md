@@ -2,14 +2,58 @@
 
 ## Architecture Pattern
 
-**Pipeline monolith** — data flows one-way through numbered phases. Each notebook is a self-contained transformation step that reads from SQLite, computes, and writes back. The Streamlit dashboard is a pure read layer.
+**Pipeline monolith** — data flows one-way through numbered phases. Each notebook is a self-contained transformation step that reads from SQLite, computes, and writes back. The Streamlit dashboard is a pure read layer (Phases 1–4). Phase 5 adds a Next.js public frontend + FastAPI backend.
 
 ```
 YGOPRODeck API ──────────────────┐
 yugiohmeta.com ──────────────────┤
-Yugipedia (scraping) ────────────┤→ scripts/ (ETL) → yugioh.db → notebooks/ → app.py
-YouTube (transcripts) ───────────┤                                              ↑
-Cardmarket prices (daily cron) ──┘                                         Streamlit
+Yugipedia (scraping) ────────────┤→ scripts/ (ETL) → yugioh.db → notebooks/ → app.py (Streamlit)
+YouTube (transcripts) ───────────┤                                    │
+Cardmarket prices (daily cron) ──┘                                    └→ FastAPI (TOK-31)
+                                                                              ↑
+                                                                     Next.js frontend (frontend/)
+```
+
+---
+
+## Phase 5 — Frontend Architecture (2026-08-01)
+
+### Stack
+
+| Couche | Technologie | Rôle |
+|--------|-------------|------|
+| Frontend | Next.js 15 + TypeScript | App Router, SSR/SSG, Vercel deploy |
+| Styling | Tailwind CSS v4 + shadcn/ui | Composants (Table, Badge, Card, Input) |
+| Charts | recharts | Line chart évolution méta |
+| API client | `fetch` natif | `src/lib/api.ts` → `NEXT_PUBLIC_API_URL` |
+| Mock data | `src/lib/mock.ts` | Données statiques en attendant FastAPI |
+| Backend | FastAPI (TOK-31 — à faire) | Read-only sur yugioh.db (SQLite) |
+| Deploy | Vercel (front) + Railway (back) | TOK-35 — à faire |
+
+### Pages livrées (`frontend/src/app/`)
+
+| Route | Composant | Données |
+|-------|-----------|---------|
+| `/tier-list` | Tiers colorés T0→Rogue, barre de score, trend | `mockTierList` |
+| `/evolution` | Line chart interactif (filtre archétype) | `mockEvolution` |
+| `/predictions` | Tableau current vs prédit + delta Δ | `mockPredictions` |
+| `/boutique` | Signaux d'achat, badges banlist TCG ⚠ | `mockBoutique` |
+| `/early-signals` | Score rings SVG, views/semaine | `mockEarlySignals` |
+| `/graph` | SVG statique placeholder (vis-network = TOK-33) | Hardcodé |
+| `/ban-simulator` | Formulaire → bridge score + archetypes impactés | `MOCK_RESULTS` |
+
+### Brancher l'API (quand TOK-31 sera livré)
+
+Dans chaque page, remplacer :
+```typescript
+// import { mockXxx } from "@/lib/mock";
+import { api } from "@/lib/api";
+const data = await api.tierList(); // ou api.boutique(), etc.
+```
+
+Variable d'env à ajouter dans Vercel :
+```
+NEXT_PUBLIC_API_URL=https://api.yugioh-meta.railway.app/api/v1
 ```
 
 ---

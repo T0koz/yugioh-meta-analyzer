@@ -16,6 +16,17 @@ data/graph_combo_*.html
 
 # Libs JS tierces (pyvis), régénérables
 notebooks/lib/
+/lib/
+
+# Node (front Next.js)
+node_modules/
+.next/
+
+# Outillage BMad — réinstallable, pas du code projet
+# (_bmad-output/ est tracké : ce sont les livrables, pas l'outil)
+_bmad/
+.claude/skills/
+.claude/settings.local.json
 
 # OS
 .DS_Store

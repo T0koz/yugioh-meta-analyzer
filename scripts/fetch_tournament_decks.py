@@ -111,10 +111,12 @@ def insert_decks(decks: list) -> None:
                 INSERT OR REPLACE INTO tournament_decks VALUES (?,?,?,?,?,?,?,?,?,?,?)
             """, (
                 d["_id"],
-                d.get("author"),
+                # author est tantôt une chaîne, tantôt un objet {_id, name} :
+                # sans extract_name, sqlite3 refuse le dict et le deck est perdu.
+                extract_name(d.get("author")),
                 extract_name(d.get("deckType")),
                 extract_name(d.get("tournamentType")),
-                d.get("tournamentLocation"),
+                extract_name(d.get("tournamentLocation")),
                 d.get("tournamentPlacement"),
                 d.get("created"),
                 d.get("uploaded"),
@@ -129,15 +131,25 @@ def insert_decks(decks: list) -> None:
             continue
 
         # Cartes (main / extra / side)
+        # Purge avant réinsertion : tournament_decks est en INSERT OR REPLACE
+        # (idempotent) mais deck_cards n'a pas de clé unique, donc sans ce DELETE
+        # chaque relance du script re-empile les cartes des decks déjà en base.
+        cur.execute("DELETE FROM deck_cards WHERE deck_id = ?", (d["_id"],))
+
         for zone in ("main", "extra", "side"):
+            # L'API éclate parfois une même carte en deux entrées dans la même
+            # zone (ex: amount 1 puis 2 = 3 exemplaires joués). On agrège avant
+            # d'insérer pour garder une ligne par (deck, carte, zone).
+            amounts: dict[str, int] = {}
             for entry in d.get(zone, []):
                 card_name = entry.get("card", {}).get("name") or entry.get("name")
-                amount    = entry.get("amount", 1)
                 if card_name:
-                    cur.execute(
-                        "INSERT INTO deck_cards (deck_id, card_name, amount, zone) VALUES (?,?,?,?)",
-                        (d["_id"], card_name, amount, zone)
-                    )
+                    amounts[card_name] = amounts.get(card_name, 0) + entry.get("amount", 1)
+
+            cur.executemany(
+                "INSERT INTO deck_cards (deck_id, card_name, amount, zone) VALUES (?,?,?,?)",
+                [(d["_id"], name, amount, zone) for name, amount in amounts.items()],
+            )
 
         inserted += 1
 

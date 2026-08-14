@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/early-signals", label: "Early Signals" },
   { href: "/graph", label: "Graphe" },
   { href: "/ban-radar", label: "Ban Radar" },
+  { href: "/card-impact", label: "Cartes à Impact" },
   { href: "/ban-simulator", label: "Simulateur Ban" },
 ];
 

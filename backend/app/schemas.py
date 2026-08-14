@@ -128,6 +128,21 @@ class BanRadarResponse(BaseModel):
     weights: dict[str, float]
 
 
+class CardImpactEntry(BaseModel):
+    card_name: str
+    bridge_score: float
+    n_archetypes: int
+    decks: int
+    top_archetype: Optional[str] = None
+    image_url: Optional[str] = None
+
+
+class CardImpactResponse(BaseModel):
+    data: list[CardImpactEntry]
+    as_of: str
+    n_decks_window: int
+
+
 class GraphNode(BaseModel):
     id: str
     group: Optional[str] = None

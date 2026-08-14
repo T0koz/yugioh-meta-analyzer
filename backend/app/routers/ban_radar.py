@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Literal
 
 from fastapi import APIRouter, Depends, Query
 
@@ -27,6 +28,10 @@ def get_ban_radar(
     limit: int = Query(BAN_RADAR_LIMIT_DEFAULT, le=200),
     min_score: float = Query(0, ge=0, le=100),
     status: str | None = Query(None, description="Filtre sur le statut TCG actuel"),
+    kind: Literal["generic", "archetype"] | None = Query(
+        None,
+        description="generic = staples sans deck d'attache, archetype = pièces de moteur",
+    ),
     db: sqlite3.Connection = Depends(get_db),
 ) -> BanRadarResponse:
     meta = db.execute("SELECT as_of, n_decks_window FROM ban_radar LIMIT 1").fetchone()
@@ -40,10 +45,15 @@ def get_ban_radar(
         LEFT JOIN cards c ON c.name = r.card_name
         WHERE r.ban_risk_score >= :min_score
           AND (:status IS NULL OR r.current_status = :status)
+          -- top_archetype est nul pour les staples sans deck d'attache
+          -- (concentration < 50%), renseigné pour les pièces de moteur.
+          AND (:kind IS NULL
+               OR (:kind = 'generic' AND r.top_archetype IS NULL)
+               OR (:kind = 'archetype' AND r.top_archetype IS NOT NULL))
         ORDER BY r.ban_risk_score DESC
         LIMIT :limit
         """,
-        {"min_score": min_score, "status": status, "limit": limit},
+        {"min_score": min_score, "status": status, "kind": kind, "limit": limit},
     ).fetchall()
 
     # Le score final est rééchelonné sur le max du dataset : les contributions

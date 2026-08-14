@@ -138,10 +138,11 @@ Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 i
 | TOK-66 | Boutique partenaire — listing premium | 🔜 À faire | 🟢 Low |
 
 **TOK-53 livré** : table `ban_radar` (`scripts/build_ban_radar.py`), endpoint
-`GET /api/v1/ban-radar`, page `/ban-radar`. Score de risque 0-100 sur 6 critères
-pondérés. Backtesté contre la banlist du 2026-05-18 : 8 des 11 cartes touchées
-dans le quart supérieur, rang médian 128/922. Le critère décisif est le nombre
-moyen d'exemplaires joués, pas l'omniprésence. Détail dans le docstring du script.
+`GET /api/v1/ban-radar`, page `/ban-radar` avec filtre Tout / Pièces d'archétype
+/ Staples génériques. Score de risque 0-100 sur 6 critères pondérés. Backtesté
+contre la banlist du 2026-05-18 : 8 des 11 cartes touchées dans le quart
+supérieur, rang médian 127/923. Le critère décisif est le nombre moyen
+d'exemplaires joués, pas l'omniprésence. Détail dans le docstring du script.
 
 Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historique de decks, Social (profils créateurs, Deck Feed, rating, tournoi mensuel), Marketplace de decks guides.
 

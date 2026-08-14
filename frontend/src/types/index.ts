@@ -72,6 +72,9 @@ export interface BanSimResult {
   bridge_score: number;
 }
 
+/** `generic` = staple sans deck d'attache, `archetype` = pièce de moteur. */
+export type BanRadarKind = "generic" | "archetype";
+
 /** Contribution de chaque critère au score, déjà pondérée, en points. */
 export interface BanRadarCriteria {
   ubiquity: number;

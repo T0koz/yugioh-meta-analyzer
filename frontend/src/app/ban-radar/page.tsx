@@ -4,7 +4,7 @@ import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import type { BanRadarCriteria, BanRadarEntry, RiskLabel } from "@/types";
+import type { BanRadarCriteria, BanRadarEntry, BanRadarKind, RiskLabel } from "@/types";
 
 const RISK_STYLE: Record<RiskLabel, { badge: string; score: string }> = {
   Critique: { badge: "bg-red-600 text-white", score: "text-red-400" },
@@ -99,8 +99,47 @@ function RadarRow({ entry, rank }: { entry: BanRadarEntry; rank: number }) {
   );
 }
 
-export default async function BanRadarPage() {
-  const { data, as_of, n_decks_window } = await api.banRadar(50);
+const FILTERS: { kind?: BanRadarKind; label: string; hint: string }[] = [
+  { label: "Tout", hint: "Toutes les cartes notées" },
+  { kind: "archetype", label: "Pièces d'archétype", hint: "Cartes rattachées à un deck précis" },
+  { kind: "generic", label: "Staples génériques", hint: "Cartes jouées un peu partout" },
+];
+
+function FilterTabs({ active }: { active?: BanRadarKind }) {
+  return (
+    <div className="mb-6 flex flex-wrap gap-2">
+      {FILTERS.map(({ kind, label, hint }) => {
+        const selected = kind === active;
+        return (
+          <Link
+            key={label}
+            href={kind ? `/ban-radar?kind=${kind}` : "/ban-radar"}
+            title={hint}
+            aria-current={selected ? "page" : undefined}
+            className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+              selected
+                ? "border-indigo-500 bg-indigo-600/20 font-semibold text-indigo-300"
+                : "border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-200"
+            }`}
+          >
+            {label}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+export default async function BanRadarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const requested = (await searchParams).kind;
+  const kind = FILTERS.some((f) => f.kind === requested)
+    ? (requested as BanRadarKind)
+    : undefined;
+  const { data, as_of, n_decks_window } = await api.banRadar({ limit: 50, kind });
 
   return (
     <HoverPreviewProvider>
@@ -123,9 +162,15 @@ export default async function BanRadarPage() {
             il classe les cartes par ressemblance au profil de celles que Konami a
             historiquement touchées, il ne dit pas &laquo;&nbsp;X% de chances d&apos;être bannie&nbsp;&raquo;.
             Rejoué la veille de la banlist du 18 mai 2026, il plaçait 8 des 11 cartes
-            touchées dans son quart supérieur (rang médian 128 sur 922 cartes notées).
+            touchées dans son quart supérieur (rang médian 127 sur 923 cartes notées).
             Une seule banlist a assez de decks en base pour être testée : à prendre
             comme un indicateur encourageant, pas comme une validation.
+          </p>
+          <p className="mt-2">
+            Les <strong className="text-slate-300">staples génériques</strong>{" "}
+            trustent le haut du classement parce qu&apos;elles sont jouées partout à 3 exemplaires, mais Konami
+            frappe surtout les pièces de moteur des decks qui gagnent. Le filtre
+            &laquo;&nbsp;pièces d&apos;archétype&nbsp;&raquo; isole ces dernières.
           </p>
           <p className="mt-2">
             La barre colorée sous chaque carte décompose le score par critère.
@@ -138,6 +183,8 @@ export default async function BanRadarPage() {
             ))}
           </p>
         </div>
+
+        <FilterTabs active={kind} />
 
         <div className="grid gap-3">
           {data.map((entry, index) => (

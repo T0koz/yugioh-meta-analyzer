@@ -185,11 +185,44 @@ par mois contre ~350 ensuite, donc trop peu de cartes atteignent le seuil.
 Les poids sont dupliqués entre le script et `backend/app/routers/ban_radar.py`
 (le script calcule, l'API réapplique pour la décomposition) — garder les deux alignés.
 
+La page propose un filtre **Tout / Pièces d'archétype / Staples génériques**
+(`?kind=archetype|generic`, filtré en SQL et non côté client, sinon le « top 50 »
+porterait sur un sous-ensemble déjà tronqué). La bascule repose sur
+`top_archetype IS NULL`, renseigné par le script quand moins de 50% des decks
+jouant la carte appartiennent à son archétype porteur.
+
+### ⚠ Pièges du pipeline de fetch (corrigés le 2026-08-14)
+
+`fetch_tournament_decks.py` / `fetch_ocg_decks.py` avaient trois bugs silencieux.
+À garder en tête pour tout nouveau script d'ingestion :
+- `deck_cards` n'a **aucune contrainte d'unicité**. Tout script qui y insère doit
+  purger les lignes du deck avant réinsertion, sinon chaque relance empile.
+- Les champs `author`, `deckType`, `tournamentType`, `tournamentLocation` de
+  l'API yugiohmeta sont **tantôt une chaîne, tantôt un objet** `{_id, name}` :
+  passer systématiquement par `extract_name`, sinon sqlite3 rejette le dict et
+  le `except` avale le deck entier sans bruit.
+- L'API éclate parfois une carte en deux entrées dans la même zone (amount 1
+  puis 2 = 3 exemplaires) : agréger avant insertion.
+
+### ⚠ `banlist_history` est en retard sur la réalité
+
+La table s'arrête au **2026-05-18** alors que la liste TCG en vigueur (vérifiée
+via YGOPRODeck `?banlist=tcg` le 2026-08-14) compte 5 assouplissements de plus :
+Ext Ryzeal, Maliss P Dormouse, Maliss P White Rabbit (Limited → Unlimited),
+Maliss Q White Binder et Number 89: Diablosis the Mind Hacker (Forbidden →
+Unlimited). **Aucune nouvelle carte touchée** — cette banlist ne fournit donc
+aucun point de backtest supplémentaire au Ban Radar.
+
+Conséquence : le critère `restriction` surévalue ces 3 cartes notées (aucune
+n'est dans le top 50 affiché, impact visuel nul). Le rattrapage passe par le
+notebook 09 (scraping Yugipedia), pas par un script.
+
 ### 🔜 À faire
 
 - **TOK-35** : déploiement Vercel (front) + Railway (back) — nécessite comptes/credentials Thomas
 - **TOK-52** : Mode Joueur / Mode Boutique (toggle UX) — nécessite de trancher ce que chaque mode change concrètement (pas fait en autonome pour cette raison)
-- **TOK-55** : Ban Predictor vs History — le backtest de `build_ban_radar.py` en est la brique de base, reste à l'exposer publiquement
+- **TOK-55** : Ban Predictor vs History — le backtest de `build_ban_radar.py` en est la brique de base, reste à l'exposer publiquement (bloqué de fait : un seul point de mesure tant qu'une banlist avec de vraies restrictions n'est pas tombée)
+- **Rafraîchir `banlist_history`** via le notebook 09 — voir la section dédiée ci-dessus
 - **Phase B/C (TOK-54 à 67)** : Deck Builder, Referral boutique, API freemium — voir BACKLOG.md
 
 ### ✅ Fait en autonome le 2026-08-05 (pendant absence de Thomas)

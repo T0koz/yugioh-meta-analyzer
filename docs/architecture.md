@@ -9,7 +9,7 @@ YGOPRODeck API ──────────────────┐
 yugiohmeta.com ──────────────────┤
 Yugipedia (scraping) ────────────┤→ scripts/ (ETL) → yugioh.db → notebooks/ → app.py (Streamlit)
 YouTube (transcripts) ───────────┤                                    │
-Cardmarket prices (daily cron) ──┘                                    └→ FastAPI (TOK-31)
+Cardmarket prices (daily cron) ──┘                                    └→ serving.db → FastAPI
                                                                               ↑
                                                                      Next.js frontend (frontend/)
 ```
@@ -26,34 +26,29 @@ Cardmarket prices (daily cron) ──┘                                    └�
 | Styling | Tailwind CSS v4 + shadcn/ui | Composants (Table, Badge, Card, Input) |
 | Charts | recharts | Line chart évolution méta |
 | API client | `fetch` natif | `src/lib/api.ts` → `NEXT_PUBLIC_API_URL` |
-| Mock data | `src/lib/mock.ts` | Données statiques en attendant FastAPI |
-| Backend | FastAPI (TOK-31 — à faire) | Read-only sur yugioh.db (SQLite) |
-| Deploy | Vercel (front) + Railway (back) | TOK-35 — à faire |
+| Backend | FastAPI (TOK-31 ✅) | Read-only sur SQLite, prefix `/api/v1` |
+| Deploy | TOK-35 — hébergement à trancher | Base de service prête (`serving.db`, 9 Mo) |
+
+`src/lib/mock.ts` a été supprimé : toutes les pages consomment l'API réelle.
 
 ### Pages livrées (`frontend/src/app/`)
 
-| Route | Composant | Données |
-|-------|-----------|---------|
-| `/tier-list` | Tiers colorés T0→Rogue, barre de score, trend | `mockTierList` |
-| `/evolution` | Line chart interactif (filtre archétype) | `mockEvolution` |
-| `/predictions` | Tableau current vs prédit + delta Δ | `mockPredictions` |
-| `/boutique` | Signaux d'achat, badges banlist TCG ⚠ | `mockBoutique` |
-| `/early-signals` | Score rings SVG, views/semaine | `mockEarlySignals` |
-| `/graph` | SVG statique placeholder (vis-network = TOK-33) | Hardcodé |
-| `/ban-simulator` | Formulaire → bridge score + archetypes impactés | `MOCK_RESULTS` |
+Toutes consomment l'API réelle via `src/lib/api.ts`.
 
-### Brancher l'API (quand TOK-31 sera livré)
+| Route | Composant | Endpoint |
+|-------|-----------|----------|
+| `/tier-list` | Grille de cartes archétype, badge tier, trend | `GET /meta/tier-list` |
+| `/evolution` | Line chart interactif (filtre archétype) | `GET /meta/evolution` |
+| `/predictions` | Tableau current vs prédit + delta Δ | `GET /meta/predictions` |
+| `/boutique` | Signaux d'achat, badges banlist TCG ⚠ | `GET /boutique/signals` |
+| `/early-signals` | Score rings SVG, views/semaine | `GET /early-signals` |
+| `/graph` | vis-network interactif | `GET /graph/synergies` |
+| `/ban-radar` | Score de risque + décomposition, filtre kind | `GET /ban-radar` |
+| `/ban-simulator` | Formulaire → bridge score + archetypes impactés | `POST /simulate-ban` |
 
-Dans chaque page, remplacer :
-```typescript
-// import { mockXxx } from "@/lib/mock";
-import { api } from "@/lib/api";
-const data = await api.tierList(); // ou api.boutique(), etc.
+Variable d'env à ajouter dans Vercel (hôte à trancher, TOK-35) :
 ```
-
-Variable d'env à ajouter dans Vercel :
-```
-NEXT_PUBLIC_API_URL=https://api.yugioh-meta.railway.app/api/v1
+NEXT_PUBLIC_API_URL=https://<host>/api/v1
 ```
 
 ---
@@ -66,20 +61,39 @@ NEXT_PUBLIC_API_URL=https://api.yugioh-meta.railway.app/api/v1
 | `init_db.py` | cards.json | `cards`, `card_sets`, `card_prices` | After fetch_cards |
 | `fetch_tournament_decks.py` | yugiohmeta.com (TCG) | `tournament_decks`, `deck_cards` | Weekly |
 | `fetch_ocg_decks.py` | yugiohmeta.com (OCG) | `tournament_decks` (ocg=1), `deck_cards` | Weekly |
+| `fetch_banlist_history.py` | Yugipedia (TCG + OCG) | `banlist_history` | On banlist update |
 | `snapshot_prices.py` | YGOPRODeck bulk API | `card_price_history` | Daily 09:00 (cron) |
 | `setup_impact_tables.py` | yugioh.db | `ban_impact`, `card_impact` | On demand |
+| `build_ban_radar.py` | yugioh.db | `ban_radar` | After notebooks |
+| `build_serving_db.py` | yugioh.db | `data/serving.db` | Before deploy |
 | `explore_limitless.py` | Playwright | Diagnostic only | On demand |
 
 **Key design decisions:**
 - `snapshot_prices.py` uses a single bulk API call (~12s for 13,797 cards) instead of per-card requests
 - OCG decks share the same `tournament_decks` table as TCG, differentiated by `ocg = 1` flag
 - `cards` table includes `image_url` and `image_url_small` columns from YGOPRODeck CDN
+- Deck fetchers are **idempotent**: `deck_cards` has a unique index on
+  `(deck_id, card_name, zone)` and each deck's rows are purged before reinsertion.
+  Re-running them never duplicates.
+- `fetch_banlist_history.py` rebuilds `banlist_history` wholesale — Yugipedia is
+  the source of truth and amends past lists retroactively. It scrapes both formats
+  and stamps a `format` column; do not filter on `list_name LIKE '%TCG%'`, which
+  misses the 33 pre-2021 TCG lists that Yugipedia names without a suffix.
 
 ---
 
 ## Layer 2 — Storage (SQLite)
 
-Single SQLite file at `data/yugioh.db` (~150 MB). No ORM — raw SQL via Python `sqlite3`.
+Single SQLite file at `data/yugioh.db` (~236 MB). No ORM — raw SQL via Python `sqlite3`.
+
+**Serving DB.** The API reads only 12 of the 36 tables — everything it returns is
+precomputed. `deck_cards` and its indexes alone account for 74% of the file and are
+never queried online (notebooks and `build_ban_radar.py` only). `build_serving_db.py`
+extracts the served subset into `data/serving.db` (~9 MB), small enough to ship with
+the deployment: no persistent volume to provision or back up. The backend resolves
+`YGO_DB_PATH` first, falling back to `data/yugioh.db`. The script guards against
+drift by scanning router SQL and failing if an endpoint references a table missing
+from `SERVED_TABLES`.
 
 **Table groups:**
 
@@ -88,7 +102,7 @@ Single SQLite file at `data/yugioh.db` (~150 MB). No ORM — raw SQL via Python 
 | Raw data | `cards`, `card_sets`, `card_prices`, `card_price_history`, `tournament_decks`, `deck_cards`, `banlist_history`, `archetypes_official`, `archetype_mapping` | Source of truth |
 | Co-occurrence | `card_cooccurrence`, `card_cooccurrence_90d`, `card_cooccurrence_side`, `card_cooccurrence_extra`, `card_cooccurrence_elite`, `card_cooccurrence_quarterly`, `archetype_extra_profile` | Synergy signals |
 | Graph | `card_graph_metrics`, `graph_communities`, `deck_style_clusters` | Network analysis |
-| Meta scoring | `meta_scores`, `meta_scores_regional`, `archetype_trend`, `meta_tier_list`, `meta_predictions`, `banlist_features`, `ban_impact`, `card_impact` | Ranking + forecasting |
+| Meta scoring | `meta_scores`, `meta_scores_regional`, `archetype_trend`, `meta_tier_list`, `meta_predictions`, `banlist_features`, `ban_impact`, `card_impact`, `ban_radar` | Ranking + forecasting |
 | NLP | `text_synergies`, `card_mechanic_tags`, `combo_mentions`, `combo_edges`, `combo_edges_global`, `early_card_signals` | Semantic signals |
 | Boutique | `boutique_alerts`, `boutique_card_alerts`, `boutique_buy_signals` | B2B shop intelligence |
 
@@ -196,13 +210,14 @@ Scope: cards released in TCG since Jan 2026 OR OCG since Jun 2025.
 
 ---
 
-## Phase 5 — Planned Architecture (FastAPI + React)
+## Phase 5 — Architecture (FastAPI + Next.js)
 
 ```
-Browser → React (Vercel) → FastAPI (Railway/Render) → SQLite (read-only)
+Browser → Next.js (Vercel) → FastAPI → serving.db (SQLite, read-only, ~9 MB)
 ```
 
-Planned endpoints (TOK-31):
+Backend hosting is still open (TOK-35): at 9 MB read-only the API may not need a
+dedicated service. Endpoints (TOK-31, implemented — see `docs/api-contracts.md`):
 - `GET /api/meta/tier-list` → meta_tier_list + meta_scores
 - `GET /api/meta/evolution` → meta_scores time series
 - `GET /api/predictions` → meta_predictions

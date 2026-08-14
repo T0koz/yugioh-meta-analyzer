@@ -196,11 +196,12 @@ When building the React + FastAPI frontend:
 # Backend (FastAPI)
 pip install fastapi uvicorn
 
-# Frontend (React)
-npx create-react-app frontend
-# or: npm create vite@latest frontend -- --template react-ts
+# Frontend: Next.js 16 (already scaffolded in frontend/)
+cd frontend && npm run dev
 
-# Deployment
-# Backend: Railway or Render (free tier)
-# Frontend: Vercel (free tier)
+# Deployment (TOK-35)
+# Build the served DB first: python scripts/build_serving_db.py
+# Backend reads YGO_DB_PATH=/app/data/serving.db (~9 MB, read-only)
+# Frontend: Vercel. Backend host still to be decided — at this size a
+# dedicated service may be unnecessary.
 ```

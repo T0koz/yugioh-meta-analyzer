@@ -1,6 +1,7 @@
 # Data Models — Yu-Gi-Oh! Meta Analyzer
 
-Single SQLite database: `data/yugioh.db` (~150 MB). All tables documented below.
+Single SQLite database: `data/yugioh.db` (~236 MB). All tables documented below.
+`data/serving.db` (~9 MB) is a generated subset holding only the 12 tables the API reads.
 
 ---
 
@@ -77,7 +78,7 @@ Daily price snapshots via bulk API call (cron 09:00).
 
 ## Group 2 — Tournament Data
 
-### `tournament_decks` — 19,888 rows
+### `tournament_decks` — 21,198 rows
 Tournament top-cut decklists from yugiohmeta.com.
 
 | Column | Type | Description |
@@ -94,8 +95,10 @@ Tournament top-cut decklists from yugiohmeta.com.
 | `illegal` | INTEGER | 1 if deck contains illegal cards |
 | `incomplete` | INTEGER | 1 if deck is incomplete |
 
-### `deck_cards` — 852,405 rows
-Individual card entries per deck.
+### `deck_cards` — 906,159 rows
+Individual card entries per deck. One row per `(deck_id, card_name, zone)`,
+enforced by a unique index — ingestion scripts purge a deck's rows before
+reinserting, so re-running a fetch never duplicates.
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -109,16 +112,38 @@ Individual card entries per deck.
 
 ## Group 3 — Banlist & Archetypes
 
-### `banlist_history` — 11,890 rows
-Full TCG banlist history scraped from Yugipedia.
+### `banlist_history` — 23,995 rows
+Full TCG **and OCG** banlist history scraped from Yugipedia by
+`scripts/fetch_banlist_history.py`. Rebuilt wholesale on every run.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `list_name` | TEXT | Banlist identifier |
+| `list_name` | TEXT | Banlist identifier (Yugipedia page title) |
+| `format` | TEXT | `TCG` (81 lists) / `OCG` (87 lists) |
 | `effective_date` | TEXT | Date banlist became active |
-| `end_date` | TEXT | Date it was superseded |
+| `end_date` | TEXT | Date it was superseded (NULL if in force) |
 | `card_name` | TEXT | Card name |
 | `status` | TEXT | Forbidden / Limited / Semi-Limited |
+
+⚠ Filter on `format`, never on `list_name LIKE '%TCG%'` — Yugipedia names
+pre-2021 TCG lists without a suffix ("September 2020 Lists"), so the LIKE
+filter silently drops 33 lists.
+
+### `ban_radar` — ~1,290 rows
+Ban-risk score per card, built by `scripts/build_ban_radar.py`. TCG only —
+the API serves this table as-is and has no format dimension.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `card_name` | TEXT | Card name |
+| `ban_risk_score` | REAL | 0–100, rescaled on the dataset max |
+| `risk_label` | TEXT | Critique / Élevé / Modéré / Faible |
+| `current_status` | TEXT | Banlist status in force (Unlimited if none) |
+| `ubiquity`, `carrier`, `copies`, `restriction`, `momentum`, `bridge` | REAL | Raw 0–1 criteria; the API reapplies the weights to return each one's contribution |
+| `decks`, `deck_share`, `n_archetypes`, `mean_copies` | — | Supporting stats |
+| `top_archetype` | TEXT | NULL when the card is a generic staple (archetype concentration < 50%) — drives the front-end filter |
+| `archetype_concentration` | REAL | Share of the card's decks belonging to `top_archetype` |
+| `format`, `as_of`, `n_decks_window` | — | Build provenance |
 
 ### `banlist_features` — 3,660 rows
 Per-archetype per-month banlist feature engineering for ML.

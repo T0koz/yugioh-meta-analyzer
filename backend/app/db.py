@@ -1,7 +1,13 @@
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parents[2] / "data" / "yugioh.db"
+# En production on sert `data/serving.db` (~9 Mo, les 12 tables interrogées par
+# l'API) au lieu de `yugioh.db` (~170 Mo, dont 74% de decklists jamais lues en
+# ligne) : YGO_DB_PATH=/app/data/serving.db.
+# Voir scripts/build_serving_db.py.
+DEFAULT_DB_PATH = Path(__file__).resolve().parents[2] / "data" / "yugioh.db"
+DB_PATH = Path(os.environ.get("YGO_DB_PATH") or DEFAULT_DB_PATH)
 
 
 def get_db():

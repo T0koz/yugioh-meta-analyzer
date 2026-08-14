@@ -34,7 +34,8 @@ yugioh-meta-analyzer/          # Project root
 │   └── 12_deck_clustering.ipynb      # K-Means deck style clustering
 │
 ├── data/                      # Data storage (gitignored: *.db, raw/)
-│   ├── yugioh.db              # ← MAIN DATABASE: SQLite ~150 MB (gitignored)
+│   ├── yugioh.db              # ← MAIN DATABASE: SQLite ~236 MB (gitignored)
+│   ├── serving.db             # ← API subset, ~9 MB, generated (gitignored)
 │   ├── raw/
 │   │   └── cards.json         # ~31 MB, 13,797 cards (gitignored)
 │   ├── graph_maliss.html      # Interactive Pyvis graph — Maliss archetype
@@ -52,7 +53,7 @@ yugioh-meta-analyzer/          # Project root
 │   ├── index.md               # Master documentation index
 │   ├── project-overview.md    # Executive summary + metrics
 │   ├── architecture.md        # Technical architecture + algorithms
-│   ├── data-models.md         # Complete SQLite schema (35+ tables)
+│   ├── data-models.md         # Complete SQLite schema (36 tables)
 │   ├── source-tree-analysis.md  # This file
 │   ├── development-guide.md   # Setup + rebuild + run instructions
 │   └── project-scan-report.json  # BMad workflow state

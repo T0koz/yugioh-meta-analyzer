@@ -161,10 +161,30 @@ export default async function BanRadarPage({
             C&apos;est un score de <strong className="text-slate-300">risque</strong>, pas une probabilité :
             il classe les cartes par ressemblance au profil de celles que Konami a
             historiquement touchées, il ne dit pas &laquo;&nbsp;X% de chances d&apos;être bannie&nbsp;&raquo;.
-            Rejoué la veille de la banlist du 18 mai 2026, il plaçait 8 des 11 cartes
-            touchées dans son quart supérieur (rang médian 127 sur 923 cartes notées).
-            Une seule banlist a assez de decks en base pour être testée : à prendre
-            comme un indicateur encourageant, pas comme une validation.
+            Rejoué la veille des banlists passées, sur les listes pour lesquelles la
+            base contient assez de decks :
+          </p>
+          <ul className="mt-2 space-y-1">
+            <li>
+              <strong className="text-slate-300">TCG, 18 mai 2026</strong> — 8 des 11 cartes
+              touchées dans le quart supérieur, rang médian 127 sur 923 cartes notées.
+            </li>
+            <li>
+              <strong className="text-slate-300">OCG, 1<sup>er</sup> juillet 2026</strong> — 7 des
+              11 dans le quart supérieur, rang médian 31 sur 1 089. Le score n&apos;a jamais été
+              calibré sur l&apos;OCG : c&apos;est un test hors distribution, et il y réussit mieux
+              qu&apos;en TCG.
+            </li>
+            <li>
+              <strong className="text-slate-300">OCG, 1<sup>er</sup> avril 2026</strong> — au
+              niveau du hasard (rang médian 285 sur 556). Cette fenêtre ne compte que 416 decks,
+              contre 1 200 à 1 700 pour les deux autres : en dessous d&apos;environ 600 decks,
+              le classement ne vaut rien.
+            </li>
+          </ul>
+          <p className="mt-2">
+            Deux mesures concluantes sur trois, 22 cartes en tout. C&apos;est encourageant,
+            ce n&apos;est pas encore une validation.
           </p>
           <p className="mt-2">
             Les <strong className="text-slate-300">staples génériques</strong>{" "}

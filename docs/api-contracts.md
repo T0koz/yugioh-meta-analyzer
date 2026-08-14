@@ -62,11 +62,18 @@
 
 ---
 
-## Planned API (Phase 5 — FastAPI)
+## API (Phase 5 — FastAPI) — implemented
 
-To be implemented as `TOK-31`. The FastAPI backend will expose read-only endpoints over SQLite.
+`TOK-31` ✅. Read-only FastAPI over SQLite, routers in `backend/app/routers/`.
 
-**Base URL (production):** `https://api.yugioh-meta.railway.app/api/v1/`
+**Base URL (dev):** `http://localhost:8000/api/v1/`
+**Base URL (production):** not decided — see TOK-35. The served database is
+~9 MB read-only (`build_serving_db.py`), so a dedicated backend host may not be
+needed.
+
+The API only ever reads precomputed tables. Adding an endpoint that queries a new
+table means adding it to `SERVED_TABLES` in `scripts/build_serving_db.py`, whose
+guard fails the build otherwise.
 
 ### Core Endpoints
 
@@ -162,6 +169,57 @@ Simulate removing a card from the graph.
   "bridge_score": 0.00504
 }
 ```
+
+#### `GET /ban-radar`
+Cards most exposed to the next TCG banlist (`TOK-53`).
+
+**Query params:** `limit` (default 50, max 200), `min_score` (0–100),
+`status` (Unlimited|Limited|Semi-Limited), `kind` (`generic`|`archetype`)
+
+`kind` splits generic staples (no home deck) from archetype engine pieces; it
+filters on `top_archetype IS NULL` in SQL, so the `limit` applies to the filtered
+set rather than truncating a global top.
+
+```json
+{
+  "data": [
+    {
+      "card_name": "Fydraulis Harmonia",
+      "ban_risk_score": 76.3,
+      "risk_label": "Critique",
+      "current_status": "Unlimited",
+      "deck_share": 13.44,
+      "decks": 271,
+      "n_archetypes": 7,
+      "mean_copies": 2.88,
+      "top_archetype": "Kewl Tune",
+      "image_url": "https://images.ygoprodeck.com/images/cards_small/12345.jpg",
+      "criteria": {"ubiquity": 12.1, "carrier": 21.4, "copies": 36.1,
+                   "restriction": 0.0, "momentum": 4.2, "bridge": 2.5}
+    }
+  ],
+  "as_of": "2026-08-09",
+  "n_decks_window": 2018,
+  "weights": {"ubiquity": 0.3, "carrier": 0.25, "copies": 0.2,
+              "restriction": 0.1, "momentum": 0.1, "bridge": 0.05}
+}
+```
+
+`criteria` holds each criterion's contribution **in points of the final score**
+(already weighted and rescaled, so they sum to `ban_risk_score`). The weights are
+duplicated between the router and `scripts/build_ban_radar.py` — keep them aligned.
+
+#### `GET /cards/search`
+Autocomplete for the global search bar.
+
+**Query params:** `q` (min 2 chars), `limit` (default 8, max 25)
+```json
+{"data": [{"name": "Ash Blossom & Joyous Spring", "archetype": null,
+           "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"}]}
+```
+
+⚠ Registered **before** `/cards/{name}` in `cards.py`, otherwise FastAPI matches
+`search` as the `{name}` path param.
 
 #### `GET /cards/{card_name}`
 Card details with price history.

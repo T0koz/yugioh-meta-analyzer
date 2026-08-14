@@ -179,11 +179,36 @@ Deux pièges à ne pas refaire si le scoring est retouché :
   touchées vs 1.10). Le retirer fait tomber le rappel top-10% de 5/10 à 1/10.
 
 Toute modification du scoring doit être repassée au backtest :
-`python scripts/build_ban_radar.py --backtest`. Une seule banlist est exploitable
-(2026-05-18) : avant février 2026 la base ne contient qu'une trentaine de decks
-par mois contre ~350 ensuite, donc trop peu de cartes atteignent le seuil.
+`python scripts/build_ban_radar.py --backtest`. Les listes ne sont plus codées en
+dur, elles sont dérivées de `banlist_history` — une carte compte comme touchée
+quand son statut gagne en sévérité par rapport à la liste précédente du même
+format. Toute nouvelle banlist scrapée devient donc automatiquement un point de
+mesure, sans toucher au code.
+
 Les poids sont dupliqués entre le script et `backend/app/routers/ban_radar.py`
 (le script calcule, l'API réapplique pour la décomposition) — garder les deux alignés.
+
+**Résultats du backtest (2026-08-14)** — seules les fenêtres d'au moins 600 decks
+et 5 cartes touchées sont retenues, les autres sont listées comme écartées :
+
+| Liste | Univers | Rang médian | Hasard | Top-25% |
+|---|---|---|---|---|
+| TCG 2026-05-18 | 923 cartes / 1 264 decks | **127** | 462 | 8/11 |
+| OCG 2026-07-01 | 1 089 cartes / 1 713 decks | **31** | 544 | 7/11 |
+| OCG 2026-04-01 *(écartée)* | 556 cartes / 416 decks | 285 | 278 | 2/7 |
+
+Deux enseignements :
+- **Le modèle transfère à l'OCG**, format sur lequel il n'a jamais été calibré,
+  et y réussit mieux qu'en TCG. C'est une validation hors distribution, plus
+  exigeante qu'un simple rejeu sur le format d'origine.
+- **En dessous d'environ 600 decks dans la fenêtre, le classement ne vaut rien.**
+  La liste OCG d'avril 2026 (416 decks) tombe exactement au niveau du hasard.
+  C'est ce qui justifie `BACKTEST_MIN_DECKS`, et ce seuil ne doit pas être baissé
+  pour faire entrer des listes supplémentaires : on ne récolterait que du bruit.
+
+Le classement OCG **ne s'écrit pas en base** : `ban_radar` est servie telle quelle
+par l'API, qui n'a pas de notion de format. `--format ocg` refuse d'écrire et
+renvoie vers `--dry-run`.
 
 La page propose un filtre **Tout / Pièces d'archétype / Staples génériques**
 (`?kind=archetype|generic`, filtré en SQL et non côté client, sinon le « top 50 »
@@ -204,25 +229,62 @@ jouant la carte appartiennent à son archétype porteur.
 - L'API éclate parfois une carte en deux entrées dans la même zone (amount 1
   puis 2 = 3 exemplaires) : agréger avant insertion.
 
-### ⚠ `banlist_history` est en retard sur la réalité
+### `banlist_history` — scraping scripté, TCG + OCG
 
-La table s'arrête au **2026-05-18** alors que la liste TCG en vigueur (vérifiée
-via YGOPRODeck `?banlist=tcg` le 2026-08-14) compte 5 assouplissements de plus :
-Ext Ryzeal, Maliss P Dormouse, Maliss P White Rabbit (Limited → Unlimited),
-Maliss Q White Binder et Number 89: Diablosis the Mind Hacker (Forbidden →
-Unlimited). **Aucune nouvelle carte touchée** — cette banlist ne fournit donc
-aucun point de backtest supplémentaire au Ban Radar.
+`scripts/fetch_banlist_history.py` remplace le notebook 09 pour cette table
+(le notebook reste la source de `banlist_features`). Il reconstruit la table
+intégralement à chaque exécution : Yugipedia est la source de vérité et amende
+les listes passées rétroactivement.
 
-Conséquence : le critère `restriction` surévalue ces 3 cartes notées (aucune
-n'est dans le top 50 affiché, impact visuel nul). Le rattrapage passe par le
-notebook 09 (scraping Yugipedia), pas par un script.
+Deux changements par rapport au notebook :
+- **Les listes OCG sont scrapées** (catégorie `OCG Forbidden & Limited Lists`,
+  87 listes). C'est ce qui a débloqué le second point de backtest du Ban Radar.
+  La catégorie contient aussi des sous-catégories régionales (coréen, chinois
+  simplifié…) qu'il faut filtrer — ce ne sont pas des listes.
+- **Une colonne `format`** ('TCG' / 'OCG'). Le filtre historique
+  `list_name LIKE '%TCG%'` laissait de côté 33 listes TCG antérieures à 2021 que
+  Yugipedia nomme sans suffixe (« September 2020 Lists »). Ne plus filtrer sur
+  le nom de la page.
+
+État au 2026-08-14 : 23 995 lignes, TCG jusqu'au 2026-05-18, OCG jusqu'au
+2026-07-01.
+
+**Sur la banlist TCG en vigueur :** YGOPRODeck (`?banlist=tcg`) renvoie 5 cartes
+de moins que la liste du 18 mai — Ext Ryzeal, Maliss P Dormouse, Maliss P White
+Rabbit, Maliss Q White Binder et Number 89: Diablosis the Mind Hacker, toutes
+assouplies. Mais **Yugipedia n'a aucune liste TCG après le 18 mai**. C'est donc
+plus probablement une dérive de la donnée YGOPRODeck qu'une nouvelle banlist.
+Dans les deux cas : aucune nouvelle restriction TCG, donc aucun point de
+backtest supplémentaire de ce côté.
+
+### 🗄 Base de service (déploiement, TOK-35)
+
+`scripts/build_serving_db.py` → `data/serving.db`, **9,4 Mo au lieu de 236 Mo**.
+
+L'API n'interroge que 12 des 36 tables : tout ce qu'elle sert est précalculé.
+`deck_cards` et ses index pèsent 74% de `yugioh.db` et ne sont jamais lus en
+ligne — ils ne servent qu'aux notebooks et à `build_ban_radar.py`. La base de
+service est donc transportable avec le déploiement : **pas de volume persistant
+à provisionner ni à sauvegarder**, le backend reste en lecture seule pure.
+
+- Le backend lit `YGO_DB_PATH` si la variable est définie, sinon `data/yugioh.db`.
+  En production : `YGO_DB_PATH=/app/data/serving.db`.
+- Le script embarque une **garde anti-dérive** : il scanne les `FROM`/`JOIN` des
+  routeurs et échoue si l'un d'eux référence une table absente de `SERVED_TABLES`.
+  Sans ça, un nouvel endpoint partirait en production avec une table manquante et
+  ne casserait qu'à la première requête. `--check` la lance sans rien écrire.
+- `data/serving.db` n'est pas trackée (`data/*.db`) : elle se régénère.
+
+Conséquence à évaluer avant de provisionner quoi que ce soit : à 9 Mo en lecture
+seule, **Railway n'est peut-être plus nécessaire** — l'API pourrait tourner en
+fonctions serverless à côté du front, base embarquée. Ça supprimerait la moitié
+de TOK-35.
 
 ### 🔜 À faire
 
-- **TOK-35** : déploiement Vercel (front) + Railway (back) — nécessite comptes/credentials Thomas
+- **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials
 - **TOK-52** : Mode Joueur / Mode Boutique (toggle UX) — nécessite de trancher ce que chaque mode change concrètement (pas fait en autonome pour cette raison)
-- **TOK-55** : Ban Predictor vs History — le backtest de `build_ban_radar.py` en est la brique de base, reste à l'exposer publiquement (bloqué de fait : un seul point de mesure tant qu'une banlist avec de vraies restrictions n'est pas tombée)
-- **Rafraîchir `banlist_history`** via le notebook 09 — voir la section dédiée ci-dessus
+- **TOK-55** : Ban Predictor vs History — deux points de mesure concluants disponibles (TCG mai 2026, OCG juillet 2026), la page publique reste à faire
 - **Phase B/C (TOK-54 à 67)** : Deck Builder, Referral boutique, API freemium — voir BACKLOG.md
 
 ### ✅ Fait en autonome le 2026-08-05 (pendant absence de Thomas)

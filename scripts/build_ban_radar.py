@@ -57,47 +57,34 @@ RESTRICTION_WEIGHT = {"Limited": 1.0, "Semi-Limited": 0.6}
 
 RISK_BANDS = [(70, "Critique"), (50, "Élevé"), (30, "Modéré"), (0, "Faible")]
 
-# Cartes rendues Forbidden/Limited/Semi par chaque banlist TCG, telles qu'elles
-# n'avaient pas encore ce statut sur la liste précédente. Sert de vérité terrain
-# au backtest. Seule la liste de mai 2026 est exploitable : avant février 2026 la
-# base ne contient qu'une trentaine de decks par mois (contre ~350 ensuite), donc
-# trop peu de cartes atteignent le seuil d'entrée dans l'univers noté.
-BANLIST_EVENTS = {
-    "2026-05-17": [
-        "CXyz Gimmick Puppet Fanatix Machinix", "K9-04 Noroi", "Naturia Rosewhip",
-        "Cupsy☆Yummy", "Cupsy★Yummy Way", "Fairy Tail - Snow", "Maliss P White Rabbit",
-        "Branded Fusion", "Metamorphosis", "Premature Burial", "Radiant Typhoon Chant",
-        "Rahu Dracotail", "Synchro Overtake", "Dracotail Arthalion", "Dracotail Lukias",
-    ],
-    "2026-02-01": [
-        "Barrier Statue of the Torrent", "Herald of the Arc Light", "Maliss Q White Binder",
-        "Harpie's Feather Storm", "Ame no Habakiri no Mitsurugi", "Dracotail Mululu",
-        "K9-66a Jokul", "Vanquish Soul Hollie Sue", "Yummy★Snatchy", '"A Case for K9"',
-        "Ketu Dracotail", "Droll & Lock Bird", "Dark Grepher", "Vanquish Soul Razen",
-        "Zoodiac Drident", "Change of Heart", "Crystron Inclusion", "Snatch Steal",
-        "Stake your Soul!",
-    ],
-}
+# Sévérité croissante : une carte est « touchée » quand elle monte d'un cran.
+SEVERITY = {"Unlimited": 0, "Semi-Limited": 1, "Limited": 2, "Forbidden": 3}
+
+# En dessous, l'univers noté est trop maigre pour que le backtest dise quoi que
+# ce soit : la plupart des cartes touchées n'atteignent même pas le seuil
+# d'entrée, et le rang médian porte sur deux ou trois observations.
+BACKTEST_MIN_DECKS = 600
+BACKTEST_MIN_HITS = 5
 
 
 def risk_label(score: float) -> str:
     return next(label for threshold, label in RISK_BANDS if score >= threshold)
 
 
-def load_usage(conn: sqlite3.Connection, as_of: str) -> pd.DataFrame:
-    """Une ligne par (carte, deck) sur la fenêtre glissante, TCG légal uniquement."""
+def load_usage(conn: sqlite3.Connection, as_of: str, fmt: str) -> pd.DataFrame:
+    """Une ligne par (carte, deck) sur la fenêtre glissante, decks légaux du format."""
     return pd.read_sql_query(
         f"""
         SELECT dc.card_name, dc.amount, td.id AS deck_id, td.archetype,
                strftime('%Y-%m', td.created) AS month
         FROM deck_cards dc
         JOIN tournament_decks td ON td.id = dc.deck_id
-        WHERE td.ocg = 0 AND td.illegal = 0
+        WHERE td.ocg = :ocg AND td.illegal = 0
           AND td.created <= :as_of
           AND td.created >= date(:as_of, '-{WINDOW_MONTHS} months')
         """,
         conn,
-        params={"as_of": as_of},
+        params={"as_of": as_of, "ocg": 1 if fmt == "OCG" else 0},
     )
 
 
@@ -154,21 +141,56 @@ def compute_momentum(usage: pd.DataFrame, as_of: str) -> pd.Series:
     return growth.replace(np.inf, 1.0).clip(0, 1).fillna(0)
 
 
-def current_banlist_status(conn: sqlite3.Connection, as_of: str) -> pd.Series:
-    """Statut TCG en vigueur à `as_of`, indexé par carte."""
+def current_banlist_status(conn: sqlite3.Connection, as_of: str, fmt: str) -> pd.Series:
+    """Statut en vigueur à `as_of` dans ce format, indexé par carte.
+
+    Le filtre porte sur la colonne `format` et non sur le nom de la page :
+    Yugipedia nomme les listes TCG d'avant 2021 sans suffixe, un
+    `list_name LIKE '%TCG%'` en laissait 33 de côté.
+    """
     bh = pd.read_sql_query(
         "SELECT card_name, status, effective_date, end_date FROM banlist_history "
-        "WHERE list_name LIKE '%TCG%'",
+        "WHERE format = ?",
         conn,
+        params=(fmt,),
     )
     in_force = bh[(bh.effective_date <= as_of) & (bh.end_date.isna() | (bh.end_date >= as_of))]
     return in_force.groupby("card_name").status.first()
 
 
-def build(conn: sqlite3.Connection, as_of: str) -> pd.DataFrame:
-    usage = load_usage(conn, as_of)
+def banlist_events(conn: sqlite3.Connection, fmt: str) -> list[tuple[str, str, list[str]]]:
+    """(veille, date d'effet, cartes nouvellement restreintes) pour chaque liste.
+
+    Une carte compte comme touchée quand son statut gagne en sévérité par
+    rapport à la liste précédente du même format. Les assouplissements sont
+    ignorés : le Ban Radar prédit des restrictions.
+    """
+    bh = pd.read_sql_query(
+        "SELECT effective_date, card_name, status FROM banlist_history "
+        "WHERE format = ? AND effective_date IS NOT NULL",
+        conn,
+        params=(fmt,),
+    )
+    events = []
+    dates = sorted(bh.effective_date.unique())
+    for previous_date, date in zip(dates, dates[1:]):
+        before = bh[bh.effective_date == previous_date].set_index("card_name").status
+        after = bh[bh.effective_date == date].set_index("card_name").status
+        hits = [
+            card
+            for card, status in after.items()
+            if SEVERITY[status] > SEVERITY.get(before.get(card, "Unlimited"), 0)
+        ]
+        if hits:
+            eve = (pd.Timestamp(date) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+            events.append((eve, date, hits))
+    return events
+
+
+def build(conn: sqlite3.Connection, as_of: str, fmt: str = "TCG") -> pd.DataFrame:
+    usage = load_usage(conn, as_of, fmt)
     if usage.empty:
-        raise SystemExit(f"Aucun deck TCG sur la fenêtre se terminant le {as_of}")
+        raise SystemExit(f"Aucun deck {fmt} sur la fenêtre se terminant le {as_of}")
 
     n_decks = usage.deck_id.nunique()
     totals = usage.groupby("card_name").agg(
@@ -179,7 +201,7 @@ def build(conn: sqlite3.Connection, as_of: str) -> pd.DataFrame:
     totals = totals[totals.decks >= MIN_DECKS]
 
     carrier = compute_carrier(usage, n_decks).reindex(totals.index)
-    status = current_banlist_status(conn, as_of)
+    status = current_banlist_status(conn, as_of, fmt)
     betweenness = pd.read_sql_query(
         "SELECT card_name, betweenness FROM card_graph_metrics", conn
     ).set_index("card_name").betweenness
@@ -214,6 +236,7 @@ def build(conn: sqlite3.Connection, as_of: str) -> pd.DataFrame:
         carrier.concentration.reindex(df.index) >= GENERIC_CONCENTRATION_THRESHOLD
     )
     df["archetype_concentration"] = carrier.concentration.reindex(df.index).round(3)
+    df["format"] = fmt
     df["as_of"] = as_of
     df["n_decks_window"] = n_decks
 
@@ -223,50 +246,74 @@ def build(conn: sqlite3.Connection, as_of: str) -> pd.DataFrame:
     return df.sort_values("ban_risk_score", ascending=False).reset_index()
 
 
-def backtest(conn: sqlite3.Connection) -> None:
-    """Rejoue le score la veille de chaque banlist et situe les cartes touchées."""
-    for as_of, hits in BANLIST_EVENTS.items():
-        df = build(conn, as_of).set_index("card_name")
-        n = len(df)
-        ranked = [(h, df.index.get_loc(h) + 1) for h in hits if h in df.index]
-        missing = [h for h in hits if h not in df.index]
+def backtest(conn: sqlite3.Connection, formats: tuple[str, ...] = ("TCG", "OCG")) -> None:
+    """Rejoue le score la veille de chaque banlist et situe les cartes touchées.
 
-        print(f"\n=== Banlist du lendemain de {as_of} — {len(hits)} cartes touchées")
-        print(f"    univers noté : {n} cartes ({df.n_decks_window.iloc[0]} decks sur {WINDOW_MONTHS} mois)")
-        if not ranked:
-            print("    aucune carte touchée n'atteint le seuil d'entrée — backtest non concluant")
-            continue
+    Les listes sont lues depuis `banlist_history` plutôt que codées en dur :
+    toute nouvelle banlist scrapée devient automatiquement un point de mesure.
+    """
+    for fmt in formats:
+        print(f"\n{'=' * 66}\n{fmt}\n{'=' * 66}")
+        skipped = []
 
-        ranks = np.array([r for _, r in ranked])
-        percentiles = ranks / n * 100
-        for card, rank in sorted(ranked, key=lambda x: x[1]):
-            print(f"      #{rank:<4} ({rank / n * 100:4.1f}%)  {df.loc[card, 'ban_risk_score']:>5}  {card}")
-        if missing:
-            print(f"    hors univers (<{MIN_DECKS} decks) : {len(missing)} — {', '.join(missing)}")
-        print(f"    -> rang médian {np.median(ranks):.0f}/{n} (aléatoire ≈ {n / 2:.0f})"
-              f" | top-10% : {(percentiles <= 10).sum()}/{len(ranks)}"
-              f" | top-25% : {(percentiles <= 25).sum()}/{len(ranks)}")
+        for as_of, effective, hits in banlist_events(conn, fmt):
+            usage_decks = load_usage(conn, as_of, fmt).deck_id.nunique()
+            if usage_decks < BACKTEST_MIN_DECKS or len(hits) < BACKTEST_MIN_HITS:
+                skipped.append((effective, usage_decks, len(hits)))
+                continue
+
+            df = build(conn, as_of, fmt).set_index("card_name")
+            n = len(df)
+            ranked = [(h, df.index.get_loc(h) + 1) for h in hits if h in df.index]
+            missing = [h for h in hits if h not in df.index]
+
+            print(f"\n--- Liste du {effective} — {len(hits)} cartes touchées")
+            print(f"    univers noté : {n} cartes ({usage_decks} decks sur {WINDOW_MONTHS} mois)")
+            if not ranked:
+                print("    aucune carte touchée n'atteint le seuil d'entrée")
+                continue
+
+            ranks = np.array([r for _, r in ranked])
+            percentiles = ranks / n * 100
+            for card, rank in sorted(ranked, key=lambda x: x[1]):
+                print(f"      #{rank:<4} ({rank / n * 100:4.1f}%)  "
+                      f"{df.loc[card, 'ban_risk_score']:>5}  {card}")
+            if missing:
+                print(f"    hors univers (<{MIN_DECKS} decks) : {len(missing)}")
+            print(f"    -> rang médian {np.median(ranks):.0f}/{n} (aléatoire ≈ {n / 2:.0f})"
+                  f" | top-10% : {(percentiles <= 10).sum()}/{len(ranks)}"
+                  f" | top-25% : {(percentiles <= 25).sum()}/{len(ranks)}")
+
+        if skipped:
+            print(f"\n    {len(skipped)} listes écartées faute de matière "
+                  f"(<{BACKTEST_MIN_DECKS} decks ou <{BACKTEST_MIN_HITS} cartes touchées) — "
+                  f"les plus récentes : "
+                  + ", ".join(f"{d} ({n} decks, {h} touchées)" for d, n, h in skipped[-3:]))
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--as-of", help="Date de référence YYYY-MM-DD (défaut : dernier deck TCG)")
+    parser.add_argument("--as-of", help="Date de référence YYYY-MM-DD (défaut : dernier deck du format)")
+    parser.add_argument("--format", choices=["tcg", "ocg"], default="tcg",
+                        help="Format noté (défaut : tcg — c'est lui que sert l'API)")
     parser.add_argument("--dry-run", action="store_true", help="Affiche le top 25 sans écrire")
     parser.add_argument("--backtest", action="store_true", help="Rejoue les banlists passées")
     args = parser.parse_args()
 
     conn = sqlite3.connect(DB)
+    fmt = args.format.upper()
 
     if args.backtest:
         backtest(conn)
         return
 
     as_of = args.as_of or conn.execute(
-        "SELECT MAX(created) FROM tournament_decks WHERE ocg = 0"
+        "SELECT MAX(created) FROM tournament_decks WHERE ocg = ?",
+        (1 if fmt == "OCG" else 0,),
     ).fetchone()[0][:10]
 
-    df = build(conn, as_of)
-    print(f"Ban Radar au {as_of} — {len(df)} cartes notées "
+    df = build(conn, as_of, fmt)
+    print(f"Ban Radar {fmt} au {as_of} — {len(df)} cartes notées "
           f"({df.n_decks_window.iloc[0]} decks sur {WINDOW_MONTHS} mois)")
     print(df.risk_label.value_counts().to_string())
     print()
@@ -279,6 +326,15 @@ def main() -> None:
 
     if args.dry_run:
         return
+
+    # La table `ban_radar` est celle que sert l'API, et /ban-radar n'expose pas
+    # de notion de format : écrire l'OCG dedans remplacerait silencieusement le
+    # classement TCG affiché sur le site.
+    if fmt != "TCG":
+        raise SystemExit(
+            "Le classement OCG ne s'écrit pas en base : la table ban_radar est servie "
+            "telle quelle par l'API, qui est TCG. Relance avec --dry-run pour le consulter."
+        )
 
     df.to_sql("ban_radar", conn, if_exists="replace", index=False)
     conn.execute("CREATE INDEX IF NOT EXISTS idx_ban_radar_card ON ban_radar(card_name)")

@@ -15,7 +15,7 @@ A full-stack data science and analytics platform for competitive Yu-Gi-Oh! TCG m
 | **Name** | yugioh-meta-analyzer |
 | **Type** | Data / ML monolith + Streamlit dashboard |
 | **Language** | Python 3.13 |
-| **Database** | SQLite (`data/yugioh.db`, ~150 MB) |
+| **Database** | SQLite (`data/yugioh.db`, ~236 MB) + generated `serving.db` (~9 MB) |
 | **Dashboard** | Streamlit (`app.py`, 9 pages) |
 | **Owner** | Thomas Cozian (Tokoz) |
 | **Target completion** | Before Le Wagon Data Science (Oct 12, 2026) |
@@ -52,7 +52,7 @@ External APIs → Scripts (ETL) → SQLite DB → Notebooks (Analysis) → Strea
 ```
 
 1. **Data ingestion** (scripts): fetch from YGOPRODeck API + yugiohmeta.com
-2. **Storage** (SQLite): 35+ tables covering raw data, co-occurrence, graph metrics, ML outputs
+2. **Storage** (SQLite): 36 tables covering raw data, co-occurrence, graph metrics, ML outputs
 3. **Analysis** (notebooks 01-12): computation pipeline executed in order
 4. **Serving** (app.py): Streamlit dashboard with 9 interactive pages
 5. **Scheduling** (cron): daily price snapshot at 09:00 via Claude Scheduled Tasks
@@ -69,7 +69,7 @@ External APIs → Scripts (ETL) → SQLite DB → Notebooks (Analysis) → Strea
 | Graph nodes / communities | ~660 nodes / 63 communities |
 | OCG→TCG lag correlation | r = 0.771, p < 0.0001, lag = 4 months |
 | Prediction accuracy | Spearman ρ ≈ +0.65 (walk-forward CV, 9-month window) |
-| DB size | ~150 MB |
+| DB size | ~236 MB (served subset: ~9 MB) |
 
 ---
 

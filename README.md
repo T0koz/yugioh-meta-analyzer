@@ -25,7 +25,8 @@ Outil d'analyse et de prédiction de la méta Yu-Gi-Oh! via IA.
 
 - **Python 3.13**, VS Code, Git
 - **Libs :** pandas, numpy, scikit-learn, networkx, pyvis, streamlit, plotly, statsmodels, youtube-transcript-api
-- **DB :** SQLite (`data/yugioh.db`, ~150 MB, non trackée Git) — 35+ tables
+- **DB :** SQLite (`data/yugioh.db`, ~236 MB, non trackée Git) — 36 tables
+  - `data/serving.db` (~9 MB) : sous-ensemble des 12 tables lues par l'API, pour le déploiement
 - **Cron :** snapshot quotidien des prix (toutes cartes, 1 appel bulk API)
 
 ---
@@ -40,7 +41,13 @@ yugioh-meta-analyzer/
 │   ├── init_db.py                      # cards.json → yugioh.db
 │   ├── fetch_tournament_decks.py       # yugiohmeta.com TCG → yugioh.db
 │   ├── fetch_ocg_decks.py              # yugiohmeta.com OCG → yugioh.db
+│   ├── fetch_banlist_history.py        # Yugipedia TCG + OCG → banlist_history
+│   ├── setup_impact_tables.py          # ban_impact, card_impact
+│   ├── build_ban_radar.py              # Score de risque de ban (+ --backtest)
+│   ├── build_serving_db.py             # yugioh.db → serving.db (déploiement)
 │   └── snapshot_prices.py              # Cron quotidien — prix toutes cartes
+├── backend/                            # API FastAPI (lecture seule)
+├── frontend/                           # Next.js — 8 pages
 ├── notebooks/
 │   ├── 01_exploration.ipynb            # Exploration cartes
 │   ├── 02_cooccurrence.ipynb           # Co-occurrence (6 variantes) + extra deck
@@ -81,17 +88,34 @@ pip install pandas numpy jupyter ipykernel networkx pyvis scikit-learn \
 python scripts/fetch_cards.py
 python scripts/init_db.py
 
-# 2. Decklists tournoi
+# 2. Decklists tournoi (idempotents : relançables sans dupliquer)
 python scripts/fetch_tournament_decks.py
 python scripts/fetch_ocg_decks.py
 
-# 3. Tables d'impact
+# 3. Historique banlist TCG + OCG (reconstruit la table à chaque run)
+python scripts/fetch_banlist_history.py
+
+# 4. Tables d'impact
 python scripts/setup_impact_tables.py
 
-# 4. Snapshot prix initial
+# 5. Snapshot prix initial
 python scripts/snapshot_prices.py
 
-# 5. Lancer les notebooks dans l'ordre (01 → 12)
+# 6. Lancer les notebooks dans l'ordre (01 → 12)
+
+# 7. Ban Radar — après les notebooks (dépend de card_graph_metrics)
+python scripts/build_ban_radar.py
+python scripts/build_ban_radar.py --backtest      # valide le scoring
+```
+
+## Préparer le déploiement
+
+```bash
+# Base réduite aux 12 tables servies par l'API : 9 Mo au lieu de 236
+python scripts/build_serving_db.py
+
+# Le backend la lit via YGO_DB_PATH
+YGO_DB_PATH=/app/data/serving.db uvicorn app.main:app
 ```
 
 ## Lancer le dashboard

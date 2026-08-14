@@ -73,18 +73,24 @@ Suivi détaillé sur [Linear](https://linear.app/tokoz).
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
 | TOK-31 | Backend FastAPI — endpoints /meta, /boutique, /graph, /cards | ✅ Done | 🔴 High |
-| TOK-32 | Front Next.js — toutes les pages (mock data) | ✅ Done | 🔴 High |
+| TOK-32 | Front Next.js — toutes les pages | ✅ Done | 🔴 High |
 | TOK-33 | Front — graphe synergies interactif (vis-network branché API) | ✅ Done | 🟠 Medium |
 | TOK-34 | Front — simulateur de ban (branché API) | 🟡 Partiel | 🟠 Medium |
-| TOK-35 | Déploiement (Vercel front + Railway back) | 🔜 Next | 🔴 High |
+| TOK-35 | Déploiement (Vercel front + back) | 🟡 Base de service prête | 🔴 High |
 
-**Pages livrées (mock data) :**
-- `/tier-list` — Tier List avec barres de score et trends
+**TOK-35 — état :** `scripts/build_serving_db.py` produit `data/serving.db`
+(9,4 Mo contre 236 Mo), le backend la lit via `YGO_DB_PATH`. Plus besoin de
+volume persistant. Reste à trancher l'hébergement : à cette taille, l'API peut
+sans doute tourner en serverless à côté du front, ce qui rendrait Railway inutile.
+
+**Pages livrées** (toutes branchées sur l'API réelle) :
+- `/tier-list` — Grille de cartes archétype, badge tier, trend
 - `/evolution` — Line chart interactif méta mensuel (recharts)
 - `/predictions` — Tableau current vs prédit + delta
 - `/boutique` — Signaux d'achat avec badges banlist TCG
 - `/early-signals` — Score rings + views/semaine
-- `/graph` — Placeholder SVG (full vis-network = TOK-33 post-API)
+- `/graph` — vis-network interactif
+- `/ban-radar` — Score de risque de ban + décomposition par critère
 - `/ban-simulator` — Formulaire + bridge score + archetypes impactés
 
 ---
@@ -124,7 +130,7 @@ Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 i
 |-----|------|--------|----------|
 | TOK-53 | Ban Radar — score de risque de ban (scoring multi-critères) | ✅ Done | 🟠 Medium |
 | TOK-54 | Top cartes à fort impact si bannies (bridge score classé) | 🔜 À faire | 🟠 Medium |
-| TOK-55 | Ban Predictor vs History — track record public | 🔜 À faire | 🟠 Medium |
+| TOK-55 | Ban Predictor vs History — track record public | 🟡 Débloqué | 🟠 Medium |
 | TOK-56 | Comparateur archétypes côte à côte | 🔜 À faire | 🟠 Medium |
 | TOK-57 | Watchlist personnelle | 🔜 À faire | 🟢 Low |
 | TOK-58 | Deck Builder + meta score temps réel | 🔜 À faire | 🟠 Medium |
@@ -139,10 +145,23 @@ Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 i
 
 **TOK-53 livré** : table `ban_radar` (`scripts/build_ban_radar.py`), endpoint
 `GET /api/v1/ban-radar`, page `/ban-radar` avec filtre Tout / Pièces d'archétype
-/ Staples génériques. Score de risque 0-100 sur 6 critères pondérés. Backtesté
-contre la banlist du 2026-05-18 : 8 des 11 cartes touchées dans le quart
-supérieur, rang médian 127/923. Le critère décisif est le nombre moyen
-d'exemplaires joués, pas l'omniprésence. Détail dans le docstring du script.
+/ Staples génériques. Score de risque 0-100 sur 6 critères pondérés, le décisif
+étant le nombre moyen d'exemplaires joués — pas l'omniprésence.
+
+Backtest (`--backtest`, listes dérivées de `banlist_history`, plus codées en dur) :
+
+| Liste | Rang médian | Hasard | Top-25% |
+|---|---|---|---|
+| TCG 2026-05-18 | **127**/923 | 462 | 8/11 |
+| OCG 2026-07-01 | **31**/1 089 | 544 | 7/11 |
+| OCG 2026-04-01 *(416 decks, écartée)* | 285/556 | 278 | 2/7 |
+
+Le modèle transfère à l'OCG sans y avoir été calibré, et y fait mieux qu'en TCG.
+En dessous de ~600 decks dans la fenêtre, il ne vaut rien — seuil à ne pas
+baisser pour gagner des listes. Détail dans le docstring du script.
+
+**TOK-55 débloqué** par ces deux points de mesure : reste à construire la page
+publique. `scripts/fetch_banlist_history.py` (TCG + OCG) en est le socle.
 
 Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historique de decks, Social (profils créateurs, Deck Feed, rating, tournoi mensuel), Marketplace de decks guides.
 

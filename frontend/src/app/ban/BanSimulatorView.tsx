@@ -1,34 +1,27 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { CardChip } from "@/components/card-chip";
-import { HoverPreviewProvider } from "@/components/hover-preview-context";
-import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { api } from "@/lib/api";
 import type { BanSimResult } from "@/types";
 
-export default function BanSimulatorPage() {
-  return (
-    <HoverPreviewProvider>
-      <HoverPreviewPanel />
-      <Suspense>
-        <BanSimulatorContent />
-      </Suspense>
-    </HoverPreviewProvider>
-  );
-}
-
-function BanSimulatorContent() {
-  const searchParams = useSearchParams();
-  const [query, setQuery] = useState("");
-  const [result, setResult] = useState<BanSimResult | null>(null);
-  const [notFound, setNotFound] = useState(false);
+export function BanSimulatorView({
+  initialCard,
+  initialResult,
+}: {
+  initialCard?: string;
+  initialResult: BanSimResult | null;
+}) {
+  const [query, setQuery] = useState(initialCard ?? "");
+  const [result, setResult] = useState<BanSimResult | null>(initialResult);
+  // Arrivée via ?card= (recherche globale, "simuler le ban →") : le résultat
+  // est déjà résolu côté serveur par la page parente, pas de round-trip client.
+  const [notFound, setNotFound] = useState(Boolean(initialCard) && !initialResult);
   const [loading, setLoading] = useState(false);
 
-  async function simulate(cardName?: string) {
-    const trimmed = (cardName ?? query).trim();
+  async function simulate() {
+    const trimmed = query.trim();
     if (!trimmed) return;
     setLoading(true);
     try {
@@ -40,24 +33,11 @@ function BanSimulatorContent() {
     }
   }
 
-  // Pré-remplit et lance la simulation quand on arrive depuis la recherche globale (?card=...).
-  useEffect(() => {
-    const fromSearch = searchParams.get("card");
-    if (fromSearch) {
-      setQuery(fromSearch);
-      void simulate(fromSearch);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
-
   return (
-    <main className="max-w-3xl mx-auto px-6 py-10 w-full">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Simulateur de Ban</h1>
-        <p className="text-slate-400 mt-1 text-sm">
-          Simule l&apos;impact de bannir une carte sur le graphe de synergies
-        </p>
-      </div>
+    <>
+      <p className="mb-6 text-sm text-slate-400">
+        Simule l&apos;impact de bannir une carte sur le graphe de synergies
+      </p>
 
       <div className="flex gap-3 mb-8">
         <Input
@@ -138,6 +118,6 @@ function BanSimulatorContent() {
           </div>
         </div>
       )}
-    </main>
+    </>
   );
 }

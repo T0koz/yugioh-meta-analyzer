@@ -16,17 +16,15 @@ export function SmartSearch() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const trimmedQuery = query.trim();
+
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    const trimmed = query.trim();
-    if (trimmed.length < MIN_QUERY_LENGTH) {
-      setResults([]);
-      setOpen(false);
-      return;
-    }
+    if (trimmedQuery.length < MIN_QUERY_LENGTH) return;
+
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await api.searchCards(trimmed);
+        const res = await api.searchCards(trimmedQuery);
         setResults(res.data);
         setOpen(true);
       } catch {
@@ -36,12 +34,17 @@ export function SmartSearch() {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query]);
+  }, [trimmedQuery]);
+
+  // Dérivé plutôt que réinitialisé dans l'effet : repasser sous le seuil de
+  // caractères masque le menu immédiatement, sans setState synchrone à l'entrée
+  // de l'effet (ce que la règle react-hooks/set-state-in-effect signalait).
+  const showResults = open && trimmedQuery.length >= MIN_QUERY_LENGTH && results.length > 0;
 
   function selectCard(name: string) {
     setOpen(false);
     setQuery("");
-    router.push(`/ban-simulator?card=${encodeURIComponent(name)}`);
+    router.push(`/ban?tab=simulateur&card=${encodeURIComponent(name)}`);
   }
 
   return (
@@ -54,7 +57,7 @@ export function SmartSearch() {
         placeholder="Rechercher une carte..."
         className="w-full bg-slate-900 border border-slate-700 rounded-md px-3 py-1.5 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
       />
-      {open && results.length > 0 && (
+      {showResults && (
         <div className="absolute right-0 mt-1 w-72 max-h-96 overflow-y-auto rounded-md border border-slate-700 bg-slate-900 shadow-xl z-40">
           {results.map((r, i) => (
             <button

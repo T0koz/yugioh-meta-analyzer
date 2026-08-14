@@ -147,4 +147,4 @@ Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historiq
 
 ---
 
-*Dernière mise à jour : 2026-08-11*
+*Dernière mise à jour : 2026-08-14*

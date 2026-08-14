@@ -24,7 +24,12 @@ node_modules/
 
 # Outillage BMad — réinstallable, pas du code projet
 # (_bmad-output/ est tracké : ce sont les livrables, pas l'outil)
-_bmad/
+# `_bmad/*` et non `_bmad/` : Git ne descend pas dans un dossier exclu, donc
+# une exception sur un enfant ne serait jamais évaluée.
+_bmad/*
+# Seuls overrides que l'installeur BMad ne régénère pas. Le .gitignore imbriqué
+# de ce dossier exclut déjà les *.user.toml (personnels).
+!_bmad/custom/
 .claude/skills/
 .claude/settings.local.json
 

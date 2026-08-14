@@ -239,4 +239,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-08-11*
+*Dernière mise à jour : 2026-08-14*

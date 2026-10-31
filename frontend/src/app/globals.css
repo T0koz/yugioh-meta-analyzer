@@ -123,6 +123,12 @@
   --chart-5: var(--ink-4);
 }
 
+/* Fond en points (hero), statique : l'animation est une phase ultérieure. */
+@utility bg-dots {
+  background-image: radial-gradient(rgba(170, 195, 235, 0.16) 1px, transparent 1.2px);
+  background-size: 14px 14px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

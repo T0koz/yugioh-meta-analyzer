@@ -15,6 +15,19 @@ export function SmartSearch() {
   const [open, setOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // ⌘K / Ctrl+K place le curseur dans la recherche depuis n'importe quelle page.
+  useEffect(() => {
+    function handleShortcut(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
 
   const trimmedQuery = query.trim();
 
@@ -48,17 +61,23 @@ export function SmartSearch() {
   }
 
   return (
-    <div className="relative w-full sm:w-56 sm:ml-auto shrink-0">
+    <div className="relative ml-auto min-w-0 flex-1 min-[760px]:w-60 min-[760px]:flex-none">
       <input
+        ref={inputRef}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => results.length > 0 && setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
-        placeholder="Rechercher une carte..."
-        className="w-full bg-slate-900 border border-slate-700 rounded-md px-3 py-1.5 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+        onKeyDown={(e) => e.key === "Escape" && e.currentTarget.blur()}
+        placeholder="Rechercher une carte…"
+        aria-keyshortcuts="Meta+K Control+K"
+        className="w-full rounded-[4px] border border-line bg-ink py-2 pl-3 pr-3 font-mono text-[12px] text-text text-ellipsis placeholder:text-faint min-[760px]:pr-12 transition-colors duration-200 focus:border-signal-hi focus:outline-none"
       />
+      <kbd className="pointer-events-none absolute hidden min-[760px]:block right-2 top-1/2 -translate-y-1/2 rounded-[3px] border border-line-2 px-1.5 font-mono text-[11px] text-muted-text">
+        ⌘K
+      </kbd>
       {showResults && (
-        <div className="absolute right-0 mt-1 w-72 max-h-96 overflow-y-auto rounded-md border border-slate-700 bg-slate-900 shadow-xl z-40">
+        <div className="absolute right-0 mt-1 w-72 max-h-96 overflow-y-auto rounded-[4px] border border-line-2 bg-ink-3 p-1 z-40">
           {results.map((r, i) => (
             <button
               key={r.name}
@@ -66,22 +85,22 @@ export function SmartSearch() {
               onMouseDown={() => selectCard(r.name)}
               onMouseEnter={() => setHoveredIndex(i)}
               onMouseLeave={() => setHoveredIndex(null)}
-              className="w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-slate-800 transition-colors relative"
+              className="w-full flex items-center gap-3 rounded-[4px] px-3 py-2 text-left hover:bg-ink-4 transition-colors duration-200 relative"
             >
               {r.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element -- preview externe (YGOPRODeck)
-                <img src={r.image_url} alt={r.name} className="w-8 h-8 rounded object-cover shrink-0" />
+                <img src={r.image_url} alt={r.name} className="w-8 h-8 rounded-[3px] object-cover shrink-0" />
               ) : (
-                <div className="w-8 h-8 rounded bg-slate-800 shrink-0" />
+                <div className="w-8 h-8 rounded-[3px] bg-ink-4 shrink-0" />
               )}
               <div className="min-w-0">
-                <p className="text-sm text-slate-200 truncate">{r.name}</p>
-                {r.archetype && <p className="text-xs text-slate-500 truncate">{r.archetype}</p>}
+                <p className="text-sm font-medium text-text truncate">{r.name}</p>
+                {r.archetype && <p className="font-mono text-[11px] text-muted-text truncate">{r.archetype}</p>}
               </div>
               {hoveredIndex === i && r.image_url && (
                 <span className="pointer-events-none absolute right-full top-0 mr-2 z-50">
                   {/* eslint-disable-next-line @next/next/no-img-element -- preview externe (YGOPRODeck) */}
-                  <img src={r.image_url} alt={r.name} className="w-28 rounded-md shadow-xl border border-slate-700" />
+                  <img src={r.image_url} alt={r.name} className="w-28 rounded-[4px] border border-line-2" />
                 </span>
               )}
             </button>

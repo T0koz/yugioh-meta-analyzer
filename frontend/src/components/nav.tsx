@@ -36,6 +36,16 @@ const NAV_ENTRIES: NavEntry[] = [
   { kind: "link", href: "/graph", label: "Graphe" },
 ];
 
+// Lien de premier niveau (docs/design-system.md §4) : actif = texte plein sur --ink-4.
+function linkClass(active: boolean) {
+  return `flex items-center gap-1 rounded-[4px] px-2.5 py-1.5 text-[13px] transition-colors duration-200 ${
+    active ? "bg-ink-4 text-text" : "text-muted-text hover:text-text"
+  }`;
+}
+
+// Même surface que la nav pour les sous-menus et le menu mobile.
+const PANEL = "rounded-[8px] border border-line-2 bg-ink-2/95 backdrop-blur p-1";
+
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
@@ -51,6 +61,14 @@ function ChevronIcon({ open }: { open: boolean }) {
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+function PanelLink({ item, pathname, onSelect }: { item: NavLink; pathname: string; onSelect: () => void }) {
+  return (
+    <Link href={item.href} onClick={onSelect} className={`${linkClass(pathname === item.href)} w-full`}>
+      {item.label}
+    </Link>
   );
 }
 
@@ -73,32 +91,14 @@ function NavDropdown({
 
   return (
     <div className="relative shrink-0">
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        className={`flex items-center gap-1 text-sm transition-colors ${
-          active ? "text-white font-semibold" : "text-slate-400 hover:text-slate-200"
-        }`}
-      >
+      <button type="button" onClick={onToggle} aria-expanded={isOpen} className={linkClass(active)}>
         {label}
         <ChevronIcon open={isOpen} />
       </button>
       {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-2 min-w-[11rem] rounded-md border border-slate-700 bg-slate-900 py-1 shadow-xl">
+        <div className={`absolute left-0 top-full z-50 mt-2 min-w-[11rem] ${PANEL}`}>
           {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onSelect}
-              className={`block px-3 py-1.5 text-sm transition-colors ${
-                pathname === item.href
-                  ? "bg-slate-800 font-semibold text-white"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-              }`}
-            >
-              {item.label}
-            </Link>
+            <PanelLink key={item.href} item={item} pathname={pathname} onSelect={onSelect} />
           ))}
         </div>
       )}
@@ -109,6 +109,7 @@ function NavDropdown({
 export function Nav() {
   const pathname = usePathname();
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
 
   // Ferme le menu ouvert au clic en dehors — un vrai abonnement à un
@@ -117,31 +118,46 @@ export function Nav() {
     function handleClickOutside(event: MouseEvent) {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setOpenGroup(null);
+        setMobileOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const closeAll = () => {
+    setOpenGroup(null);
+    setMobileOpen(false);
+  };
+
   return (
-    <nav className="border-b border-slate-800 bg-slate-950 px-6 py-3">
-      <div ref={navRef} className="max-w-6xl mx-auto flex flex-wrap items-center gap-x-6 gap-y-2">
-        <span className="text-indigo-400 font-bold text-sm shrink-0">⚔ YGO Meta</span>
+    <div className="sticky top-3 z-40 mt-3 px-[var(--gutter)]">
+      <nav
+        ref={navRef}
+        className="relative mx-auto flex max-w-[var(--maxw)] items-center gap-2 rounded-[10px] min-[760px]:gap-4 border border-line-2 bg-ink-2/85 p-2 pl-4 backdrop-blur"
+      >
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-2 font-mono text-[14px] font-semibold tracking-[0.08em] text-text"
+        >
+          <span
+            aria-hidden
+            className="h-3.5 w-3.5 bg-signal [clip-path:polygon(0_100%,30%_0,50%_60%,70%_0,100%_100%,80%_100%,70%_45%,50%_100%,30%_45%,20%_100%)]"
+          />
+          YGO META
+        </Link>
+
         {/* Pas d'overflow-x-auto ici : `overflow-x` sans `overflow-y` explicite
             fait passer ce dernier à `auto`, ce qui coupe verticalement les
-            menus déroulants (même piège que InfoTooltip, voir context.md).
-            flex-wrap sur le conteneur parent suffit à gérer l'étroit. */}
-        <div className="flex items-center gap-6">
+            menus déroulants (même piège que InfoTooltip, voir context.md). */}
+        <div className="hidden items-center gap-1 min-[760px]:flex">
           {NAV_ENTRIES.map((entry) =>
             entry.kind === "link" ? (
               <Link
                 key={entry.href}
                 href={entry.href}
-                className={`text-sm shrink-0 transition-colors ${
-                  pathname === entry.href
-                    ? "text-white font-semibold"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
+                onClick={closeAll}
+                className={`${linkClass(pathname === entry.href)} shrink-0`}
               >
                 {entry.label}
               </Link>
@@ -153,13 +169,32 @@ export function Nav() {
                 pathname={pathname}
                 isOpen={openGroup === entry.label}
                 onToggle={() => setOpenGroup(openGroup === entry.label ? null : entry.label)}
-                onSelect={() => setOpenGroup(null)}
+                onSelect={closeAll}
               />
             )
           )}
         </div>
+
         <SmartSearch />
-      </div>
-    </nav>
+
+        {/* Sous 760 px, les liens passent dans un menu : la spec les masque
+            sans alternative, ce qui rendrait la navigation impossible. */}
+        <button
+          type="button"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-expanded={mobileOpen}
+          className="shrink-0 rounded-[4px] border border-line-2 px-2.5 py-1.5 font-mono text-[12px] text-soft min-[760px]:hidden"
+        >
+          Menu
+        </button>
+        {mobileOpen && (
+          <div className={`absolute inset-x-0 top-full mt-2 min-[760px]:hidden ${PANEL}`}>
+            {NAV_ENTRIES.flatMap((entry) => (entry.kind === "link" ? [entry] : entry.items)).map((item) => (
+              <PanelLink key={item.href} item={item} pathname={pathname} onSelect={closeAll} />
+            ))}
+          </div>
+        )}
+      </nav>
+    </div>
   );
 }

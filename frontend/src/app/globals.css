@@ -139,12 +139,14 @@
   }
 }
 
+/* Pas de `transform: none` global : il casserait aussi les transformations de
+   mise en page (centrage en -translate-y-1/2). Les déplacements au survol
+   s'écrivent en `motion-safe:` dans les composants. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     transition: none !important;
     animation: none !important;
-    transform: none !important;
   }
 }

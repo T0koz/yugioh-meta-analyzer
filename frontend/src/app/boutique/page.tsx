@@ -36,7 +36,7 @@ export default async function BoutiquePage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Signaux Boutique</h1>
         <p className="text-slate-400 mt-1 text-sm">
-          Cartes à fort potentiel d&apos;achat · Banlist TCG prise en compte
+          Cartes à fort potentiel d’achat · Banlist TCG prise en compte
         </p>
       </div>
 

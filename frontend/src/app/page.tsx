@@ -86,7 +86,7 @@ export default async function Home() {
         <div>
           <Eyebrow>Analyse de méta · Yu-Gi-Oh! TCG &amp; OCG</Eyebrow>
           <h1 className="mt-[18px] max-w-[16ch] text-[clamp(36px,6vw,72px)] leading-[0.98] font-medium tracking-[-0.045em] text-balance">
-            Le TCG suit l&apos;OCG, <Em>quatre mois</Em> plus tard.
+            Le TCG suit l’OCG, <Em>quatre mois</Em> plus tard.
           </h1>
         </div>
         <p className="mt-[22px] max-w-[52ch] text-soft">
@@ -120,7 +120,7 @@ export default async function Home() {
               <h3 className={H3}>
                 {topBuy.card_name}, <em className="font-serif font-normal italic tracking-[-0.01em] text-signal-deep">{topBuy.archetype}</em>.
               </h3>
-              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">À acheter avant l&apos;arrivée de l&apos;archétype en TCG.</p>
+              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">À acheter avant l’arrivée de l’archétype en TCG.</p>
               <div className="flex flex-wrap gap-1.5">
                 {[
                   `Cardmarket ${fmtNum(topBuy.cm_price, 2)} €`,
@@ -181,7 +181,7 @@ export default async function Home() {
                 {SITE_FACTS.graphCommunities} communautés de cartes, <Em>une</Em> carte pont.
               </h3>
               <p className="mt-2.5 text-[14px] text-muted-text">
-                La centralité d&apos;intermédiarité montre quelles cartes relient les archétypes : les premières touchées
+                La centralité d’intermédiarité montre quelles cartes relient les archétypes : les premières touchées
                 par un ban.
               </p>
             </div>

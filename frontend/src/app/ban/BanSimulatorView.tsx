@@ -3,15 +3,20 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { CardChip } from "@/components/card-chip";
+import { Em } from "@/components/ds/em";
+import { Callout, Eyebrow, PageHero, StatBand } from "@/components/ds/page";
 import { api } from "@/lib/api";
+import { fmtNum, fmtPct } from "@/lib/format";
 import type { BanSimResult } from "@/types";
 
 export function BanSimulatorView({
   initialCard,
   initialResult,
+  tabs,
 }: {
   initialCard?: string;
   initialResult: BanSimResult | null;
+  tabs: React.ReactNode;
 }) {
   const [query, setQuery] = useState(initialCard ?? "");
   const [result, setResult] = useState<BanSimResult | null>(initialResult);
@@ -33,90 +38,97 @@ export function BanSimulatorView({
     }
   }
 
+  const { community_id, fragmentation } = result?.community_impact ?? { community_id: -1, fragmentation: 0 };
+
   return (
     <>
-      <p className="mb-6 text-sm text-slate-400">
-        Simule l&apos;impact de bannir une carte sur le graphe de synergies
-      </p>
+      <PageHero
+        eyebrow="Ban Center · Simulateur"
+        title={
+          <>
+            Et si Konami la <Em>bannissait</Em> ?
+          </>
+        }
+        intro="Retire une carte du graphe de synergies et regarde ce qui casse : archétypes touchés, centralité, perte de cohésion."
+      >
+        {tabs}
+      </PageHero>
 
-      <div className="flex gap-3 mb-8">
+      <form
+        className="mb-8 flex flex-wrap gap-2.5"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void simulate();
+        }}
+      >
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && simulate()}
-          placeholder="Ex: Ash Blossom & Joyous Spring"
-          className="bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500 flex-1"
+          placeholder="Ex : Ash Blossom & Joyous Spring"
+          aria-label="Carte à simuler"
+          className="h-auto min-w-0 flex-1 basis-64 rounded-[4px] border-line-2 bg-ink px-3 py-[11px] font-mono text-[13px] md:text-[13px]"
         />
         <button
-          onClick={() => simulate()}
+          type="submit"
           disabled={loading}
-          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-md text-sm font-semibold transition-colors"
+          className="rounded-[4px] border border-signal bg-signal px-[18px] py-[11px] text-[14px] font-medium text-on-signal transition-transform duration-[250ms] ease-[var(--ease)] disabled:opacity-50 motion-safe:hover:-translate-y-px"
         >
-          {loading ? "..." : "Simuler"}
+          {loading ? "Simulation…" : "Simuler le ban"}
         </button>
-      </div>
+      </form>
 
       {notFound && (
-        <div className="rounded-lg border border-slate-700 bg-slate-900 px-5 py-4 text-slate-400 text-sm">
-          Carte non trouvée dans la base. Essaie <span className="text-indigo-400">Ash Blossom & Joyous Spring</span> ou <span className="text-indigo-400">Nibiru, the Primal Being</span>.
-        </div>
+        <Callout title="Carte introuvable">
+          <p>
+            Cette carte n’est pas dans la base. Essaie « Ash Blossom &amp; Joyous Spring » ou « Nibiru, the Primal
+            Being ».
+          </p>
+        </Callout>
       )}
 
       {result && (
-        <div className="space-y-4">
-          <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-4 flex items-center gap-4">
+        <section>
+          <div className="flex items-center gap-5">
             {result.image_url && (
               // eslint-disable-next-line @next/next/no-img-element -- preview externe (YGOPRODeck)
               <img
                 src={result.image_url}
                 alt={result.removed_card}
-                className="w-16 rounded-md border border-slate-700 shrink-0"
+                className="w-16 shrink-0 rounded-[4px] border border-line-2"
               />
             )}
-            <div>
-              <p className="text-xs text-slate-500 mb-1">Carte bannie</p>
-              <p className="text-lg font-bold">
-                <CardChip name={result.removed_card} className="!bg-transparent !border-0 !px-0 !text-red-400 !text-lg hover:!text-red-300" />
-              </p>
+            <div className="min-w-0">
+              <Eyebrow>Carte retirée</Eyebrow>
+              <h2 className="mt-2 text-[clamp(28px,4vw,44px)] leading-[1.05] font-medium tracking-[-0.035em] [overflow-wrap:anywhere]">
+                <CardChip name={result.removed_card} variant="plain" />
+              </h2>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-4">
-              <p className="text-xs text-slate-500 mb-1">Bridge Score</p>
-              <p className="text-2xl font-bold tabular-nums text-indigo-400">
-                {result.bridge_score.toFixed(5)}
-              </p>
-              <p className="text-xs text-slate-500 mt-1">Centralité de type pont</p>
-            </div>
-            <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-4">
-              <p className="text-xs text-slate-500 mb-1">
-                Fragmentation{" "}
-                {result.community_impact.community_id >= 0
-                  ? `communauté #${result.community_impact.community_id}`
-                  : "(communauté inconnue)"}
-              </p>
-              <p className="text-2xl font-bold tabular-nums text-orange-400">
-                {(result.community_impact.fragmentation * 100).toFixed(0)}%
-              </p>
-              <p className="text-xs text-slate-500 mt-1">Perte de cohésion</p>
-            </div>
-          </div>
+          <StatBand
+            stats={[
+              { value: fmtNum(result.bridge_score), label: "Bridge score" },
+              {
+                value: fmtPct(fragmentation * 100, 0),
+                label: community_id >= 0 ? `Fragmentation · communauté ${community_id}` : "Fragmentation · communauté inconnue",
+              },
+              { value: fmtNum(result.affected_archetypes.length), label: "Archétypes impactés" },
+            ]}
+          />
 
-          <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-4">
-            <p className="text-xs text-slate-500 mb-3">Archétypes impactés ({result.affected_archetypes.length})</p>
-            <div className="flex flex-wrap gap-2">
-              {result.affected_archetypes.map((arch) => (
-                <span
-                  key={arch}
-                  className="px-2 py-1 bg-slate-800 border border-slate-700 rounded text-sm text-slate-300"
-                >
-                  {arch}
-                </span>
-              ))}
+          {result.affected_archetypes.length > 0 && (
+            <div className="mt-8">
+              <p className="mb-3 font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">Archétypes impactés</p>
+              <div className="flex flex-wrap gap-2">
+                {result.affected_archetypes.map((arch) => (
+                  <span key={arch} className="rounded-[4px] border border-line-2 px-2.5 py-1 font-mono text-[12px] text-soft">
+                    {arch}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
+          )}
+        </section>
       )}
     </>
   );

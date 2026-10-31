@@ -2,6 +2,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
+import { Page } from "@/components/ds/page";
 import { BanRadarView } from "./BanRadarView";
 import { CardImpactView } from "./CardImpactView";
 import { BanSimulatorView } from "./BanSimulatorView";
@@ -20,24 +21,23 @@ function parseTab(raw: string | string[] | undefined): Tab {
   return TABS.some((t) => t.id === raw) ? (raw as Tab) : "radar";
 }
 
+// Même grammaire que la nav : texte doux, onglet actif en clair sur --ink-4.
 function TabNav({ active }: { active: Tab }) {
   return (
-    <div className="mb-8 flex gap-1 border-b border-slate-800">
+    <nav aria-label="Ban Center" className="mt-8 inline-flex flex-wrap gap-1 rounded-[8px] border border-line-2 bg-ink-2 p-1">
       {TABS.map((t) => (
         <Link
           key={t.id}
           href={`/ban?tab=${t.id}`}
           aria-current={active === t.id ? "page" : undefined}
-          className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
-            active === t.id
-              ? "border-indigo-500 text-white"
-              : "border-transparent text-slate-400 hover:text-slate-200"
+          className={`rounded-[4px] px-3 py-1.5 text-[13px] transition-colors duration-200 ${
+            active === t.id ? "bg-ink-4 text-text" : "text-muted-text hover:text-text"
           }`}
         >
           {t.label}
         </Link>
       ))}
-    </div>
+    </nav>
   );
 }
 
@@ -59,25 +59,23 @@ export default async function BanPage({
     initialResult = await api.simulateBan(cardParam);
   }
 
+  const tabs = <TabNav active={tab} />;
+
   return (
     <HoverPreviewProvider>
       <HoverPreviewPanel />
-      <main className="mx-auto w-full max-w-4xl px-6 py-10">
-        <div className="mb-2">
-          <h1 className="text-3xl font-bold tracking-tight">Ban Center</h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Risque de ban, impact sur la méta, simulation carte par carte
-          </p>
-        </div>
-
-        <TabNav active={tab} />
-
-        {tab === "radar" && <BanRadarView kind={kind} />}
-        {tab === "impact" && <CardImpactView kind={kind} />}
+      <Page>
+        {tab === "radar" && <BanRadarView kind={kind} tabs={tabs} />}
+        {tab === "impact" && <CardImpactView kind={kind} tabs={tabs} />}
         {tab === "simulateur" && (
-          <BanSimulatorView initialCard={cardParam} initialResult={initialResult} />
+          <BanSimulatorView
+            key={cardParam ?? ""}
+            initialCard={cardParam}
+            initialResult={initialResult}
+            tabs={tabs}
+          />
         )}
-      </main>
+      </Page>
     </HoverPreviewProvider>
   );
 }

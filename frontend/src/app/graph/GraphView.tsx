@@ -181,7 +181,7 @@ export function GraphView({ data }: { data: GraphResponse }) {
         className="w-full h-[600px] rounded-md bg-slate-950"
       />
       <p className="mt-3 text-xs text-slate-500">
-        {data.nodes.length} cartes · {data.edges.length} arêtes (Jaccard ≥ seuil) · survol pour l&apos;archétype
+        {data.nodes.length} cartes · {data.edges.length} arêtes (Jaccard ≥ seuil) · survol pour l’archétype
       </p>
     </div>
   );

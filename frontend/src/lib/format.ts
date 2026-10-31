@@ -1,0 +1,40 @@
+// Formats français de l'interface (docs/design-system.md §7) : virgule
+// décimale, espace pour les milliers, mois en toutes lettres.
+
+const numberFormats = new Map<number, Intl.NumberFormat>();
+
+export function fmtNum(value: number, digits = 0): string {
+  let format = numberFormats.get(digits);
+  if (!format) {
+    format = new Intl.NumberFormat("fr-FR", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+    numberFormats.set(digits, format);
+  }
+  return format.format(value);
+}
+
+/** `value` déjà exprimé en pourcentage (29.56 → « 29,6 % »). */
+export function fmtPct(value: number, digits = 1): string {
+  return `${fmtNum(value, digits)} %`;
+}
+
+/** `value` signé, avec un vrai signe moins typographique. */
+export function fmtSigned(value: number, digits = 1): string {
+  const abs = fmtNum(Math.abs(value), digits);
+  if (value > 0) return `+${abs}`;
+  if (value < 0) return `−${abs}`;
+  return abs;
+}
+
+/** « 2026-06-17 » → « 17 juin 2026 ». Date invalide : renvoyée telle quelle. */
+export function fmtDate(iso: string): string {
+  const date = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+}
+
+/** « October 2026 » (format de l'API) → « oct. 2026 ». Valeur non reconnue : renvoyée telle quelle. */
+export function fmtMonthYear(label: string): string {
+  const date = new Date(`1 ${label}`);
+  if (Number.isNaN(date.getTime())) return label;
+  return date.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
+}

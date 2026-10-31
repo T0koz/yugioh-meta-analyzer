@@ -137,8 +137,8 @@ backend/app/
 frontend/src/
 ├── app/
 │   ├── layout.tsx          # Layout global + navigation top bar
-│   ├── page.tsx            # Redirect → /tier-list
-│   ├── tier-list/          # Server component + ArchetypeCard.tsx (grille de cartes, PAS un tableau)
+│   ├── page.tsx            # Home en bento (5 tuiles branchées sur l'API), plus de redirection
+│   ├── tier-list/          # Server component + TierList.tsx (filtres) + ArchetypeRow.tsx (liste dense)
 │   ├── evolution/          # page.tsx (server, fetch) + EvolutionChart.tsx (client, recharts, connectNulls)
 │   ├── predictions/        # Server component, api.predictions(), barre recalibrée au max
 │   ├── boutique/           # Server component, api.boutiqueSignals(), key=archetype+card_name, CardChip
@@ -151,7 +151,8 @@ frontend/src/
 │   ├── card-chip.tsx       # Chip carte réutilisable, déclenche le hover-preview-context (pas de tooltip flottant local)
 │   ├── hover-preview-context.tsx  # Provider React Context (preview: {name, imageUrl, subtitle}) — un seul par page
 │   ├── hover-preview-panel.tsx    # Panneau fixe à gauche (`fixed left-6 top-32`, visible dès xl/1280px), affiche l'image en grand au survol
-│   └── ui/                 # shadcn/ui: table, badge, card, input, select, info-tooltip...
+│   ├── ds/                 # Design system Ember : em.tsx (<Em>), page.tsx (Page, PageHero, StatBand, Toolbar, pillClass, Callout, Explainer, Meter), tags.tsx (TierTag, TrendLabel, BanStatus, Tag)
+│   └── ui/                 # shadcn/ui restylés sur les tokens : table, input, info-tooltip (badge, button, card, select inutilisés)
 ├── lib/
 │   └── api.ts              # Client fetch → NEXT_PUBLIC_API_URL (défaut http://localhost:8000/api/v1)
 └── types/index.ts          # TypeScript types (TierEntry, BoutiqueSignal, GraphResponse, SearchResult, etc.)
@@ -159,7 +160,15 @@ frontend/src/
 
 `lib/mock.ts` supprimé (plus aucune page ne l'utilise).
 
-**Tier List (2026-08-05, redesign) :** passée d'un tableau HTML par tier à une grille de cartes (`ArchetypeCard.tsx`), une seule liste continue triée par rang (pas de sections par tier). Chaque carte : 25% vignette (image la plus vue de l'archétype) / 75% infos (nom, meta score, share, trend), badge tier incrusté sur la vignette. **Pas de dégradé de saturation par tier** — testé puis retiré à la demande (le "Rogue" est juste une étiquette de classement yugiohmeta.com pour "hors T0-T3", pas une carte moins bonne visuellement). Le survol déclenche toujours le panneau latéral (`HoverPreviewPanel`) commun aux pages boutique/early-signals.
+**Design system « Ember » (2026-10-31) :** source de vérité visuelle dans `docs/design-system.md` (maquettes : `docs/design-reference.html`). Toutes les pages l'appliquent : thème sombre uniquement, un seul accent `--signal`, tokens en classes Tailwind (`bg-ink-3`, `text-signal`, `border-line`…), **aucune couleur Tailwind brute ni hex dans `src/`**. Tier list en liste dense (l'ancienne grille de cartes est abandonnée), home en bento, Ban Radar avec score en grand et barre empilée des critères.
+
+Pièges rencontrés pendant la refonte :
+- **Espace perdu dans un texte JSX multi-ligne qui contient une entité** (`&apos;`, `&amp;`…) : la compilation supprime l'espace initial du texte qui suit une balise ou une expression (« génériques</strong> trustent » rendu « génériquestrustent »). Écrire l'apostrophe typographique `’` plutôt que `&apos;`, ou construire la phrase dans une chaîne JS.
+- **Canvas (vis-network) et `var()`** : le canvas ne résout pas les variables CSS. `GraphView` lit les tokens au runtime (`getComputedStyle`), police comprise. Les SVG (home, recharts) acceptent `var(--…)` directement.
+- **Chiffres de vitrine** (19 888 decklists, 13 797 cartes, r = 0,771, 4 mois, 63 communautés) : aucun endpoint ne les expose, ils sont dans `src/lib/site-facts.ts`, à mettre à jour à la main quand la base est rafraîchie.
+- `prefers-reduced-motion` coupe transitions et animations, mais **pas** `transform` (il casserait les centrages en `-translate-y-1/2`) : les déplacements au survol s'écrivent en `motion-safe:`.
+- Formats français centralisés dans `src/lib/format.ts` (`fmtNum`, `fmtPct`, `fmtDate`…) : ne plus utiliser `toFixed` pour l'affichage.
+- `--faint` (rangs, placeholders) est à 3,2:1 de contraste sur `--ink` : à réserver au décoratif, jamais à une information seule.
 
 `HoverPreviewProvider`/`HoverPreviewPanel` remplacent l'ancien tooltip flottant par carte (`bottom-full` dans un conteneur `overflow-hidden` → invisible, clippé). Toute nouvelle page qui utilise `CardChip` doit être enveloppée dans un `<HoverPreviewProvider>` avec un `<HoverPreviewPanel />`, sinon `useHoverPreview()` lève une erreur.
 
@@ -342,4 +351,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-10-31*
+*Dernière mise à jour : 2026-10-31 (refonte design Ember)*

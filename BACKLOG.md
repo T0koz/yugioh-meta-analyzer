@@ -83,15 +83,15 @@ Suivi détaillé sur [Linear](https://linear.app/tokoz).
 volume persistant. Reste à trancher l'hébergement : à cette taille, l'API peut
 sans doute tourner en serverless à côté du front, ce qui rendrait Railway inutile.
 
-**Pages livrées** (toutes branchées sur l'API réelle) :
-- `/tier-list` — Grille de cartes archétype, badge tier, trend
-- `/evolution` — Line chart interactif méta mensuel (recharts)
-- `/predictions` — Tableau current vs prédit + delta
-- `/boutique` — Signaux d'achat avec badges banlist TCG
-- `/early-signals` — Score rings + views/semaine
-- `/graph` — vis-network interactif
-- `/ban-radar` — Score de risque de ban + décomposition par critère
-- `/ban-simulator` — Formulaire + bridge score + archetypes impactés
+**Pages livrées** (toutes branchées sur l'API réelle, design system Ember depuis le 2026-10-31) :
+- `/` — Home en bento : signal boutique, top Ban Radar, plus forte hausse prévue, graphe, aperçu simulateur
+- `/tier-list` — Liste dense : hero + stats, filtres (Tous / T0–T3 / Rogue / En hausse), barre relative au max
+- `/evolution` — Line chart mensuel (recharts), 4 séries max, accent sur la première
+- `/predictions` — Tableau actuel vs prévu + delta
+- `/boutique` — Signaux d'achat avec statut banlist TCG
+- `/early-signals` — Liste dense : score + vues/semaine
+- `/graph` — vis-network interactif, accent sur l'archétype filtré
+- `/ban` — Ban Center : onglets Radar (score + barre empilée des critères), Cartes à impact, Simulateur
 
 ---
 
@@ -167,4 +167,4 @@ Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historiq
 
 ---
 
-*Dernière mise à jour : 2026-08-14*
+*Dernière mise à jour : 2026-10-31*

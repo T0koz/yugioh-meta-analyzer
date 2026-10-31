@@ -4,21 +4,40 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useHoverPreview } from "@/components/hover-preview-context";
 import type { GraphResponse } from "@/types";
 
-const PALETTE = [
-  "#6366f1", "#f97316", "#22c55e", "#eab308", "#ec4899",
-  "#14b8a6", "#a855f7", "#f43f5e", "#0ea5e9", "#84cc16",
-];
+// Le canvas vis-network a besoin de vraies couleurs, pas de var() : on lit les
+// tokens Ember au runtime plutôt que de recopier des hex. Plus de palette par
+// archétype (design system : un seul accent) ; les cliques se lisent par leur
+// position, l'archétype filtré et le nœud survolé passent en accent.
+function readTokens() {
+  const css = getComputedStyle(document.documentElement);
+  const token = (name: string) => css.getPropertyValue(name).trim();
+  return {
+    signal: token("--signal"),
+    signalHi: token("--signal-hi"),
+    node: token("--muted-text"),
+    staple: token("--faint"),
+    label: token("--soft"),
+    edge: token("--line-2"),
+    font: token("--font-inter-tight"),
+  };
+}
 
-function colorFor(group: string | null): string {
-  if (!group) return "#64748b";
-  let hash = 0;
-  for (let i = 0; i < group.length; i++) hash = (hash * 31 + group.charCodeAt(i)) >>> 0;
-  return PALETTE[hash % PALETTE.length];
+type Tokens = ReturnType<typeof readTokens>;
+
+function nodeColor(tokens: Tokens, group: string | null, accent: boolean) {
+  const base = accent ? tokens.signal : group ? tokens.node : tokens.staple;
+  return {
+    background: base,
+    border: base,
+    highlight: { background: tokens.signal, border: tokens.signal },
+    hover: { background: tokens.signalHi, border: tokens.signalHi },
+  };
 }
 
 // vis-network's types don't need to leak beyond this file; the network/dataset
 // instances only ever get called through their documented methods below.
 type VisDataSet<T> = { update: (items: (Partial<T> & { id: string | number })[]) => void };
+type VisNodeColor = ReturnType<typeof nodeColor>;
 type FitOptions = {
   nodes?: (string | number)[];
   maxZoomLevel?: number;
@@ -33,7 +52,7 @@ type VisNetwork = {
 export function GraphView({ data }: { data: GraphResponse }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const networkRef = useRef<VisNetwork | null>(null);
-  const nodesDataRef = useRef<VisDataSet<{ id: string; hidden: boolean }> | null>(null);
+  const nodesDataRef = useRef<VisDataSet<{ id: string; hidden: boolean; color: VisNodeColor }> | null>(null);
   const edgesDataRef = useRef<VisDataSet<{ id: number; hidden: boolean }> | null>(null);
   const [ready, setReady] = useState(false);
   const [archetypeFilter, setArchetypeFilter] = useState("all");
@@ -48,13 +67,14 @@ export function GraphView({ data }: { data: GraphResponse }) {
     (async () => {
       const { Network, DataSet } = await import("vis-network/standalone");
       if (disposed || !containerRef.current) return;
+      const tokens = readTokens();
 
       const nodes = new DataSet(
         data.nodes.map((n) => ({
           id: n.id,
           label: n.id,
           value: n.size,
-          color: colorFor(n.group),
+          color: nodeColor(tokens, n.group, false),
           group: n.group ?? undefined,
         }))
       );
@@ -74,9 +94,12 @@ export function GraphView({ data }: { data: GraphResponse }) {
           nodes: {
             shape: "dot",
             scaling: { min: 6, max: 26 },
-            font: { color: "#cbd5e1", size: 11, strokeWidth: 0 },
+            font: { color: tokens.label, size: 11, face: tokens.font || "sans-serif", strokeWidth: 0 },
           },
-          edges: { color: { color: "#334155", opacity: 0.4 }, smooth: false },
+          edges: {
+            color: { color: tokens.edge, highlight: tokens.signal, hover: tokens.signalHi },
+            smooth: false,
+          },
           physics: {
             stabilization: { iterations: 200 },
             barnesHut: { gravitationalConstant: -6000, springLength: 90, springConstant: 0.02 },
@@ -129,6 +152,7 @@ export function GraphView({ data }: { data: GraphResponse }) {
 
   useEffect(() => {
     if (!ready || !nodesDataRef.current || !edgesDataRef.current || !networkRef.current) return;
+    const tokens = readTokens();
 
     const visibleIds = data.nodes
       .filter((n) => archetypeFilter === "all" || n.group === archetypeFilter)
@@ -138,6 +162,7 @@ export function GraphView({ data }: { data: GraphResponse }) {
       data.nodes.map((n) => ({
         id: n.id,
         hidden: archetypeFilter !== "all" && n.group !== archetypeFilter,
+        color: nodeColor(tokens, n.group, archetypeFilter !== "all" && n.group === archetypeFilter),
       }))
     );
     edgesDataRef.current.update(
@@ -159,13 +184,16 @@ export function GraphView({ data }: { data: GraphResponse }) {
   }, [archetypeFilter, ready, data, nodeById]);
 
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-      <div className="mb-3 flex items-center gap-3">
-        <label className="text-sm text-slate-400">Filtrer par archétype</label>
+    <div className="rounded-[8px] border border-line-2 bg-ink-2 p-3 min-[760px]:p-4">
+      <div className="mb-3 flex flex-wrap items-center gap-3">
+        <label htmlFor="graph-archetype" className="font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">
+          Archétype
+        </label>
         <select
+          id="graph-archetype"
           value={archetypeFilter}
           onChange={(e) => setArchetypeFilter(e.target.value)}
-          className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-md px-2 py-1"
+          className="rounded-[4px] border border-line-2 bg-ink px-2.5 py-1.5 font-mono text-[12px] text-text"
         >
           <option value="all">Tous ({data.nodes.length} cartes)</option>
           {archetypes.map((a) => (
@@ -178,10 +206,10 @@ export function GraphView({ data }: { data: GraphResponse }) {
       <div
         ref={containerRef}
         onMouseLeave={() => setPreview(null)}
-        className="w-full h-[600px] rounded-md bg-slate-950"
+        className="h-[min(600px,70vh)] w-full rounded-[4px] bg-ink"
       />
-      <p className="mt-3 text-xs text-slate-500">
-        {data.nodes.length} cartes · {data.edges.length} arêtes (Jaccard ≥ seuil) · survol pour l’archétype
+      <p className="mt-3 font-mono text-[11px] text-muted-text">
+        {data.nodes.length} cartes · {data.edges.length} liens (Jaccard ≥ seuil) · survol pour voir la carte
       </p>
     </div>
   );

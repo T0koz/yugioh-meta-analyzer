@@ -38,3 +38,10 @@ export function fmtMonthYear(label: string): string {
   if (Number.isNaN(date.getTime())) return label;
   return date.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
 }
+
+/** « 2026-01 » → « janv. 26 » (axes de graphique). Valeur non reconnue : renvoyée telle quelle. */
+export function fmtMonthShort(yearMonth: string): string {
+  const date = new Date(`${yearMonth}-01T00:00:00`);
+  if (Number.isNaN(date.getTime())) return yearMonth;
+  return date.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
+}

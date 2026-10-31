@@ -1,17 +1,23 @@
 import { api } from "@/lib/api";
+import { Em } from "@/components/ds/em";
+import { Page, PageHero } from "@/components/ds/page";
 import { EvolutionChart } from "./EvolutionChart";
 
 export default async function EvolutionPage() {
   const { data } = await api.evolution();
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10 w-full">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Évolution méta</h1>
-        <p className="text-slate-400 mt-1 text-sm">Score méta mensuel par archétype</p>
-      </div>
-
+    <Page>
+      <PageHero
+        eyebrow="Méta · Évolution"
+        title={
+          <>
+            Qui monte, qui <Em>s’efface</Em>.
+          </>
+        }
+        intro="Score méta mensuel par archétype (×100). Compare jusqu'à quatre archétypes : le premier choisi passe en accent."
+      />
       <EvolutionChart data={data} />
-    </main>
+    </Page>
   );
 }

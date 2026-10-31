@@ -1,24 +1,31 @@
 import { api } from "@/lib/api";
+import { fmtNum } from "@/lib/format";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
+import { Em } from "@/components/ds/em";
+import { Page, PageHero } from "@/components/ds/page";
 import { GraphView } from "./GraphView";
 
+const MIN_JACCARD = 0.15;
+
 export default async function GraphPage() {
-  const data = await api.graphSynergies({ limit: 200, minJaccard: 0.15 });
+  const data = await api.graphSynergies({ limit: 200, minJaccard: MIN_JACCARD });
 
   return (
     <HoverPreviewProvider>
       <HoverPreviewPanel />
-      <main className="max-w-6xl mx-auto px-6 py-10 w-full">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Graphe de synergies</h1>
-          <p className="text-slate-400 mt-1 text-sm">
-            Co-occurrence Jaccard · top {data.nodes.length} cartes par degré pondéré
-          </p>
-        </div>
-
+      <Page>
+        <PageHero
+          eyebrow="Graphe · Co-occurrence Jaccard"
+          title={
+            <>
+              Les cartes qui se jouent <Em>ensemble</Em>.
+            </>
+          }
+          intro={`Les ${data.nodes.length} cartes les plus connectées. Un lien relie deux cartes souvent jouées dans les mêmes decks (Jaccard ≥ ${fmtNum(MIN_JACCARD, 2)}).`}
+        />
         <GraphView data={data} />
-      </main>
+      </Page>
     </HoverPreviewProvider>
   );
 }

@@ -147,6 +147,7 @@ class GraphNode(BaseModel):
     id: str
     group: Optional[str] = None
     size: float
+    image_url: Optional[str] = None
 
 
 class GraphEdge(BaseModel):

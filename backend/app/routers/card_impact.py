@@ -28,7 +28,10 @@ def get_card_impact(
         """
         SELECT ci.*, c.image_url_small
         FROM card_impact ci
-        LEFT JOIN cards c ON c.name = ci.card_name
+        -- cards.name porte parfois la notation <C>/<P>/<Q> (ex: "Maliss <P>
+        -- March Hare") que card_impact.card_name, dérivé de deck_cards, n'a
+        -- jamais — sans le strip, la jointure échoue et l'image manque.
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = ci.card_name
         WHERE (:kind IS NULL
                OR (:kind = 'generic' AND ci.top_archetype IS NULL)
                OR (:kind = 'archetype' AND ci.top_archetype IS NOT NULL))

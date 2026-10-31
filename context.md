@@ -165,6 +165,12 @@ frontend/src/
 
 **`InfoTooltip`** (`components/ui/info-tooltip.tsx`) : bulle ⓘ ouverte vers le **bas** (`top-full`, pas `bottom-full`) — sinon coupée par un ancêtre `overflow-hidden` (ex: conteneur de tableau). Ne pas revenir à `bottom-full` sans vérifier qu'aucun ancêtre ne clippe.
 
+**`/graph` (vis-network 10) — pièges corrigés le 2026-10-31 :**
+- **Pas de `fit()` animé.** Deux `fit` animés enchaînés sans frame entre eux (celui de fin de stabilisation + le nôtre) laissent une `viewFunction` orpheline branchée sur `initRedraw` : la caméra revient au cadrage précédent à chaque redessin (le filtre recentrait avec un changement de retard). Les `fit` sont donc instantanés.
+- `fit()` plafonne le zoom à 1 par défaut : le recentrage sur un archétype passe `maxZoomLevel: 4`, sinon la clique reste minuscule.
+- `blurNode` n'est pas émis quand la souris quitte le canvas depuis un nœud : le conteneur vide le panneau de survol sur `onMouseLeave`.
+- Jointure `cards` ↔ noms issus de `deck_cards` : `cards.name` porte `<P>`/`<C>`/`<Q>` (« Maliss <P> March Hare »), pas `deck_cards` → joindre sur `REPLACE(REPLACE(c.name,'<',''),'>','')` (graph, ban_radar, card_impact). Les ~19 nœuds encore sans image sont des cartes récentes absentes de `cards` (relancer `fetch_cards.py`).
+
 **Ban Radar (TOK-53)** — `scripts/build_ban_radar.py` → table `ban_radar` →
 `GET /api/v1/ban-radar` → page `/ban-radar`. Score de risque 0-100 sur 6 critères
 pondérés, avec décomposition par critère renvoyée au front (barre colorée).
@@ -334,4 +340,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-08-14*
+*Dernière mise à jour : 2026-10-31*

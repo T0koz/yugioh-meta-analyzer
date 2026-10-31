@@ -125,6 +125,7 @@ export interface GraphNode {
   id: string;
   group: string | null;
   size: number;
+  image_url: string | null;
 }
 
 export interface GraphEdge {

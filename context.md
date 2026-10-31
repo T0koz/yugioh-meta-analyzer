@@ -226,8 +226,10 @@ jouant la carte appartiennent à son archétype porteur.
 
 `fetch_tournament_decks.py` / `fetch_ocg_decks.py` avaient trois bugs silencieux.
 À garder en tête pour tout nouveau script d'ingestion :
-- `deck_cards` n'a **aucune contrainte d'unicité**. Tout script qui y insère doit
-  purger les lignes du deck avant réinsertion, sinon chaque relance empile.
+- `deck_cards` n'avait **aucune contrainte d'unicité** : chaque relance empilait.
+  `fetch_tournament_decks.py` crée désormais l'index unique
+  `idx_deck_cards_unique (deck_id, card_name, zone)`. Tout script qui y insère
+  doit quand même purger les lignes du deck avant réinsertion, sinon `IntegrityError`.
 - Les champs `author`, `deckType`, `tournamentType`, `tournamentLocation` de
   l'API yugiohmeta sont **tantôt une chaîne, tantôt un objet** `{_id, name}` :
   passer systématiquement par `extract_name`, sinon sqlite3 rejette le dict et

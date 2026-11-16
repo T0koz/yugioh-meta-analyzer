@@ -371,6 +371,34 @@ Chiffres VÉRIFIÉS (commande lancée) ; voir `docs/evaluation-prediction.md`, `
 - **Test de fumée de l'API** : `backend/tests/test_endpoints.py` appelle tous les GET (découverts via OpenAPI) et `POST /simulate-ban`, exige 200. Une route à paramètre obligatoire doit être ajoutée à `EXPLICIT_GETS`, sinon le test échoue. À lancer avant chaque push, sur les deux bases : depuis `backend/`, `../.venv/bin/python -m pytest tests -q` puis avec `YGO_DB_PATH=../data/serving.db`. Dépendances : `backend/requirements-dev.txt`. Les tables étant recalculées chaque lundi, c'est le seul garde-fou contre une donnée que le schéma Pydantic refuse.
 - `data/serving.db` reconstruite (10,2 Mo). Sauvegardes locales : `data/backup_avant_nettoyage_20261116.db`, `data/backup_serving_avant_nettoyage_20261116.db`.
 
+### 🎨 Refonte front « Braise vivante » (TOK-94)
+
+Audit, proposition et décisions : `docs/audit-front/`. Ordre imposé : TOK-96 (jour 1) → TOK-97 (crédibilité des
+chiffres, avant la nouvelle page d'accueil) → TOK-98 (semaine 1). Une étape ne démarre qu'après validation de la précédente.
+
+**TOK-96, jour 1 (2026-11-16, branche `claude/refonte-front-cbe8af`)** — mesuré par script Playwright, avant/après :
+
+- **États** : `app/loading.tsx` (squelette), `app/error.tsx`, `app/not-found.tsx`. En Next 16, la prop de reprise
+  d'`error.tsx` s'appelle **`unstable_retry`** (plus `reset`) : relire `node_modules/next/dist/docs/…/error.md` avant d'y toucher.
+- **Redirection** `/ban-simulator` → `/ban?tab=simulateur` dans `next.config.ts` (`redirects`, la query `?card=` suit).
+- **Titres** : `title.template` (« %s · YGO Meta ») dans `layout.tsx`, un `metadata` par page ; `/ban` utilise
+  `generateMetadata` parce que ses trois onglets partagent une route. Toute nouvelle page exporte son `metadata`.
+- **`--faint` = `#788499`** (était `#566175`, 3,2:1) : 4,5:1 au moins sur `--ink` à `--ink-4`. Il peut désormais porter
+  un rang ou un tiret. Revers : il est plus proche de `--muted-text`, la hiérarchie se joue surtout à la taille.
+  Texte de la tuile orange de l'accueil passé de 70 % à 100 %.
+- **`/evolution`** : axe vertical `[0, auto]` et axe du temps limité aux mois où une série affichée a une valeur.
+- **`CardThumb`** (`components/card-thumb.tsx`) : vignette avec `width`/`height` (CLS nul), `loading="lazy"`, repli
+  dessiné sans image. Utilisée par la tier list et le Ban Center (`RankedThumb` : vignette + rang).
+- **Ban Radar ouvert sur « Pièces d'archétype »** (décision 4) : `KIND_ORDER` dans `ban/kind-filter.tsx` fixe la vue
+  par défaut de chaque onglet (radar : archétype ; impact : tout). La vue par défaut n'a pas de paramètre `kind` dans
+  l'URL ; « Tout » s'écrit `?kind=all`. La tuile Ban Radar de l'accueil lit aussi `kind=archetype`.
+- **Français** : `TrendLabel` et `BanStatus` traduisent à l'affichage (l'API garde `Rising`, `Unlimited`…) ;
+  `banStatusLabel()` pour tout nouveau statut affiché. « Tier list », « Ban Radar », « Rogue » et « staples » sont gardés :
+  c'est le vocabulaire des joueurs francophones.
+- **Piège trouvé** : 22 des 50 premières cartes du radar n'ont pas d'image (cartes récentes absentes de `cards` :
+  Angelechy, Blitzclique, Sacred Beasts…). Relancer `fetch_cards.py` puis `build_serving_db.py`.
+- Captures avant/après (locales, non suivies) : `docs/audit-front/captures/tok-96/`.
+
 ### 🔜 À faire
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials

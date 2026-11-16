@@ -133,7 +133,7 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
 | TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | ✅ Done (2026-11-16) — branche fusionnée (`/ban-radar` 7 s → 0,05 s), `archetype` nullable, test de fumée `backend/tests` | 🔴 Urgent |
-| TOK-96 | Jour 1 : gains rapides sans décision de design (débloqué : TOK-95 fait) | 🔜 À faire | 🔴 High |
+| TOK-96 | Jour 1 : gains rapides sans décision de design | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation et de fusion | 🔴 High |
 | TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | 🔜 À faire | 🔴 High |
 | TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🔜 À faire | 🔴 High |
 | TOK-106 | Nouvelle page d'accueil d'après le prototype (bloqué par TOK-95 et TOK-97) | 🔜 Backlog | 🔴 High |
@@ -146,6 +146,13 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 
 TOK-83 et la partie front de TOK-82 sont dans `main` depuis la fusion de `claude/front-vitrine-06112d` (TOK-95, 2026-11-16).
+
+**TOK-96 — état (2026-11-16)** : écrans de chargement, d'erreur et 404 aux couleurs du site ; `/ban-simulator`
+redirigé vers `/ban?tab=simulateur` ; axes de `/evolution` ajustés ; `--faint` relevé (0 échec de contraste sur
+toutes les pages) ; vignettes de cartes dans le Ban Center ; 10 titres distincts en français ; libellés traduits ;
+Ban Radar ouvert sur « Pièces d'archétype » (décision 4). **Écart au critère** : 28 vignettes sur 50 dans le
+radar (et non 50), parce que 22 cartes récentes manquent dans la table `cards` — relancer `fetch_cards.py` puis
+`build_serving_db.py` (à faire par le gardien des données, hors de ce chantier).
 
 ---
 

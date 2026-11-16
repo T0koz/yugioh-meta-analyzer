@@ -42,7 +42,7 @@ Thème **sombre uniquement** (pas de mode clair). Définir sur `:root` (pas de c
   --text: #e8edf5;
   --soft: #b4bfcf;       /* paragraphes */
   --muted-text: #8591a6;      /* secondaire, labels */
-  --faint: #566175;      /* rangs, placeholders */
+  --faint: #788499;      /* rangs, placeholders */
   /* NB : dans design-reference.html ce gris s'appelle --muted ; ici --muted-text car shadcn réserve --muted aux fonds */
 
   /* accent Ember */

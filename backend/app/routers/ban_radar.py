@@ -45,7 +45,7 @@ def get_ban_radar(
         -- cards.name porte parfois la notation <C>/<P>/<Q> (ex: "Maliss <P>
         -- March Hare") que ban_radar.card_name, dérivé de deck_cards, n'a
         -- jamais — sans le strip, la jointure échoue et l'image manque.
-        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = r.card_name
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = +r.card_name -- le « + » désactive l'affinité TEXT : sans lui SQLite n'utilise pas idx_cards_name_clean (TOK-83)
         WHERE r.ban_risk_score >= :min_score
           AND (:status IS NULL OR r.current_status = :status)
           -- top_archetype est nul pour les staples sans deck d'attache

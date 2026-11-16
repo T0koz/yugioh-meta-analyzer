@@ -86,11 +86,11 @@ export default async function Home() {
         <div>
           <Eyebrow>Analyse de méta · Yu-Gi-Oh! TCG &amp; OCG</Eyebrow>
           <h1 className="mt-[18px] max-w-[16ch] text-[clamp(36px,6vw,72px)] leading-[0.98] font-medium tracking-[-0.045em] text-balance">
-            Le TCG suit l’OCG, <Em>quatre mois</Em> plus tard.
+            Le TCG suit l’OCG, <Em>avec quelques mois</Em> de retard.
           </h1>
         </div>
         <p className="mt-[22px] max-w-[52ch] text-soft">
-          {`Corrélation de ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 3)} entre la méta OCG et la méta TCG ${SITE_FACTS.ocgTcgLagMonths} mois plus tard, sur ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi. Ce qui monte au Japon aujourd'hui se vend en boutique demain.`}
+          {`Corrélation d’environ ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)} entre la méta OCG et la méta TCG ${SITE_FACTS.ocgTcgLagRange} plus tard (IC 95 % : ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}, ${SITE_FACTS.ocgTcgArchetypes} archétypes), sur ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi. Un signal réel mais modéré : une aide à la décision, pas une garantie.`}
         </p>
         <div className="mt-7 flex flex-wrap gap-2.5">
           <Link
@@ -120,7 +120,7 @@ export default async function Home() {
               <h3 className={H3}>
                 {topBuy.card_name}, <em className="font-serif font-normal italic tracking-[-0.01em] text-signal-deep">{topBuy.archetype}</em>.
               </h3>
-              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">À acheter avant l’arrivée de l’archétype en TCG.</p>
+              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">À surveiller avant l’arrivée de l’archétype en TCG.</p>
               <div className="flex flex-wrap gap-1.5">
                 {[
                   `Cardmarket ${fmtNum(topBuy.cm_price, 2)} €`,

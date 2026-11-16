@@ -48,6 +48,12 @@ CREATE TABLE IF NOT EXISTS cards (
     image_url_small TEXT
 );
 
+-- Index sur l'expression de jointure des routeurs (ban_radar, graph,
+-- card_impact) : cards.name porte <P>/<C>/<Q>, pas les noms issus de
+-- deck_cards. Sans lui, chaque jointure est un produit cartésien (TOK-83).
+CREATE INDEX IF NOT EXISTS idx_cards_name_clean
+    ON cards (REPLACE(REPLACE(name, '<', ''), '>', ''));
+
 CREATE TABLE IF NOT EXISTS card_sets (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     card_id     INTEGER NOT NULL REFERENCES cards(id),

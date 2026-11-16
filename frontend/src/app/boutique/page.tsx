@@ -31,10 +31,10 @@ export default async function BoutiquePage() {
           eyebrow="Boutique · Signaux d’achat"
           title={
             <>
-              Les cartes à acheter <Em>avant</Em> le TCG.
+              Les cartes à surveiller <Em>avant</Em> le TCG.
             </>
           }
-          intro={`Archétypes qui montent en OCG, ${SITE_FACTS.ocgTcgLagMonths} mois avant leur arrivée en TCG. La banlist TCG est prise en compte.`}
+          intro={`Archétypes qui montent en OCG, souvent ${SITE_FACTS.ocgTcgLagRange} avant leur arrivée en TCG. Signal modéré, à croiser avec la banlist TCG et le prix : ce n’est pas une garantie.`}
         >
           <StatBand
             stats={[
@@ -42,7 +42,7 @@ export default async function BoutiquePage() {
               // Une ligne par (archétype, carte) : une staple compte sous chaque archétype.
               { value: fmtNum(data.length), label: "Signaux en tout" },
               { value: fmtNum(archetypes), label: "Archétypes" },
-              { value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 3), label: "Corrélation OCG → TCG" },
+              { value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 2), label: "Corrélation OCG → TCG" },
             ]}
           />
         </PageHero>
@@ -56,7 +56,7 @@ export default async function BoutiquePage() {
                 <TableHead>Archétype</TableHead>
                 <TableHead className="text-right">
                   Score
-                  <InfoTooltip text="alert_score = meta_score OCG × log(1 + vues/semaine moyennes des cartes core). Signal OCG → TCG validé à 4 mois d'avance (r = 0,771, p < 0,0001)." />
+                  <InfoTooltip text="alert_score = meta_score OCG × log(1 + vues/semaine moyennes des cartes core). Signal OCG → TCG réel mais modéré : r ≈ 0,53 à 4 mois (IC 95 % 0,43 à 0,59), utilisable de 2 à 6 mois. Le signal de juin 2026 a perdu : ses cartes ont baissé de 35 % contre 1 % pour le marché." />
                 </TableHead>
                 <TableHead className="text-right">Prix CM</TableHead>
                 <TableHead>Banlist TCG</TableHead>

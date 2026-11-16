@@ -34,8 +34,8 @@ export default async function TierListPage() {
             stats={[
               { value: fmtNum(SITE_FACTS.decklists), label: "Decklists analysées" },
               { value: fmtNum(SITE_FACTS.cardsTracked), label: "Cartes suivies" },
-              { value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 3), label: "Corrélation OCG → TCG" },
-              { value: `${SITE_FACTS.ocgTcgLagMonths} mois`, label: "D'avance sur le TCG" },
+              { value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 2), label: "Corrélation OCG → TCG (4 mois)" },
+              { value: SITE_FACTS.ocgTcgLagRange, label: "Fenêtre du signal sur le TCG" },
             ]}
           />
         </PageHero>

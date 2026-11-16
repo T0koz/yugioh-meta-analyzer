@@ -66,6 +66,22 @@ def check_coverage(conn: sqlite3.Connection) -> list[str]:
     return sorted(referenced - set(SERVED_TABLES))
 
 
+# Les routeurs joignent `cards` sur cette expression exacte (voir CLAUDE.md,
+# « Jointure cards ↔ noms issus de deck_cards ») : SQLite ne sait utiliser un
+# index d'expression que si le texte de l'expression est identique. Sans lui,
+# GET /ban-radar met 10 à 20 s (TOK-83).
+CARDS_NAME_CLEAN_INDEX = (
+    "CREATE INDEX IF NOT EXISTS idx_cards_name_clean "
+    "ON cards (REPLACE(REPLACE(name, '<', ''), '>', ''))"
+)
+
+
+def ensure_name_index(conn: sqlite3.Connection) -> None:
+    """Crée l'index d'expression sur la base source, avant la copie (idempotent)."""
+    conn.execute(CARDS_NAME_CLEAN_INDEX)
+    conn.commit()
+
+
 def build(source: sqlite3.Connection, destination: Path) -> None:
     destination.unlink(missing_ok=True)
     source.execute("ATTACH DATABASE ? AS serving", (str(destination),))
@@ -132,6 +148,7 @@ def main() -> None:
     if args.check:
         return
 
+    ensure_name_index(conn)
     build(conn, SERVING_DB)
 
     source_mb = os.path.getsize(SOURCE_DB) / 1e6

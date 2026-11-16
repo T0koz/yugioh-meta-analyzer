@@ -46,8 +46,12 @@ BAN_SCRIPT = os.path.join(ROOT, "scripts", "build_ban_radar.py")
 
 # À incrémenter quand le modèle correspondant change (notebook 05, notebook 10).
 META_MODEL = "blend-ridge-naive-tcg-pure-v2"
-BOUTIQUE_MODEL = "alert-views-v2"
-EARLY_MODEL = "early-views-text-ocg-v2"
+# v3 (2026-11-16) : seuls les archétypes pas encore sortis en TCG, fenêtre de sortie par archétype.
+# Les lignes v1/v2 portaient comme target_date « date du calcul + 4 mois », identique pour tout le lot.
+BOUTIQUE_MODEL = "unreleased-cards-v3"
+# v3 (2026-11-16) : signal_ocg lu dans ocg_archetype_scores (notebook 10, staples et vues recalculées) et non
+# plus dans boutique_alerts. Effet mesuré : Spearman 0,9996 avec la v2, top 50 identique.
+EARLY_MODEL = "early-views-text-ocg-v3"
 
 KEY = ("kind", "subject", "made_at", "model_version")
 COLUMNS = (
@@ -63,7 +67,7 @@ CREATE TABLE IF NOT EXISTS prediction_log (
     made_at          TEXT NOT NULL,   -- date de calcul de la prédiction (source)
     logged_at        TEXT NOT NULL,   -- horodatage de l'archivage
     provenance       TEXT NOT NULL,   -- live | backfill
-    target_date      TEXT,            -- mois visé (YYYY-MM) ; NULL = « prochaine banlist »
+    target_date      TEXT,            -- mois visé (YYYY-MM) ; NULL = pas d'échéance (ou « prochaine banlist »)
     predicted_value  REAL,            -- valeur annoncée (meta score, score d'alerte, risque 0-100)
     baseline_value   REAL,            -- valeur « sans changement » au moment de l'annonce
     predicted_label  TEXT,            -- direction / libellé annoncé
@@ -93,12 +97,12 @@ def next_month(ym):
     return f"{y:04d}-{m:02d}"
 
 
-def month_from_english(label):
-    """'October 2026' -> '2026-10' ; None si le libellé n'est pas parsable."""
-    try:
-        return datetime.datetime.strptime(label.strip(), "%B %Y").strftime("%Y-%m")
-    except (ValueError, AttributeError):
-        return None
+def window_end_month(row):
+    """Échéance d'un signal boutique : mois de fin de la fenêtre de sortie TCG de l'archétype
+    ('2027-03-26' -> '2027-03'). None si la source n'a pas de fenêtre : on ne journalise jamais
+    une échéance que le modèle n'a pas calculée."""
+    end = row.get("tcg_window_end")
+    return end[:7] if isinstance(end, str) and len(end) >= 7 else None
 
 
 def ban_model_version():
@@ -142,7 +146,7 @@ def collect(con):
         for r in rows_of(con, "SELECT * FROM boutique_alerts"):
             entries.append(dict(
                 kind="boutique_signal", subject=r["archetype"], made_at=r["computed_at"],
-                target_date=month_from_english(r["tcg_entry_estimated"]),
+                target_date=window_end_month(r),
                 predicted_value=r["alert_score"], baseline_value=None, predicted_label=None,
                 model_version=BOUTIQUE_MODEL,
                 payload={k: r[k] for k in r if k not in ("archetype", "computed_at", "alert_score")},
@@ -154,7 +158,7 @@ def collect(con):
         for r in rows_of(con, "SELECT * FROM boutique_buy_signals"):
             entries.append(dict(
                 kind="boutique_buy", subject=f"{r['archetype']} | {r['card_name']}",
-                made_at=r["computed_at"], target_date=month_from_english(r["tcg_entry_estimated"]),
+                made_at=r["computed_at"], target_date=window_end_month(r),
                 predicted_value=r["buy_score_100"], baseline_value=r["cm_price"],
                 predicted_label=r["buy_label"], model_version=BOUTIQUE_MODEL,
                 payload={k: r[k] for k in r

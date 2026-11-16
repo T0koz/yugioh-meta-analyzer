@@ -12,7 +12,7 @@
 | 12 | TOK-55 Ban Predictor historique | 🏗️ démarré le 17/11, en parallèle du lot 11 | Opus 5.5 (demandé) | session « Lot 12 — TOK-55 Ban Predictor » ; onglet du Ban Center, pas de nav, pas d'écriture en base |
 | 13 | Outillage | ✅ fusionné (`3e1ad8b`) | Sonnet 5.5 | `.claude/settings.json` (38 commandes pré-autorisées, 13 refus), hook `garde_fou.py` (28 bloquées / 24 autorisées, étape de `check.py`), `/fin-de-journee`, règle d'or + journal de décisions + plan mode dans `CLAUDE.md`. Vérifié après fusion : le hook laisse passer fusion, commit, `worktree remove`, `check.py`, copie de sauvegarde, et bloque push et `rm -rf data`. **Faux positif constaté** : une commande dont un heredoc cite la commande de push entre accents graves est bloquée (contournement : éditer le fichier sans heredoc). Non mesuré : « zéro invite » en session interactive. `npm run lighthouse` non pré-autorisé (lance un serveur). |
 | 14 | TOK-35 | ✅ fusionné (`d18beb5`) | Sonnet 5.5 | `vercel.json`, `.vercelignore`, `.env.example`, guide `docs/deploiement.md` ; l'API ouvre la base en lecture seule et lit `backend/data/serving.db` sur Vercel (ignoré par Git) ; aucun déploiement. **Trois blocages avant le premier déploiement** (guide §0) : le build du front appelle l'API (lot de code à prévoir, §8.1) ; images 1,17 Go trop grosses pour Vercel Blob gratuit (recommandé : Cloudflare R2) ; protection à choisir. Formulaire pour Thomas au §9. `check.py` vert après fusion (44 tests sur chaque base) |
-| 14 bis | Code de déploiement (guide §8.1-8.2) | 🏗️ démarré le 17/11, en parallèle du lot 12 — **hors règle** (pas d'attente passive : lancé juste avant la précision de Thomas, à lui de dire s'il continue) | Opus 5.5 (demandé) | session « Lot 14 bis — code de déploiement » ; aucun déploiement |
+| 14 bis | Code de déploiement (guide §8.1-8.2) | 🏗️ démarré le 17/11, en parallèle du lot 12 — **hors règle** (pas d'attente passive : lancé juste avant la précision de Thomas) ; **Thomas : « laisse-le finir »** (17/11) | Opus 5.5 (demandé) | session « Lot 14 bis — code de déploiement » ; aucun déploiement |
 | 15 | Charte + explication graphique | ⏸ étape 1 fusionnée et **validée par Thomas le 17/11** (`4c4d86e`, réponses dans `decisions-prises.md`) ; étape 2 (composants, `/methode` sans formule) après les lots 11 et 12 | Opus 5.5 | 6 infobulles et 8 formules relevées (annexe A), 10 exemples avant/après ; étape 2 (composants, `/methode`) après validation et après les lots 11 et 12 ; la session reste ouverte pour l'étape 2 |
 | 16 | Réécriture des textes | à faire | | |
 
@@ -33,7 +33,7 @@ Dernière mise à jour : 2026-11-17, lots 11 et 14 fusionnés ; lot 12 en cours.
 | 6 + 7 | Demande directe de Thomas (« crée un autre agent ») | antérieur à la règle |
 | 10 + 13, puis 10 + 15 (étape 1) | Téléchargement des images du lot 10 (attente passive ≈ 30 min) | oui (attente passive) ; 10 + 13 + 15 n'ont jamais tourné à trois |
 | 11 + 12 + 14 | Consigne de Thomas « avancer sur ce qui n'interagit pas » | non : trois sessions, sans attente passive (antérieur à la précision) |
-| 12 + 14 bis | Lot 11 fini, lot 14 bis sans fichier commun | non : pas d'attente passive |
+| 12 + 14 bis | Lot 11 fini, lot 14 bis sans fichier commun | non : pas d'attente passive ; Thomas a décidé de le laisser finir |
 
 Règle appliquée à partir du 17/11 (précision de Thomas) : un lot à la fois ; une deuxième session seulement pendant une attente longue et passive de la première, sur d'autres fichiers ; jamais plus de deux.
 

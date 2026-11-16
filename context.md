@@ -425,6 +425,20 @@ affichées. `scripts/build_ban_history.py` → `ban_backtest_lists`, `ban_backte
   Ne jamais écrire « avant l'annonce ». Seules 3 listes sont postérieures au calage des poids (2026-08-14).
 → détail complet (sorties brutes, vérification du data scientist) : `docs/journal/ban-historique-tok-55.md`
 
+### 🔬 Diagnostic du Ban Radar TCG (TOK-115, lot 15a, 2026-11-17, branche `claude/lot15a-tok-115-diagnostic-d81236`, non fusionnée)
+
+`scripts/diagnose_ban_radar.py` (lecture seule, graine fixée, ≈ 50 s) : régression logistique sur les 20 listes du
+backtest, validation temporelle à fenêtre croissante, bootstrap par liste + test du signe. **Aucun poids modifié.**
+- **Les poids écrits ne sont pas les poids effectifs** : poids × écart type du critère. Effectifs : exemplaires 40 %,
+  tendance 24 %, part des decks 17 %, déjà restreinte 13 %, porteur 5 %, pont 2 %. Toute retouche de `WEIGHTS` se
+  raisonne en poids effectifs (le script les imprime).
+- **Pourquoi le TCG résiste** : 47 % des cartes touchées TCG jouées à moins de 1,5 exemplaire (22 % en OCG) ; pris
+  seuls, exemplaires et tendance ont une AUC de 0,61 et 0,59 en TCG contre 0,83 pour la part des decks.
+- Régression tenue à l'écart (7 listes TCG) : bat les poids actuels en rang médian (7/7, p = 0,016), pas les staples
+  (4/7) ; top 25 25 contre 13 aux staples. Règle d'adoption non remplie → formulaire (recommandation : ne rien changer).
+- Avec 10 listes par format, seul l'écart de top 25 en OCG (9/10, p = 0,02) dépasse le hasard au test du signe.
+→ détail complet et formulaire : `docs/journal/ban-radar-tcg-diagnostic.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

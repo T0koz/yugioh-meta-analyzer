@@ -166,6 +166,9 @@ def main():
     print("Insertion dans SQLite...")
     for card in cards:
         insert_card(cur, card)
+        # card_sets n'a pas de contrainte d'unicité : sans cette purge, chaque relance
+        # empile les éditions de toutes les cartes (même piège que deck_cards).
+        cur.execute("DELETE FROM card_sets WHERE card_id = ?", (card["id"],))
         insert_sets(cur, card["id"], card.get("card_sets", []))
         insert_prices(cur, card["id"], card.get("card_prices", []))
 

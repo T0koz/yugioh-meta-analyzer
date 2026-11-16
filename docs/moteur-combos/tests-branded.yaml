@@ -1,0 +1,966 @@
+# Jeu de tests Branded, écrit à la main (TOK-87) — version 2 du 2026-11-16
+# v2 : les 4 cartes sans texte ont été chargées en base (D8) ; 14 situations corrigées.
+#
+# TOUTES les situations sont « à valider par un juge humain (TOK-89) » : leur auteur n'est pas un
+# juge et Thomas ne joue pas. Aucun script de simulateur n'a été consulté.
+# Mode d'emploi, deck source, conventions : jeu-de-tests-branded.md
+# Points de règle (R01…) : points-de-regle-a-valider.md
+#
+# Conventions
+#   depart      : seules les zones non vides sont écrites. Par défaut : tour 1, nous commençons,
+#                 Phase Principale 1, pas de pioche, terrain adverse vide, Extra Deck complet,
+#                 deck = les 40 cartes moins celles placées ailleurs, mémoire du tour vide.
+#   memoire     : faits du tour déjà acquis (voir « mémoire du tour », definitions-et-schema.md § 2.1).
+#   attendu.verdict : legal | illegal | non_couvert
+#   choix       : liste EXACTE attendue des options légales. exclus : pièges qui ne doivent pas y être.
+#   incomplet   : cartes non couvertes qui rendent la liste « peut-être incomplète » (§ 3.4, cas 3).
+#   confiance   : haute | moyenne | basse — celle de l'auteur, PAS une validation.
+#   perimetre   : pilote | hors_pilote (réservé : adversaire, tours suivants).
+
+version: 2
+deck_source: 6af240d29e8b7a3a8eb28d8d
+validation_par_defaut: "à valider par un juge humain (TOK-89)"
+
+cartes:
+  ALUBER: "Aluber the Jester of Despia"
+  ASH: "Ash Blossom & Joyous Spring"
+  CARTESIA: "Blazing Cartesia, the Virtuous"
+  BFUSION: "Branded Fusion"
+  BOPENING: "Branded Opening"
+  BHIGH: "Branded in High Spirits"
+  COCA: "Cocatorium the Heavy Metal Avian"
+  DECCLESIA: "Dogmatika Ecclesia, the Virtuous"
+  DROLL: "Droll & Lock Bird"
+  ALBAZ: "Fallen of Albaz"
+  WHITE: "Fallen of the White Dragon"
+  OGRE: "Ghost Ogre & Snow Rabbit"
+  SARC: "Gold Sarcophagus"
+  QUEM: "Guiding Quem, the Virtuous"
+  IECCLESIA: "Incredible Ecclesia, the Virtuous"
+  FUWALOS: "Mulcharmy Fuwalos"
+  NADIR: "Nadir Servant"
+  SKITT: "Springans Kitt"
+  SPOLY: "Super Polymerization"
+  TFTV: "The Fallen & The Virtuous"
+  GSWORD: "The Golden Swordsoul"
+  MERC: "Tri-Brigade Mercourier"
+  TBKITT: "Tri-Brigade Springans Kitt"
+  SANCTIFIRE: "Albion the Sanctifire Dragon"
+  LULU: "Despian Luluwalilith"
+  EDD: "Ecclesia and the Dark Dragon"
+  GARURA: "Garura, Wings of Resonant Life"
+  GRANG: "Granguignol the Dusk Dragon"
+  AEON: "Hyperinvoked Aeon"
+  MIRROR: "Mirrorjade the Iceblade Dragon"
+  MIXOUSIA: "Mixousia the Confounder"
+  DRAGO: "Predaplant Dragostapelia"
+  RIND: "Rindbrumm the Striking Dragon"
+  SPRIND: "Sprind the Irondash Dragon"
+  DOGMA: "The Dragon that Devours the Dogma"
+  CHAMPIONS: "The Three Champions of Swordsoul"
+  TITAN: "Titaniklad the Ash Dragon"
+  LAVA: "Lava Golem"                           # side deck, texte présent, non formalisée
+
+situations:
+
+  # ── A. Règles de base du tour ────────────────────────────────────────────────────────────
+  - id: T01
+    mecanique: invocation_normale_et_declencheur
+    perimetre: pilote
+    depart: {main: [ALUBER, ASH, ASH, OGRE, DROLL]}
+    action: "Invocation Normale d'ALUBER, puis activer son effet déclenché (chercher une Magie/Piège « Branded » dans le Deck)."
+    attendu:
+      verdict: legal
+      choix: [BFUSION, BOPENING, BHIGH, TFTV]
+      etat: "la carte choisie est en main ; Invocation Normale consommée ; « une fois par tour » d'ALUBER consommé ; deck mélangé."
+      note: "L'effet est facultatif (« You can ») : ne pas l'activer est aussi légal."
+    source: "Textes d'ALUBER (1er effet) et de TFTV (« always treated as a Branded card »)."
+    regles: [R02, R11]
+    confiance: haute
+
+  - id: T02
+    mecanique: activation_sans_resolution_possible
+    perimetre: pilote
+    depart:
+      main: [BFUSION, BOPENING, BHIGH]
+      terrain: ["ALUBER (vient d'être Invoqué Normalement)"]
+      cimetiere: [TFTV, TFTV, TFTV]
+      memoire: ["Invocation Normale utilisée"]
+    action: "Activer l'effet de recherche d'ALUBER."
+    attendu:
+      verdict: illegal
+      raison: "Aucune Magie/Piège « Branded » ne reste dans le Deck : BFUSION, BOPENING et BHIGH sont en main, les 3 TFTV (traitées comme « Branded ») au Cimetière."
+    source: "Textes d'ALUBER et de TFTV ; règle générale d'activation."
+    regles: [R01]
+    confiance: moyenne
+  - id: T03
+    mecanique: invocation_normale_unique
+    perimetre: pilote
+    depart: {main: [ALBAZ, ASH, OGRE, DROLL], terrain: [ALUBER], memoire: ["Invocation Normale utilisée (ALUBER)"]}
+    action: "Invocation Normale d'ALBAZ."
+    attendu: {verdict: illegal, raison: "Une seule Invocation Normale ou Pose par tour."}
+    source: "Livret de règles (Invocation Normale)."
+    regles: []
+    confiance: haute
+
+  - id: T04
+    mecanique: une_fois_par_tour_par_nom
+    perimetre: pilote
+    depart:
+      main: [ASH, OGRE, DROLL]
+      terrain: [ALUBER, "ALUBER (2e exemplaire, invoqué en Défense par BOPENING)"]
+      cimetiere: [BOPENING, ASH]
+      memoire: ["effet d'ALUBER activé ce tour (1er exemplaire)", "verrou BOPENING : Extra Deck = Fusion seulement"]
+    action: "Activer l'effet de recherche du 2e ALUBER (il vient d'être Invoqué Spécialement)."
+    attendu: {verdict: illegal, raison: "« You can only use 1 \"Aluber the Jester of Despia\" effect per turn, and only once that turn » : limite par nom, valable pour toutes les copies."}
+    source: "Texte d'ALUBER (dernière phrase)."
+    regles: []
+    confiance: haute
+
+  - id: T05
+    mecanique: activation_sans_resolution_possible
+    perimetre: pilote
+    depart: {main: [ALBAZ, ASH, ASH, OGRE, DROLL]}
+    action: "Invocation Normale d'ALBAZ, puis activer son effet (défausser 1 carte ; Invocation Fusion avec des monstres des deux terrains)."
+    attendu: {verdict: illegal, raison: "ALBAZ ne peut pas utiliser d'autres monstres que vous contrôlez et l'adversaire n'en contrôle aucun : aucune Fusion (2 matériels au moins) n'est possible. L'invocation est légale, pas l'activation."}
+    source: "Texte d'ALBAZ."
+    regles: [R01]
+    confiance: moyenne
+
+  - id: T06
+    mecanique: structure_du_tour
+    perimetre: pilote
+    depart: {main: [ASH, ASH, OGRE, DROLL], terrain: [ALUBER], memoire: ["Invocation Normale utilisée"]}
+    action: "Entrer en Phase de Combat au tour 1."
+    attendu: {verdict: illegal, raison: "Le joueur qui commence ne pioche pas et ne peut pas mener de Phase de Combat à son premier tour."}
+    source: "Livret de règles (premier tour)."
+    regles: [R31]
+    confiance: haute
+
+  # ── B. Branded Fusion ────────────────────────────────────────────────────────────────────
+  - id: T07
+    mecanique: invocation_fusion_depuis_le_deck
+    perimetre: pilote
+    depart: {main: [BFUSION, ASH, ASH, OGRE, DROLL]}
+    action: "Activer BFUSION : lister les monstres Fusion invocables et, pour chacun, les paires de matériels (main, Deck ou terrain)."
+    attendu:
+      verdict: legal
+      choix:
+        - {fusion: SANCTIFIRE, materiel_1: [ALBAZ, WHITE], materiel_2: [CARTESIA, DECCLESIA, QUEM, IECCLESIA, GSWORD]}
+        - {fusion: RIND, materiel_1: [ALBAZ, WHITE], materiel_2: [SKITT, TBKITT, MERC, COCA, FUWALOS]}
+      exclus: [MIRROR, SPRIND, TITAN, DOGMA, GRANG, GARURA, DRAGO, LULU, EDD, AEON, MIXOUSIA, CHAMPIONS]
+      etat: "les 2 matériels sont au Cimetière ; le monstre Fusion est sur le terrain, « correctement invoqué » ; verrou « Extra Deck = Fusion seulement » pour tout le tour ; BFUSION activée ce tour."
+      note: "ASH, OGRE (main) et DROLL ne remplissent aucune ligne de matériel : OGRE est LUMIÈRE Psychique, DROLL est VENT Magicien."
+    source: "Textes de BFUSION, SANCTIFIRE, RIND, WHITE (« always treated as »)."
+    regles: [R03, R05]
+    confiance: moyenne
+
+  - id: T08
+    mecanique: invocation_fusion_depuis_le_deck
+    perimetre: pilote
+    depart: {main: [BFUSION, ALUBER, ASH, OGRE, DROLL]}
+    action: "Activer BFUSION pour invoquer GRANG avec CARTESIA (Deck) + ALUBER (main)."
+    attendu: {verdict: illegal, raison: "GRANG (« Blazing Cartesia + 1 LIGHT or DARK monster ») ne mentionne pas « Fallen of Albaz » comme matériel."}
+    source: "Textes de BFUSION et de GRANG."
+    regles: [R05]
+    confiance: haute
+
+  - id: T09
+    mecanique: invocation_fusion_depuis_le_deck
+    perimetre: pilote
+    depart: {main: [BFUSION, ALUBER, ASH, OGRE, DROLL]}
+    action: "Activer BFUSION pour invoquer DOGMA avec ALBAZ + CARTESIA (Deck) + ALUBER (main)."
+    attendu: {verdict: illegal, raison: "BFUSION dit « using 2 monsters » ; DOGMA demande 3 matériels."}
+    source: "Textes de BFUSION et de DOGMA."
+    regles: [R06]
+    confiance: moyenne
+
+  - id: T10
+    mecanique: invocation_fusion_depuis_le_deck
+    perimetre: pilote
+    depart: {main: [BFUSION, ASH, ASH, OGRE, DROLL]}
+    action: "Activer BFUSION pour invoquer MIRROR."
+    attendu: {verdict: illegal, raison: "MIRROR demande un monstre Fusion, Synchro, Xyz ou Lien comme 2e matériel : il n'y en a ni en main, ni dans le Deck, ni sur le terrain (l'Extra Deck n'est pas une source de matériel pour BFUSION)."}
+    source: "Textes de BFUSION et de MIRROR."
+    regles: []
+    confiance: haute
+
+  - id: T11
+    mecanique: invocation_fusion_depuis_le_deck
+    perimetre: pilote
+    depart: {main: [BFUSION, CARTESIA, ASH], cimetiere: [ALBAZ, WHITE, WHITE]}
+    action: "Activer BFUSION."
+    attendu: {verdict: illegal, raison: "Tous les monstres Fusion qui mentionnent ALBAZ comme matériel exigent « Fallen of Albaz » : les 3 cartes qui portent ce nom sont au Cimetière, zone que BFUSION n'utilise pas."}
+    source: "Texte de BFUSION."
+    regles: [R01, R03]
+    confiance: moyenne
+
+  - id: T12
+    mecanique: verrou_retroactif
+    perimetre: pilote
+    depart:
+      main: [BFUSION, ASH]
+      terrain: ["EDD (Invocation Synchro ce tour)"]
+      cimetiere: [QUEM, ALUBER]
+      memoire: ["une Invocation Spéciale depuis l'Extra Deck d'un monstre non-Fusion a eu lieu ce tour"]
+    action: "Activer BFUSION."
+    attendu: {verdict: illegal, raison: "« You cannot Special Summon from the Extra Deck, except Fusion Monsters, the turn you activate this card » vaut pour le tour entier, y compris avant l'activation."}
+    source: "Texte de BFUSION."
+    regles: [R07]
+    confiance: moyenne
+
+  - id: T13
+    mecanique: verrou_non_retroactif
+    perimetre: pilote
+    depart:
+      main: [BOPENING, ASH]
+      terrain: ["EDD (Invocation Synchro ce tour)"]
+      cimetiere: [QUEM, ALUBER]
+      memoire: ["une Invocation Spéciale depuis l'Extra Deck d'un monstre non-Fusion a eu lieu ce tour"]
+    action: "Activer BOPENING (défausser ASH, prendre un monstre « Despia » du Deck)."
+    attendu: {verdict: legal, choix: [ALUBER], note: "Le verrou de BOPENING ne vaut que « for the rest of this turn after this card resolves ». QUEM est au Cimetière, les 2 ALUBER restants sont dans le Deck."}
+    source: "Texte de BOPENING. À lire en paire avec T12."
+    regles: [R07]
+    confiance: moyenne
+
+  - id: T14
+    mecanique: une_activation_par_tour
+    perimetre: pilote
+    depart:
+      main: [BFUSION]
+      terrain: [SANCTIFIRE, SKITT]
+      cimetiere: [ALBAZ, CARTESIA]
+      memoire: ["BFUSION activée ce tour", "effet de recherche de SKITT utilisé (a repris BFUSION au Cimetière)"]
+    action: "Activer BFUSION une 2e fois."
+    attendu: {verdict: illegal, raison: "« You can only activate 1 \"Branded Fusion\" per turn »."}
+    source: "Texte de BFUSION."
+    regles: [R08]
+    confiance: haute
+
+  - id: T15
+    mecanique: declencheur_au_cimetiere
+    perimetre: pilote
+    depart: {main: [BFUSION, ASH, ASH, OGRE, DROLL]}
+    action: "BFUSION avec ALBAZ + TBKITT (Deck) pour invoquer RIND, puis activer l'effet de TBKITT (« si cette carte est envoyée au Cimetière »)."
+    attendu:
+      verdict: legal
+      choix: [ALBAZ]
+      etat: "ALBAZ revient du Cimetière en Position de Défense ; son propre effet déclenché n'est pas activable (voir T05)."
+      note: "TBKITT ne peut pas se rappeler elle-même ; RIND est sur le terrain, pas au Cimetière."
+    source: "Textes de BFUSION, RIND, TBKITT."
+    regles: [R10, R33]
+    confiance: moyenne
+
+  # ── C. Fin de tour, Nadir Servant, Guiding Quem ──────────────────────────────────────────
+  - id: T16
+    mecanique: phase_de_fin
+    perimetre: pilote
+    depart:
+      phase: "Phase de Fin"
+      terrain: [SANCTIFIRE]
+      cimetiere: [BFUSION, ALBAZ, CARTESIA]
+      memoire: ["BFUSION activée ce tour", "aucun monstre Fusion envoyé au Cimetière ce tour"]
+    action: "Activer l'effet de Phase de Fin de CARTESIA (la reprendre en main)."
+    attendu: {verdict: illegal, raison: "Condition « if a Fusion Monster(s) was sent to your GY this turn » fausse : des matériels de Fusion ont été envoyés, pas un monstre Fusion."}
+    source: "Texte de CARTESIA (3e effet)."
+    regles: []
+    confiance: haute
+
+  - id: T17
+    mecanique: portee_d_un_verrou
+    perimetre: pilote
+    depart:
+      phase: "Phase de Fin"
+      main: [ALBAZ]
+      cimetiere: [NADIR, TITAN]
+      memoire: ["NADIR activée ce tour", "verrou NADIR : aucune Invocation Spéciale depuis l'Extra Deck", "TITAN envoyé au Cimetière ce tour (non invoqué)"]
+    action: "Activer l'effet de Phase de Fin de TITAN : ajouter à la main OU Invoquer Spécialement, depuis le Deck, 1 « Fallen of Albaz » ou 1 monstre « Dogmatika »."
+    attendu:
+      verdict: legal
+      choix: [WHITE, DECCLESIA, QUEM]
+      exclus: [CARTESIA, IECCLESIA, GSWORD]
+      note: "Le verrou de NADIR ne porte que sur l'Extra Deck : invoquer depuis le Deck reste légal. ALBAZ est en main, donc absent de la liste."
+    source: "Textes de TITAN (3e effet) et de NADIR."
+    regles: [R03, R11, R13]
+    confiance: moyenne
+
+  - id: T18
+    mecanique: recherche_sous_condition_de_valeur
+    perimetre: pilote
+    depart: {main: [NADIR, ASH, ASH, OGRE, DROLL]}
+    action: "Activer NADIR en envoyant TITAN (ATK 2500) de l'Extra Deck au Cimetière : lister les cartes qu'on peut ajouter."
+    attendu:
+      verdict: legal
+      choix: [ALBAZ, WHITE, DECCLESIA, QUEM]
+      exclus: [CARTESIA, IECCLESIA, GSWORD, ALUBER]
+      etat: "TITAN au Cimetière (non invoqué, « envoyé ce tour ») ; verrou « aucune Invocation Spéciale depuis l'Extra Deck » ; NADIR activée ce tour. La Phase de Fin ouvrira l'effet de TITAN (T17)."
+      note: "QUEM est « always treated as a Dogmatika card ». CARTESIA et IECCLESIA ne sont pas « Dogmatika »."
+    source: "Textes de NADIR, QUEM, WHITE."
+    regles: [R03, R11, R12]
+    confiance: moyenne
+
+  - id: T19
+    mecanique: hasard
+    perimetre: pilote
+    depart: {main: [NADIR, ASH, ASH, OGRE, DROLL]}
+    action: "Activer NADIR en envoyant GARURA (ATK 1500), ajouter une carte, puis activer l'effet de GARURA (« si envoyée au Cimetière : piochez 1 carte »)."
+    attendu:
+      verdict: legal
+      choix: [DECCLESIA, QUEM]
+      exclus: [ALBAZ, WHITE]
+      etat: "branche aléatoire : une branche par nom de carte encore dans le Deck, chacune avec la condition « pioche = X »."
+      note: "ALBAZ et WHITE ont 1800 ATK, plus que les 1500 de GARURA. L'effet de GARURA est en « If » : il s'active après la résolution de NADIR."
+    source: "Textes de NADIR et de GARURA."
+    regles: [R10, R12]
+    confiance: moyenne
+
+  - id: T20
+    mecanique: verrou
+    perimetre: pilote
+    depart:
+      main: [ALUBER]
+      terrain: [ALBAZ, CARTESIA]
+      cimetiere: [NADIR, TITAN]
+      memoire: ["NADIR activée ce tour", "verrou NADIR : aucune Invocation Spéciale depuis l'Extra Deck"]
+    action: "Activer l'effet rapide de CARTESIA (Invocation Fusion d'un monstre Fusion de Niveau 8 ou plus)."
+    attendu: {verdict: illegal, raison: "Le verrou de NADIR interdit toute Invocation Spéciale depuis l'Extra Deck : l'effet ne peut rien faire, il ne peut donc pas être activé."}
+    source: "Textes de NADIR et de CARTESIA."
+    regles: [R14]
+    confiance: moyenne
+
+  - id: T21
+    mecanique: une_activation_par_tour
+    perimetre: pilote
+    depart: {main: [NADIR, ALBAZ], cimetiere: [NADIR, TITAN], memoire: ["NADIR activée ce tour", "verrou NADIR"]}
+    action: "Activer une 2e NADIR."
+    attendu: {verdict: illegal, raison: "« You can only activate 1 \"Nadir Servant\" per turn »."}
+    source: "Texte de NADIR."
+    regles: [R08]
+    confiance: haute
+
+  - id: T22
+    mecanique: monstre_extra_non_invoque
+    perimetre: pilote
+    depart:
+      main: [DECCLESIA]
+      terrain: ["QUEM (Invocation Normale ; 1er effet utilisé pour envoyer BHIGH)"]
+      cimetiere: [BHIGH, NADIR, TITAN]
+      memoire: ["NADIR vient de se résoudre : TITAN a quitté l'Extra Deck", "verrou NADIR"]
+    action: "Activer le 2e effet de QUEM (« si une carte quitte l'Extra Deck : ciblez 1 Fallen of Albaz ou 1 monstre qui le mentionne dans votre Cimetière ; Invoquez-le Spécialement ») en ciblant TITAN."
+    attendu: {verdict: illegal, raison: "TITAN mentionne ALBAZ mais n'a jamais été correctement invoqué : un monstre de l'Extra Deck envoyé directement au Cimetière ne peut pas en être Invoqué Spécialement. Aucune autre cible valide."}
+    source: "Texte de QUEM ; livret de règles (monstres de l'Extra Deck au Cimetière)."
+    regles: [R01, R09]
+    confiance: moyenne
+
+  - id: T23
+    mecanique: predicat_mentionne
+    perimetre: pilote
+    depart: {main: [QUEM, ASH, ASH, OGRE, DROLL]}
+    action: "Invocation Normale de QUEM, puis activer son 1er effet : lister les cartes du Deck qu'on peut envoyer au Cimetière (« Fallen of Albaz » ou une carte qui le mentionne)."
+    attendu:
+      verdict: legal
+      choix: [ALBAZ, WHITE, CARTESIA, IECCLESIA, SKITT, GSWORD, MERC, TBKITT, BFUSION, BHIGH, NADIR, TFTV]
+      exclus: [ALUBER, BOPENING, DECCLESIA, COCA, FUWALOS, SARC, SPOLY, ASH, OGRE, DROLL]
+      note: "« card that mentions it » : les Magies comptent. Liste calculée en cherchant « Fallen of Albaz » entre guillemets dans les textes."
+    source: "Texte de QUEM et textes des 23 cartes du Main Deck."
+    regles: [R04]
+    confiance: moyenne
+
+  - id: T24
+    mecanique: declencheur_sur_evenement
+    perimetre: pilote
+    depart:
+      terrain: ["QUEM (Invocation Normale ; 1er effet utilisé pour envoyer ALBAZ)"]
+      cimetiere: [ALBAZ, NADIR, TITAN]
+      main: [DECCLESIA]
+      memoire: ["NADIR vient de se résoudre : TITAN a quitté l'Extra Deck", "verrou NADIR", "1er effet de QUEM utilisé"]
+    action: "Activer le 2e effet de QUEM en ciblant ALBAZ au Cimetière."
+    attendu:
+      verdict: legal
+      etat: "ALBAZ est Invoqué Spécialement depuis le Cimetière ; les deux effets de QUEM sont consommés."
+      note: "Les deux effets de QUEM ont chacun leur « une fois par tour ». Le verrou de NADIR ne concerne pas le Cimetière."
+    source: "Textes de QUEM et de NADIR."
+    regles: [R10, R13]
+    confiance: moyenne
+
+  # ── D. Invocations Spéciales depuis la main ──────────────────────────────────────────────
+  - id: T25
+    mecanique: condition_de_presence
+    perimetre: pilote
+    depart: {main: [CARTESIA, ASH], terrain: [QUEM], cimetiere: [ALBAZ], memoire: ["Invocation Normale utilisée (QUEM)", "1er effet de QUEM utilisé"]}
+    action: "Activer l'effet de CARTESIA en main (« si vous contrôlez Fallen of Albaz ou s'il est dans votre Cimetière : Invoquez Spécialement cette carte »)."
+    attendu: {verdict: legal, note: "Variante à tester aussi : WHITE sur le terrain à la place d'ALBAZ au Cimetière (WHITE est « always treated as Fallen of Albaz »)."}
+    source: "Texte de CARTESIA (1er effet)."
+    regles: [R03, R15]
+    confiance: haute
+
+  - id: T26
+    mecanique: condition_de_presence
+    perimetre: pilote
+    depart: {main: [CARTESIA, ASH, ASH, OGRE, DROLL]}
+    action: "Activer l'effet de CARTESIA en main pour l'Invoquer Spécialement."
+    attendu: {verdict: illegal, raison: "Ni ALBAZ ni WHITE sur le terrain ou au Cimetière."}
+    source: "Texte de CARTESIA."
+    regles: []
+    confiance: haute
+
+  - id: T27
+    mecanique: condition_de_comparaison
+    perimetre: pilote
+    depart: {main: [IECCLESIA, ASH, ASH, OGRE, DROLL]}
+    action: "Invoquer Spécialement IECCLESIA depuis la main par sa propre condition."
+    attendu: {verdict: illegal, raison: "« If your opponent controls more monsters than you do » : 0 contre 0, la condition est fausse. L'Invocation Normale reste légale."}
+    source: "Texte d'IECCLESIA."
+    regles: [R15, R16]
+    confiance: haute
+
+  - id: T28
+    mecanique: cout_par_sacrifice
+    perimetre: pilote
+    depart: {main: [ASH, ASH, OGRE, DROLL], terrain: ["IECCLESIA (Invocation Normale)"], memoire: ["Invocation Normale utilisée"]}
+    action: "Activer l'effet rapide d'IECCLESIA (la Sacrifier ; Invoquer Spécialement 1 monstre « Swordsoul » ou 1 « Fallen of Albaz » depuis la main ou le Deck)."
+    attendu:
+      verdict: legal
+      choix: [ALBAZ, WHITE, GSWORD]
+      etat: "IECCLESIA au Cimetière (coût) ; le monstre choisi est sur le terrain, Invoqué Spécialement ce tour."
+    source: "Textes d'IECCLESIA, WHITE, GSWORD."
+    regles: [R03, R11]
+    confiance: moyenne
+
+  - id: T29
+    mecanique: cout_depuis_l_extra_deck
+    perimetre: pilote
+    depart: {main: [WHITE, ASH, ASH, OGRE, DROLL]}
+    action: "Activer l'effet de WHITE en main : lister les monstres de l'Extra Deck qu'on peut envoyer au Cimetière en coût (« monster that mentions Fallen of Albaz »)."
+    attendu:
+      verdict: legal
+      choix: [SANCTIFIRE, MIRROR, RIND, SPRIND, DOGMA, TITAN, EDD, CHAMPIONS]
+      exclus: [GRANG, GARURA, LULU, DRAGO, AEON, MIXOUSIA]
+      etat: "WHITE sur le terrain ; verrou « Extra Deck = Fusion ou Synchro de Niveau 8 seulement » ; le monstre envoyé est au Cimetière, non invoqué."
+      note: "EDD est un monstre Synchro mais son texte mentionne « Fallen of Albaz » : il compte. CHAMPIONS (Synchro) aussi : son 2e effet cite « Fallen of Albaz »."
+    source: "Texte de WHITE et textes des 15 cartes de l'Extra Deck."
+    regles: [R04]
+    confiance: moyenne
+
+  - id: T30
+    mecanique: predicat_nom
+    perimetre: pilote
+    depart:
+      main: [ASH, ASH, OGRE, DROLL]
+      terrain: ["WHITE (vient d'être Invoqué Spécialement par son effet)"]
+      cimetiere: [TITAN]
+      memoire: ["verrou WHITE : Extra Deck = Fusion ou Synchro de Niveau 8 seulement"]
+    action: "Activer l'effet déclenché de WHITE : Invoquer Spécialement 1 monstre « Ecclesia » depuis la main, le Deck ou le Cimetière."
+    attendu:
+      verdict: legal
+      choix: [IECCLESIA, DECCLESIA]
+      exclus: [EDD, CARTESIA, QUEM]
+      note: "« Ecclesia » = le nom contient ce mot. EDD (« Ecclesia and the Dark Dragon ») est un monstre « Ecclesia » mais il est dans l'Extra Deck, zone non citée."
+    source: "Texte de WHITE (2e effet)."
+    regles: [R11]
+    confiance: moyenne
+
+  - id: T31
+    mecanique: verrou_avec_exception
+    perimetre: pilote
+    depart:
+      terrain: [WHITE, "IECCLESIA (Syntoniseur, Niveau 4)", "ALUBER (Invocation Normale)"]
+      cimetiere: [TITAN]
+      memoire: ["verrou WHITE : Extra Deck = Fusion ou Synchro de Niveau 8 seulement", "Invocation Normale utilisée"]
+    action: "Invocation Synchro de LULU (Niveau 12) avec IECCLESIA + WHITE + ALUBER."
+    attendu: {verdict: illegal, raison: "Les matériels conviennent (1 Syntoniseur de Niveau 4 + 2 non-Syntoniseurs, total 12), mais le verrou de WHITE n'autorise que les Fusion et Synchro de Niveau 8."}
+    source: "Textes de WHITE et de LULU."
+    regles: [R14, R26]
+    confiance: moyenne
+
+  - id: T32
+    mecanique: nom_temporaire
+    perimetre: pilote
+    depart:
+      main: [TBKITT, ASH, OGRE]
+      terrain: ["COCA (Invocation Normale ; nom, Type, Attribut et Niveau de MERC jusqu'à la Phase de Fin)"]
+      bannies: [MERC]
+      memoire: ["Invocation Normale utilisée", "2e effet de COCA utilisé"]
+    action: "Activer l'effet de TBKITT en main (« si vous contrôlez un monstre Tri-Brigade ou Springans, sauf Tri-Brigade Springans Kitt : Invoquez Spécialement cette carte »)."
+    attendu: {verdict: legal, note: "COCA porte le nom « Tri-Brigade Mercourier » : il compte comme monstre « Tri-Brigade »."}
+    source: "Textes de COCA (2e effet) et de TBKITT."
+    regles: [R27]
+    confiance: moyenne
+
+  - id: T33
+    mecanique: declencheur_pendant_un_cout
+    perimetre: pilote
+    depart: {main: [COCA, ASH, ASH, OGRE, DROLL]}
+    action: "Invocation Normale de COCA ; activer son 2e effet en bannissant MERC du Deck (coût) ; puis activer l'effet de MERC (« si cette carte est bannie »)."
+    attendu:
+      verdict: legal
+      choix_cout_coca: [MERC, SKITT, TBKITT, FUWALOS]
+      choix: [ALBAZ, WHITE, CARTESIA, QUEM, IECCLESIA, SKITT, GSWORD, TBKITT]
+      exclus: [ALUBER, DECCLESIA, COCA, MERC, BFUSION, NADIR]
+      note: "MERC cherche un MONSTRE qui mentionne ALBAZ (pas une Magie), sauf lui-même. Son effet se déclenche pendant le paiement du coût de COCA et s'active après la résolution de l'effet de COCA, dans une nouvelle chaîne."
+    source: "Textes de COCA et de MERC."
+    regles: [R04, R10, R27]
+    confiance: moyenne
+
+  # ── E. Coût ou effet ; Magies Jeu-Rapide ─────────────────────────────────────────────────
+  - id: T34
+    mecanique: cout_ou_effet
+    perimetre: pilote
+    depart: {main: [BOPENING], terrain: [ALUBER], memoire: ["Invocation Normale utilisée"]}
+    action: "Activer BOPENING alors que c'est la seule carte en main."
+    attendu: {verdict: illegal, raison: "« Discard 1 card, then take… » : la défausse est un effet (pas de « ; »), mais il faut pouvoir l'appliquer. Aucune autre carte en main."}
+    source: "Texte de BOPENING."
+    regles: [R01, R17]
+    confiance: moyenne
+
+  - id: T35
+    mecanique: recherche_ou_invocation
+    perimetre: pilote
+    depart: {main: [BOPENING, ASH, ASH, OGRE, DROLL]}
+    action: "Activer BOPENING : défausser 1 carte, puis prendre 1 monstre « Despia » du Deck."
+    attendu:
+      verdict: legal
+      choix: [ALUBER, QUEM]
+      options_par_choix: ["ajouter à la main", "Invoquer Spécialement en Position de Défense"]
+      etat: "verrou « Extra Deck = Fusion seulement » pour le reste du tour ; 1er effet de BOPENING consommé."
+      note: "QUEM est « always treated as a Despia card »."
+    source: "Textes de BOPENING et de QUEM."
+    regles: [R11, R17, R18]
+    confiance: moyenne
+
+  - id: T36
+    mecanique: invocation_synchro
+    perimetre: pilote
+    depart:
+      terrain: [WHITE, "IECCLESIA (Syntoniseur, Niveau 4, Invoquée Spécialement par WHITE)"]
+      cimetiere: [TITAN]
+      memoire: ["verrou WHITE : Extra Deck = Fusion ou Synchro de Niveau 8 seulement"]
+    action: "Invocation Synchro d'EDD (Niveau 8) avec IECCLESIA (Syntoniseur) + WHITE (non-Syntoniseur)."
+    attendu: {verdict: legal, etat: "EDD sur le terrain, correctement invoqué ; WHITE et IECCLESIA au Cimetière."}
+    source: "Textes d'EDD et de WHITE ; livret de règles (Invocation Synchro). À lire en paire avec T31."
+    regles: [R26]
+    confiance: moyenne
+
+  - id: T37
+    mecanique: effet_obligatoire
+    perimetre: pilote
+    depart:
+      phase: "Phase de Fin"
+      terrain: [WHITE]
+      cimetiere: [IECCLESIA, TITAN]
+      memoire: ["un monstre Fusion (TITAN) a été envoyé au Cimetière ce tour", "effet de Phase de Fin d'IECCLESIA non encore résolu"]
+    action: "Terminer le tour sans résoudre l'effet de Phase de Fin d'IECCLESIA."
+    attendu: {verdict: illegal, raison: "« Add this card from the GY to your hand » sans « You can » : effet obligatoire. Un état où il attend n'est pas un plateau final."}
+    source: "Texte d'IECCLESIA (dernier effet)."
+    regles: [R23]
+    confiance: moyenne
+
+  - id: T38
+    mecanique: cout_ou_effet
+    perimetre: pilote
+    depart: {main: [SPOLY], terrain: [ALBAZ, CARTESIA]}
+    action: "Activer SPOLY alors que c'est la seule carte en main."
+    attendu: {verdict: illegal, raison: "« Discard 1 card; » est un coût : il faut une autre carte en main à l'activation."}
+    source: "Texte de SPOLY."
+    regles: [R17]
+    confiance: haute
+
+  - id: T39
+    mecanique: invocation_fusion_depuis_le_terrain
+    perimetre: pilote
+    depart: {main: [SPOLY, ASH], terrain: [CARTESIA, QUEM]}
+    action: "Activer SPOLY (défausser ASH) pour invoquer GARURA avec CARTESIA + QUEM."
+    attendu: {verdict: legal, note: "Deux monstres LUMIÈRE Magicien de noms différents. Magie Jeu-Rapide activée depuis la main pendant son propre tour."}
+    source: "Textes de SPOLY et de GARURA."
+    regles: [R18, R20]
+    confiance: moyenne
+
+  - id: T40
+    mecanique: invocation_fusion_depuis_le_terrain
+    perimetre: pilote
+    depart: {main: [SPOLY, ALBAZ, ASH], terrain: [CARTESIA]}
+    action: "Activer SPOLY (défausser ASH) pour invoquer SANCTIFIRE avec ALBAZ (main) + CARTESIA (terrain)."
+    attendu: {verdict: illegal, raison: "SPOLY n'utilise que des monstres « from either field » : la main n'est pas une source de matériel."}
+    source: "Texte de SPOLY."
+    regles: []
+    confiance: haute
+
+  - id: T41
+    mecanique: carte_posee
+    perimetre: pilote
+    depart: {main: [ASH], terrain: [CARTESIA, QUEM, "SPOLY (posée face cachée ce tour)"]}
+    action: "Activer SPOLY posée face cachée ce tour."
+    attendu: {verdict: illegal, raison: "Une Magie Jeu-Rapide posée ne peut pas être activée pendant le tour où elle a été posée."}
+    source: "Livret de règles (Magies Jeu-Rapide)."
+    regles: [R18]
+    confiance: haute
+
+  - id: T42
+    mecanique: chaine_interdite
+    perimetre: pilote
+    depart: {main: [SPOLY, BOPENING, ASH, OGRE], terrain: [CARTESIA, QUEM]}
+    action: "Activer SPOLY (défausser ASH), puis enchaîner BOPENING à cette activation."
+    attendu: {verdict: illegal, raison: "« Neither player can activate cards or effects in response to this card's activation »."}
+    source: "Texte de SPOLY."
+    regles: [R19]
+    confiance: haute
+
+  - id: T43
+    mecanique: predicat_type_et_valeur
+    perimetre: pilote
+    depart: {main: [BHIGH, ALBAZ, CARTESIA, MERC, SKITT]}
+    action: "Activer BHIGH : pour chaque monstre révélé, lister les monstres Fusion de Niveau 8, de même Type, avec 2500 d'ATK ou de DEF, qu'on peut envoyer de l'Extra Deck au Cimetière."
+    attendu:
+      verdict: legal
+      choix:
+        - {revele: ALBAZ, type: Dragon, envoi: [SANCTIFIRE, TITAN]}
+        - {revele: CARTESIA, type: Magicien, envoi: [GRANG]}
+        - {revele: MERC, type: Bête Ailée, envoi: [RIND]}
+        - {revele: SKITT, type: Bête, envoi: [DOGMA]}
+      exclus: [GARURA, MIRROR, SPRIND, DRAGO, LULU, EDD, AEON, MIXOUSIA, CHAMPIONS]
+      note: "DOGMA (3000/2500) passe par sa DEF. GARURA est Niveau 6. LULU, EDD et CHAMPIONS sont Synchro. MIXOUSIA est Magicien de Niveau 8 mais 2700/1500. AEON est Niveau 10."
+    source: "Texte de BHIGH et caractéristiques des 15 cartes de l'Extra Deck."
+    regles: [R17, R21]
+    confiance: moyenne
+
+  - id: T44
+    mecanique: predicat_type_et_valeur
+    perimetre: pilote
+    depart: {main: [BHIGH, ALUBER, ASH, OGRE, ASH]}
+    action: "Activer BHIGH."
+    attendu: {verdict: illegal, raison: "Monstres en main : Elfe (ALUBER), Zombie (ASH), Psychique (OGRE). Aucun monstre Fusion de Niveau 8 de ces Types dans l'Extra Deck (AEON est Démon de Niveau 10)."}
+    source: "Texte de BHIGH."
+    regles: [R01, R21]
+    confiance: moyenne
+
+  - id: T45
+    mecanique: declencheurs_simultanes
+    perimetre: pilote
+    depart: {main: [TBKITT, ASH], terrain: ["CARTESIA (Invoquée Spécialement)", ALBAZ]}
+    action: "Effet rapide de CARTESIA : Invocation Fusion de GRANG avec CARTESIA (terrain) + TBKITT (main). Deux effets se déclenchent : GRANG (« si Invoqué par Fusion ») et TBKITT (« si envoyé au Cimetière »)."
+    attendu:
+      verdict: legal
+      choix: ["maillon 1 = GRANG, maillon 2 = TBKITT", "maillon 1 = TBKITT, maillon 2 = GRANG", "n'activer que l'un des deux", "n'activer aucun des deux"]
+      note: "Deux effets facultatifs du même joueur, déclenchés en même temps : il choisit l'ordre. TBKITT peut rappeler CARTESIA (elle mentionne ALBAZ)."
+    source: "Textes de CARTESIA, GRANG, TBKITT ; livret de règles (effets déclenchés simultanés)."
+    regles: [R22]
+    confiance: moyenne
+
+  - id: T46
+    mecanique: une_fois_par_tour_par_nom
+    perimetre: pilote
+    depart:
+      phase: "Phase de Fin"
+      cimetiere: [BHIGH, TITAN, ALBAZ]
+      memoire: ["effet d'activation de BHIGH utilisé ce tour", "un monstre Fusion (TITAN) a été envoyé au Cimetière ce tour"]
+    action: "Activer l'effet de Phase de Fin de BHIGH (la reprendre en main)."
+    attendu: {verdict: illegal, raison: "« You can only use 1 \"Branded in High Spirits\" effect per turn, and only once that turn »."}
+    source: "Texte de BHIGH."
+    regles: [R21]
+    confiance: haute
+
+  - id: T47
+    mecanique: condition_de_presence
+    perimetre: pilote
+    depart: {main: [SKITT, ALBAZ], cimetiere: [NADIR, TITAN], memoire: ["NADIR activée ce tour", "verrou NADIR"]}
+    action: "Activer l'effet de SKITT en main (« si vous avez un monstre Fusion qui mentionne Fallen of Albaz comme matériel sur votre terrain ou dans votre Cimetière »)."
+    attendu: {verdict: legal, note: "TITAN suffit même s'il n'a pas été correctement invoqué : la condition ne demande que sa présence."}
+    source: "Textes de SKITT et de TITAN."
+    regles: [R05, R32]
+    confiance: moyenne
+
+  - id: T48
+    mecanique: condition_de_presence
+    perimetre: pilote
+    depart: {main: [SKITT, ASH], cimetiere: [GRANG, EDD, BHIGH], memoire: ["GRANG et EDD envoyés au Cimetière ce tour"]}
+    action: "Activer l'effet de SKITT en main pour l'Invoquer Spécialement."
+    attendu: {verdict: illegal, raison: "GRANG est un monstre Fusion mais ne mentionne pas ALBAZ comme matériel. EDD mentionne ALBAZ mais est un monstre Synchro, et pas comme matériel."}
+    source: "Textes de SKITT, GRANG, EDD."
+    regles: [R05]
+    confiance: moyenne
+
+  - id: T49
+    mecanique: ordre_du_deck
+    perimetre: pilote
+    depart:
+      main: [ASH, OGRE]
+      terrain: ["SKITT (vient d'être Invoquée Spécialement)"]
+      cimetiere: [NADIR, TITAN]
+      memoire: ["NADIR activée ce tour", "verrou NADIR", "1er effet de SKITT utilisé"]
+    action: "Activer l'effet déclenché de SKITT : ajouter 1 Magie/Piège « Branded » (bannie, Deck ou Cimetière), puis placer 1 carte de la main au-dessous du Deck."
+    attendu:
+      verdict: legal
+      choix: [BFUSION, BOPENING, BHIGH, TFTV]
+      choix_dessous_du_deck: ["la carte ajoutée", ASH, OGRE]
+      etat: "la carte placée est connue comme dernière carte du Deck. Cette connaissance disparaît au prochain mélange."
+      note: "L'ordre des opérations compte : recherche dans le Deck (mélange), PUIS pose au-dessous."
+    source: "Texte de SKITT (2e effet)."
+    regles: [R02]
+    confiance: moyenne
+
+  - id: T50
+    mecanique: verrou_pose_par_un_effet
+    perimetre: pilote
+    depart: {main: [DECCLESIA, ASH], terrain: ["RIND (Invocation Fusion par BFUSION)"], cimetiere: [BFUSION, ALBAZ, MERC], memoire: ["BFUSION activée ce tour", "verrou BFUSION"]}
+    action: "Invoquer Spécialement DECCLESIA depuis la main (« si un monstre Invoqué Spécialement depuis l'Extra Deck est sur le terrain »), puis activer son effet de recherche."
+    attendu:
+      verdict: legal
+      choix: [QUEM, TFTV]
+      exclus: [ALBAZ, WHITE, CARTESIA, IECCLESIA]
+      etat: "verrou supplémentaire : plus aucune Invocation Spéciale depuis l'Extra Deck ce tour."
+      note: "Cartes « Dogmatika » du Main Deck hors DECCLESIA : QUEM et TFTV, toutes deux par « always treated as » (l'effet dit « card », une Magie convient). `cards.archetype` classe ALBAZ en « Dogmatika » : c'est faux pour les règles."
+    source: "Textes de DECCLESIA et de QUEM."
+    regles: [R04, R11]
+    confiance: moyenne
+
+  # ── F. Matériels de Fusion ───────────────────────────────────────────────────────────────
+  - id: T51
+    mecanique: restriction_de_niveau
+    perimetre: pilote
+    depart: {main: [ASH], terrain: ["CARTESIA (Invoquée Spécialement)", QUEM, ALBAZ]}
+    action: "Effet rapide de CARTESIA pour invoquer GARURA avec CARTESIA + QUEM."
+    attendu: {verdict: illegal, raison: "L'effet de CARTESIA n'invoque que des monstres Fusion de Niveau 8 ou plus ; GARURA est Niveau 6."}
+    source: "Textes de CARTESIA et de GARURA."
+    regles: []
+    confiance: haute
+
+  - id: T52
+    mecanique: monstre_extra_correctement_invoque
+    perimetre: pilote
+    depart:
+      terrain: ["MIRROR (Invocation Fusion par SPOLY, matériels ALBAZ + RIND)"]
+      cimetiere: [ALBAZ, "RIND (Invoqué par Fusion ce tour, puis utilisé comme matériel)", "TBKITT (vient d'être envoyée au Cimetière)", SPOLY, BFUSION, MERC]
+      memoire: ["BFUSION activée ce tour", "verrou BFUSION"]
+    action: "Activer l'effet de TBKITT : Invoquer Spécialement RIND depuis le Cimetière en Position de Défense."
+    attendu: {verdict: legal, choix: [RIND, ALBAZ, MERC], note: "RIND a été correctement invoqué avant d'aller au Cimetière : il peut en revenir. MERC est un monstre « Tri-Brigade ». À lire en paire avec T22."}
+    source: "Texte de TBKITT ; livret de règles (monstres de l'Extra Deck au Cimetière)."
+    regles: [R09]
+    confiance: moyenne
+
+  - id: T53
+    mecanique: fusion_et_envoi_depuis_l_extra_deck
+    perimetre: pilote
+    depart: {main: [ALUBER, ASH], terrain: ["CARTESIA (Invoquée Spécialement)", ALBAZ]}
+    action: "Effet rapide de CARTESIA : Invocation Fusion de GRANG avec CARTESIA (terrain) + ALUBER (main), puis effet de GRANG (envoyer 1 monstre LUMIÈRE ou TÉNÈBRES de Niveau 6 ou plus du Deck ou de l'Extra Deck au Cimetière)."
+    attendu:
+      verdict: legal
+      choix: [SANCTIFIRE, LULU, EDD, GARURA, MIRROR, DRAGO, RIND, SPRIND, DOGMA, TITAN, AEON, MIXOUSIA, CHAMPIONS]
+      note: "Aucun monstre du Main Deck n'est de Niveau 6 ou plus. Le monstre envoyé peut ouvrir un effet de Phase de Fin (TITAN, SPRIND, DOGMA, LULU) ou immédiat (GARURA)."
+    source: "Textes de CARTESIA et de GRANG ; caractéristiques des cartes de l'Extra Deck."
+    regles: []
+    confiance: moyenne
+
+  - id: T54
+    mecanique: nombre_de_materiels
+    perimetre: pilote
+    depart: {main: [ASH], terrain: ["CARTESIA (Invoquée Spécialement)", ALBAZ]}
+    action: "Effet rapide de CARTESIA pour invoquer DOGMA avec ALBAZ + CARTESIA seulement."
+    attendu: {verdict: illegal, raison: "DOGMA demande 3 matériels (ALBAZ + 1 LUMIÈRE ou TÉNÈBRES + 1 Monstre à Effet). Un monstre ne remplit qu'une ligne. ASH en main pourrait servir de 3e matériel, mais l'action demandée n'en utilise que 2."}
+    source: "Texte de DOGMA ; livret de règles (matériels de Fusion)."
+    regles: [R24]
+    confiance: haute
+
+  - id: T55
+    mecanique: nombre_de_materiels
+    perimetre: pilote
+    depart: {main: [ALUBER], terrain: ["CARTESIA (Invoquée Spécialement)", ALBAZ]}
+    action: "Effet rapide de CARTESIA pour invoquer DOGMA avec ALBAZ + CARTESIA (terrain) + ALUBER (main)."
+    attendu: {verdict: legal, etat: "DOGMA sur le terrain ; son effet « si Invoquée Spécialement » peut être activé (mélanger jusqu'à 2 cartes des Cimetières ou bannies dans le Deck)."}
+    source: "Textes de CARTESIA et de DOGMA."
+    regles: [R24]
+    confiance: moyenne
+
+  - id: T56
+    mecanique: restriction_de_materiel
+    perimetre: pilote
+    depart: {main: [SPOLY, ASH], terrain: ["SANCTIFIRE (Invocation Fusion)", ALBAZ]}
+    action: "Activer SPOLY (défausser ASH) pour invoquer MIRROR avec ALBAZ + SANCTIFIRE."
+    attendu: {verdict: illegal, raison: "SANCTIFIRE : « Cannot be used as Fusion Material »."}
+    source: "Texte de SANCTIFIRE."
+    regles: [R24]
+    confiance: haute
+
+  - id: T57
+    mecanique: memoire_d_invocation
+    perimetre: pilote
+    depart: {main: [SPOLY, ASH], terrain: ["ALUBER (Invocation Normale ce tour)", "ALBAZ (Invoqué Spécialement ce tour)"]}
+    action: "Activer SPOLY (défausser ASH) pour invoquer SPRIND avec ALBAZ + ALUBER."
+    attendu: {verdict: illegal, raison: "SPRIND demande « 1 Effect Monster Special Summoned this turn » : ALUBER a été Invoqué Normalement."}
+    source: "Texte de SPRIND."
+    regles: [R25]
+    confiance: haute
+
+  - id: T58
+    mecanique: memoire_d_invocation
+    perimetre: pilote
+    depart: {main: [SPOLY, ASH], terrain: ["ALBAZ (Invocation Normale ce tour)", "CARTESIA (Invoquée Spécialement ce tour)"]}
+    action: "Activer SPOLY (défausser ASH) pour invoquer SPRIND avec ALBAZ + CARTESIA."
+    attendu: {verdict: legal}
+    source: "Texte de SPRIND. À lire en paire avec T57."
+    regles: [R25]
+    confiance: moyenne
+
+  # ── G. Chaînes ───────────────────────────────────────────────────────────────────────────
+  - id: T59
+    mecanique: chaine
+    perimetre: pilote
+    depart: {main: [ALUBER, BOPENING, ASH, OGRE, DROLL]}
+    action: "Invocation Normale d'ALUBER ; activer son effet (maillon 1) ; enchaîner BOPENING depuis la main (maillon 2) en invoquant un 2e ALUBER du Deck."
+    attendu:
+      verdict: legal
+      etat: "résolution en ordre inverse : BOPENING d'abord (défausse, 2e ALUBER en Défense), puis la recherche du 1er ALUBER. Le 2e ALUBER ne peut pas activer son effet (limite par nom, T04)."
+    source: "Textes d'ALUBER et de BOPENING ; livret de règles (chaînes, vitesses)."
+    regles: [R18]
+    confiance: moyenne
+
+  - id: T60
+    mecanique: chaine
+    perimetre: pilote
+    depart: {main: [ALUBER, NADIR, ASH, OGRE, DROLL]}
+    action: "Invocation Normale d'ALUBER ; activer son effet (maillon 1) ; enchaîner NADIR (maillon 2)."
+    attendu: {verdict: illegal, raison: "NADIR est une Magie Normale (vitesse 1) : elle ne peut pas répondre à un effet."}
+    source: "Livret de règles (vitesses des Magies)."
+    regles: []
+    confiance: haute
+
+  - id: T61
+    mecanique: effet_sur_son_propre_terrain
+    perimetre: pilote
+    depart:
+      terrain: ["MIRROR (Invocation Fusion)", "MERC (Invocation Normale)"]
+      cimetiere: [ALBAZ, RIND, SPOLY, ASH, BFUSION]
+      memoire: ["BFUSION activée ce tour", "verrou BFUSION", "Invocation Normale utilisée"]
+    action: "Effet rapide de MIRROR : envoyer TITAN de l'Extra Deck au Cimetière (coût) ; bannir MERC, son propre monstre. Puis activer l'effet de MERC (« si cette carte est bannie »)."
+    attendu:
+      verdict: legal
+      etat: "MIRROR porte « ne peut pas utiliser cet effet au tour suivant » (restriction qui traverse le tour)."
+      note: "« banish 1 monster on the field » ne dit pas « adverse » et ne cible pas."
+    source: "Textes de MIRROR et de MERC."
+    regles: [R10, R28]
+    confiance: moyenne
+
+  - id: T62
+    mecanique: declencheur_sur_evenement
+    perimetre: pilote
+    depart:
+      main: [CARTESIA, ASH]
+      terrain: ["COCA (Invocation Normale)"]
+      cimetiere: [GSWORD, BOPENING]
+      memoire: ["Invocation Normale utilisée", "1er effet de BOPENING utilisé (GSWORD défaussée)", "verrou BOPENING"]
+    action: "Effet de COCA : bannir MERC du Deck (coût). Puis activer l'effet de GSWORD au Cimetière (« si un monstre est banni face visible : bannissez cette carte ; Invoquez Spécialement 1 monstre LUMIÈRE Magicien de la main ou du Cimetière dont l'ATK égale sa propre DEF »)."
+    attendu:
+      verdict: legal
+      choix: [CARTESIA]
+      note: "CARTESIA : 1500/1500. GSWORD (1800/1500) ne se choisirait pas elle-même. Les effets de MERC et de GSWORD se déclenchent en même temps : ordre au choix (T45)."
+    source: "Textes de COCA, MERC, GSWORD."
+    regles: [R10, R22, R27]
+    confiance: basse
+
+  - id: T63
+    mecanique: effet_differe
+    perimetre: pilote
+    depart: {main: [SARC, ASH, ASH, OGRE, DROLL]}
+    action: "Activer SARC en bannissant MERC du Deck, puis activer l'effet de MERC."
+    attendu:
+      verdict: legal
+      etat: "effet différé enregistré : MERC rejoint la main à notre 2e Phase de Standby après l'activation (tour 5 si SARC est activée au tour 1)."
+      note: "L'état doit porter cet effet au-delà du tour 1, même si le pilote ne joue pas les tours suivants."
+    source: "Textes de SARC et de MERC."
+    regles: [R10, R29]
+    confiance: moyenne
+
+  - id: T64
+    mecanique: invocation_synchro
+    perimetre: pilote
+    depart: {terrain: ["CARTESIA (Syntoniseur, Niveau 4)", "QUEM (Syntoniseur, Niveau 4)"]}
+    action: "Invocation Synchro d'EDD (Niveau 8) avec CARTESIA + QUEM."
+    attendu: {verdict: illegal, raison: "EDD demande « 1 Tuner + 1+ non-Tuners » : deux Syntoniseurs ne conviennent pas."}
+    source: "Texte d'EDD ; livret de règles (Invocation Synchro)."
+    regles: [R26]
+    confiance: moyenne
+
+  # ── H. Cartes ajoutées en v2, et « non couvert » ─────────────────────────────────────────
+  - id: T65
+    mecanique: cible_obligatoire
+    perimetre: pilote
+    depart: {main: [TFTV, ASH, ASH, OGRE, DROLL]}
+    action: "Activer TFTV (1er effet : envoyer 1 monstre qui mentionne ALBAZ de l'Extra Deck au Cimetière, puis cibler 1 carte face visible sur le terrain ; la détruire). Terrain vide des deux côtés, aucun monstre « Ecclesia » au Cimetière."
+    attendu: {verdict: illegal, raison: "1er effet : aucune carte face visible à cibler (TFTV ne peut pas se cibler elle-même). 2e effet : condition « Ecclesia » fausse et aucun monstre dans les Cimetières."}
+    source: "Texte de TFTV (chargé en base le 2026-11-16)."
+    regles: [R34]
+    confiance: basse
+  - id: T66
+    mecanique: nombre_de_materiels
+    perimetre: pilote
+    depart: {main: [ALUBER, ASH], terrain: ["CARTESIA (Invoquée Spécialement)", ALBAZ]}
+    action: "Effet rapide de CARTESIA pour invoquer AEON."
+    attendu: {verdict: illegal, raison: "AEON demande « 2+ Fusion Monsters with different Attributes » : aucun monstre Fusion en main ni sur le terrain."}
+    source: "Textes de CARTESIA et d'AEON (chargé en base le 2026-11-16)."
+    regles: []
+    confiance: haute
+  - id: T67
+    mecanique: non_couvert
+    perimetre: pilote
+    depart: {main: [ALUBER, LAVA, ASH, OGRE, DROLL]}
+    action: "Explorer tous les combos de cette main (LAVA, carte du Side Deck, n'est pas formalisée)."
+    attendu:
+      verdict: legal
+      etat: "les lignes qui n'utilisent pas LAVA sont rendues ; l'exploration est marquée incomplète (`complete = 0`) avec le motif `non_couvert` ; aucun combo n'est étiqueté « démontré » tant que LAVA peut agir depuis la main."
+      note: "Dépend de la décision D5 (propagation du « non couvert »)."
+    source: "Décisions du 16/11, § 4 (« Ce qui est affiché »)."
+    regles: []
+    confiance: moyenne
+  - id: T68
+    mecanique: non_couvert
+    perimetre: pilote
+    depart: {main: [LAVA, ASH, ASH, OGRE, DROLL]}
+    action: "Invoquer LAVA."
+    attendu: {verdict: non_couvert, raison: "Le texte existe dans `cards`, mais la carte (side deck) n'est pas formalisée : statut `non_traitee`."}
+    source: "Statuts de formalisation, definitions-et-schema.md § 3.4."
+    regles: []
+    confiance: haute
+
+  # ── I. Recenser sans juger ───────────────────────────────────────────────────────────────
+  - id: T69
+    mecanique: action_legale_sans_interet
+    perimetre: pilote
+    depart: {main: [FUWALOS, ASH, ASH, OGRE, DROLL]}
+    action: "Activer FUWALOS pendant son propre tour 1 (« si vous ne contrôlez aucune carte : défaussez cette carte »)."
+    attendu: {verdict: legal, note: "Le texte ne limite pas l'effet au tour adverse. Action sans intérêt, mais le système recense sans juger. Dépend de la décision D4 (filtres d'exploration)."}
+    source: "Texte de FUWALOS."
+    regles: [R30]
+    confiance: moyenne
+
+  - id: T70
+    mecanique: action_legale_sans_interet
+    perimetre: pilote
+    depart: {main: [ALUBER, ASH, ASH, OGRE, DROLL]}
+    action: "Invocation Normale d'ALUBER ; activer son effet de recherche ; enchaîner sa propre ASH pour l'annuler."
+    attendu: {verdict: legal, note: "Rien n'interdit d'annuler son propre effet. Même remarque que T69."}
+    source: "Textes d'ALUBER et d'ASH."
+    regles: [R30]
+    confiance: moyenne
+
+  # ── J. Hors pilote : places réservées ────────────────────────────────────────────────────
+  - id: T71
+    mecanique: materiel_adverse
+    perimetre: hors_pilote
+    depart:
+      tour: 2
+      main: [ALBAZ, ASH, ASH, OGRE, DROLL, NADIR]
+      terrain_adverse: ["monstre à effet générique, TÉNÈBRES, ATK 2500"]
+    action: "Invocation Normale d'ALBAZ ; activer son effet (défausser ASH) ; Invocation Fusion de TITAN avec ALBAZ + le monstre adverse."
+    attendu: {verdict: legal, note: "Sert à vérifier que l'état porte un terrain adverse et que la relation `interagit_adverse` est enregistrée. À lire en paire avec T05."}
+    source: "Textes d'ALBAZ et de TITAN."
+    regles: []
+    confiance: moyenne
+
+  - id: T72
+    mecanique: interruption_adverse
+    perimetre: hors_pilote
+    depart: {main: [BFUSION, NADIR, ASH, OGRE, DROLL]}
+    action: "Activer BFUSION ; l'adversaire enchaîne ASH et annule l'effet. Puis tenter d'activer une 2e BFUSION (hypothétique) ou d'invoquer une Synchro."
+    attendu: {verdict: illegal, raison: "ASH annule l'effet, pas l'activation : BFUSION compte comme activée ce tour (limite d'une activation, verrou « the turn you activate »)."}
+    source: "Textes de BFUSION et d'ASH."
+    regles: [R08]
+    confiance: basse

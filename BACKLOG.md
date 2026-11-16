@@ -200,12 +200,33 @@ prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decis
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🔜 Backlog | 🟠 Medium |
+| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🟡 Rédigé et arbitré (2026-11-16), reste la relecture par un juge — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
 | TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🔜 Backlog | 🟠 Medium |
-| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🔜 Backlog | 🟠 Medium |
+| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🟡 Rédigé (2026-11-16), 72 situations **non validées** — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
 | TOK-90 | Tranche 0 : un combo Branded de bout en bout (bloqué par TOK-85 et TOK-87) | 🔜 Backlog | 🟠 Medium |
-| TOK-89 | Trouver un juge humain qui connaît le jeu | 🔜 Backlog | 🟠 Medium |
-| TOK-88 | Journal de chronométrage des étapes | 🔜 Backlog | 🟢 Low |
+| TOK-89 | Trouver un juge humain qui connaît le jeu | 🟡 Dossier prêt à envoyer (`docs/moteur-combos/dossier-juge.md` : questionnaire de 34 points, 2 messages de contact) ; **reste à Thomas de contacter quelqu'un** | 🔴 High |
+| TOK-88 | Journal de chronométrage des étapes | 🟡 Ouvert — `docs/moteur-combos/chronometrage.md` (3 sessions d'agent le 2026-11-16, validation humaine non mesurée) | 🟢 Low |
+
+**État au 2026-11-16 (préparation, aucun code de moteur).** Deck source : régional WCQ du 8 novembre
+2026, top 4, 40 cartes, légal (`6af240d2…`). Décisions D1 à D9 prises le 2026-11-16 (déléguées à
+Claude, recommandations retenues) : `docs/moteur-combos/decisions-a-prendre-tok-85-87.md`. D8 bis est
+faite : `scripts/fetch_new_cards.py` ajoute chaque lundi les cartes sorties depuis le dernier
+chargement (étape `new_cards` de `refresh_decks.py`, non bloquante, sans réécrire les cartes existantes).
+
+- ✅ **Quatre cartes du deck sans texte, corrigé le 2026-11-16** : `fetch_cards.py` relancé, 287
+  cartes nouvelles insérées dans `cards` (13 797 → 14 084, sans réécrire les cartes existantes ;
+  une 288e, doublon de nom d'une carte renumérotée par YGOPRODeck, a été insérée puis retirée) et
+  un nom corrigé (`The Fallen &amp; The Virtuous`, entité HTML qui cassait la jointure par nom).
+  Conséquences hors combos, non traitées : `site-facts.ts` affiche encore 13 797
+  cartes ; `serving.db` sera reconstruite par le job du lundi.
+- ⚠ À arbitrer avec le data scientist : `views_week` des cartes existantes n'est jamais rafraîchi
+  (1 088 valeurs sur 14 084 égales à celles de l'API du jour), alors que les cartes nouvelles
+  arrivent avec une valeur du jour. Le signal précoce (notebook 11) compare donc des instantanés de
+  dates différentes. Ce défaut existait avant ; l'ajout des cartes nouvelles le rend visible.
+- ⚠ `cards.archetype` ne suit pas les règles du jeu (`Fallen of Albaz` y est « Dogmatika », ce qu'il
+  n'est pas) : le moteur calcule l'appartenance depuis le nom et les clauses « always treated as ».
+- TOK-89 passe en priorité haute : sans juge, les 72 tests restent des hypothèses (34 points de règle).
+- Hypothèse de Winston (§ 8.7) : fausse telle quelle, reformulée sur le chemin entier ; à tester en tranche 0.
 
 Jalons : **J1** 100 % des cartes Branded formalisées avec un taux d'erreur chiffré · **J2** le moteur
 retrouve seul les combos des guides publics · **J3** il en trouve un qu'aucun guide ne cite. Règle

@@ -81,6 +81,7 @@ PAGES = [
     ("decks", "/decks"),
     ("deck-fiche", f"/decks/{DECKS[0]}"),
     ("deck-listes", f"/decks/{DECKS[1]}"),
+    ("methode", "/methode"),
 ]
 # Zones masquées (aplat) : contenu qui ne peut pas être rendu deux fois à l'identique.
 MASKS = {"graph": ["canvas"]}

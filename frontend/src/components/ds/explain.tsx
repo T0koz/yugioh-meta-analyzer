@@ -62,17 +62,20 @@ export function ChartAnnotation({
   y,
   children,
   decorative = false,
+  below = false,
 }: {
   x: number;
   y: number;
   children: React.ReactNode;
   decorative?: boolean;
+  /** Sous le point plutôt qu'au-dessus (quand une autre annotation est proche). */
+  below?: boolean;
 }) {
   const align = x < 15 ? "" : x > 80 ? "-translate-x-full" : "-translate-x-1/2";
   return (
     <span
       aria-hidden={decorative || undefined}
-      className={`absolute -mt-3 -translate-y-full font-mono text-[12px] leading-none font-medium whitespace-nowrap text-text tabular-nums ${align}`}
+      className={`absolute ${below ? "mt-3" : "-mt-3 -translate-y-full"} font-mono text-[12px] leading-none font-medium whitespace-nowrap text-text tabular-nums ${align}`}
       style={{ left: `${x < 15 ? x - 1 : x > 80 ? x + 1.5 : x}%`, top: `${y}%` }}
     >
       {children}

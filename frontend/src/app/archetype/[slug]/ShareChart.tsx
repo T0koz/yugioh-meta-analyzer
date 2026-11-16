@@ -57,8 +57,10 @@ export function ShareChart({
   const candidates = points.filter((p) => !p.small);
   const peak = (candidates.length ? candidates : points).reduce((best, p) => (p.share > best.share ? p : best));
   const last = points[n - 1];
-  // Le dernier mois n'est annoté à part que s'il est loin du maximum (étiquettes lisibles).
-  const labelled = last.x - peak.x > 18 ? [peak, last] : [peak];
+  // Le dernier mois (en cours) est toujours annoté ; proche du maximum, son
+  // étiquette passe sous le point pour ne pas chevaucher celle du pic.
+  const labelled = peak === last ? [peak] : [peak, last];
+  const crowded = last.x - peak.x <= 18;
 
   // Mois de la fenêtre de la tier list : c'est sur eux que portent part, tier et tendance.
   const inWindow = window ? points.filter((p) => p.month >= window.start && p.month <= window.end) : [];
@@ -161,7 +163,7 @@ export function ShareChart({
           </span>
         ))}
         {labelled.map((p) => (
-          <ChartAnnotation key={p.month} x={p.x} y={p.y} decorative>
+          <ChartAnnotation key={p.month} x={p.x} y={p.y} decorative below={p === last && peak !== last && crowded}>
             {fmtPct(p.share * 100)} · {fmtMonthShort(p.month)}
             {p === last && `, en cours, n = ${fmtNum(p.total_decks)}`}
           </ChartAnnotation>

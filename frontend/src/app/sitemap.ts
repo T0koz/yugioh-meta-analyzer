@@ -17,6 +17,7 @@ const STATIC_PATHS = [
   "/ban?tab=historique",
   "/ban?tab=impact",
   "/ban?tab=simulateur",
+  "/methode",
 ];
 
 // Pages d'archétype : celles de la tier list courante et des signaux boutique, avec le

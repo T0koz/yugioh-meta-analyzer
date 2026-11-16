@@ -14,9 +14,9 @@ et boutique_buy_signals ont perdu leur producteur quand le notebook 09 a été r
 script). Ici le notebook reste LA source ; le coût est un recalcul un peu plus lent et des
 notebooks qui doivent rester exécutables de haut en bas (c'est donc aussi un test).
 
-Ordre (dépendances) : 02 → 04 (meta_scores) → banlist_features → 05 (prédictions) →
+Ordre (dépendances) : fetch_new_cards → 02 → 04 (meta_scores) → banlist_features → 05 (prédictions) →
 10 (alertes boutique) → buy_signals → 11 (signal précoce) → ban_radar → card_impact
-→ archetype_profiles (même fenêtre que la tier list, donc après 04) → log_predictions → build_serving_db --check.
+→ archetype_profiles (même fenêtre que la tier list, donc après 04) → log_predictions → build_serving_db --check → download_card_images (incrémental).
 Un seul écrivain sur yugioh.db : tout est séquentiel, arrêt au premier échec.
 """
 import argparse
@@ -31,6 +31,9 @@ PY = sys.executable
 NB = lambda n: ("nb", f"notebooks/{n}.ipynb")
 SC = lambda *a: ("sc", [PY, *a])
 STEPS = [
+    # Cartes sorties depuis le dernier chargement (TOK-92) : ajoute seulement, ne réécrit rien. Pas
+    # `fetch_cards.py` : il n'écrit qu'un JSON ; le rafraîchissement complet est `init_db.py`, qui écrase views_week.
+    ("fetch_new_cards", SC("scripts/fetch_new_cards.py")),
     ("02_cooccurrence", NB("02_cooccurrence")),
     ("04_meta_score", NB("04_meta_score")),
     ("banlist_features", SC("scripts/build_banlist_features.py")),
@@ -43,6 +46,8 @@ STEPS = [
     ("archetype_profiles", SC("scripts/build_archetype_profiles.py")),
     ("log_predictions", SC("scripts/log_predictions.py")),
     ("serving_check", SC("scripts/build_serving_db.py", "--check")),
+    # Dernier : un échec réseau sur les images ne doit pas bloquer les calculs ci-dessus. Incrémental.
+    ("card_images", SC("scripts/download_card_images.py")),
 ]
 
 

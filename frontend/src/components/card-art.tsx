@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { artCropUrl, fullCardUrl } from "@/lib/card-images";
+import { SafeImage } from "@/components/safe-image";
+import { artCropUrl, fullCardUrl, smallCardUrl } from "@/lib/card-images";
 
 // Image de carte à dimensions fixes (rapport 59:86 d'une carte Yu-Gi-Oh!).
 // `width`/`height` réservent la place avant le chargement (CLS nul) et
@@ -28,21 +29,21 @@ export function CardArt({
 }) {
   const box = SIZES[size];
 
-  if (!src) {
-    return (
-      <span
-        aria-hidden
-        className={`grid shrink-0 place-items-center border border-line-2 bg-ink-4 font-mono text-[11px] text-muted-text ${box.className} ${className}`}
-      >
-        {name.slice(0, 2).toUpperCase()}
-      </span>
-    );
-  }
+  const placeholder = (
+    <span
+      aria-hidden
+      className={`grid shrink-0 place-items-center border border-line-2 bg-ink-4 font-mono text-[11px] text-muted-text ${box.className} ${className}`}
+    >
+      {name.slice(0, 2).toUpperCase()}
+    </span>
+  );
+  if (!src) return placeholder;
 
   return (
     // Décorative : le nom de la carte est toujours écrit à côté.
-    <Image
-      src={src}
+    <SafeImage
+      fallback={placeholder}
+      src={size === "lg" ? fullCardUrl(src) : smallCardUrl(src)}
       alt=""
       width={box.width}
       height={box.height}
@@ -68,18 +69,18 @@ export function CardArtFill({
   sizes: string;
   eager?: boolean;
 }) {
-  if (!src) {
-    return (
-      <span
-        aria-hidden
-        className="absolute inset-0 grid place-items-center p-3 text-center font-mono text-[11px] tracking-[0.1em] text-muted-text uppercase"
-      >
-        {name}
-      </span>
-    );
-  }
+  const placeholder = (
+    <span
+      aria-hidden
+      className="absolute inset-0 grid place-items-center p-3 text-center font-mono text-[11px] tracking-[0.1em] text-muted-text uppercase"
+    >
+      {name}
+    </span>
+  );
+  if (!src) return placeholder;
   return (
-    <Image
+    <SafeImage
+      fallback={placeholder}
       src={fullCardUrl(src)}
       alt=""
       fill

@@ -20,6 +20,7 @@ ici, ils sont lancés d'un coup, et seulement ceux qui concernent ce qui a chang
 | Test de fumée, yugioh.db + serving | backend/ ou scripts/ modifié (base requise)| oui       |
 | Backtest du Ban Radar              | scoring modifié (base requise)             | non : à lire, pas de seuil défini |
 | Tests visuels du front             | seulement avec --visuel (≈ 45 s, réseau)   | oui       |
+| Mots interdits dans les textes     | frontend/src/ modifié, ou --all            | non (lot 16 : bloquant une fois les textes appliqués) |
 
 Bibliothèque standard uniquement : le script tourne sans venv (GitHub Actions, hook).
 Les étapes qui demandent une base ou `node_modules` absents sont **ignorées et signalées**,
@@ -369,6 +370,25 @@ def check_garde_fou(report: Report) -> None:
         report.ok(res.stdout.strip())
 
 
+def check_copy(report: Report) -> None:
+    """Charte « ton et explication » : appels à l'action, promesses, superlatifs, ponctuation,
+    formules (scripts/check_copy.py). Non bloquant tant que le lot 16 n'est pas appliqué :
+    passer `--strict` et `report.fail` ensuite."""
+    report.step("Textes du site : mots et tournures interdits par la charte (non bloquant)")
+    res = run([sys.executable, "scripts/check_copy.py"])
+    lines = res.stdout.strip().splitlines()
+    summary = lines[-1] if lines else "aucune sortie"
+    if res.returncode:
+        report.fail("check_copy.py", res.stdout + res.stderr)
+    elif len(lines) > 1:
+        print(f"  ⚠ avertissement (non bloquant) : {summary}")
+        for line in lines[:-1][:40]:
+            print(f"    {line.strip()}")
+        print("    → propositions dans docs/textes-avant-apres.md (lot 16)")
+    else:
+        report.ok(summary)
+
+
 def check_visual(report: Report) -> None:
     """Sur demande seulement : ≈ 45 s, et le build télécharge les polices (réseau requis)."""
     report.step("Tests visuels du front (45 captures comparées aux références)")
@@ -440,6 +460,8 @@ def main() -> int:
         check_backend(report)
     if mode != "ci" and (args.all or BAN_RADAR_FILES & files):
         check_backtest(report)
+    if args.all or touches("frontend/src/", "scripts/check_copy.py"):
+        check_copy(report)  # 0,3 s, bibliothèque standard : tourne aussi en CI
     check_garde_fou(report)  # 0,2 s : toujours lancé
     if args.visuel and mode != "ci":
         check_visual(report)

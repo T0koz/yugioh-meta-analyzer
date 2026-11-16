@@ -192,8 +192,8 @@ Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historiq
 
 ---
 
-**Tickets créés le 2026-11-16 :** TOK-80 (séparer TCG et OCG dans `meta_scores`, méta mixte à 54 % OCG) ; TOK-81
-(échelle de `price_opp` dans `build_buy_signals.py`) ; TOK-82 (chiffres de vitrine `site-facts.ts` + fenêtres du notebook 11).
+**Tickets créés le 2026-11-16 :** TOK-80 ✅ Done (`meta_scores` TCG pur + `meta_scores_ocg`) ; TOK-81 ✅ Done (échelle de
+`price_opp`) ; TOK-82 🟡 partiel (fenêtres du notebook 11 faites ; reste `site-facts.ts`, front).
 Idée non créée : afficher un méta Genesys (décision produit).
 
 *Dernière mise à jour : 2026-11-16*

@@ -7,14 +7,15 @@ du 2026-06-17, générée hors notebook). Formule rétro-ingéniérée sur les 1
 historiques, puis reproduite à l'identique pour la continuité :
   alert_norm   = alert_score(archétype) / max(alert_score) × 100
   price_opp    = 1 − rang_percentile(cm_price)           (carte pas chère → proche de 1)
-  buy_score    = 0,7·alert_norm + 0,3·price_opp
+  buy_score    = 0,7·alert_norm + 0,3·(100·price_opp)    (v2, TOK-81 : prix remis sur 0-100)
   buy_score_100= buy_score / max(buy_score) × 100
   label        = Fort ≥ 80 ; Modéré ≥ 50 ; sinon Faible
 
-⚠ DÉFAUT HÉRITÉ, volontairement conservé : price_opp est dans [0, 1] alors que alert_norm
-est dans [0, 100]. Le prix pèse donc au plus 0,3 point sur 100 : le « buy score » est en
-pratique l'alerte OCG de l'archétype, le prix n'y change rien. Corriger = décision produit
-(la commit d'origine annonçait 60 % signal / 40 % prix). Voir TOK-69.
+Correction TOK-81 (2026-11-16) : jusqu'à la v1, `price_opp` (0-1) était ajouté tel quel à `alert_norm`
+(0-100) : le prix pesait au plus 0,3 point sur 100, le « buy score » n'était que l'alerte OCG de
+l'archétype. On garde les poids 70/30 réellement appliqués par la v1 mais le prix est remis sur
+0-100 (PRICE_SCALE). Conséquence : à archétype égal, une carte bon marché passe devant une carte
+chère. Non validé sur ventes : même caveat que TOK-74.
 
     python scripts/build_buy_signals.py [--dry-run]
 """
@@ -25,6 +26,7 @@ from pathlib import Path
 
 import pandas as pd
 
+PRICE_SCALE = 100  # v1 : 1 (défaut d'échelle) ; v2 : price_opp remis sur 0-100
 DB = Path(__file__).resolve().parents[1] / "data" / "yugioh.db"
 
 
@@ -44,7 +46,7 @@ def build(con) -> pd.DataFrame:
     d["archetype_alert"] = d.alert_score
     d["alert_norm"] = (d.alert_score / alerts.alert_score.max() * 100).round(2)
     d["price_opp"] = 1 - d.cm_price.rank(method="min") / len(d)
-    d["buy_score"] = (0.7 * d.alert_norm + 0.3 * d.price_opp).round(2)
+    d["buy_score"] = (0.7 * d.alert_norm + 0.3 * PRICE_SCALE * d.price_opp).round(2)
     d["buy_score_100"] = (d.buy_score / d.buy_score.max() * 100).round(1)
     d["buy_label"] = pd.cut(d.buy_score_100, [-1, 49.999, 79.999, 1000], labels=["Faible", "Modéré", "Fort"]).astype(str)
     d["computed_at"] = date.today().isoformat()

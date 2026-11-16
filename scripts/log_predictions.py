@@ -45,9 +45,9 @@ JSONL_PATH = os.path.join(ROOT, "data", "prediction_log.jsonl")
 BAN_SCRIPT = os.path.join(ROOT, "scripts", "build_ban_radar.py")
 
 # À incrémenter quand le modèle correspondant change (notebook 05, notebook 10).
-META_MODEL = "blend-ridge-ar1-naive-v1"
-BOUTIQUE_MODEL = "alert-views-v1"
-EARLY_MODEL = "early-views-text-ocg-v1"
+META_MODEL = "blend-ridge-naive-tcg-pure-v2"
+BOUTIQUE_MODEL = "alert-views-v2"
+EARLY_MODEL = "early-views-text-ocg-v2"
 
 KEY = ("kind", "subject", "made_at", "model_version")
 COLUMNS = (

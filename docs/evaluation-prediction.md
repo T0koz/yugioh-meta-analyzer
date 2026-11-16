@@ -11,6 +11,13 @@ plausible non testée ici.
 
 ---
 
+> **Mise à jour TOK-80 (2026-11-16, même jour)** : le constat n°1 ci-dessous est corrigé. `meta_scores` est
+> désormais **TCG pur** (mois = date du tournoi, `legal = 1`), l'OCG vit dans `meta_scores_ocg`, et le notebook 09
+> mesure le signal contre un TCG propre (lag 2 : r = 0,574 ; lag 4 : r = 0,475, n = 656). Les chiffres de la partie A
+> « table `meta_scores` fidèle au notebook » décrivent l'ancienne table mixte ; relancer
+> `scripts/evaluate_prediction.py --part A` donne désormais les chiffres « TCG pur » (ρ delta +0,42, MAE −6 % vs persistance,
+> ensemble − naïf en niveau +0,012 [−0,014 ; +0,041], donc indistinguable de zéro).
+
 ## 0. Trois constats avant les chiffres
 
 1. **`meta_scores` mélange TCG et OCG [VÉRIFIÉ].** Le notebook 04 n'a aucun filtre sur `ocg`. Le script

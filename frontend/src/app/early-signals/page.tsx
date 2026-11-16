@@ -48,9 +48,10 @@ export default async function EarlySignalsPage() {
             >
               <span className="font-mono text-[12px] text-faint tabular-nums">{String(i + 1).padStart(2, "0")}</span>
               <span className="min-w-0">
-                <CardChip name={signal.card_name} subtitle={signal.archetype} />
+                <CardChip name={signal.card_name} subtitle={signal.archetype ?? undefined} />
                 <small className="mt-1 block font-mono text-[11px] text-muted-text">
-                  {signal.archetype}
+                  {/* Carte sans archétype dans YGOPRODeck (ex. Fydraulis Harmonia) : on n’affirme rien. */}
+                  {signal.archetype ?? "—"}
                   <span className="min-[760px]:hidden"> · score {fmtNum(signal.early_score * 100)}</span>
                 </small>
               </span>

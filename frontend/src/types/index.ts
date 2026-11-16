@@ -55,7 +55,7 @@ export interface BoutiqueResponse {
 
 export interface EarlySignal {
   card_name: string;
-  archetype: string;
+  archetype: string | null;
   early_score: number;
   views_week: number;
 }

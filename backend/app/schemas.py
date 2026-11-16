@@ -60,7 +60,8 @@ class BoutiqueResponse(BaseModel):
 
 class EarlySignal(BaseModel):
     card_name: str
-    archetype: str
+    # NULL pour les cartes sans archétype dans YGOPRODeck (ex. Fydraulis Harmonia)
+    archetype: str | None
     early_score: float
     views_week: int
 

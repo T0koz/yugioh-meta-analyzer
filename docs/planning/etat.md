@@ -7,15 +7,15 @@
 | 7 | Journal de décisions (rattrapage) | ✅ fusionné (`8447ede`) | Sonnet 5.5 | 51 notes + index dans `docs/decisions/` : 37 acceptées, 14 « à valider par Thomas » |
 | 8 | Boutons smooth | ✅ fusionné (`4a15e25`, `486ab01`, `8045820`) | Fable 5.2 | source unique `components/ds/control.tsx` + bloc `.ctl` ; JS inchangé, pire contraste 4,52:1 (mesures de la session) ; 36 références régénérées ; `check.py --visuel` vert après fusion |
 | 9 | TOK-114 Decks | ✅ fusionné (`c71b794`, `5673777`, `fdfeedc`) | Fable 5.2 | `/decks` + `/decks/{slug}`, 3 tables nouvelles dans `yugioh.db` (4 309 / 167 / 7 303 lignes ; aucune table existante modifiée, vérifié contre la sauvegarde `backup_avant_tok114_20261116.db`) ; `serving.db` 10,7 → 11,6 Mo ; seuils 80 % / 20 %, fiche dès 8 listes ; `check.py --visuel` vert après fusion (45 captures) |
-| 10 | TOK-92 images | 🏗️ en cours (téléchargement des images en arrière-plan, ~8 500 fichiers à 23 h) | Sonnet 5.5 (demandé) | session « Lot 10 — TOK-92 images de cartes » |
+| 10 | TOK-92 images | 🏗️ en cours (téléchargement en arrière-plan, ~20 600 fichiers vers minuit) | Sonnet 5.5 (demandé) | session « Lot 10 — TOK-92 images de cartes » |
 | 11 | TOK-103 boutique | à faire | | |
 | 12 | TOK-55 Ban Predictor historique | à faire | | |
-| 13 | Outillage | 🏗️ démarré le 16/11, en parallèle du lot 10 (demande de Thomas) | Sonnet 5.5 (demandé) | session « Lot 13 — Outillage » ; avancé avant 11 et 12 (aucun fichier commun avec le lot 10) |
+| 13 | Outillage | ✅ fusionné (`3e1ad8b`) | Sonnet 5.5 | `.claude/settings.json` (38 commandes pré-autorisées, 13 refus), hook `garde_fou.py` (28 bloquées / 24 autorisées, étape de `check.py`), `/fin-de-journee`, règle d'or + journal de décisions + plan mode dans `CLAUDE.md`. Vérifié après fusion : le hook laisse passer fusion, commit, `worktree remove`, `check.py`, copie de sauvegarde, et bloque push et `rm -rf data`. **Faux positif constaté** : une commande dont un heredoc cite la commande de push entre accents graves est bloquée (contournement : éditer le fichier sans heredoc). Non mesuré : « zéro invite » en session interactive. `npm run lighthouse` non pré-autorisé (lance un serveur). |
 | 14 | TOK-35 | à faire | | |
 | 15 | Charte + explication graphique | à faire | | |
 | 16 | Réécriture des textes | à faire | | |
 
-Dernière mise à jour : 2026-11-16, lots 10 et 13 en cours en parallèle. Modèle front à partir du lot 11 : Opus 5.5 (consigne de Thomas). Seul l'orchestrateur écrit le tableau des lots.
+Dernière mise à jour : 2026-11-17, lot 13 fusionné, lot 10 en cours (téléchargement) ; les lots 11 et 12 attendent sa fusion. Modèle front à partir du lot 11 : Opus 5.5 (consigne de Thomas). Seul l'orchestrateur écrit le tableau des lots.
 
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |

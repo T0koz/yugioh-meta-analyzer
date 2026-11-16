@@ -118,7 +118,7 @@ traitement conseillé : TOK-70 → TOK-72 → TOK-69 → TOK-74 / TOK-73.
 | TOK-91 | Tier list maison : recalculer depuis nos données (`meta_tier_list` figée au 17 juin, endpoint yugiohmeta 404) | 🔜 À faire | 🔴 High |
 | TOK-92 | Ré-héberger les images de cartes avant le déploiement (hotlink YGOPRODeck interdit) | 🔜 À faire | 🟠 Medium |
 | TOK-93 | Contrôle de fraîcheur des tables servies dans le job du lundi | 🔜 À faire | 🟠 Medium |
-| TOK-113 | Signal boutique v3 : archétypes pas encore en TCG (règle par cartes), fenêtre de sortie à 80 % au lieu de la fausse date | 🟡 Fait sur la branche `claude/angry-shirley-a48527`, base recalculée (3 archétypes, 12 signaux : Fort 3, Modéré 5, Faible 4) ; à fusionner avant le lundi 23/11 | 🔴 High |
+| TOK-113 | Signal boutique v3 : archétypes pas encore en TCG (règle par cartes), fenêtre de sortie à 80 % au lieu de la fausse date | ✅ Done (2026-11-16) — fusionné dans `main`, base recalculée (3 archétypes, 12 signaux : Fort 3, Modéré 5, Faible 4) | 🔴 High |
 
 ⚠ **Intitulé trompeur dans Linear** : TOK-25 s'appelle « Modèle séquentiel ARIMA ou LSTM ». Le modèle
 réellement retenu est **70 % naïf + 30 % Ridge** (l'AR(1) a été testé puis écarté, notebook 05).

@@ -411,8 +411,8 @@ Limites connues, à ne pas présenter comme résolues :
 - Une générique peut sortir sous deux archétypes (Pot of Desires). « Harpie/Amazoness » est un nom hybride : son
   arrivée en TCG sous un autre nom serait manquée par le validateur.
 - Le front de `main` lit encore `tcg_entry_estimated` (colonne à « — ») ; la fenêtre n'est servie par aucun endpoint.
-- **Ordre à respecter** : la base réelle est en schéma v3 depuis le 2026-11-16. Tant que cette branche n'est pas dans
-  `main`, l'ancien `boutique.py` de `main` répond 500 et le job du lundi réécrirait les tables en ancien schéma.
+- La base réelle est en schéma v3 depuis le 2026-11-16 et la branche est fusionnée dans `main` le même jour. Une
+  branche antérieure à cette fusion qui lit `tcg_entry_estimated` répond 500 sur `/boutique/signals`.
   Sauvegardes : `data/backup_avant_boutique_v3_20261116.db`, `data/backup_serving_avant_boutique_v3_20261116.db`.
 
 ### 🔜 À faire

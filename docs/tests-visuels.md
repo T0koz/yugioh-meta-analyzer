@@ -10,7 +10,7 @@ Deux vérifications du front, chacune lancée par une commande. Aucune n'appelle
 python scripts/check.py --visuel                    # la même suite, avec les autres vérifications
 ```
 
-12 pages × 3 largeurs (375, 768 et 1440 px) = 36 captures de page entière, comparées pixel à pixel aux images
+15 pages × 3 largeurs (375, 768 et 1440 px) = 45 captures de page entière (36 avant TOK-114), comparées pixel à pixel aux images
 de `frontend/tests/visual/reference/`. Durée mesurée le 2026-11-16 : 44 à 45 s, build compris (Mac M-series).
 
 | Capture | Adresse |

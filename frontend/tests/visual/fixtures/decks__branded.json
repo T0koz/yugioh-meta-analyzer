@@ -1,0 +1,2389 @@
+{
+ "archetype": "Branded",
+ "slug": "branded",
+ "image_url": "https://images.ygoprodeck.com/images/cards_small/87746184.jpg",
+ "tier": "T3",
+ "decks": 16,
+ "share": 0.04040404040404041,
+ "has_profile": true,
+ "window": {
+  "start": "2026-10",
+  "end": "2026-11",
+  "n_decks": 396
+ },
+ "rule": {
+  "base_min_share": 0.8,
+  "flex_min_share": 0.2,
+  "min_decks": 8
+ },
+ "computed_at": "2026-11-16",
+ "zones": [
+  {
+   "zone": "main",
+   "cards": [
+    {
+     "card_name": "Mulcharmy Fuwalos",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 3.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+    },
+    {
+     "card_name": "The Fallen & The Virtuous",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 3.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+    },
+    {
+     "card_name": "Blazing Cartesia, the Virtuous",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 2.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+    },
+    {
+     "card_name": "Fallen of the White Dragon",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 2.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+    },
+    {
+     "card_name": "Incredible Ecclesia, the Virtuous",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 2.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+    },
+    {
+     "card_name": "Dogmatika Ecclesia, the Virtuous",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+    },
+    {
+     "card_name": "Fallen of Albaz",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+    },
+    {
+     "card_name": "Nadir Servant",
+     "n_lists": 15,
+     "share": 0.9375,
+     "median_copies": 3.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+    },
+    {
+     "card_name": "Branded in High Spirits",
+     "n_lists": 15,
+     "share": 0.9375,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+    },
+    {
+     "card_name": "Droll & Lock Bird",
+     "n_lists": 15,
+     "share": 0.9375,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+    },
+    {
+     "card_name": "Aluber the Jester of Despia",
+     "n_lists": 14,
+     "share": 0.875,
+     "median_copies": 3.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/62962630.jpg"
+    },
+    {
+     "card_name": "Branded Fusion",
+     "n_lists": 14,
+     "share": 0.875,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+    },
+    {
+     "card_name": "Guiding Quem, the Virtuous",
+     "n_lists": 14,
+     "share": 0.875,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/45883110.jpg"
+    },
+    {
+     "card_name": "Ash Blossom & Joyous Spring",
+     "n_lists": 13,
+     "share": 0.8125,
+     "median_copies": 3.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+    },
+    {
+     "card_name": "Tri-Brigade Springans Kitt",
+     "n_lists": 13,
+     "share": 0.8125,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/19304410.jpg"
+    },
+    {
+     "card_name": "Super Polymerization",
+     "n_lists": 12,
+     "share": 0.75,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+    },
+    {
+     "card_name": "Ghost Ogre & Snow Rabbit",
+     "n_lists": 11,
+     "share": 0.6875,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+    },
+    {
+     "card_name": "Branded Opening",
+     "n_lists": 11,
+     "share": 0.6875,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/36637374.jpg"
+    },
+    {
+     "card_name": "Gold Sarcophagus",
+     "n_lists": 10,
+     "share": 0.625,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/75500286.jpg"
+    },
+    {
+     "card_name": "Tri-Brigade Mercourier",
+     "n_lists": 10,
+     "share": 0.625,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/19096726.jpg"
+    },
+    {
+     "card_name": "Albion the Shrouded Dragon",
+     "n_lists": 8,
+     "share": 0.5,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/25451383.jpg"
+    },
+    {
+     "card_name": "Branded Retribution",
+     "n_lists": 8,
+     "share": 0.5,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/17751597.jpg"
+    },
+    {
+     "card_name": "Springans Kitt",
+     "n_lists": 6,
+     "share": 0.375,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/45484331.jpg"
+    },
+    {
+     "card_name": "The Golden Swordsoul",
+     "n_lists": 6,
+     "share": 0.375,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/82489470.jpg"
+    },
+    {
+     "card_name": "Nibiru, the Primal Being",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 2.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+    },
+    {
+     "card_name": "Bystial Magnamhut",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/33854624.jpg"
+    },
+    {
+     "card_name": "Cocatorium the Heavy Metal Avian",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/94395649.jpg"
+    },
+    {
+     "card_name": "Black Chaos",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/98684220.jpg"
+    },
+    {
+     "card_name": "Griffoh",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg"
+    },
+    {
+     "card_name": "Skull Archfiend of Chaos",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 2.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/24088928.jpg"
+    },
+    {
+     "card_name": "Black Luster Soldier - Soldier of Light and Darkness",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/70405001.jpg"
+    },
+    {
+     "card_name": "Light and Darkness Ritual",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/33599853.jpg"
+    },
+    {
+     "card_name": "Magician of Dark Chaos - Black Chaos",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/44001993.jpg"
+    },
+    {
+     "card_name": "Mind Shuffle",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/24749710.jpg"
+    },
+    {
+     "card_name": "Ragged Records of Rites",
+     "n_lists": 3,
+     "share": 0.1875,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+    },
+    {
+     "card_name": "Effect Veiler",
+     "n_lists": 3,
+     "share": 0.1875,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/97268402.jpg"
+    },
+    {
+     "card_name": "Celtic Mystic",
+     "n_lists": 3,
+     "share": 0.1875,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/50073633.jpg"
+    },
+    {
+     "card_name": "Fydraulis Harmonia",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/70088809.jpg"
+    },
+    {
+     "card_name": "Mulcharmy Purulia",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 2.5,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+    },
+    {
+     "card_name": "Called by the Grave",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/24224830.jpg"
+    },
+    {
+     "card_name": "Dogmatika Fleurdelis, the Knighted",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/69680031.jpg"
+    },
+    {
+     "card_name": "Dracotail Faimena",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/1498449.jpg"
+    },
+    {
+     "card_name": "Magical Spring",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/43455065.jpg"
+    },
+    {
+     "card_name": "PSY-Framegear Delta",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/74203495.jpg"
+    },
+    {
+     "card_name": "Small World",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/89558743.jpg"
+    },
+    {
+     "card_name": "Dominus Spark",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/6325660.jpg"
+    },
+    {
+     "card_name": "Dracotail Lukias",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/75003700.jpg"
+    },
+    {
+     "card_name": "Fusion Deployment",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/6498706.jpg"
+    },
+    {
+     "card_name": "Bystial Saronir",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/60242223.jpg"
+    },
+    {
+     "card_name": "Dracotail Flame",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/5431722.jpg"
+    },
+    {
+     "card_name": "Dracotail Mululu",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/7375867.jpg"
+    },
+    {
+     "card_name": "Dracotail Pan",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/44482554.jpg"
+    },
+    {
+     "card_name": "Dracotail Phryxul",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/84477320.jpg"
+    },
+    {
+     "card_name": "Dracotail Sting",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/80208225.jpg"
+    },
+    {
+     "card_name": "Dracotail Urgula",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/70871153.jpg"
+    },
+    {
+     "card_name": "Ido the Supreme Magical Force",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/35984222.jpg"
+    },
+    {
+     "card_name": "Ketu Dracotail",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/6153210.jpg"
+    },
+    {
+     "card_name": "Mulcharmy Meowls",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/87126721.jpg"
+    },
+    {
+     "card_name": "PSY-Frame Driver",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/49036338.jpg"
+    },
+    {
+     "card_name": "PSY-Framegear Gamma",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/38814750.jpg"
+    },
+    {
+     "card_name": "Pre-Preparation of Rites",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/13048472.jpg"
+    },
+    {
+     "card_name": "Rahu Dracotail",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/32548318.jpg"
+    },
+    {
+     "card_name": "Spell Shattering Sword",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/77456448.jpg"
+    },
+    {
+     "card_name": "Tri-Brigade Kitt",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/56196385.jpg"
+    },
+    {
+     "card_name": "Triple Tactics Talent",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/25311006.jpg"
+    }
+   ]
+  },
+  {
+   "zone": "extra",
+   "cards": [
+    {
+     "card_name": "The Dragon that Devours the Dogma",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 2.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+    },
+    {
+     "card_name": "Ecclesia and the Dark Dragon",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+    },
+    {
+     "card_name": "Granguignol the Dusk Dragon",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+    },
+    {
+     "card_name": "Mirrorjade the Iceblade Dragon",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+    },
+    {
+     "card_name": "Rindbrumm the Striking Dragon",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+    },
+    {
+     "card_name": "The Three Champions of Swordsoul",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+    },
+    {
+     "card_name": "Titaniklad the Ash Dragon",
+     "n_lists": 16,
+     "share": 1.0,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+    },
+    {
+     "card_name": "Mixousia the Confounder",
+     "n_lists": 15,
+     "share": 0.9375,
+     "median_copies": 1.0,
+     "role": "base",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+    },
+    {
+     "card_name": "Lubellion the Searing Dragon",
+     "n_lists": 11,
+     "share": 0.6875,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/70534340.jpg"
+    },
+    {
+     "card_name": "Hyperinvoked Aeon",
+     "n_lists": 10,
+     "share": 0.625,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/33166263.jpg"
+    },
+    {
+     "card_name": "Despian Quaeritis",
+     "n_lists": 9,
+     "share": 0.5625,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/72272462.jpg"
+    },
+    {
+     "card_name": "Albion the Branded Dragon",
+     "n_lists": 7,
+     "share": 0.4375,
+     "median_copies": 2.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/87746184.jpg"
+    },
+    {
+     "card_name": "Alba-Lenatus the Abyss Dragon",
+     "n_lists": 6,
+     "share": 0.375,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/3410461.jpg"
+    },
+    {
+     "card_name": "Albion the Sanctifire Dragon",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/38811586.jpg"
+    },
+    {
+     "card_name": "Despian Luluwalilith",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/53971455.jpg"
+    },
+    {
+     "card_name": "Favorite HERO Shining Flare Wingman",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/87758525.jpg"
+    },
+    {
+     "card_name": "Garura, Wings of Resonant Life",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+    },
+    {
+     "card_name": "Sprind the Irondash Dragon",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/1906812.jpg"
+    },
+    {
+     "card_name": "Secreterion Dragon",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/89851827.jpg"
+    },
+    {
+     "card_name": "Borreload Furious Dragon",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/92892239.jpg"
+    },
+    {
+     "card_name": "Chaos Angel",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+    },
+    {
+     "card_name": "Golden Cloud Beast - Malong",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/93125329.jpg"
+    },
+    {
+     "card_name": "Khaos Starsource Dragon",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/72578374.jpg"
+    },
+    {
+     "card_name": "Dracotail Arthalion",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/33760966.jpg"
+    },
+    {
+     "card_name": "Stardust Dragon - Victim Sanctuary",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/76636978.jpg"
+    },
+    {
+     "card_name": "Despian Proskenion",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/18666161.jpg"
+    },
+    {
+     "card_name": "Dracotail Gulamel",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/79755671.jpg"
+    },
+    {
+     "card_name": "Dracotail Shaulas",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/42125140.jpg"
+    },
+    {
+     "card_name": "Elder Entity Norden",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/17412721.jpg"
+    },
+    {
+     "card_name": "Enigmaster Packbit",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/72444406.jpg"
+    },
+    {
+     "card_name": "Predaplant Dragostapelia",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/69946549.jpg"
+    }
+   ]
+  },
+  {
+   "zone": "side",
+   "cards": [
+    {
+     "card_name": "Mistaken Arrest",
+     "n_lists": 11,
+     "share": 0.6875,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/4227096.jpg"
+    },
+    {
+     "card_name": "Mulcharmy Purulia",
+     "n_lists": 9,
+     "share": 0.5625,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+    },
+    {
+     "card_name": "Nibiru, the Primal Being",
+     "n_lists": 9,
+     "share": 0.5625,
+     "median_copies": 2.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+    },
+    {
+     "card_name": "Typhoon",
+     "n_lists": 8,
+     "share": 0.5,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/14883228.jpg"
+    },
+    {
+     "card_name": "Pot of Sloth",
+     "n_lists": 6,
+     "share": 0.375,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg"
+    },
+    {
+     "card_name": "Hey, Space Trunade!",
+     "n_lists": 6,
+     "share": 0.375,
+     "median_copies": 2.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+    },
+    {
+     "card_name": "The Great Gallant Bandit",
+     "n_lists": 6,
+     "share": 0.375,
+     "median_copies": 2.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/24203749.jpg"
+    },
+    {
+     "card_name": "Evenly Matched",
+     "n_lists": 5,
+     "share": 0.3125,
+     "median_copies": 3.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/15693423.jpg"
+    },
+    {
+     "card_name": "Harpie's Feather Duster",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/18144507.jpg"
+    },
+    {
+     "card_name": "Solemn Judgment",
+     "n_lists": 4,
+     "share": 0.25,
+     "median_copies": 1.0,
+     "role": "appoint",
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/41420027.jpg"
+    },
+    {
+     "card_name": "Skull Meister",
+     "n_lists": 3,
+     "share": 0.1875,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/67750322.jpg"
+    },
+    {
+     "card_name": "Artifact Lancea",
+     "n_lists": 3,
+     "share": 0.1875,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/34267821.jpg"
+    },
+    {
+     "card_name": "Cosmic Cyclone",
+     "n_lists": 3,
+     "share": 0.1875,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/8267140.jpg"
+    },
+    {
+     "card_name": "Nadir Servant",
+     "n_lists": 3,
+     "share": 0.1875,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+    },
+    {
+     "card_name": "Ash Blossom & Joyous Spring",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+    },
+    {
+     "card_name": "Ghost Ogre & Snow Rabbit",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+    },
+    {
+     "card_name": "Mulcharmy Meowls",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 2.5,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/87126721.jpg"
+    },
+    {
+     "card_name": "The Winged Dragon of Ra - Sphere Mode",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 2.5,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/10000080.jpg"
+    },
+    {
+     "card_name": "Dominus Spark",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/6325660.jpg"
+    },
+    {
+     "card_name": "Solemn Accusation",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/78114463.jpg"
+    },
+    {
+     "card_name": "Called by the Grave",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/24224830.jpg"
+    },
+    {
+     "card_name": "Diabellze the Original Sinkeeper",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/53765052.jpg"
+    },
+    {
+     "card_name": "Dogmatika Fleurdelis, the Knighted",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/69680031.jpg"
+    },
+    {
+     "card_name": "Spell Shattering Sword",
+     "n_lists": 2,
+     "share": 0.125,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/77456448.jpg"
+    },
+    {
+     "card_name": "Dragon's Mind",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 3.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/85442146.jpg"
+    },
+    {
+     "card_name": "Lava Golem",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/102380.jpg"
+    },
+    {
+     "card_name": "Triple Tactics Thrust",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 2.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/35269904.jpg"
+    },
+    {
+     "card_name": "Branded Banishment",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/6763530.jpg"
+    },
+    {
+     "card_name": "Branded Retribution",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/17751597.jpg"
+    },
+    {
+     "card_name": "Bystial Baldrake",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/72656408.jpg"
+    },
+    {
+     "card_name": "Bystial Magnamhut",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/33854624.jpg"
+    },
+    {
+     "card_name": "Bystial Saronir",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/60242223.jpg"
+    },
+    {
+     "card_name": "Dracotail Horn",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/69932023.jpg"
+    },
+    {
+     "card_name": "Droll & Lock Bird",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+    },
+    {
+     "card_name": "Garura, Wings of Resonant Life",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+    },
+    {
+     "card_name": "Lightning Storm",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/14532163.jpg"
+    },
+    {
+     "card_name": "Phara the Primordial Goddess",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/82344137.jpg"
+    },
+    {
+     "card_name": "Secreterion Dragon",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/89851827.jpg"
+    },
+    {
+     "card_name": "Triple Tactics Talent",
+     "n_lists": 1,
+     "share": 0.0625,
+     "median_copies": 1.0,
+     "role": null,
+     "image_url": "https://images.ygoprodeck.com/images/cards_small/25311006.jpg"
+    }
+   ]
+  }
+ ],
+ "recent_decks": [
+  {
+   "deck_id": "6af240d29e8b7a3a8eb28d8d",
+   "author": "Džavid Berberović",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 3.5,
+   "date": "2026-11-08",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 40,
+     "cards": [
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Branded in High Spirits",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Aluber the Jester of Despia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/62962630.jpg"
+      },
+      {
+       "card_name": "Branded Fusion",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+      },
+      {
+       "card_name": "Guiding Quem, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45883110.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Tri-Brigade Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/19304410.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Branded Opening",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/36637374.jpg"
+      },
+      {
+       "card_name": "Gold Sarcophagus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/75500286.jpg"
+      },
+      {
+       "card_name": "Tri-Brigade Mercourier",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/19096726.jpg"
+      },
+      {
+       "card_name": "Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45484331.jpg"
+      },
+      {
+       "card_name": "The Golden Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/82489470.jpg"
+      },
+      {
+       "card_name": "Cocatorium the Heavy Metal Avian",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94395649.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Mixousia the Confounder",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+      },
+      {
+       "card_name": "Hyperinvoked Aeon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33166263.jpg"
+      },
+      {
+       "card_name": "Albion the Sanctifire Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/38811586.jpg"
+      },
+      {
+       "card_name": "Despian Luluwalilith",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/53971455.jpg"
+      },
+      {
+       "card_name": "Garura, Wings of Resonant Life",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+      },
+      {
+       "card_name": "Sprind the Irondash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1906812.jpg"
+      },
+      {
+       "card_name": "Predaplant Dragostapelia",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/69946549.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Mistaken Arrest",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4227096.jpg"
+      },
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Evenly Matched",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/15693423.jpg"
+      },
+      {
+       "card_name": "Harpie's Feather Duster",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/18144507.jpg"
+      },
+      {
+       "card_name": "Artifact Lancea",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/34267821.jpg"
+      },
+      {
+       "card_name": "Dogmatika Fleurdelis, the Knighted",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/69680031.jpg"
+      },
+      {
+       "card_name": "Lava Golem",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/102380.jpg"
+      },
+      {
+       "card_name": "Secreterion Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/89851827.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6af240d29e8b7a3a8eb28d8f",
+   "author": "Jan Moljević",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 8.0,
+   "date": "2026-11-08",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 40,
+     "cards": [
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Branded in High Spirits",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Aluber the Jester of Despia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/62962630.jpg"
+      },
+      {
+       "card_name": "Branded Fusion",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+      },
+      {
+       "card_name": "Guiding Quem, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45883110.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Tri-Brigade Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/19304410.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Branded Opening",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/36637374.jpg"
+      },
+      {
+       "card_name": "Gold Sarcophagus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/75500286.jpg"
+      },
+      {
+       "card_name": "Tri-Brigade Mercourier",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/19096726.jpg"
+      },
+      {
+       "card_name": "Albion the Shrouded Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/25451383.jpg"
+      },
+      {
+       "card_name": "Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45484331.jpg"
+      },
+      {
+       "card_name": "Bystial Magnamhut",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33854624.jpg"
+      },
+      {
+       "card_name": "Cocatorium the Heavy Metal Avian",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94395649.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Mixousia the Confounder",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+      },
+      {
+       "card_name": "Lubellion the Searing Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70534340.jpg"
+      },
+      {
+       "card_name": "Hyperinvoked Aeon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33166263.jpg"
+      },
+      {
+       "card_name": "Despian Quaeritis",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/72272462.jpg"
+      },
+      {
+       "card_name": "Alba-Lenatus the Abyss Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/3410461.jpg"
+      },
+      {
+       "card_name": "Despian Luluwalilith",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/53971455.jpg"
+      },
+      {
+       "card_name": "Garura, Wings of Resonant Life",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Mistaken Arrest",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4227096.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      },
+      {
+       "card_name": "Evenly Matched",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/15693423.jpg"
+      },
+      {
+       "card_name": "Skull Meister",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/67750322.jpg"
+      },
+      {
+       "card_name": "Cosmic Cyclone",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/8267140.jpg"
+      },
+      {
+       "card_name": "Branded Banishment",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/6763530.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6af6ef23725451a63d6be493",
+   "author": "Gennaro Cirillo",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 8.0,
+   "date": "2026-11-08",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 41,
+     "cards": [
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Branded in High Spirits",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Aluber the Jester of Despia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/62962630.jpg"
+      },
+      {
+       "card_name": "Branded Fusion",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+      },
+      {
+       "card_name": "Guiding Quem, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45883110.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Tri-Brigade Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/19304410.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Branded Retribution",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/17751597.jpg"
+      },
+      {
+       "card_name": "Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45484331.jpg"
+      },
+      {
+       "card_name": "The Golden Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/82489470.jpg"
+      },
+      {
+       "card_name": "Dogmatika Fleurdelis, the Knighted",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/69680031.jpg"
+      },
+      {
+       "card_name": "Small World",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/89558743.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Mixousia the Confounder",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+      },
+      {
+       "card_name": "Lubellion the Searing Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70534340.jpg"
+      },
+      {
+       "card_name": "Hyperinvoked Aeon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33166263.jpg"
+      },
+      {
+       "card_name": "Favorite HERO Shining Flare Wingman",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/87758525.jpg"
+      },
+      {
+       "card_name": "Garura, Wings of Resonant Life",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+      },
+      {
+       "card_name": "Sprind the Irondash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1906812.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Mistaken Arrest",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4227096.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      },
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Typhoon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14883228.jpg"
+      },
+      {
+       "card_name": "Pot of Sloth",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg"
+      },
+      {
+       "card_name": "Hey, Space Trunade!",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+      },
+      {
+       "card_name": "Cosmic Cyclone",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/8267140.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6af7a77b9e8b7a3a8ef4b695",
+   "author": "Team Akatsupitre Player",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 3.5,
+   "date": "2026-11-08",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 41,
+     "cards": [
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Branded in High Spirits",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Aluber the Jester of Despia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/62962630.jpg"
+      },
+      {
+       "card_name": "Branded Fusion",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+      },
+      {
+       "card_name": "Guiding Quem, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45883110.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Tri-Brigade Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/19304410.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Branded Opening",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/36637374.jpg"
+      },
+      {
+       "card_name": "Gold Sarcophagus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/75500286.jpg"
+      },
+      {
+       "card_name": "Tri-Brigade Mercourier",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/19096726.jpg"
+      },
+      {
+       "card_name": "Springans Kitt",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45484331.jpg"
+      },
+      {
+       "card_name": "Effect Veiler",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97268402.jpg"
+      },
+      {
+       "card_name": "Ido the Supreme Magical Force",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/35984222.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Mixousia the Confounder",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+      },
+      {
+       "card_name": "Lubellion the Searing Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70534340.jpg"
+      },
+      {
+       "card_name": "Hyperinvoked Aeon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33166263.jpg"
+      },
+      {
+       "card_name": "Despian Quaeritis",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/72272462.jpg"
+      },
+      {
+       "card_name": "Albion the Sanctifire Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/38811586.jpg"
+      },
+      {
+       "card_name": "Favorite HERO Shining Flare Wingman",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/87758525.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Mistaken Arrest",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4227096.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      },
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Typhoon",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14883228.jpg"
+      },
+      {
+       "card_name": "Hey, Space Trunade!",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+      },
+      {
+       "card_name": "Cosmic Cyclone",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/8267140.jpg"
+      },
+      {
+       "card_name": "Garura, Wings of Resonant Life",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6ae9cd92dcd189ce45b01a7a",
+   "author": "William Omar Gonzales Lopez",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 8.0,
+   "date": "2026-11-01",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 50,
+     "cards": [
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Aluber the Jester of Despia",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/62962630.jpg"
+      },
+      {
+       "card_name": "Branded Fusion",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Black Chaos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98684220.jpg"
+      },
+      {
+       "card_name": "Griffoh",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg"
+      },
+      {
+       "card_name": "Skull Archfiend of Chaos",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24088928.jpg"
+      },
+      {
+       "card_name": "Black Luster Soldier - Soldier of Light and Darkness",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70405001.jpg"
+      },
+      {
+       "card_name": "Light and Darkness Ritual",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33599853.jpg"
+      },
+      {
+       "card_name": "Magician of Dark Chaos - Black Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44001993.jpg"
+      },
+      {
+       "card_name": "Mind Shuffle",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24749710.jpg"
+      },
+      {
+       "card_name": "Ragged Records of Rites",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+      },
+      {
+       "card_name": "Celtic Mystic",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/50073633.jpg"
+      },
+      {
+       "card_name": "Dracotail Faimena",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1498449.jpg"
+      },
+      {
+       "card_name": "Dracotail Lukias",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/75003700.jpg"
+      },
+      {
+       "card_name": "Fusion Deployment",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/6498706.jpg"
+      },
+      {
+       "card_name": "Dracotail Flame",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/5431722.jpg"
+      },
+      {
+       "card_name": "Dracotail Mululu",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/7375867.jpg"
+      },
+      {
+       "card_name": "Dracotail Pan",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44482554.jpg"
+      },
+      {
+       "card_name": "Dracotail Phryxul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84477320.jpg"
+      },
+      {
+       "card_name": "Dracotail Sting",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80208225.jpg"
+      },
+      {
+       "card_name": "Dracotail Urgula",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70871153.jpg"
+      },
+      {
+       "card_name": "Ketu Dracotail",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/6153210.jpg"
+      },
+      {
+       "card_name": "Rahu Dracotail",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/32548318.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Mixousia the Confounder",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+      },
+      {
+       "card_name": "Hyperinvoked Aeon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33166263.jpg"
+      },
+      {
+       "card_name": "Albion the Sanctifire Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/38811586.jpg"
+      },
+      {
+       "card_name": "Garura, Wings of Resonant Life",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+      },
+      {
+       "card_name": "Dracotail Arthalion",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33760966.jpg"
+      },
+      {
+       "card_name": "Dracotail Gulamel",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/79755671.jpg"
+      },
+      {
+       "card_name": "Dracotail Shaulas",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42125140.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Pot of Sloth",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg"
+      },
+      {
+       "card_name": "Hey, Space Trunade!",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+      },
+      {
+       "card_name": "The Great Gallant Bandit",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24203749.jpg"
+      },
+      {
+       "card_name": "Artifact Lancea",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/34267821.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Dracotail Horn",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/69932023.jpg"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -7,7 +7,7 @@ Tests visuels du front (TOK-100) — une seule commande.
     python scripts/visual_tests.py --refresh-fixtures [--api http://localhost:8000/api/v1]
                                                      # réenregistre les réponses d'API figées, puis --update
 
-Ce que fait la suite : 12 pages × 3 largeurs (375, 768, 1440 px), page entière, comparées pixel à pixel
+Ce que fait la suite : 15 pages × 3 largeurs (375, 768, 1440 px), page entière, comparées pixel à pixel
 aux images de `frontend/tests/visual/reference/`. En cas d'écart, l'image obtenue et l'image de
 différence (pixels changés en rouge) sont écrites dans `frontend/tests/visual/output/` (hors Git).
 
@@ -61,6 +61,8 @@ VIEWPORT_HEIGHT = 900
 # Archétypes dont la réponse est figée : un de la tier list, un qui n'existe que par son signal
 # boutique. Les autres pages d'archétype répondent 404 pendant ce build (elles ne sont pas capturées).
 ARCHETYPES = ["branded", "raise-moon"]
+# Fiches de deck figées (TOK-114) : une avec profil (≥ 8 listes), une sous l'effectif minimal (listes seules).
+DECKS = ["branded", "chaos-ritual"]
 PAGES = [
     ("accueil", "/"),
     ("tier-list", "/tier-list"),
@@ -74,6 +76,9 @@ PAGES = [
     ("ban-simulateur", "/ban?tab=simulateur"),
     ("archetype-tcg", f"/archetype/{ARCHETYPES[0]}"),
     ("archetype-boutique", f"/archetype/{ARCHETYPES[1]}"),
+    ("decks", "/decks"),
+    ("deck-fiche", f"/decks/{DECKS[0]}"),
+    ("deck-listes", f"/decks/{DECKS[1]}"),
 ]
 # Zones masquées (aplat) : contenu qui ne peut pas être rendu deux fois à l'identique.
 MASKS = {"graph": ["canvas"]}
@@ -134,6 +139,8 @@ def make_handler(record_from: str | None):
         def do_GET(self) -> None:
             path = urlsplit(self.path).path
             if "/archetypes/" in path and path.rsplit("/", 1)[-1].lower() not in ARCHETYPES:
+                return self._send(404, b'{"detail":"hors du jeu de donnees fige"}')
+            if "/decks/" in path and path.rsplit("/", 1)[-1].lower() not in DECKS:
                 return self._send(404, b'{"detail":"hors du jeu de donnees fige"}')
             file = FIXTURES / fixture_name(self.path)
             if record_from:

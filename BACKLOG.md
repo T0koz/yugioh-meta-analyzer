@@ -71,6 +71,16 @@ visuelles régénérées — `docs/design-system.md` §4, captures dans `docs/pl
 
 ---
 
+## Lot 9 — TOK-114, Decks : index des archétypes et fiche de composition (file du 2026-11-17)
+
+✅ Livré le 2026-11-16 sur `claude/lot09-tok-114-decks-99ff00` (non fusionnée dans `main`) : `scripts/build_archetype_profiles.py`
+(3 tables servies, 4 309 + 167 + 7 303 lignes), `GET /decks` et `GET /decks/{slug}`, pages `/decks` et `/decks/[archetype]` ;
+seuils de base ≥ 80 %, d'appoint ≥ 20 %, fiche dès 8 listes (13 archétypes, 292 listes sur 396) ; LCP mobile 1,75 à 1,87 s,
+Accessibilité 100 ; 9 captures ajoutées, 6 modifiées — `docs/journal/decks-tok-114.md`.
+Suites sans ticket : option de chemin pour `build_serving_db.py` (worktrees) ; ticket TOK-114 à créer ou à mettre à jour dans Linear.
+
+---
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à

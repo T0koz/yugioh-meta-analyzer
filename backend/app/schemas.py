@@ -281,3 +281,91 @@ class ArchetypeResponse(BaseModel):
     key_cards: Optional[ArchetypeKeyCards] = None
     ocg: Optional[ArchetypeOcg] = None
     boutique: Optional[ArchetypeBoutique] = None
+
+
+# ── Decks (TOK-114) ──────────────────────────────────────────────────────────
+
+Zone = Literal["main", "extra", "side"]
+CardRole = Literal["base", "appoint"]
+
+
+class DeckProfileRule(BaseModel):
+    """Seuils d'étiquette et effectif minimal (app/deck_profile.py), servis pour être affichés."""
+
+    base_min_share: float
+    flex_min_share: float
+    min_decks: int
+
+
+class DeckCardStat(BaseModel):
+    card_name: str
+    n_lists: int  # listes de l'archétype qui contiennent la carte dans cette zone
+    share: float  # n_lists / listes de l'archétype (0 à 1)
+    median_copies: float  # parmi les listes qui la jouent
+    role: Optional[CardRole] = None  # None sous le seuil d'appoint
+    image_url: Optional[str] = None
+
+
+class DeckIndexEntry(BaseModel):
+    archetype: str
+    slug: str
+    tier: Tier
+    decks: int  # listes de l'archétype dans la fenêtre
+    share: float  # part des decks de la fenêtre
+    # False sous l'effectif minimal : la page montre les listes, pas de parts.
+    has_profile: bool
+    image_url: Optional[str] = None
+    # Cartes de base du main (0 si pas de profil) : nombre de cartes et somme des exemplaires médians.
+    base_cards: int = 0
+    base_copies: float = 0
+    # Aperçu : cartes de base du main les plus propres à l'archétype.
+    preview: list[DeckCardStat] = []
+
+
+class DeckIndexResponse(BaseModel):
+    data: list[DeckIndexEntry]
+    window: Optional[TierWindow] = None
+    rule: DeckProfileRule
+    computed_at: Optional[str] = None
+
+
+class DeckZoneProfile(BaseModel):
+    zone: Zone
+    cards: list[DeckCardStat]  # triées par part décroissante
+
+
+class DeckListCard(BaseModel):
+    card_name: str
+    amount: int
+    image_url: Optional[str] = None
+
+
+class DeckListZone(BaseModel):
+    zone: Zone
+    n_cards: int  # exemplaires dans la zone
+    cards: list[DeckListCard]
+
+
+class RecentDeck(BaseModel):
+    deck_id: str
+    author: Optional[str] = None
+    tournament_type: Optional[str] = None
+    placement: float  # 1 = vainqueur ; 3,5 = demi-finaliste ; 8 = top 8…
+    date: str  # date du tournoi, « AAAA-MM-JJ »
+    zones: list[DeckListZone]
+
+
+class DeckResponse(BaseModel):
+    archetype: str
+    slug: str
+    image_url: Optional[str] = None
+    tier: Optional[Tier] = None
+    decks: int
+    share: float
+    has_profile: bool
+    window: TierWindow
+    rule: DeckProfileRule
+    computed_at: str
+    # Vide sous l'effectif minimal.
+    zones: list[DeckZoneProfile] = []
+    recent_decks: list[RecentDeck] = []

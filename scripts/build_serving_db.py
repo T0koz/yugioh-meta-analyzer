@@ -29,6 +29,10 @@ ROUTERS_DIR = ROOT / "backend" / "app" / "routers"
 # référence une qui manque ici — sans quoi un nouvel endpoint passerait en
 # production avec une table absente et ne casserait qu'à la première requête.
 SERVED_TABLES = [
+    # TOK-114 : profils de composition et extrait des listes récentes (scripts/build_archetype_profiles.py).
+    "archetype_card_profile",
+    "archetype_recent_deck_cards",
+    "archetype_recent_decks",
     "archetype_trend",
     "ban_radar",
     "boutique_buy_signals",

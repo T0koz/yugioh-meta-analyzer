@@ -8,7 +8,7 @@ import { fmtDate, fmtMonthRange, fmtMonthShort, fmtNum, fmtPct, fmtRank } from "
 import { pageMetadata } from "@/lib/seo";
 import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
-import { controlClass } from "@/components/ds/control";
+import { ButtonLink, controlClass } from "@/components/ds/control";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { DataFooter, Eyebrow, Page, StatBand } from "@/components/ds/page";
@@ -165,6 +165,12 @@ export default async function ArchetypePage({ params }: Params) {
                     <span className="font-mono text-[12px] text-muted-text">
                       Hors tier list : aucun deck TCG relevé{period ? ` de ${period}` : ""}.
                     </span>
+                  )}
+                  {/* Un archétype de la tier list a au moins une liste dans la fenêtre : sa page Decks existe (TOK-114). */}
+                  {tcg && (
+                    <ButtonLink href={`/decks/${a.slug}`} size="sm">
+                      Composition du deck
+                    </ButtonLink>
                   )}
                   {boutique?.signal_label && (
                     <a href="#signal-boutique" className="inline-flex items-center gap-2 text-[13px] text-soft hover:text-text">

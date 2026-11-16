@@ -5,6 +5,8 @@ import type {
   BanSimResult,
   BoutiqueResponse,
   CardImpactResponse,
+  DeckIndexResponse,
+  DeckResponse,
   EarlySignalsResponse,
   EvolutionResponse,
   GraphResponse,
@@ -29,6 +31,14 @@ export const api = {
     if (res.status === 404) return null;
     if (!res.ok) throw new Error(`API error ${res.status}: /archetypes/${slug}`);
     return res.json() as Promise<ArchetypeResponse>;
+  },
+  decks: () => apiFetch<DeckIndexResponse>("/decks"),
+  /** Fiche de composition ; null si aucune liste de l'archétype dans la fenêtre (404). */
+  async deck(slug: string): Promise<DeckResponse | null> {
+    const res = await fetch(`${BASE_URL}/decks/${encodeURIComponent(slug)}`, { next: { revalidate: 300 } });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`API error ${res.status}: /decks/${slug}`);
+    return res.json() as Promise<DeckResponse>;
   },
   evolution: () => apiFetch<EvolutionResponse>("/meta/evolution"),
   predictions: () => apiFetch<PredictionsResponse>("/meta/predictions"),

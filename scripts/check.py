@@ -348,7 +348,7 @@ def check_backtest(report: Report) -> None:
 
 def check_visual(report: Report) -> None:
     """Sur demande seulement : ≈ 45 s, et le build télécharge les polices (réseau requis)."""
-    report.step("Tests visuels du front (36 captures comparées aux références)")
+    report.step("Tests visuels du front (45 captures comparées aux références)")
     res = run([python_bin(), "scripts/visual_tests.py"])
     last = (res.stdout.strip().splitlines() or [""])[-1]
     if res.returncode == 0:
@@ -364,7 +364,7 @@ def check_visual(report: Report) -> None:
 def reminders(files: set[str], visual_done: bool = False) -> None:
     notes = []
     if not visual_done and any(f.startswith("frontend/src/") for f in files):
-        notes.append("Tu as touché l'interface : `python scripts/check.py --visuel` compare 36 captures aux "
+        notes.append("Tu as touché l'interface : `python scripts/check.py --visuel` compare 45 captures aux "
                      "références (≈ 45 s). Changement voulu → `python scripts/visual_tests.py --update`.")
     if any(f.startswith(("notebooks/", "scripts/build_", "scripts/refresh_all")) for f in files):
         notes.append("Tu as touché un calcul : si une table a été recalculée, lancer "

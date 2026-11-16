@@ -7,6 +7,7 @@ import { absoluteUrl } from "@/lib/site";
 const STATIC_PATHS = [
   "/",
   "/tier-list",
+  "/decks",
   "/evolution",
   "/predictions",
   "/boutique",
@@ -21,10 +22,16 @@ const STATIC_PATHS = [
 // slug servi par l'API (même ensemble que `generateStaticParams`). Pas de `lastModified` :
 // l'API ne sert pas de date commune à toutes les pages, et une date fausse vaut moins qu'aucune.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [tierList, boutique] = await Promise.all([api.tierList(), api.boutiqueSignals()]);
+  const [tierList, boutique, decks] = await Promise.all([api.tierList(), api.boutiqueSignals(), api.decks()]);
   const slugs = new Set([...tierList.data.map((e) => e.slug), ...boutique.data.map((s) => s.archetype_slug)]);
   return [
     ...STATIC_PATHS.map((path) => ({ url: absoluteUrl(path) })),
     ...[...slugs].sort().map((slug) => ({ url: absoluteUrl(`/archetype/${slug}`) })),
+    // Fiches de composition : seulement les archétypes au-dessus de l'effectif minimal (TOK-114).
+    ...decks.data
+      .filter((d) => d.has_profile)
+      .map((d) => d.slug)
+      .sort()
+      .map((slug) => ({ url: absoluteUrl(`/decks/${slug}`) })),
   ];
 }

@@ -81,6 +81,13 @@ Suites sans ticket : option de chemin pour `build_serving_db.py` (worktrees) ; t
 
 ---
 
+## Lot 13 — Outillage (file du 2026-11-17, sans ticket Linear)
+
+🟡 Livré le 2026-11-16 sur `claude/lot13-outillage-195837` (non fusionnée) : `.claude/settings.json`, hook `garde_fou.py` (28 cas bloqués,
+24 autorisés, testés dans `check.py`), commande `/fin-de-journee`, règle d'or dans `CLAUDE.md` — `context.md` § Outillage.
+
+---
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à

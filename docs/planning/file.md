@@ -44,3 +44,6 @@ Prompt de reprise (identique à chaque fenêtre) : « Lis docs/planning/file.md 
 | 16 | Réécriture des textes du site (arrêt pour validation du tableau) | `sprint-3/13-reecriture-textes.md` | Fable |
 
 Les tests visuels du lot 5 sont à mettre à jour après les lots 9, 11 et 12 (nouvelles pages).
+
+## Quand la file est vide ou en attente de Thomas
+Passe aux tâches de fond : `docs/planning/taches-de-fond.md` (Sonnet, 3 par nuit, branche à part, rapports seuls pour la revue et les données).

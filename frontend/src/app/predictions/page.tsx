@@ -25,7 +25,7 @@ function ScoreCell({ value, max, tone }: { value: number; max: number; tone: "si
 }
 
 export default async function PredictionsPage() {
-  const { data, model } = await api.predictions();
+  const { data } = await api.predictions();
 
   // Même échelle réduite que meta_score en tier-list : normalisation relative au max affiché.
   const maxScore = Math.max(...data.flatMap((d) => [d.current, d.predicted]), 0);
@@ -42,7 +42,7 @@ export default async function PredictionsPage() {
         }
         intro={
           <>
-            Score méta actuel et prévu pour chaque archétype (×100). Modèle : {model}. Le modèle prolonge surtout la tendance et ramène vers la moyenne : il n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
+            Score méta actuel et prévu pour chaque archétype (×100). Modèle : blend 70 % naïf + 30 % Ridge. Il prolonge surtout la tendance et ramène vers la moyenne : il n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
             <InfoTooltip text="Blend 70 % naïf (pas de changement) + 30 % Ridge (α = 50, delta mensuel). Validation walk-forward : l’erreur sur la variation mensuelle baisse d’environ 5 % par rapport à « rien ne change », autant qu’une régression à une variable (retour à la moyenne)." />
           </>
         }

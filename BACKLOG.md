@@ -120,6 +120,68 @@ réellement retenu est **70 % naïf + 30 % Ridge** (l'AR(1) a été testé puis 
 
 ---
 
+## TOK-94 — Refonte front « Braise vivante » (audit du 2026-11-16) — PRIORITAIRE
+
+**Priorité sur le reste du backlog** (décision 11), y compris le moteur de combos. Audit et
+proposition : `docs/audit-front/rapport.md`. Décisions : `docs/audit-front/decisions-2026-11-16.md`.
+Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | 🔜 À faire | 🔴 Urgent |
+| TOK-96 | Jour 1 : gains rapides sans décision de design (bloqué par TOK-95) | 🔜 À faire | 🔴 High |
+| TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | 🔜 À faire | 🔴 High |
+| TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🔜 À faire | 🔴 High |
+| TOK-106 | Nouvelle page d'accueil d'après le prototype (bloqué par TOK-95 et TOK-97) | 🔜 Backlog | 🔴 High |
+| TOK-99 | Dataviz maison en SVG (D3) + palette de données | 🔜 Backlog | 🟠 Medium |
+| TOK-100 | Qualité : SEO de partage + tests visuels Playwright | 🔜 Backlog | 🟠 Medium |
+| TOK-101 | Page d'archétype + transitions de vue | 🔜 Backlog | 🟠 Medium |
+| TOK-102 | Graphe de synergies refondu (Sigma.js ou PixiJS) | 🔜 Backlog | 🟠 Medium |
+| TOK-103 | Boutique regroupée par archétype avec courbes de prix | 🔜 Backlog | 🟠 Medium |
+| TOK-104 | Suivi des Web Vitals réels (suppose TOK-35) | 🔜 Backlog | 🟢 Low |
+| TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
+
+⚠ TOK-83 est marqué Done dans Linear, mais son correctif (`4d8f8df`) n'est pas dans `main` : il est
+sur la branche `claude/front-vitrine-06112d` (vérifié le 2026-11-16).
+
+---
+
+## TOK-107 — Collaboration et stack (2026-11-16)
+
+En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à
+`main` sans revue, dépôt qui reste public, base hébergée à terme (copie au départ), avis sur la stack.
+Vigilance : jamais d'identifiants commités (dépôt public), base hébergée privée, `CLAUDE.md` à adapter.
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-108 | L'inviter sur GitHub (pseudo à fournir) et mettre à jour TOK-78 | 🔜 À faire | 🔴 High |
+| TOK-109 | Lui fournir une copie de la base (court terme, accès privé) | 🔜 À faire | 🔴 High |
+| TOK-112 | Règles de travail à deux (`CLAUDE.md`, vérifications avant push, `ONBOARDING.md`) | 🔜 À faire | 🟠 Medium |
+| TOK-110 | Investiguer une base de données hébergée (note de comparaison, pas de migration) | 🔜 Backlog | 🟠 Medium |
+| TOK-111 | Avis sur la stack pour travailler à deux (note, pas de changement) | 🔜 Backlog | 🟠 Medium |
+
+---
+
+## TOK-84 — Moteur de combos, pilote Branded (réunion du 2026-11-16)
+
+Projet distinct du produit d'analyse de méta, mené en parallèle (le nettoyage du backlog reste
+prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decisions-2026-11-16.md`](docs/moteur-combos/decisions-2026-11-16.md).
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🔜 Backlog | 🟠 Medium |
+| TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🔜 Backlog | 🟠 Medium |
+| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🔜 Backlog | 🟠 Medium |
+| TOK-90 | Tranche 0 : un combo Branded de bout en bout (bloqué par TOK-85 et TOK-87) | 🔜 Backlog | 🟠 Medium |
+| TOK-89 | Trouver un juge humain qui connaît le jeu | 🔜 Backlog | 🟠 Medium |
+| TOK-88 | Journal de chronométrage des étapes | 🔜 Backlog | 🟢 Low |
+
+Jalons : **J1** 100 % des cartes Branded formalisées avec un taux d'erreur chiffré · **J2** le moteur
+retrouve seul les combos des guides publics · **J3** il en trouve un qu'aucun guide ne cite. Règle
+d'arrêt : J2 non atteint en 8 semaines ou J3 vide → réévaluer.
+
+---
+
 ## Idées & exploration
 
 | TOK | Item | Priorité |

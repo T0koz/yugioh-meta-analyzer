@@ -246,6 +246,31 @@ def build(conn: sqlite3.Connection, as_of: str, fmt: str = "TCG") -> pd.DataFram
     return df.sort_values("ban_risk_score", ascending=False).reset_index()
 
 
+def backtest_lists(conn: sqlite3.Connection, fmt: str):
+    """Rejoue le score la veille de chaque banlist du format, liste par liste.
+
+    Produit un dict par liste. Une liste écartée (fenêtre sous
+    `BACKTEST_MIN_DECKS` decks ou moins de `BACKTEST_MIN_HITS` cartes touchées)
+    sort avec `retained=False` et sans classement. Pour une liste retenue,
+    `ranking` est le classement complet de la veille (index = carte, ordre =
+    rang) : seules les données antérieures à l'annonce y entrent.
+    Partagé par `backtest()` (affichage) et `build_ban_history.py` (table servie).
+    """
+    for as_of, effective, hits in banlist_events(conn, fmt):
+        usage_decks = load_usage(conn, as_of, fmt).deck_id.nunique()
+        if usage_decks < BACKTEST_MIN_DECKS or len(hits) < BACKTEST_MIN_HITS:
+            yield {"format": fmt, "as_of": as_of, "effective": effective, "hits": hits,
+                   "n_decks": usage_decks, "retained": False}
+            continue
+
+        df = build(conn, as_of, fmt).set_index("card_name")
+        ranked = [(h, df.index.get_loc(h) + 1) for h in hits if h in df.index]
+        missing = [h for h in hits if h not in df.index]
+        yield {"format": fmt, "as_of": as_of, "effective": effective, "hits": hits,
+               "n_decks": usage_decks, "retained": True, "ranking": df,
+               "ranked": ranked, "missing": missing}
+
+
 def backtest(conn: sqlite3.Connection, formats: tuple[str, ...] = ("TCG", "OCG")) -> None:
     """Rejoue le score la veille de chaque banlist et situe les cartes touchées.
 
@@ -256,16 +281,14 @@ def backtest(conn: sqlite3.Connection, formats: tuple[str, ...] = ("TCG", "OCG")
         print(f"\n{'=' * 66}\n{fmt}\n{'=' * 66}")
         skipped = []
 
-        for as_of, effective, hits in banlist_events(conn, fmt):
-            usage_decks = load_usage(conn, as_of, fmt).deck_id.nunique()
-            if usage_decks < BACKTEST_MIN_DECKS or len(hits) < BACKTEST_MIN_HITS:
+        for result in backtest_lists(conn, fmt):
+            effective, usage_decks, hits = result["effective"], result["n_decks"], result["hits"]
+            if not result["retained"]:
                 skipped.append((effective, usage_decks, len(hits)))
                 continue
 
-            df = build(conn, as_of, fmt).set_index("card_name")
+            df, ranked, missing = result["ranking"], result["ranked"], result["missing"]
             n = len(df)
-            ranked = [(h, df.index.get_loc(h) + 1) for h in hits if h in df.index]
-            missing = [h for h in hits if h not in df.index]
 
             print(f"\n--- Liste du {effective} — {len(hits)} cartes touchées")
             print(f"    univers noté : {n} cartes ({usage_decks} decks sur {WINDOW_MONTHS} mois)")

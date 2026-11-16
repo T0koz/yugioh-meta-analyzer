@@ -9,3 +9,7 @@
 - **Règle d'or (précision du 17/11)** : un lot à la fois ; une deuxième session seulement si la première est
   bloquée par une attente longue et passive (téléchargement, build long, attente de validation), sur des fichiers
   différents, et jamais plus de deux sessions en même temps.
+- **Rigueur statistique (principe de Thomas, 17/11)** : tout score, prédiction, seuil ou libellé affiché est
+  estimé à partir des données, validé hors échantillon dans le temps, comparé à une méthode naïve (hasard,
+  popularité, « le mois dernier ») et affiché avec son incertitude. Un réglage à la main n'est acceptable que
+  s'il est déclaré comme tel. Toute session qui crée ou modifie un score sollicite `data-scientist-ygo`.

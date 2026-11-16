@@ -34,3 +34,8 @@ n'en a pas ; source + date partout ; Accessibilité ≥ 95 ; captures avant/apr�
   enfoncement (échelle ~0,97, ombre réduite) avec un ressort court ; focus visible net ; transitions 120-200 ms ;
   aucune animation avec « réduire les animations ». Un seul composant de bouton (et pills, onglets, filtres)
   décliné partout, documenté dans `docs/design-system.md`. Contraste AA conservé.
+- **Cas prioritaire : page historique du Ban Center** (`/ban?tab=historique`, Thomas 17/11) : trop d'informations,
+  illisible sans la légende. Garder une phrase de verdict en tête et **un seul visuel par format** (par ex. cartes
+  touchées dans le top 25 : radar contre « cartes les plus jouées ») ; replier le détail par banlist (bandes de
+  hasard, rangs médians, étiquettes de calage) derrière « voir le détail ». Colonnes en langage simple. Le message
+  du verdict attend le diagnostic du ticket « Ban Radar TCG ne bat pas les staples » (Linear) : ne pas l'écrire avant.

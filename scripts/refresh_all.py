@@ -16,7 +16,7 @@ notebooks qui doivent rester exécutables de haut en bas (c'est donc aussi un te
 
 Ordre (dépendances) : 02 → 04 (meta_scores) → banlist_features → 05 (prédictions) →
 10 (alertes boutique) → buy_signals → 11 (signal précoce) → ban_radar → card_impact
-→ log_predictions → build_serving_db --check.
+→ archetype_profiles (même fenêtre que la tier list, donc après 04) → log_predictions → build_serving_db --check.
 Un seul écrivain sur yugioh.db : tout est séquentiel, arrêt au premier échec.
 """
 import argparse
@@ -40,6 +40,7 @@ STEPS = [
     ("11_early_card_signal", NB("11_early_card_signal")),
     ("ban_radar", SC("scripts/build_ban_radar.py")),
     ("card_impact", SC("scripts/build_card_impact.py")),
+    ("archetype_profiles", SC("scripts/build_archetype_profiles.py")),
     ("log_predictions", SC("scripts/log_predictions.py")),
     ("serving_check", SC("scripts/build_serving_db.py", "--check")),
 ]

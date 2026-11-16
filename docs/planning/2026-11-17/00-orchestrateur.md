@@ -7,14 +7,17 @@ Thomas a validé cette file en avance : lancer les sessions ci-dessous **l'une a
 ## Lis d'abord
 `CLAUDE.md`, `context.md` (§ Travail en sessions parallèles, § À faire), `BACKLOG.md`, puis `regles.md` (ce dossier).
 
-## File d'attente
-Tu ne lances QUE le lot 1, puis tu t'arrêtes et écris le compte rendu.
-1. `01-seuil-boutique.md` — seuil absolu Fort / Modéré / Faible (données, Sonnet)
+## File d'attente (dans cet ordre, une session neuve par ticket, sans attendre Thomas entre deux)
+1. `01-seuil-boutique.md` — données : demande le modèle Sonnet pour cette session si tu le peux, sinon garde le tien
+2. `02-tok-106-accueil.md` — front
+3. `03-tok-99-dataviz.md` — front
+4. `04-tok-101-archetype.md` — front
+5. `05-tok-100-seo-tests-visuels.md` — front, EN DERNIER (images de référence sur l'interface finale)
 
-Les lots front (02 accueil, 03 dataviz, 04 page d'archétype, 05 SEO et tests visuels) sont lancés **à la main
-par Thomas**, un par session, sur le modèle le plus puissant disponible (règle du projet : le front se fait
-toujours avec le modèle le plus puissant). Chaque session de lot fusionne elle-même sa branche dans la branche
-d'intégration (voir `regles.md`). Ordre : 02 → 03 → 04 → 05.
+**Modèle** : tu tournes sur le modèle le plus puissant (Fable) ; les sessions front héritent de ton modèle ou
+reçoivent explicitement le plus puissant disponible (règle du projet). Note dans le compte rendu le modèle
+réellement utilisé par chaque session. Une seule session à la fois : attends la fin de l'une avant de lancer
+la suivante.
 
 ## Méthode
 - Branche d'intégration : `claude/front-nuit-17-11`, créée depuis `main` à jour (vérifie d'abord `git status` propre

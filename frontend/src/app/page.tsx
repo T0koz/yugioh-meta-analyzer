@@ -1,246 +1,502 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { fmtMonthRange, fmtNum, fmtPct } from "@/lib/format";
+import { CRITERIA } from "@/lib/ban-criteria";
+import { fmtDate, fmtMonthRange, fmtNum } from "@/lib/format";
+import { PROOF } from "@/lib/proof-data";
 import { SITE_FACTS } from "@/lib/site-facts";
+import { CardArt, CardArtFill } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
-import { CardArt } from "@/components/card-art";
-import { Eyebrow, Page } from "@/components/ds/page";
+import { Eyebrow, StatBand } from "@/components/ds/page";
+import { Tag, banStatusLabel } from "@/components/ds/tags";
+import { Constellation } from "@/components/home/constellation";
+import { CountUp, Embers, FanStage, GlowLink, ProofScroll } from "@/components/home/effects";
+import { ProofChart } from "@/components/home/proof-chart";
 import { Reveal } from "@/components/reveal";
-import { banStatusLabel } from "@/components/ds/tags";
-import type { PredictionEntry } from "@/types";
+import { SiteFooter } from "@/components/site-footer";
+import type { BuyLabel } from "@/types";
 
-// Home en bento (docs/design-system.md §4, maquette B) : une tuile par usage,
-// pensée pour le pitch boutiques. Une seule tuile accent, un seul bouton plein.
+// Accueil « Braise vivante » (TOK-106), portage de docs/audit-front/prototype :
+// hero, preuve au défilement, outils, méthode, pied de page. Tout le contenu est
+// rendu côté serveur ; les effets (components/home/effects.tsx) s'y ajoutent.
 
-const TILE =
-  "grid min-w-0 content-between gap-3.5 rounded-[8px] border p-[22px] transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-px col-span-12";
+export const metadata: Metadata = {
+  title: { absolute: "YGO Meta · La méta OCG précède la méta TCG de 2 à 6 mois" },
+  description:
+    "Méta Yu-Gi-Oh! TCG et OCG mesurée sur 23 948 decklists de tournoi : corrélation OCG → TCG de 0,53, signaux boutique, risque de ban, méthode et limites.",
+};
 
-function TileTag({ letter, children, className = "" }: { letter: string; children: React.ReactNode; className?: string }) {
-  return (
-    <p className={`flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.1em] ${className}`}>
-      <b className="rounded-[3px] border border-current px-[5px] font-medium">{letter}</b>
-      {children}
-    </p>
-  );
-}
+const WRAP = "mx-auto w-full max-w-[var(--maxw)] px-[var(--gutter)]";
+const H2 = "text-[clamp(30px,4.2vw,56px)] leading-[1.02] font-medium tracking-[-0.04em] text-balance";
+const H3 = "text-[clamp(22px,2.4vw,32px)] leading-[1.08] font-medium tracking-[-0.03em] text-balance";
+const TILE = "grid min-w-0 gap-[18px] rounded-[14px] border border-line-2 bg-ink-3 p-[22px] min-[760px]:p-[26px] col-span-12";
+const BUTTON =
+  "inline-flex min-h-11 items-center gap-2 rounded-[6px] border px-[18px] text-[15px] font-medium transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-0.5";
+/** Pied de données : source et date sous chaque visualisation. */
+const SOURCE = "font-mono text-[12px] leading-[1.6] text-muted-text";
+const PILL = "rounded-[4px] border border-line-2 px-2 py-[5px] font-mono text-[11px] tracking-[0.06em] text-soft uppercase";
 
-const H3 = "text-[clamp(22px,2.6vw,30px)] leading-[1.08] font-medium tracking-[-0.03em] text-balance";
+const LABEL_TONE: Record<BuyLabel, "strong" | "outline" | "neutral"> = { Fort: "strong", Modéré: "outline", Faible: "neutral" };
 
-/** Plus forte hausse prévue : c'est elle qui « vend » la prédiction. */
-function biggestRise(predictions: PredictionEntry[]): PredictionEntry | undefined {
-  return [...predictions].sort((a, b) => b.predicted - b.current - (a.predicted - a.current))[0];
-}
+// Ton de la page (consigne du 2026-11-16) : sobre, factuel, statistique. Pas de
+// formule publicitaire ni d'appel à l'action ; une phrase porte une mesure, une
+// période et une source, sinon elle n'est pas écrite. Le graphique explique, le
+// texte annote.
 
-function PredictionSpark({ current, predicted }: { current: number; predicted: number }) {
-  // Deux points honnêtes (actuel, prévu) sur une échelle commune, pas de courbe inventée.
-  const max = Math.max(current, predicted) || 1;
-  const y = (v: number) => 56 - (v / max) * 40;
-  return (
-    <svg viewBox="0 0 200 70" width="100%" role="img" aria-label={`Actuel ${fmtNum(current * 100, 1)}, prévu ${fmtNum(predicted * 100, 1)}`}>
-      <line x1="12" y1="58" x2="188" y2="58" stroke="var(--on-signal)" strokeOpacity=".25" />
-      <line x1="40" y1={y(current)} x2="172" y2={y(predicted)} stroke="var(--on-signal)" strokeWidth="2.5" strokeDasharray="3 5" strokeLinecap="round" />
-      <circle cx="40" cy={y(current)} r="4.5" fill="var(--on-signal)" />
-      <circle cx="172" cy={y(predicted)} r="4.5" fill="var(--signal)" stroke="var(--on-signal)" strokeWidth="2.5" />
-      <text x="40" y="68" textAnchor="middle" fontFamily="var(--font-jetbrains-mono)" fontSize="9" fill="var(--on-signal)">ACTUEL</text>
-      <text x="172" y="68" textAnchor="middle" fontFamily="var(--font-jetbrains-mono)" fontSize="9" fill="var(--on-signal)">PRÉVU</text>
-    </svg>
-  );
-}
+// Mots du titre, révélés un par un (CSS .home-word). L'accent porte sur la mesure.
+const TITLE: { word: string; accent?: boolean }[] = [
+  { word: "La" },
+  { word: "méta" },
+  { word: "OCG" },
+  { word: "précède" },
+  { word: "la" },
+  { word: "méta" },
+  { word: "TCG" },
+  { word: "de" },
+  ...SITE_FACTS.ocgTcgLagRange.split(" ").map((word) => ({ word, accent: true })),
+];
 
-function GraphSketch() {
-  return (
-    <svg viewBox="0 0 240 150" width="100%" role="img" aria-label="Aperçu stylisé du graphe : une carte pont relie plusieurs paquets">
-      <g stroke="var(--line-2)" strokeWidth="1">
-        <line x1="40" y1="40" x2="110" y2="75" /><line x1="40" y1="110" x2="110" y2="75" />
-        <line x1="110" y1="75" x2="180" y2="40" /><line x1="110" y1="75" x2="190" y2="115" />
-        <line x1="180" y1="40" x2="215" y2="70" /><line x1="40" y1="40" x2="22" y2="80" />
-        <line x1="190" y1="115" x2="215" y2="70" />
-      </g>
-      <g fill="var(--ink-4)" stroke="var(--line-2)">
-        <circle cx="40" cy="40" r="9" /><circle cx="40" cy="110" r="7" /><circle cx="180" cy="40" r="10" />
-        <circle cx="190" cy="115" r="8" /><circle cx="215" cy="70" r="6" /><circle cx="22" cy="80" r="5" />
-      </g>
-      <circle cx="110" cy="75" r="17" fill="var(--signal)" />
-      <circle cx="110" cy="75" r="27" fill="none" stroke="var(--signal)" strokeOpacity=".35" />
-      <text x="110" y="79" textAnchor="middle" fontFamily="var(--font-jetbrains-mono)" fontSize="9" fontWeight="500" fill="var(--on-signal)">PONT</text>
-    </svg>
-  );
-}
+// Éventail : [rang dans la tier list, position --k, profondeur --z, ordre de distribution --n].
+const FAN_SLOTS = [
+  [3, -2, 0, 0],
+  [1, -1, 20, 1],
+  [0, 0, 60, 4],
+  [2, 1, 20, 3],
+  [4, 2, 0, 2],
+] as const;
+
+const fmtRank = (rank: number) => (rank === 1 ? "1er" : `${rank}ᵉ`);
+const shortDate = (iso: string) =>
+  new Date(`${iso}T00:00:00`).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+
+const ALSO = [
+  { href: "/tier-list", label: "Tier list", text: "Archétypes classés sur leur part des decks de tournoi." },
+  { href: "/evolution", label: "Évolution", text: "Part mensuelle des archétypes TCG, depuis mai 2023." },
+  { href: "/predictions", label: "Prédictions", text: "Score méta prévu à un mois, par archétype." },
+  { href: "/early-signals", label: "Signaux précoces", text: "Cartes classées par score précoce." },
+];
+
+const pct = (v: number) => `${fmtNum(v, 1)} %`;
 
 export default async function Home() {
-  const [boutique, radar, predictions] = await Promise.all([
+  const [boutique, radar, tierList] = await Promise.all([
     api.boutiqueSignals(),
     api.banRadar({ limit: 3, kind: "archetype" }),
-    api.predictions(),
+    api.tierList(),
   ]);
   const topBuy = boutique.data[0];
+  const rule = boutique.label_rule;
   const tcgWindow = topBuy ? fmtMonthRange(topBuy.tcg_window_start, topBuy.tcg_window_end) : null;
-  const topRisk = radar.data[0];
-  const rise = biggestRise(predictions.data);
+  const illustrated = tierList.data.filter((entry) => entry.image_url);
+  const leader = tierList.data[0];
+  const lag = PROOF.tcgPeak - PROOF.ocgPeak;
+  const tierWindow = fmtMonthRange(`${tierList.window_start}-01`, `${tierList.window_end}-01`);
+  const { ocg, tcg, ocgPeak, tcgPeak } = PROOF;
 
   return (
-    <Page>
-      <header className="relative isolate pt-14 pb-10">
-        {/* Les points sont sur un calque à part : un mask-image sur le header
-            estomperait aussi le texte et les boutons. */}
-        <div
-          aria-hidden
-          className="bg-dots absolute inset-y-0 -inset-x-[var(--gutter)] -z-10 [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
-        />
-        <div>
-          <Eyebrow className="enter">Analyse de méta · Yu-Gi-Oh! TCG &amp; OCG</Eyebrow>
-          <h1 className="enter mt-[18px] max-w-[16ch] [--i:1] text-[clamp(36px,6vw,72px)] leading-[0.98] font-medium tracking-[-0.045em] text-balance">
-            Le TCG suit l’OCG, <Em>avec quelques mois</Em> de retard.
-          </h1>
-        </div>
-        <p className="enter mt-[22px] max-w-[52ch] text-soft [--i:2]">
-          {`Corrélation d’environ ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)} entre la méta OCG et la méta TCG ${SITE_FACTS.ocgTcgLagRange} plus tard (IC 95 % : ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}, ${SITE_FACTS.ocgTcgArchetypes} archétypes), sur ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi. Un signal réel mais modéré : une aide à la décision, pas une garantie.`}
-        </p>
-        <div className="enter mt-7 flex flex-wrap gap-2.5 [--i:3]">
-          <Link
-            href="/boutique"
-            className="rounded-[4px] border border-signal bg-signal px-[18px] py-[11px] text-[14px] font-medium text-on-signal transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-px"
-          >
-            Voir les signaux boutique →
-          </Link>
-          <Link
-            href="/tier-list"
-            className="rounded-[4px] border border-line-2 bg-ink-3 px-[18px] py-[11px] text-[14px] font-medium text-text transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-px"
-          >
-            Tier list du moment
-          </Link>
-        </div>
-      </header>
-
-      <div className="enter mt-2 grid grid-cols-12 gap-3 [--i:4]">
-        {topBuy && (
-          <Link href="/boutique" className={`${TILE} group border-transparent bg-paper text-paper-ink min-[900px]:col-span-5`}>
-            <TileTag letter="A" className="text-paper-muted">Signal boutique</TileTag>
-            <div className="flex items-start justify-between gap-4">
-              <p className="text-[clamp(80px,12vw,148px)] leading-[0.85] font-medium tracking-[-0.07em] tabular-nums">
-                {fmtNum(topBuy.buy_score)}
-                <sup className="ml-1.5 align-top font-mono text-[14px] font-normal tracking-normal text-paper-muted">/100</sup>
-              </p>
-              {/* La carte est le seul objet du site qui porte une ombre (profondeur réservée à la carte). */}
-              <CardArt
-                src={topBuy.image_url}
-                name={topBuy.card_name}
-                size="lg"
-                eager
-                className="border-transparent shadow-[0_18px_40px_-12px_rgb(11_15_22/0.55)] transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:-rotate-3 motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:rotate-0"
-              />
-            </div>
-            <div>
-              <h2 className={H3}>
-                {topBuy.card_name}, <em className="font-serif font-normal italic tracking-[-0.01em] text-signal-deep">{topBuy.archetype}</em>.
-              </h2>
-              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">Archétype joué en OCG, cartes clés pas encore sorties en TCG.</p>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  `Cardmarket ${fmtNum(topBuy.cm_price, 2)} €`,
-                  tcgWindow && `Arrivée TCG ${tcgWindow}`,
-                  topBuy.ban_tcg && `${banStatusLabel(topBuy.ban_tcg)} en TCG`,
-                ]
-                  .filter(Boolean)
-                  .map((kv) => (
-                    <span
-                      key={kv as string}
-                      className="rounded-[3px] border border-[var(--paper-line)] px-2 py-1 font-mono text-[11px] tracking-[0.06em] uppercase"
-                    >
-                      {kv}
+    <>
+      <main>
+        {/* ---------- 1. Hero : la promesse ---------- */}
+        <section className="relative isolate grid min-h-[min(880px,100svh)] items-center overflow-x-clip pt-10 pb-10 min-[900px]:pt-14">
+          <Embers className="absolute inset-0 -z-20 h-full w-full" />
+          <div
+            aria-hidden
+            className="absolute top-[8%] right-[-6%] -z-10 aspect-square w-[70%] opacity-75 blur-[30px] [background:radial-gradient(closest-side,var(--glow),transparent_70%)]"
+          />
+          <div className={WRAP}>
+            <div className="grid items-center gap-2 min-[900px]:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] min-[900px]:gap-10">
+              <div>
+                <Eyebrow className="enter home-pulse">Méta Yu-Gi-Oh! · données au {fmtDate(radar.as_of)}</Eyebrow>
+                <h1 className="mt-5 text-[clamp(38px,5.6vw,80px)] leading-[0.98] font-medium tracking-[-0.05em] text-balance">
+                  {TITLE.map(({ word, accent }, i) => (
+                    <span key={i}>
+                      <span className="home-word">
+                        <span style={{ "--i": i } as React.CSSProperties}>
+                          {accent ? <Em>{word}</Em> : word}
+                          {i === TITLE.length - 1 && "."}
+                        </span>
+                      </span>{" "}
                     </span>
                   ))}
-              </div>
-            </div>
-          </Link>
-        )}
-
-        <Link href="/ban" className={`${TILE} border-line-2 bg-ink-3 min-[900px]:col-span-4`}>
-          <TileTag letter="B" className="text-muted-text">Ban Radar</TileTag>
-          <h2 className={H3}>
-            Les cartes que Konami va <Em>toucher</Em>.
-          </h2>
-          <div>
-            {radar.data.map((entry) => (
-              <div key={entry.card_name} className="flex items-center justify-between gap-3 border-t border-line py-[9px] text-[14px] first:border-t-0">
-                <span className="flex min-w-0 items-center gap-3 [overflow-wrap:anywhere]">
-                  <CardArt src={entry.image_url} name={entry.card_name} eager />
-                  {entry.card_name}
-                </span>
-                <b className="font-mono text-[13px] font-medium text-signal tabular-nums">{fmtNum(entry.ban_risk_score, 1)}</b>
-              </div>
-            ))}
-          </div>
-        </Link>
-
-        {rise && (
-          <Link href="/predictions" className={`${TILE} border-transparent bg-signal text-on-signal min-[900px]:col-span-3`}>
-            <TileTag letter="C" className="text-on-signal">Prédictions</TileTag>
-            <div>
-              <h2 className={H3}>
-                {rise.archetype}
-                <br />
-                <span className="tabular-nums">
-                  {fmtNum(rise.current * 100, 1)} → {fmtNum(rise.predicted * 100, 1)}
-                </span>
-              </h2>
-              <p className="mt-2 text-[14px] text-on-signal">Score méta actuel, puis prévu le mois prochain (×100).</p>
-            </div>
-            <PredictionSpark current={rise.current} predicted={rise.predicted} />
-          </Link>
-        )}
-
-        <Reveal className="col-span-12 grid min-[900px]:col-span-7">
-          <Link href="/graph" className={`${TILE} border-line-2 bg-ink-3`}>
-            <TileTag letter="D" className="text-muted-text">Graphe de synergies</TileTag>
-            <div className="grid items-center gap-[22px] min-[700px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-              <div>
-                <h2 className={H3}>
-                  {SITE_FACTS.graphCommunities} communautés de cartes, <Em>une</Em> carte pont.
-                </h2>
-                <p className="mt-2.5 text-[14px] text-muted-text">
-                  La centralité d’intermédiarité montre quelles cartes relient les archétypes : les premières touchées
-                  par un ban.
+                </h1>
+                <p className="enter mt-6 max-w-[50ch] text-[18px] text-soft [--i:2]">
+                  {`Corrélation r ≈ ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)} (IC 95 % : ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}) entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes et ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi (yugiohmeta.com, mai 2023 à novembre 2026).`}
                 </p>
+                <div className="enter mt-[30px] flex flex-wrap gap-2.5 [--i:3]">
+                  <Link href="/boutique" className={`${BUTTON} border-signal bg-signal text-on-signal motion-safe:hover:shadow-[0_14px_40px_-10px_var(--glow)]`}>
+                    Signaux boutique
+                  </Link>
+                  <a href="#methode" className={`${BUTTON} border-line-2 bg-ink-3 text-text`}>
+                    Méthode et limites
+                  </a>
+                </div>
               </div>
-              <GraphSketch />
-            </div>
-          </Link>
-        </Reveal>
 
-        {topRisk && (
-          <Reveal className="col-span-12 grid min-[900px]:col-span-5">
-            <Link
-              href={`/ban?tab=simulateur&card=${encodeURIComponent(topRisk.card_name)}`}
-              className={`${TILE} border-line-2 bg-ink-3`}
-            >
-              <TileTag letter="E" className="text-muted-text">Recherche</TileTag>
-              <h2 className={H3}>
-                Tape une carte. <Em>Vois</Em> son impact.
-              </h2>
-              <div className="rounded-[6px] border border-line bg-ink px-4 py-3.5 font-mono text-[13px] leading-[1.9] text-soft">
-                <p>
-                  <span className="text-faint">&gt;</span> impact si ban de
-                </p>
-                <p className="text-text">
-                  {topRisk.card_name}
-                  <span aria-hidden className="cursor-blink ml-0.5 inline-block h-[15px] w-2 bg-signal align-[-3px]" />
-                </p>
-                {[
-                  ["archétypes qui la jouent", fmtNum(topRisk.n_archetypes)],
-                  ["part des decks", fmtPct(topRisk.deck_share, 2)],
-                  ["risque de ban", `${fmtNum(topRisk.ban_risk_score, 1)} / 100`],
-                ].map(([label, value]) => (
-                  <p key={label} className="mt-1.5 flex justify-between gap-3 border-t border-dashed border-line pt-1.5">
-                    <span>{label}</span>
-                    <span className="text-signal">{value}</span>
+              {illustrated.length >= FAN_SLOTS.length && (
+                <FanStage className="home-stage max-[899px]:order-first max-[899px]:h-[320px]">
+                  <div className="home-fan" aria-hidden>
+                    {/* Images en chargement différé : sur mobile le LCP est le paragraphe, les
+                        cartes ne doivent pas disputer la bande passante au CSS et aux polices. */}
+                    {FAN_SLOTS.map(([rank, k, z, n]) => (
+                      <div
+                        key={rank}
+                        className="home-fan-card"
+                        data-hot={rank === 0 ? "" : undefined}
+                        style={{ "--k": k, "--z": z, "--n": n } as React.CSSProperties}
+                      >
+                        <CardArtFill
+                          src={illustrated[rank].image_url}
+                          name={illustrated[rank].archetype}
+                          sizes="(min-width: 900px) 230px, 128px"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <p className="enter absolute bottom-[2%] left-1/2 z-10 -translate-x-1/2 rounded-[6px] border border-line-2 bg-ink-2/85 px-3 py-2 font-mono text-[11px] font-medium tracking-[0.08em] uppercase backdrop-blur max-[599px]:w-max max-[599px]:max-w-[calc(100vw-2rem)] max-[599px]:text-center min-[600px]:whitespace-nowrap [--i:5]">
+                    <b className="font-medium text-signal">{illustrated[0].archetype}</b> · {pct(illustrated[0].share * 100)} des
+                    decks TCG · {tierWindow}
                   </p>
-                ))}
+                </FanStage>
+              )}
+            </div>
+
+            <div className="enter [--i:4]">
+              <StatBand
+                stats={[
+                  { value: <CountUp value={SITE_FACTS.decklists} />, label: "Decklists analysées" },
+                  { value: <CountUp value={SITE_FACTS.cardsTracked} />, label: "Cartes suivies" },
+                  { value: <CountUp value={SITE_FACTS.ocgTcgCorrelation} digits={2} />, label: "Corrélation OCG → TCG (r)" },
+                  { value: SITE_FACTS.ocgTcgLagRange, label: "Écart OCG → TCG" },
+                ]}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- 2. La preuve : graphique piloté par le défilement ---------- */}
+        <ProofScroll id="preuve" aria-labelledby="h-preuve" className="scroll-mt-20">
+          <div className="home-proof-sticky py-20">
+            <div className={`${WRAP} grid items-center gap-10 min-[900px]:grid-cols-[minmax(0,0.8fr)_minmax(0,1.4fr)] min-[900px]:gap-12`}>
+              <div>
+                <Eyebrow>Exemple · un archétype, deux formats</Eyebrow>
+                <h2 id="h-preuve" className={`mt-[18px] ${H2}`}>
+                  {PROOF.archetype} : pic en OCG en avril 2026, en TCG <Em>{lag} mois</Em> plus tard.
+                </h2>
+                <ol className="mt-7 grid gap-1.5">
+                  {[
+                    ["1 · OCG", `${pct(ocg[ocgPeak - 3])} des decks en janvier 2026, ${pct(ocg[ocgPeak - 2])} en février, pic à ${pct(ocg[ocgPeak])} en avril.`],
+                    ["2 · TCG", `${pct(tcg[tcgPeak - 3])} en avril 2026, ${pct(tcg[tcgPeak - 2])} en mai, pic à ${pct(tcg[tcgPeak])} en juillet.`],
+                    [
+                      "3 · Écart",
+                      `Courbe OCG décalée de ${lag} mois. Un seul archétype : sur ${SITE_FACTS.ocgTcgArchetypes} archétypes, l’écart observé va de ${SITE_FACTS.ocgTcgLagRange}.`,
+                    ],
+                  ].map(([label, text]) => (
+                    <li key={label} className="home-step px-4 py-3.5 text-[16px]">
+                      <b className="mb-1 block font-mono text-[11px] font-medium tracking-[0.1em] uppercase">{label}</b>
+                      {text}
+                    </li>
+                  ))}
+                </ol>
               </div>
-            </Link>
+
+              <figure className="rounded-[14px] border border-line-2 bg-linear-to-b from-ink-3 to-ink-2 px-4 pt-5 pb-3.5 min-[760px]:px-[22px]">
+                <div className="mb-2.5 flex flex-wrap gap-4 font-mono text-[12px] text-soft">
+                  <span className="flex items-center gap-2">
+                    <i className="h-[3px] w-[18px] rounded-[2px] bg-ocg" />
+                    OCG (Japon, Asie)
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <i className="h-[3px] w-[18px] rounded-[2px] bg-signal" />
+                    TCG (Europe, Amériques)
+                  </span>
+                </div>
+                <ProofChart />
+                <figcaption className={`mt-3 ${SOURCE}`}>
+                  Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists
+                  yugiohmeta.com, relevé du {fmtDate(PROOF.asOf)}.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </ProofScroll>
+
+        {/* ---------- 3. Les outils : bento avec de vraies cartes ---------- */}
+        <section id="outils" aria-labelledby="h-outils" className={`${WRAP} scroll-mt-20 pt-24 min-[900px]:pt-[120px]`}>
+          <Reveal>
+            <Eyebrow>Outils</Eyebrow>
+            <h2 id="h-outils" className={`mt-[18px] max-w-[18ch] ${H2}`}>
+              Trois outils, les <Em>mêmes</Em> decklists.
+            </h2>
           </Reveal>
-        )}
-      </div>
-    </Page>
+
+          <div className="mt-10 grid grid-cols-12 gap-3.5">
+            {topBuy && (
+              <Reveal className="col-span-12 grid min-[900px]:col-span-5">
+                <GlowLink href="/boutique" className={`${TILE} content-between min-[900px]:min-h-[340px]`}>
+                  <Eyebrow>Signal boutique</Eyebrow>
+                  <div className="grid grid-cols-[auto_minmax(0,1fr)] items-end gap-[22px]">
+                    <div className="home-bigcard relative aspect-[59/86] w-[clamp(110px,13vw,160px)] overflow-hidden rounded-[8px] bg-ink-4">
+                      <CardArtFill src={topBuy.image_url} name={topBuy.card_name} sizes="160px" />
+                    </div>
+                    {topBuy.archetype_rank != null && rule ? (
+                      <p className="text-[clamp(64px,9vw,120px)] leading-[0.85] font-medium tracking-[-0.07em] tabular-nums">
+                        {fmtRank(topBuy.archetype_rank)}
+                        <span className="mt-3 block font-mono text-[12px] leading-[1.5] font-normal tracking-[0.04em] text-muted-text">
+                          sur {rule.population} archétypes OCG
+                        </span>
+                      </p>
+                    ) : (
+                      <p className="text-[clamp(48px,7vw,88px)] leading-[0.85] font-medium tracking-[-0.06em] tabular-nums">
+                        {fmtNum(topBuy.cm_price, 2)} €
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className={H3}>{topBuy.archetype}</h3>
+                    <p className="mt-2 text-[15px] text-muted-text">Carte suivie : {topBuy.card_name}.</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                      {topBuy.signal_label && <Tag tone={LABEL_TONE[topBuy.signal_label]}>{topBuy.signal_label.toUpperCase()}</Tag>}
+                      <span className={PILL}>Cardmarket {fmtNum(topBuy.cm_price, 2)} €</span>
+                      {tcgWindow && <span className={PILL}>Arrivée TCG {tcgWindow}</span>}
+                      {topBuy.ban_tcg && <span className={PILL}>{banStatusLabel(topBuy.ban_tcg)} en TCG</span>}
+                    </div>
+                    <p className={`mt-3.5 ${SOURCE}`}>
+                      {topBuy.signal_label && "Libellé : rang de l’archétype en OCG, seuils provisoires, non validés hors échantillon. "}
+                      {tcgWindow && "Fenêtre d’arrivée : intervalle à 80 %, non validé. "}
+                      Source : decklists OCG et prix Cardmarket, au {fmtDate(radar.as_of)}.
+                    </p>
+                  </div>
+                </GlowLink>
+              </Reveal>
+            )}
+
+            <Reveal className={`col-span-12 grid ${topBuy ? "min-[900px]:col-span-7" : ""}`}>
+              <GlowLink href="/ban" className={`${TILE} content-between`}>
+                <div>
+                  <Eyebrow>Ban Radar · pièces d’archétype</Eyebrow>
+                  <h3 className={`mt-3.5 ${H3}`}>
+                    Risque de restriction, <Em>score</Em> sur 100.
+                  </h3>
+                </div>
+                <div>
+                  {radar.data.map((entry) => (
+                    <div key={entry.card_name} className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3.5 border-t border-line py-3">
+                      <CardArt src={entry.image_url} name={entry.card_name} size="sm" />
+                      <div className="min-w-0">
+                        <strong className="block text-[16px] font-medium [overflow-wrap:anywhere]">{entry.card_name}</strong>
+                        <small className="font-mono text-[12px] text-muted-text">
+                          {fmtNum(entry.deck_share, 1)} % des decks · {fmtNum(entry.mean_copies, 2)} ex. en moyenne
+                          {entry.current_status !== "Unlimited" && ` · ${banStatusLabel(entry.current_status)}`}
+                        </small>
+                        <div aria-hidden className="mt-2 flex h-2 gap-0.5 overflow-hidden rounded-[2px] bg-ink-4">
+                          {CRITERIA.map(({ key, opacity }) =>
+                            entry.criteria[key] > 0 ? (
+                              <i key={key} className="fill-in block h-full bg-signal" style={{ width: `${entry.criteria[key]}%`, opacity }} />
+                            ) : null
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-[30px] font-medium tracking-[-0.03em] tabular-nums">
+                        <CountUp value={entry.ban_risk_score} digits={1} />
+                      </span>
+                    </div>
+                  ))}
+                  <p className={`mt-1 ${SOURCE}`}>
+                    Barre : {CRITERIA.map((c) => c.label.toLowerCase()).join(", ")}. Source :{" "}
+                    {fmtNum(radar.n_decks_window)} decks de tournoi TCG, au {fmtDate(radar.as_of)}.
+                  </p>
+                </div>
+              </GlowLink>
+            </Reveal>
+
+            <Reveal className="col-span-12 grid">
+              <GlowLink href="/graph" className={TILE}>
+                <div className="grid items-center gap-6 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+                  <div>
+                    <Eyebrow>Graphe de synergies</Eyebrow>
+                    <h3 className={`mt-3.5 ${H3}`}>
+                      Cartes jouées <Em>ensemble</Em> dans les mêmes decks.
+                    </h3>
+                    <p className="mt-3 max-w-[46ch] text-[15px] text-muted-text">
+                      {`${SITE_FACTS.graphCommunities} communautés de cartes détectées. En orange, les cartes « pont », qui en relient plusieurs (centralité d’intermédiarité).`}
+                    </p>
+                  </div>
+                  <figure>
+                    <Constellation names={tierList.data.slice(0, 3).map((entry) => entry.archetype)} />
+                    <figcaption className={SOURCE}>
+                      Schéma d’illustration : positions et liens ne sont pas des données. Graphe réel : cooccurrences
+                      dans les decklists de tournoi.
+                    </figcaption>
+                  </figure>
+                </div>
+              </GlowLink>
+            </Reveal>
+          </div>
+
+          <Reveal>
+            <ul className="mt-3.5 grid gap-px overflow-hidden rounded-[14px] border border-line-2 bg-line min-[600px]:grid-cols-2 min-[900px]:grid-cols-4">
+              {ALSO.map((item) => (
+                <li key={item.href} className="grid bg-ink">
+                  <Link href={item.href} className="group grid content-start gap-1.5 p-5 transition-colors duration-200 hover:bg-ink-3">
+                    <span className="flex items-center justify-between font-medium">
+                      {item.label}
+                      <span aria-hidden className="text-muted-text transition-transform duration-200 motion-safe:group-hover:translate-x-1">
+                        →
+                      </span>
+                    </span>
+                    <span className="text-[14px] text-muted-text">
+                      {item.href === "/tier-list" && leader
+                        ? `${leader.archetype} : ${pct(leader.share * 100)} de ${fmtNum(tierList.n_decks)} decks TCG, ${tierWindow}.`
+                        : item.text}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </section>
+
+        {/* ---------- 4. La méthode : d'où viennent les chiffres, et ce qu'ils valent ---------- */}
+        <section id="methode" aria-labelledby="h-methode" className={`${WRAP} scroll-mt-20 pt-24 min-[900px]:pt-[120px]`}>
+          <Reveal>
+            <Eyebrow>Méthode</Eyebrow>
+            <h2 id="h-methode" className={`mt-[18px] max-w-[20ch] ${H2}`}>
+              Méthode et <Em>limites</Em>.
+            </h2>
+          </Reveal>
+
+          <div className="mt-10 grid gap-x-12 gap-y-10 min-[900px]:grid-cols-2">
+            <Reveal className="min-w-0">
+              <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">Les données</h3>
+              <dl className="mt-4 grid gap-px border-y border-line bg-line">
+                {[
+                  [fmtNum(SITE_FACTS.decklists), `decklists de tournoi, mai 2023 à novembre 2026 : ${fmtNum(SITE_FACTS.decklistsTcg)} en TCG, ${fmtNum(SITE_FACTS.decklistsOcg)} en OCG, légales à la date du tournoi.`],
+                  [fmtNum(SITE_FACTS.cardsTracked), "cartes suivies : prix Cardmarket et statut sur la banlist."],
+                  ["Lundi", "mise à jour hebdomadaire. Prédictions datées et archivées depuis le 1ᵉʳ novembre 2026."],
+                ].map(([value, text]) => (
+                  <div key={value} className="grid grid-cols-[minmax(0,7.5rem)_minmax(0,1fr)] items-baseline gap-4 bg-ink py-4">
+                    <dt className="text-[clamp(22px,2.6vw,30px)] leading-none font-medium tracking-[-0.03em] tabular-nums">{value}</dt>
+                    <dd className="text-[15px] text-soft">{text}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className={`mt-3 ${SOURCE}`}>
+                Sources : yugiohmeta.com (decklists), YGOPRODeck (cartes), Yugipedia (banlists), Cardmarket (prix).
+                Décompte au {fmtDate(radar.as_of)}.
+              </p>
+            </Reveal>
+
+            <Reveal className="min-w-0">
+              <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">Le signal OCG → TCG</h3>
+              <p className="mt-4 text-[clamp(22px,2.6vw,30px)] leading-[1.15] font-medium tracking-[-0.03em]">
+                r ≈ {fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)}
+                <span className="ml-3 font-mono text-[12px] font-normal tracking-normal text-muted-text">
+                  IC 95 % : {fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à {fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}
+                </span>
+              </p>
+              {/* Intervalle de confiance sur l'axe 0 à 1 : la mesure se lit avant le texte. */}
+              <svg
+                viewBox="0 0 400 46"
+                role="img"
+                aria-label={`Corrélation de ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)}, intervalle de confiance à 95 % de ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}, sur une échelle de 0 à 1.`}
+                className="mt-4 block h-auto w-full max-w-[440px] overflow-visible"
+              >
+                <line x1="0" x2="400" y1="14" y2="14" stroke="var(--line-2)" />
+                {[0, 0.25, 0.5, 0.75, 1].map((tick) => (
+                  <g key={tick}>
+                    <line x1={tick * 400} x2={tick * 400} y1="10" y2="18" stroke="var(--line-2)" />
+                    <text
+                      x={tick * 400}
+                      y="38"
+                      textAnchor={tick === 0 ? "start" : tick === 1 ? "end" : "middle"}
+                      fill="var(--muted-text)"
+                      className="font-mono text-[11px]"
+                    >
+                      {fmtNum(tick, 2)}
+                    </text>
+                  </g>
+                ))}
+                <line
+                  x1={SITE_FACTS.ocgTcgCorrelationCi[0] * 400}
+                  x2={SITE_FACTS.ocgTcgCorrelationCi[1] * 400}
+                  y1="14"
+                  y2="14"
+                  stroke="var(--signal)"
+                  strokeWidth="6"
+                  strokeOpacity=".45"
+                  strokeLinecap="round"
+                />
+                <circle cx={SITE_FACTS.ocgTcgCorrelation * 400} cy="14" r="5.5" fill="var(--signal)" />
+              </svg>
+              <p className="mt-3 max-w-[56ch] text-[15px] text-soft">
+                {`Corrélation entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes.`}
+              </p>
+              <p className="mt-3 max-w-[56ch] text-[15px] text-soft">
+                Libellés Fort, Modéré, Faible des signaux boutique : seuils provisoires, non validés hors échantillon.
+                Premières prédictions datées à échéance en mars 2027.
+              </p>
+              <p className={`mt-3 ${SOURCE}`}>Source : méta TCG et OCG mensuelles, calcul du {fmtDate(SITE_FACTS.banBacktestDate)}.</p>
+            </Reveal>
+
+            <Reveal className="min-w-0 min-[900px]:col-span-2">
+              <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">Ban Radar rejoué sur les banlists passées</h3>
+              <p className="mt-4 max-w-[70ch] text-[15px] text-soft">
+                Rang médian, dans le classement calculé la veille de la banlist, des cartes ensuite restreintes. Trait
+                vertical : rang attendu au hasard (milieu du classement).
+              </p>
+              <div className="mt-5 overflow-x-auto">
+                <table className="w-full min-w-[520px] border-collapse text-left text-[15px]">
+                  <caption className="sr-only">Rang médian des cartes touchées, pour quatre banlists rejouées</caption>
+                  <thead>
+                    <tr className="font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">
+                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 font-normal">Banlist</th>
+                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 font-normal">Rang médian des cartes touchées</th>
+                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 text-right font-normal">Au hasard</th>
+                      <th scope="col" className="border-b border-line-2 py-2.5 text-right font-normal">Cartes classées</th>
+                    </tr>
+                  </thead>
+                  <tbody className="tabular-nums">
+                    {SITE_FACTS.banBacktest.map((row) => {
+                      const chance = row.universe / 2;
+                      return (
+                        <tr key={row.format + row.date}>
+                          <th scope="row" className="border-b border-line py-3 pr-4 font-normal whitespace-nowrap">
+                            <span className="mr-2 font-mono text-[11px] text-muted-text">{row.format}</span>
+                            {shortDate(row.date)}
+                          </th>
+                          <td className="border-b border-line py-3 pr-4">
+                            <span className="flex items-center gap-3">
+                              <b className="w-[3ch] text-right font-medium">{row.medianRank}</b>
+                              {/* Position du rang médian dans le classement ; le trait marque le hasard (milieu). */}
+                              <span aria-hidden className="relative h-1 max-w-[320px] flex-1 rounded-[2px] bg-ink-4">
+                                <span className="absolute inset-y-[-3px] left-1/2 w-px bg-line-2" />
+                                <span
+                                  className="fill-in absolute inset-y-0 left-0 rounded-[2px] bg-signal"
+                                  style={{ width: `${(row.medianRank / row.universe) * 100}%` }}
+                                />
+                              </span>
+                            </span>
+                          </td>
+                          <td className="border-b border-line py-3 pr-4 text-right text-muted-text">≈ {fmtNum(chance)}</td>
+                          <td className="border-b border-line py-3 text-right text-muted-text">{fmtNum(row.universe)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-4 max-w-[70ch] text-[15px] text-soft">
+                {`Top 10 du radar sur ${SITE_FACTS.banBacktestLists} banlists TCG (avril 2024 à octobre 2026) : ${SITE_FACTS.banTop10HitsArchetype} places sur 100 suivies d’une restriction pour les pièces d’archétype, ${SITE_FACTS.banTop10HitsGeneric} sur 100 pour les staples génériques.`}
+              </p>
+              <p className={`mt-3 ${SOURCE}`}>
+                {`Source : backtest du ${fmtDate(SITE_FACTS.banBacktestDate)}, ${SITE_FACTS.banBacktest.length} des ${SITE_FACTS.banBacktestTotalLists} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026.`}
+              </p>
+            </Reveal>
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter asOf={radar.as_of} />
+    </>
   );
 }

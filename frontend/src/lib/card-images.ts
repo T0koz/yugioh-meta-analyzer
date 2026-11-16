@@ -8,3 +8,8 @@
 export function artCropUrl(imageUrl: string): string {
   return imageUrl.replace(/\/images\/cards(_small)?\//, "/images/cards_cropped/");
 }
+
+/** Carte entière en grande taille (813 px de large) : pour les cartes affichées au-delà de 134 px. */
+export function fullCardUrl(imageUrl: string): string {
+  return imageUrl.replace("/images/cards_small/", "/images/cards/");
+}

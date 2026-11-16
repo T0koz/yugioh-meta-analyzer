@@ -17,7 +17,8 @@ import * as chromeLauncher from "chrome-launcher";
 const base = process.argv[2] ?? "http://localhost:3100";
 const formFactor = process.argv[3] === "desktop" ? "desktop" : "mobile";
 const throttlingMethod = process.env.LH_THROTTLING === "devtools" ? "devtools" : "simulate";
-const PAGES = [
+// LH_PAGES=/,/boutique limite la mesure à quelques pages.
+const PAGES = process.env.LH_PAGES?.split(",") ?? [
   "/",
   "/tier-list",
   "/evolution",
@@ -47,6 +48,10 @@ try {
     console.log(
       `| \`${path}\` | ${pct(c.performance)} | ${pct(c.accessibility)} | ${pct(c["best-practices"])} | ${pct(c.seo)} | ${ms(a["largest-contentful-paint"])} | ${ms(a["total-blocking-time"])} | ${a["cumulative-layout-shift"].numericValue.toFixed(3)} |`
     );
+    // JavaScript transféré (compressé), pour le budget de la page (stderr : hors tableau).
+    const scripts = (a["network-requests"]?.details?.items ?? []).filter((item) => item.resourceType === "Script");
+    const jsKb = scripts.reduce((sum, item) => sum + item.transferSize, 0) / 1000;
+    console.error(`  ${path} — JavaScript transféré : ${jsKb.toFixed(0)} ko (${scripts.length} fichiers)`);
     const failed = Object.values(c.accessibility.auditRefs)
       .map((ref) => a[ref.id])
       .filter((audit) => audit.score !== null && audit.score < 1)

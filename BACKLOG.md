@@ -47,7 +47,7 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-106 | Nouvelle page d'accueil d'après le prototype (débloqué : TOK-95 et TOK-97 faits) | 🔜 **Prochaine étape**, en session neuve | 🔴 High |
+| TOK-106 | Nouvelle page d'accueil d'après le prototype | 🟡 Livrée le 2026-11-16 sur `claude/tok-106-accueil-66ff33` (non fusionnée dans `main`) : Perf. 98, Access. 100, LCP mobile ≈ 1,8 s, JS 180 ko. Reste la relecture des textes par Thomas — `docs/journal/accueil-tok-106.md` | 🔴 High |
 | TOK-99 | Dataviz maison en SVG (D3) + palette de données | 🔜 Backlog | 🟠 Medium |
 | TOK-100 | Qualité : SEO de partage + tests visuels Playwright | 🔜 Backlog | 🟠 Medium |
 | TOK-101 | Page d'archétype + transitions de vue | 🔜 Backlog | 🟠 Medium |

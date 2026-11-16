@@ -34,6 +34,9 @@ SERVED_TABLES = [
     "archetype_recent_deck_cards",
     "archetype_recent_decks",
     "archetype_trend",
+    # TOK-55 : backtest du Ban Radar liste par liste (scripts/build_ban_history.py, à lancer avant).
+    "ban_backtest_cards",
+    "ban_backtest_lists",
     "ban_radar",
     "boutique_buy_signals",
     "card_cooccurrence",

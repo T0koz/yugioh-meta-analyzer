@@ -151,6 +151,9 @@ def collect(conn: sqlite3.Connection) -> tuple[pd.DataFrame, pd.DataFrame]:
     for column in lists_df.columns.difference(["format", "effective_date", "as_of", "skip_reason"]):
         lists_df[column] = lists_df[column].astype("Int64")
     lists_df["computed_at"] = computed_at
+    # Seuils servis avec les données : l'API et la page les affichent sans les recopier.
+    lists_df["min_decks"] = radar.BACKTEST_MIN_DECKS
+    lists_df["min_hits"] = radar.BACKTEST_MIN_HITS
     cards_df = pd.DataFrame(cards)
     cards_df["rank"] = cards_df["rank"].astype("Int64")
     return lists_df, cards_df

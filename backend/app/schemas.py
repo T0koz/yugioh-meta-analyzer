@@ -169,6 +169,55 @@ class BanRadarResponse(BaseModel):
     weights: dict[str, float]
 
 
+class BanHistoryCard(BaseModel):
+    """Une carte d'une banlist rejouée : du top prévu la veille, ou touchée, ou les deux."""
+
+    card_name: str
+    rank: Optional[int] = None  # nul : carte touchée hors univers (moins de 5 decks)
+    ban_risk_score: Optional[float] = None
+    baseline_rank: Optional[float] = None  # rang par part des decks seule
+    hit: bool
+    in_top: bool
+    generic: bool
+    top_archetype: Optional[str] = None
+    status_before: str
+    status_after: str
+    image_url: Optional[str] = None
+
+
+class BanHistoryList(BaseModel):
+    """Une banlist rejouée la veille de son entrée en vigueur."""
+
+    format: str
+    effective_date: str
+    as_of: str
+    retained: bool
+    skip_reason: Optional[Literal["decks", "hits"]] = None
+    n_decks: int
+    n_hits: int
+    n_cards: Optional[int] = None
+    n_hits_ranked: Optional[int] = None
+    n_hits_missing: Optional[int] = None
+    median_rank: Optional[int] = None
+    random_rank: Optional[int] = None
+    random_low: Optional[int] = None
+    random_high: Optional[int] = None
+    top_n_hits: Optional[int] = None
+    top10pct_hits: Optional[int] = None
+    top25pct_hits: Optional[int] = None
+    baseline_median_rank: Optional[int] = None
+    baseline_top_n_hits: Optional[int] = None
+    cards: list[BanHistoryCard] = []
+
+
+class BanHistoryResponse(BaseModel):
+    lists: list[BanHistoryList]
+    computed_at: str
+    top_n: int
+    min_decks: int
+    min_hits: int
+
+
 class CardImpactEntry(BaseModel):
     card_name: str
     bridge_score: float

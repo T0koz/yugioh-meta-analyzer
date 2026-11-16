@@ -94,6 +94,16 @@ Suites sans ticket : option de chemin pour `build_serving_db.py` (worktrees) ; t
 
 ---
 
+## Lot 15a — TOK-115, diagnostic du Ban Radar TCG (file du 2026-11-17)
+
+🟡 Livré le 2026-11-17 sur `claude/lot15a-tok-115-diagnostic-d81236` (non fusionnée) : `scripts/diagnose_ban_radar.py`,
+diagnostic et formulaire dans `docs/journal/ban-radar-tcg-diagnostic.md`. Cause : poids effectifs dominés par les
+exemplaires et la tendance, faibles en TCG. Poids estimés meilleurs que les actuels en TCG, pas que les staples en rang
+médian : aucun `WEIGHTS` changé. Reste : formulaire à valider par Thomas (poids, rangs centiles, `bridge`, dates
+d'annonce, verdict de la page Historique).
+
+---
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à

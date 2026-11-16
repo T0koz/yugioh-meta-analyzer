@@ -10,7 +10,7 @@ sont des estimations, pas des mesures d'utilisateurs réels. Les scores bougent 
 Pour refaire la mesure, depuis `frontend/` : `npm run build`, `npm run start -- -p 3100`, puis
 `CHROME_PATH=<chromium> npm run lighthouse -- http://localhost:3100 mobile` (ou `desktop`).
 
-## Mobile
+## Mobile, réseau simulé (réglage par défaut)
 
 | Page (mobile) | Performance | Accessibilité | Bonnes pratiques | SEO | LCP | Blocage | CLS |
 |---|---|---|---|---|---|---|---|
@@ -24,7 +24,7 @@ Pour refaire la mesure, depuis `frontend/` : `npm run build`, `npm run start -- 
 | `/ban` | 93 | 98 | 100 | 100 | 3261 ms | 20 ms | 0.000 |
 | `/ban?tab=impact` | 91 | 98 | 100 | 100 | 3501 ms | 20 ms | 0.000 |
 
-## Desktop
+## Desktop, réseau simulé
 
 | Page (desktop) | Performance | Accessibilité | Bonnes pratiques | SEO | LCP | Blocage | CLS |
 |---|---|---|---|---|---|---|---|
@@ -38,13 +38,35 @@ Pour refaire la mesure, depuis `frontend/` : `npm run build`, `npm run start -- 
 | `/ban` | 100 | 98 | 100 | 100 | 693 ms | 0 ms | 0.000 |
 | `/ban?tab=impact` | 100 | 98 | 100 | 100 | 710 ms | 0 ms | 0.000 |
 
+## Mobile, ralentissement réel (mesure à citer pour le LCP)
+
+Même build, après deux correctifs (entrée du titre sans fondu, `h2` après le `h1`), avec `LH_THROTTLING=devtools` :
+Lighthouse ralentit vraiment le réseau et le processeur au lieu de simuler.
+
+| Page (mobile) | Performance | Accessibilité | Bonnes pratiques | SEO | LCP | Blocage | CLS |
+|---|---|---|---|---|---|---|---|
+| `/` | 98 | 100 | 100 | 100 | 2061 ms | 82 ms | 0.000 |
+| `/tier-list` | 98 | 100 | 100 | 100 | 2061 ms | 87 ms | 0.000 |
+| `/evolution` | 90 | 100 | 100 | 100 | 2001 ms | 379 ms | 0.000 |
+| `/predictions` | 98 | 100 | 100 | 100 | 1949 ms | 89 ms | 0.000 |
+| `/boutique` | 98 | 100 | 100 | 100 | 2004 ms | 93 ms | 0.000 |
+| `/early-signals` | 98 | 100 | 100 | 100 | 1995 ms | 89 ms | 0.000 |
+| `/graph` | 73 | 100 | 100 | 100 | 1663 ms | 1566 ms | 0.000 |
+| `/ban` | 98 | 100 | 100 | 100 | 1974 ms | 85 ms | 0.000 |
+| `/ban?tab=impact` | 98 | 100 | 100 | 100 | 1991 ms | 93 ms | 0.000 |
+
 ## Lecture
 
+- **Le LCP mobile réel est d'environ 2,0 s sur les 9 pages** (1,7 à 2,1 s), pour un objectif de 2,0 s dans TOK-106.
+  Les 3,0 à 3,6 s des deux premiers tableaux viennent de la **simulation** de Lighthouse : pour une même page, elle a
+  donné de 1,6 à 3,9 s d'un passage à l'autre. Elle reste utile pour comparer des tendances, pas pour citer un LCP.
+- **Le fondu d'entrée coûtait jusqu'à 0,8 s.** Un texte qui démarre à opacité 0 n'est pas compté par le LCP tant qu'il
+  n'est pas visible ; avec le fondu, `/predictions` mesurait 2,8 s en ralentissement réel et l'élément LCP changeait
+  d'un passage à l'autre. L'entrée du premier écran est donc un glissement sans fondu ; le fondu reste sous le premier
+  écran (`Reveal`).
+- **Il reste environ 0,4 s entre le premier affichage (1,6 s) et le LCP (2,0 s).** Cause non isolée : probablement le
+  remplacement de la police de secours par Inter Tight. À regarder si TOK-106 a besoin de marge.
+- **Accessibilité : 100 partout** après le correctif `heading-order`.
+- `/graph` (73, 1,6 s de blocage) : vis-network, remplacé dans TOK-102. `/evolution` (90, 0,4 s de blocage) : recharts,
+  remplacé dans TOK-99.
 - **Desktop** : 100 en performance sur les 9 pages, décalage de mise en page nul partout.
-- **Mobile** : 7 pages sur 9 à 91 ou plus. Deux pages sous l'objectif :
-  - `/` (77) : 543 ms de blocage et un LCP de 3,6 s. À traiter dans TOK-106, qui refait la page.
-  - `/graph` (71) : 1,2 s de blocage, dû à vis-network. Attendu, remplacé dans TOK-102.
-- **LCP mobile entre 3,0 et 3,6 s sur 8 pages** : au-dessus de l'objectif de 2,0 s. Seule `/tier-list` y est (1,6 s).
-  Cause non isolée : à chercher avant TOK-106 (polices, JavaScript du socle, animation d'entrée du titre).
-- **Accessibilité** : le seul défaut relevé (`heading-order`, des `h3` juste après le `h1` sur `/` et `/ban`) a été
-  corrigé après cette mesure ; les 98 du tableau datent d'avant le correctif.

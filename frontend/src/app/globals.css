@@ -139,7 +139,14 @@
 /* Mouvement. Les keyframes ne décrivent que l'état de départ : sans animation
    (mouvement réduit, vieux navigateur), l'élément est simplement à sa place.
    On n'anime que transform et opacity. */
+/* Entrée du premier écran : glissement SANS fondu. Un texte qui démarre à
+   opacité 0 n'est pas compté par le LCP tant qu'il n'est pas visible : mesuré
+   sous ralentissement réel, le fondu coûtait jusqu'à 0,8 s de LCP mobile. */
 @keyframes rise-in {
+  from { transform: translateY(12px); }
+}
+/* Sous le premier écran (Reveal), le fondu ne touche pas le LCP. */
+@keyframes fade-rise {
   from { opacity: 0; transform: translateY(12px); }
 }
 @keyframes fill-in {
@@ -167,7 +174,7 @@
   opacity: 0;
 }
 @utility reveal-in {
-  animation: rise-in var(--dur-2) var(--ease) both;
+  animation: fade-rise var(--dur-2) var(--ease) both;
 }
 
 @layer base {

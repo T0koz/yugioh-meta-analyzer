@@ -170,7 +170,7 @@ YGOPRODeck) ; une image de carte au premier écran de 8 pages sur 9 (le graphe e
 sur les lignes T0 à T3 ; tokens de mouvement, ouverture de page et `Reveal` en CSS seul (0 animation en mouvement
 réduit) ; mono sous 40 % des caractères sur les 9 pages (11 à 37 %) ; barre de la tier list = part de méta ; plus de
 colonne de barres orange dans les tableaux ; Lighthouse installé, référence dans `docs/audit-front/lighthouse-2026-11-16.md`
-(desktop 100 partout ; mobile 91+ sauf `/` 77 et `/graph` 71 ; LCP mobile ≈ 3,3 s, au-dessus de l'objectif de TOK-106).
+(desktop 100 partout ; mobile 98 sauf `/evolution` 90 et `/graph` 73 ; LCP mobile réel ≈ 2,0 s, à l'objectif de TOK-106 — les 3,3 s d'abord mesurés venaient de la simulation de Lighthouse).
 
 ---
 

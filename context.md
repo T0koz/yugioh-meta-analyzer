@@ -446,7 +446,12 @@ chiffres, avant la nouvelle page d'accueil) → TOK-98 (semaine 1). Une étape n
   **part de méta** (la mesure du tri), plus le score.
 - Titres : `h2` après le `h1` (les `h3` directs faisaient échouer `heading-order` dans Lighthouse).
 - **Lighthouse** : `npm run lighthouse` (`frontend/scripts/lighthouse.mjs`), référence dans
-  `docs/audit-front/lighthouse-2026-11-16.md`. LCP mobile ≈ 3,3 s sur 8 pages : cause à isoler avant TOK-106.
+  `docs/audit-front/lighthouse-2026-11-16.md`.
+- **Piège Lighthouse** : par défaut il *simule* le réseau lent et son LCP est instable (1,6 à 3,9 s pour une même
+  page). Pour citer un LCP, lancer avec `LH_THROTTLING=devtools` (ralentissement réel) : **≈ 2,0 s sur les 9 pages**.
+- **Piège LCP : ne jamais faire démarrer à opacité 0 un texte du premier écran.** Le LCP ne le compte qu'une fois
+  visible ; le fondu d'entrée coûtait jusqu'à 0,8 s. L'utilitaire `enter` glisse sans fondu (`rise-in`) ; le fondu
+  (`fade-rise`) est réservé à `Reveal`, sous le premier écran.
 
 ### 🔜 À faire
 

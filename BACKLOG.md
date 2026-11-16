@@ -132,8 +132,8 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | 🔜 À faire | 🔴 Urgent |
-| TOK-96 | Jour 1 : gains rapides sans décision de design (bloqué par TOK-95) | 🔜 À faire | 🔴 High |
+| TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | ✅ Done (2026-11-16) — branche fusionnée (`/ban-radar` 7 s → 0,05 s), `archetype` nullable, test de fumée `backend/tests` | 🔴 Urgent |
+| TOK-96 | Jour 1 : gains rapides sans décision de design (débloqué : TOK-95 fait) | 🔜 À faire | 🔴 High |
 | TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | 🔜 À faire | 🔴 High |
 | TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🔜 À faire | 🔴 High |
 | TOK-106 | Nouvelle page d'accueil d'après le prototype (bloqué par TOK-95 et TOK-97) | 🔜 Backlog | 🔴 High |
@@ -145,8 +145,7 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-104 | Suivi des Web Vitals réels (suppose TOK-35) | 🔜 Backlog | 🟢 Low |
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 
-⚠ TOK-83 est marqué Done dans Linear, mais son correctif (`4d8f8df`) n'est pas dans `main` : il est
-sur la branche `claude/front-vitrine-06112d` (vérifié le 2026-11-16).
+TOK-83 et la partie front de TOK-82 sont dans `main` depuis la fusion de `claude/front-vitrine-06112d` (TOK-95, 2026-11-16).
 
 ---
 

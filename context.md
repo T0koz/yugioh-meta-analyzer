@@ -367,6 +367,8 @@ Chiffres VÉRIFIÉS (commande lancée) ; voir `docs/evaluation-prediction.md`, `
 - **TOK-77** : Genesys = 27-44 % des decks TCG depuis juillet ; l'ancien filtre `illegal = 0` ne laissait presque que du Genesys.
 - **TOK-75** : `python scripts/validate_predictions.py` (table `prediction_validation`) ; aucune prévision `live` n'est échue avant décembre 2026.
 - **TOK-83 (2026-11-16)** : `GET /ban-radar` mettait 10-20 s (jointure `REPLACE(REPLACE(c.name…))` sans index). Fix : index d'expression `idx_cards_name_clean` (créé par `init_db.py` et `build_serving_db.py`) ; **la comparaison doit s'écrire `= +r.card_name`** (le `+` coupe l'affinité TEXT, sinon SQLite ignore l'index). À reproduire pour toute nouvelle jointure sur `cards`.
+- **TOK-95 (2026-11-16)** : fusion `--no-ff` de `claude/front-vitrine-06112d` dans `main` (le correctif TOK-83 n'y était pas : `/ban-radar` 7,3 s, `/card-impact` 7,2 s, `/graph/synergies` 4,9 s → 0,01-0,06 s, mêmes temps sur `serving.db`). Erreur 500 de `/early-signals` : `EarlySignal.archetype` était `str`, or 31 lignes sur 151 de `early_card_signals` ont `archetype = NULL` (cartes sans archétype dans YGOPRODeck : Fydraulis Harmonia, Subspace Battle…). Le bug existait déjà, il est apparu quand le recalcul du lundi a fait entrer ces cartes dans le top 50. Corrigé en `str | None` (API et `types/index.ts`), la page affiche « — ». Ne pas filtrer les NULL en SQL : on cacherait des signaux réels.
+- **Test de fumée de l'API** : `backend/tests/test_endpoints.py` appelle tous les GET (découverts via OpenAPI) et `POST /simulate-ban`, exige 200. Une route à paramètre obligatoire doit être ajoutée à `EXPLICIT_GETS`, sinon le test échoue. À lancer avant chaque push, sur les deux bases : depuis `backend/`, `../.venv/bin/python -m pytest tests -q` puis avec `YGO_DB_PATH=../data/serving.db`. Dépendances : `backend/requirements-dev.txt`. Les tables étant recalculées chaque lundi, c'est le seul garde-fou contre une donnée que le schéma Pydantic refuse.
 - `data/serving.db` reconstruite (10,2 Mo). Sauvegardes locales : `data/backup_avant_nettoyage_20261116.db`, `data/backup_serving_avant_nettoyage_20261116.db`.
 
 ### 🔜 À faire
@@ -423,4 +425,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-11-16 (nettoyage backlog fiabilité)*
+*Dernière mise à jour : 2026-11-16 (TOK-95 : fusion TOK-83, /early-signals, test de fumée)*

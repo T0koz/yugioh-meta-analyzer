@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ds/control";
 import { Input } from "@/components/ui/input";
 import { CardChip } from "@/components/card-chip";
 import { Em } from "@/components/ds/em";
@@ -66,15 +67,11 @@ export function BanSimulatorView({
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ex : Ash Blossom & Joyous Spring"
           aria-label="Carte à simuler"
-          className="h-auto min-w-0 flex-1 basis-64 rounded-[4px] border-line-2 bg-ink px-3 py-[11px] font-mono text-[13px] md:text-[13px]"
+          className="h-auto min-w-0 flex-1 basis-64 rounded-[var(--r-ctl)] border-line-2 bg-ink px-3.5 py-[11px] font-mono text-[13px] md:text-[13px]"
         />
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-[4px] border border-signal bg-signal px-[18px] py-[11px] text-[14px] font-medium text-on-signal transition-transform duration-[250ms] ease-[var(--ease)] disabled:opacity-50 motion-safe:hover:-translate-y-px"
-        >
+        <Button type="submit" variant="primary" disabled={loading}>
           {loading ? "Simulation…" : "Simuler le ban"}
-        </button>
+        </Button>
       </form>
 
       {notFound && (

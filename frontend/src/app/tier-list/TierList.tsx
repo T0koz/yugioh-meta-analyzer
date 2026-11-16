@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Toolbar, pillClass } from "@/components/ds/page";
+import { Pill } from "@/components/ds/control";
+import { Toolbar } from "@/components/ds/page";
 import type { TierEntry } from "@/types";
 import { ArchetypeRow } from "./ArchetypeRow";
 
@@ -26,15 +27,9 @@ export function TierList({ data }: { data: TierEntry[] }) {
     <section>
       <Toolbar count={`${rows.length} / ${data.length} archétypes`}>
         {FILTERS.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            aria-pressed={f.id === filterId}
-            onClick={() => setFilterId(f.id)}
-            className={pillClass(f.id === filterId)}
-          >
+          <Pill key={f.id} pressed={f.id === filterId} onClick={() => setFilterId(f.id)}>
             {f.label}
-          </button>
+          </Pill>
         ))}
       </Toolbar>
 

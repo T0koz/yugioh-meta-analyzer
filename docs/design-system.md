@@ -18,7 +18,7 @@
 2. **Hiérarchie par la taille, pas par des boîtes.** Un gros titre, un gros chiffre, puis du détail discret. Pas de carte autour de tout.
 3. **Un seul mot en serif italique par titre** (couleur accent). Jamais deux, jamais dans le corps de texte.
 4. **Les chiffres et labels sont en monospace** : scores, pourcentages, dates, étiquettes (`TIER`, `ROGUE`, `AU 9 AOÛT 2026`).
-5. **Bordures fines, pas d'ombres.** Séparation par lignes à 12 % d'opacité et par changement de surface.
+5. **Bordures fines, pas d'ombres** sur les surfaces : séparation par lignes à 12 % d'opacité et par changement de surface. Deux exceptions portent une ombre : la carte (objet-signature) et les composants d'interaction (§4, lot 8), parce qu'on appuie dessus.
 6. **Dense mais respirant** : lignes de tableau de 64 px max, marges généreuses autour des blocs.
 
 ## 2. Tokens
@@ -67,14 +67,14 @@ Thème **sombre uniquement** (pas de mode clair). Définir sur `:root` (pas de c
   --cat-4: #ba880f;  --cat-5: #dc6497;  --cat-6: #9183ea;
 
   /* forme */
-  --r: 4px;              /* rayon par défaut (boutons, pills, lignes) */
+  --r: 4px;              /* rayon par défaut (étiquettes, lignes) ; contrôles : --r-ctl, §4 */
   --r-lg: 8px;           /* tuiles, frames */
   --gutter: clamp(16px, 3.2vw, 44px);
   --maxw: 1200px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* mouvement (TOK-98) */
-  --dur-1: 180ms;   /* survol, focus, pression */
+  --dur-1: 180ms;   /* survol, focus */
   --dur-2: 500ms;   /* apparition d'un bloc */
   --dur-3: 1000ms;  /* remplissage d'une barre, ouverture */
   --stagger: 70ms;  /* décalage dans une séquence */
@@ -169,7 +169,7 @@ Créer dans `src/components/ds/` (ou adapter l'existant) ; garder les composants
 - Conteneur : `sticky top-3 z-40`, marge latérale `--gutter`, `max-w-[1200px] mx-auto`.
 - Boîte : `bg-ink-2/85 backdrop-blur border border-line-2 rounded-[10px] p-2 pl-4`, flex, gap 16.
 - Gauche : logo `YGO META` en mono 600 14 px, tracking .08em, précédé d'un glyphe accent 14 px.
-- Centre : liens (Méta, Ban Center, Boutique, Graphe) en 13 px `--muted-text` ; actif = `--text` sur fond `--ink-4`, rayon 4. Masqués sous 760 px (menu à prévoir).
+- Centre : liens (Méta, Ban Center, Boutique, Graphe) = onglets du composant source (`controlClass({ variant: "tab" })`) ; actif en relief sur `--ink-4`. Masqués sous 760 px (menu à prévoir).
 - Droite : champ de recherche (SmartSearch existant) : mono 12 px, bordure `--line`, placeholder « Rechercher une carte… », pastille `⌘K` à droite. Le raccourci ⌘K / Ctrl+K doit focus le champ.
 - Garder les sous-menus actuels (Méta, Boutique) en dropdown restylé (même surface que la nav).
 
@@ -196,13 +196,60 @@ Plus aucune couleur propre à chaque tier.
 ### Tendance
 Mono 500 12 px : `▲ Rising` en `--good`, `→ Stable` en `--muted-text`, `▼ Declining` en `--muted-text`. (Le rouge n'est pas utilisé pour une baisse.)
 
-### Filtres (pills)
-Mono 500 12 px, padding 6×10, rayon 4, bordure `--line-2`, texte `--soft`. Actif : fond `--text`, texte `--ink`. Compteur à droite en mono 11 px `--muted-text` (`8 / 47 ARCHÉTYPES`).
+### Composants d'interaction : boutons, pills, onglets, bascules (lot 8, 2026-11-17)
 
-### Boutons
-Rayon 4, 14 px / 500, padding 11×18. **Un seul bouton plein par écran.**
-- Primaire : fond `--signal`, texte `--on-signal`. Secondaire : fond `--ink-3`, bordure `--line-2`. Ghost : transparent.
-- Survol : `translateY(-1px)` en .25 s `--ease`. Focus visible : `outline 2px --signal-hi`, offset 2.
+Demande de Thomas : des contrôles qui ont l'air physiques (formes arrondies, ombres douces en plusieurs couches, légère
+variation de teinte, mouvement au survol et à l'appui). **Une seule source** : `frontend/src/components/ds/control.tsx`
+choisit la variante, le bloc « Composants d'interaction » de `globals.css` (classe `.ctl`, dans `@layer components`)
+porte l'apparence et tous les états. Aucun autre fichier ne décrit un fond, une ombre ou un état de bouton.
+CSS seul (`:hover`, `:active`, `:focus-visible`) : aucun état React, aucun `"use client"`, aucun JavaScript ajouté.
+
+| Besoin | Composant | Balise et état |
+|---|---|---|
+| Bouton principal, secondaire, discret | `Button variant="primary" \| "secondary" \| "ghost"`, `size="sm" \| "md" \| "lg"` | `<button type="button">` ; `disabled` |
+| Lien qui a l'air d'un bouton | `ButtonLink` (mêmes variantes) | `<a>` via `Link` : un lien reste un lien |
+| Pill de filtre locale, bascule | `Pill pressed={…}` | `<button aria-pressed>` |
+| Pill de filtre portée par l'adresse (`?kind=`) | `PillLink current={…}` | `<a aria-current="page">` |
+| Onglets portés par l'adresse (`?tab=`) | `TabRail` + `TabLink current={…}` | `<nav>` + `<a aria-current="page">` |
+| Autre balise (`<a href="#ancre">`, `<summary>`, liens de la nav) | `controlClass({ variant, size, active })` | la balise d'origine |
+
+**Un seul bouton principal par écran** (inchangé).
+
+Forme et matière (tokens `--r-ctl*`, `--ctl-*`, `--ease-soft`, `--ease-spring`, `--dur-press`, `--dur-spring`) :
+- Rayons : bouton 12 px (`--r-ctl`), petit bouton 10 px, onglet 8 px dans un rail de 12 px, pill entièrement ronde.
+- Hauteurs : bouton 44 px (`sm` 36, `lg` 48), pill 34 px, onglet 32 px.
+- Ombres en couches, toujours par token, jamais en valeur brute dans un composant : 2 couches internes (reflet d'un
+  pixel en haut, arête en bas) + 3 couches portées (contact, proche, diffuse). **Chaque liste garde ce nombre de
+  couches d'un état à l'autre**, sinon le navigateur n'interpole pas et l'ombre saute.
+- Variation de teinte : dégradé fixe (`--ctl-sheen-top` → `--ctl-sheen-bottom`) posé sur `background-color` ; c'est la
+  couleur de fond qui transite (un dégradé ne s'anime pas).
+- Bouton principal : l'ombre diffuse prend la teinte de la braise (`--ctl-glow*`).
+
+États :
+| État | Effet | Durée et courbe |
+|---|---|---|
+| Survol (`@media (hover: hover)`) | teinte éclaircie, ombre plus profonde, élévation de 1 px | 180 ms (`--dur-1`), `--ease-soft` |
+| Appui | échelle 0,97, descente de 0,5 px, ombre resserrée, creux interne | 120 ms (`--dur-press`), `--ease-soft` |
+| Relâchement | retour avec dépassement (ressort court) | 200 ms (`--dur-spring`), `--ease-spring` |
+| Focus clavier | anneau 2 px `--signal-hi`, décalé de 3 px (1 px pour un onglet dans son rail) | immédiat |
+| Désactivé | à plat : fond `--ink-4`, texte `--faint`, ni ombre ni dégradé, pas d'opacité réduite | — |
+| Actif (pill) | fond `--text`, texte `--ink`, reflet fort | |
+| Actif (onglet) | en relief sur `--ink-4` dans le rail en creux | |
+
+Règles :
+- On n'anime que `transform`, `box-shadow` et des couleurs : la mise en page ne bouge pas (CLS 0 mesuré).
+- **Mouvement réduit** : les transformations (élévation, enfoncement, ressort) ne sont déclarées que sous
+  `prefers-reduced-motion: no-preference` ; la règle globale coupe les transitions. Mesuré : 0 animation, aucune
+  transformation, y compris bouton maintenu enfoncé.
+- **Contraste** : `npm run contrast` mesure le texte de chaque variante dans chaque état, dégradé compris (pire cas
+  retenu), et l'anneau de focus (seuil 3:1). Toute retouche d'un token `--ctl-*` de couleur se relance.
+- Ajuster un contrôle sur une page : utilitaires de mise en page seulement (`w-full`, `justify-start`, `shrink-0`),
+  jamais de fond, de bordure, d'ombre ni de rayon.
+- Non concernés : les étiquettes non interactives (`Tag`, `TierTag`, `BanStatus`, métadonnées mono des tuiles) et les
+  lignes de résultat de la recherche (options de liste). Les champs (recherche, simulateur, sélecteur du graphe)
+  reprennent seulement les rayons `--r-tab` / `--r-ctl`.
+
+Planche des états à 375, 768 et 1440 px : `docs/planning/2026-11-17/lot-08-captures/` (script `etats.py` à côté).
 
 ### Tuiles bento (home)
 Grille 12 colonnes, gap 12, rayon 8, padding 22, bordure `--line-2`. Trois variantes :
@@ -303,6 +350,7 @@ chargement. En mouvement réduit, aucune animation (règle `::view-transition-*`
 
 - Couleurs Tailwind brutes (`slate`, `indigo`, `emerald`, `red`…) ou hex en dur dans les composants.
 - Plus d'un accent, plus d'un bouton plein, plus d'une tuile `signal` par écran.
-- Ombres portées, dégradés violet/bleu, coins très arrondis (> 8 px), cartes empilées dans des cartes.
+- Ombres portées et coins très arrondis (> 8 px) **hors composants d'interaction et carte** ; dégradés violet/bleu ; cartes empilées dans des cartes.
+- Un style de bouton, de pill ou d'onglet écrit ailleurs que dans `components/ds/control.tsx` et son bloc de `globals.css`.
 - Rouge pour une baisse ou une erreur ordinaire : le rouge = signal. Les erreurs techniques s'affichent en `--warn` avec un message clair.
 - Toucher à la logique des données, aux endpoints ou au scoring dans une tâche de design.

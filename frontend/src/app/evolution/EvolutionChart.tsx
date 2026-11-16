@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { max, nice, ticks } from "d3-array";
 import { curveMonotoneX, line } from "d3-shape";
 import { ArtDot } from "@/components/card-art";
-import { DataFooter, Toolbar, pillClass } from "@/components/ds/page";
+import { Pill, controlClass } from "@/components/ds/control";
+import { DataFooter, Toolbar } from "@/components/ds/page";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { fmtMonthShort, fmtNum } from "@/lib/format";
 import type { EvolutionResponse } from "@/types";
@@ -175,19 +176,13 @@ export function EvolutionChart({ data, images, decks_by_month }: EvolutionRespon
         {archetypes.map((arch) => {
           const slot = selected.find((s) => s.arch === arch)?.slot ?? -1;
           return (
-            <button
-              key={arch}
-              type="button"
-              aria-pressed={slot >= 0}
-              onClick={() => toggle(arch)}
-              className={`${pillClass(slot >= 0)} inline-flex items-center gap-2`}
-            >
+            <Pill key={arch} pressed={slot >= 0} onClick={() => toggle(arch)}>
               {slot >= 0 && (
                 <span aria-hidden className="h-2 w-2 rounded-full" style={{ backgroundColor: SERIES_COLORS[slot] }} />
               )}
               {images[arch] && <ArtDot src={images[arch]} />}
               {arch}
-            </button>
+            </Pill>
           );
         })}
       </Toolbar>
@@ -366,7 +361,7 @@ export function EvolutionChart({ data, images, decks_by_month }: EvolutionRespon
       </DataFooter>
 
       <details className="group mt-5">
-        <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[4px] border border-line-2 bg-ink-3 px-3.5 py-2 text-[13px] font-medium text-text transition-colors duration-200 hover:border-soft [&::-webkit-details-marker]:hidden">
+        <summary className={controlClass({ size: "sm" })}>
           Tableau des valeurs
           <span aria-hidden className="font-mono text-muted-text transition-transform group-open:rotate-45">
             +

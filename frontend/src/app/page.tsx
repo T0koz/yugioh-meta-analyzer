@@ -7,6 +7,7 @@ import { PROOF } from "@/lib/proof-data";
 import { pageMetadata } from "@/lib/seo";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { CardArt, CardArtFill } from "@/components/card-art";
+import { ButtonLink, controlClass } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
 import { Eyebrow, StatBand } from "@/components/ds/page";
 import { Tag, banStatusLabel } from "@/components/ds/tags";
@@ -33,11 +34,10 @@ const WRAP = "mx-auto w-full max-w-[var(--maxw)] px-[var(--gutter)]";
 const H2 = "text-[clamp(30px,4.2vw,56px)] leading-[1.02] font-medium tracking-[-0.04em] text-balance";
 const H3 = "text-[clamp(22px,2.4vw,32px)] leading-[1.08] font-medium tracking-[-0.03em] text-balance";
 const TILE = "grid min-w-0 gap-[18px] rounded-[14px] border border-line-2 bg-ink-3 p-[22px] min-[760px]:p-[26px] col-span-12";
-const BUTTON =
-  "inline-flex min-h-11 items-center gap-2 rounded-[6px] border px-[18px] text-[15px] font-medium transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-0.5";
 /** Pied de données : source et date sous chaque visualisation. */
 const SOURCE = "font-mono text-[12px] leading-[1.6] text-muted-text";
-const PILL = "rounded-[4px] border border-line-2 px-2 py-[5px] font-mono text-[11px] tracking-[0.06em] text-soft uppercase";
+/** Étiquette de métadonnée, non interactive (les pills de filtre sont dans ds/control.tsx). */
+const META_TAG = "rounded-[4px] border border-line-2 px-2 py-[5px] font-mono text-[11px] tracking-[0.06em] text-soft uppercase";
 
 const LABEL_TONE: Record<BuyLabel, "strong" | "outline" | "neutral"> = { Fort: "strong", Modéré: "outline", Faible: "neutral" };
 
@@ -139,10 +139,10 @@ export default async function Home() {
                   {`Corrélation r ≈ ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)} (IC 95 % : ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}) entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes et ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi (yugiohmeta.com, mai 2023 à novembre 2026).`}
                 </p>
                 <div className="enter mt-[30px] flex flex-wrap gap-2.5 [--i:3]">
-                  <Link href="/boutique" className={`${BUTTON} border-signal bg-signal text-on-signal motion-safe:hover:shadow-[0_14px_40px_-10px_var(--glow)]`}>
+                  <ButtonLink href="/boutique" variant="primary" size="lg">
                     Signaux boutique
-                  </Link>
-                  <a href="#methode" className={`${BUTTON} border-line-2 bg-ink-3 text-text`}>
+                  </ButtonLink>
+                  <a href="#methode" className={controlClass({ size: "lg" })}>
                     Méthode et limites
                   </a>
                 </div>
@@ -274,9 +274,9 @@ export default async function Home() {
                     <p className="mt-2 text-[15px] text-muted-text">Carte suivie : {topBuy.card_name}.</p>
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {topBuy.signal_label && <Tag tone={LABEL_TONE[topBuy.signal_label]}>{topBuy.signal_label.toUpperCase()}</Tag>}
-                      <span className={PILL}>Cardmarket {fmtNum(topBuy.cm_price, 2)} €</span>
-                      {tcgWindow && <span className={PILL}>Arrivée TCG {tcgWindow}</span>}
-                      {topBuy.ban_tcg && <span className={PILL}>{banStatusLabel(topBuy.ban_tcg)} en TCG</span>}
+                      <span className={META_TAG}>Cardmarket {fmtNum(topBuy.cm_price, 2)} €</span>
+                      {tcgWindow && <span className={META_TAG}>Arrivée TCG {tcgWindow}</span>}
+                      {topBuy.ban_tcg && <span className={META_TAG}>{banStatusLabel(topBuy.ban_tcg)} en TCG</span>}
                     </div>
                     <p className={`mt-3.5 ${SOURCE}`}>
                       {topBuy.signal_label && "Libellé : rang de l’archétype en OCG, seuils provisoires, non validés hors échantillon. "}

@@ -62,6 +62,15 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 
 ---
 
+## Lot 8 — Composants d'interaction (file du 2026-11-17, sans ticket Linear)
+
+✅ Livré le 2026-11-17 sur `claude/lot08-boutons-ef9f72` (non fusionnée dans `main`) : source unique
+`frontend/src/components/ds/control.tsx` + bloc `.ctl` de `globals.css` ; 13 fichiers migrés, `ui/button.tsx` supprimé ;
+JavaScript inchangé, contraste AA sur tous les états (pire cas 4,52:1), 0 animation en mouvement réduit, 36 références
+visuelles régénérées — `docs/design-system.md` §4, captures dans `docs/planning/2026-11-17/lot-08-captures/`.
+
+---
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à

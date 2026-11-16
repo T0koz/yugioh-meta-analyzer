@@ -1,4 +1,5 @@
 // Briques de mise en page communes à toutes les pages (docs/design-system.md §4-5).
+import { controlClass } from "@/components/ds/control";
 
 /** Conteneur de page : largeur max 1200 px, gutter latéral, marge basse. */
 export function Page({ children }: { children: React.ReactNode }) {
@@ -95,13 +96,6 @@ export function Toolbar({ children, count }: { children: React.ReactNode; count?
   );
 }
 
-/** Classes d'une pill de filtre (bouton ou lien). Active = fond texte, encre dessus. */
-export function pillClass(active: boolean) {
-  return `rounded-[4px] border px-2.5 py-1.5 text-[13px] font-medium transition-[color,background-color,border-color,scale] duration-200 motion-safe:active:scale-[0.97] ${
-    active ? "border-text bg-text text-ink" : "border-line-2 text-soft hover:text-text"
-  }`;
-}
-
 /** Encart d'info : titre mono accent + texte doux. */
 export function Callout({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -119,7 +113,7 @@ export function Callout({ title, children }: { title: string; children: React.Re
 export function Explainer({ label, title, children }: { label: string; title: string; children: React.ReactNode }) {
   return (
     <details className="group mb-6">
-      <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[4px] border border-line-2 bg-ink-3 px-3.5 py-2 text-[13px] font-medium text-text transition-colors duration-200 hover:border-soft [&::-webkit-details-marker]:hidden">
+      <summary className={controlClass({ size: "sm" })}>
         {label}
         <span aria-hidden className="font-mono text-muted-text transition-transform group-open:rotate-45">
           +

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
+import { TabLink, TabRail } from "@/components/ds/control";
 import { Page } from "@/components/ds/page";
 import { BanRadarView } from "./BanRadarView";
 import { CardImpactView } from "./CardImpactView";
@@ -56,23 +56,16 @@ export async function generateMetadata({
   });
 }
 
-// Même grammaire que la nav : texte doux, onglet actif en clair sur --ink-4.
+// Même grammaire que la nav : onglet actif en relief dans son rail.
 function TabNav({ active }: { active: Tab }) {
   return (
-    <nav aria-label="Ban Center" className="mt-8 inline-flex flex-wrap gap-1 rounded-[8px] border border-line-2 bg-ink-2 p-1">
+    <TabRail aria-label="Ban Center" className="mt-8">
       {TABS.map((t) => (
-        <Link
-          key={t.id}
-          href={`/ban?tab=${t.id}`}
-          aria-current={active === t.id ? "page" : undefined}
-          className={`rounded-[4px] px-3 py-1.5 text-[13px] transition-colors duration-200 ${
-            active === t.id ? "bg-ink-4 text-text" : "text-muted-text hover:text-text"
-          }`}
-        >
+        <TabLink key={t.id} href={`/ban?tab=${t.id}`} current={active === t.id}>
           {t.label}
-        </Link>
+        </TabLink>
       ))}
-    </nav>
+    </TabRail>
   );
 }
 

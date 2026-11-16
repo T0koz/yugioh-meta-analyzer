@@ -2,6 +2,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum } from "@/lib/format";
 import { CardChip } from "@/components/card-chip";
+import { ButtonLink } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
 import { DataFooter, Explainer, Meter, PageHero } from "@/components/ds/page";
 import type { CardImpactEntry } from "@/types";
@@ -28,12 +29,13 @@ function ImpactRow({ entry, rank, max }: { entry: CardImpactEntry; rank: number;
           <Meter value={entry.bridge_score} max={max} />
         </div>
       </div>
-      <Link
+      <ButtonLink
         href={`/ban?tab=simulateur&card=${encodeURIComponent(entry.card_name)}`}
-        className="col-start-3 w-fit rounded-[4px] border border-line-2 px-3 py-1.5 text-[13px] text-soft transition-colors duration-200 hover:text-text min-[760px]:col-start-auto min-[760px]:justify-self-end"
+        size="sm"
+        className="col-start-3 w-fit min-[760px]:col-start-auto min-[760px]:justify-self-end"
       >
         Simuler le ban →
-      </Link>
+      </ButtonLink>
     </div>
   );
 }

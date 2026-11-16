@@ -8,6 +8,7 @@ import { fmtDate, fmtMonthRange, fmtMonthShort, fmtNum, fmtPct, fmtRank } from "
 import { pageMetadata } from "@/lib/seo";
 import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
+import { controlClass } from "@/components/ds/control";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { DataFooter, Eyebrow, Page, StatBand } from "@/components/ds/page";
@@ -221,7 +222,7 @@ export default async function ArchetypePage({ params }: Params) {
                 le dernier mois est en cours
               </DataFooter>
               <details className="group mt-5">
-                <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[4px] border border-line-2 bg-ink-3 px-3.5 py-2 text-[13px] font-medium text-text transition-colors duration-200 hover:border-soft [&::-webkit-details-marker]:hidden">
+                <summary className={controlClass({ size: "sm" })}>
                   Tableau des valeurs
                   <span aria-hidden className="font-mono text-muted-text transition-transform group-open:rotate-45">
                     +

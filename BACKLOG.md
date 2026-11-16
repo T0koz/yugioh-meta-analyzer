@@ -172,12 +172,24 @@ prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decis
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🔜 Backlog | 🟠 Medium |
+| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🟡 Rédigé (2026-11-16), à valider par Thomas — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
 | TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🔜 Backlog | 🟠 Medium |
-| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🔜 Backlog | 🟠 Medium |
+| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🟡 Rédigé (2026-11-16), 72 situations **non validées** — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
 | TOK-90 | Tranche 0 : un combo Branded de bout en bout (bloqué par TOK-85 et TOK-87) | 🔜 Backlog | 🟠 Medium |
-| TOK-89 | Trouver un juge humain qui connaît le jeu | 🔜 Backlog | 🟠 Medium |
-| TOK-88 | Journal de chronométrage des étapes | 🔜 Backlog | 🟢 Low |
+| TOK-89 | Trouver un juge humain qui connaît le jeu | 🔜 Backlog — 33 points de règle l'attendent (`points-de-regle-a-valider.md`) | 🔴 High |
+| TOK-88 | Journal de chronométrage des étapes | 🟡 Ouvert — `docs/moteur-combos/chronometrage.md` (1re session : ≈ 17 min d'agent, validation humaine non mesurée) | 🟢 Low |
+
+**État au 2026-11-16 (préparation, aucun code de moteur).** Deck source : régional WCQ du 8 novembre
+2026, top 4, 40 cartes, légal (`6af240d2…`). Décisions D1 à D9 en attente :
+`docs/moteur-combos/decisions-a-prendre-tok-85-87.md`.
+
+- ⚠ **Quatre cartes du deck n'ont pas de texte dans `cards`** (`The Fallen & The Virtuous`,
+  `Hyperinvoked Aeon`, `Mixousia the Confounder`, `The Three Champions of Swordsoul`), dont trois
+  jouées par 9 decks Branded sur 9. J1 est bloqué tant que `fetch_cards.py` n'est pas relancé.
+- ⚠ `cards.archetype` ne suit pas les règles du jeu (`Fallen of Albaz` y est « Dogmatika », ce qu'il
+  n'est pas) : le moteur calcule l'appartenance depuis le nom et les clauses « always treated as ».
+- TOK-89 passe en priorité haute : sans juge, les 72 tests restent des hypothèses.
+- Hypothèse de Winston (§ 8.7) : fausse telle quelle, reformulée sur le chemin entier ; à tester en tranche 0.
 
 Jalons : **J1** 100 % des cartes Branded formalisées avec un taux d'erreur chiffré · **J2** le moteur
 retrouve seul les combos des guides publics · **J3** il en trouve un qu'aucun guide ne cite. Règle

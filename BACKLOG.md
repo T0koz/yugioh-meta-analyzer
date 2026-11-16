@@ -52,7 +52,7 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-100 | Qualité : SEO de partage + tests visuels Playwright | 🟡 Livrée le 2026-11-16 sur `claude/tok-100-seo-tests-409521` (non fusionnée dans `main`) : Lighthouse SEO 100 sur 12 pages, balises vérifiées par script sur 73 adresses, 36 captures (12 pages × 3 largeurs) en 45 s, bruit 0 pixel, références 3,4 Mo — `docs/tests-visuels.md`, `docs/journal/seo-tests-tok-100.md` | 🟠 Medium |
 | TOK-101 | Page d'archétype + transitions de vue | 🟡 Livrée le 2026-11-17 sur `claude/tok-101-archetype-49be45` (non fusionnée dans `main`) : `/archetype/{slug}` (63 pages construites d'avance, les autres à la demande), `GET /archetypes/{slug}`, transitions de vue depuis la tier list ; LCP mobile 1,72 à 1,84 s, Access. 100, CLS 0 — `docs/journal/archetype-tok-101.md` | 🟠 Medium |
 | TOK-102 | Graphe de synergies refondu (Sigma.js ou PixiJS) | 🔜 Backlog | 🟠 Medium |
-| TOK-103 | Boutique regroupée par archétype avec courbes de prix | 🔜 Backlog | 🟠 Medium |
+| TOK-103 | Boutique regroupée par archétype avec courbes de prix | 🟡 Livrée le 2026-11-17 sur `claude/lot11-tok-103-boutique-e98c5d` (non fusionnée dans `main`) : `GET /boutique/prices` (table servie `boutique_price_history`), trous hachurés au-delà de 10 jours sans relevé, LCP mobile 1,75 à 1,79 s, Access. 100 ; reste le test avec 3 gérants (Thomas, `docs/tests-gerants-boutique.md`) — `docs/journal/boutique-tok-103.md` | 🟠 Medium |
 | TOK-104 | Suivi des Web Vitals réels (suppose TOK-35) | 🔜 Backlog | 🟢 Low |
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 | — | _4 tickets terminés (TOK-95 à 98) : voir l’archive_ | | |

@@ -368,6 +368,19 @@ Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context
 - **TOK-35** : choisir le stockage, y envoyer le dossier, renseigner la variable.
 → détail : `docs/journal/images-tok-92.md`
 
+### 🛒 Boutique par archétype et courbes de prix (TOK-103, lot 11, 2026-11-17, branche `claude/lot11-tok-103-boutique-e98c5d`, non fusionnée)
+
+`/boutique` regroupée par archétype : frise rang OCG + fenêtre d'arrivée TCG (80 %), calendrier des relevés, une courbe
+Cardmarket par carte. `scripts/build_boutique_price_history.py` → table servie `boutique_price_history` → `GET /boutique/prices`.
+Mesuré : LCP mobile 1,75 à 1,79 s (4 mesures sur 5), Accessibilité 100, 3 captures changées.
+- **Trous** : deux relevés à plus de 10 jours ne sont pas reliés (`backend/app/price_history.py`, seul endroit) ; la période
+  est hachurée, rien n'y est tracé. Sous 3 relevés, points seulement.
+- **Relevés de prix** : avant ce lot, `snapshot_prices.py` ne tournait qu'au lancement de Streamlit (`run.sh`) ; il est
+  maintenant dans `refresh_all.py`, suivi de l'extrait boutique.
+- Après fusion, sur la base de référence : `python scripts/build_boutique_price_history.py` puis `python scripts/build_serving_db.py`.
+- Scénario de test des gérants : `docs/tests-gerants-boutique.md`.
+→ détail complet : `docs/journal/boutique-tok-103.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

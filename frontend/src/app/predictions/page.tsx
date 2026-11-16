@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { controlClass } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
 import { DataFooter, Page, PageHero } from "@/components/ds/page";
 import { TrendLabel } from "@/components/ds/tags";
@@ -61,7 +62,7 @@ export default async function PredictionsPage() {
       </DataFooter>
 
       <details className="group mt-5">
-        <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[4px] border border-line-2 bg-ink-3 px-3.5 py-2 text-[13px] font-medium text-text transition-colors duration-200 hover:border-soft [&::-webkit-details-marker]:hidden">
+        <summary className={controlClass({ size: "sm" })}>
           Tableau des valeurs
           <span aria-hidden className="font-mono text-muted-text transition-transform group-open:rotate-45">
             +

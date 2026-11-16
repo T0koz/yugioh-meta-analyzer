@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Toolbar, pillClass } from "@/components/ds/page";
+import { PillLink } from "@/components/ds/control";
+import { Toolbar } from "@/components/ds/page";
 import type { BanRadarKind } from "@/types";
 
 /** Vue du filtre : un `kind` de l'API, ou `all` (aucun filtre). */
@@ -45,16 +45,15 @@ export function KindFilterTabs({ tab, active, count }: { tab: KindTab; active: K
         const { label, hint } = KIND_FILTERS[view];
         const selected = view === active;
         return (
-          <Link
+          <PillLink
             key={view}
             // La vue par défaut garde l'URL courte : une seule adresse par contenu.
             href={view === defaultView ? basePath : `${basePath}&kind=${view}`}
             title={hint}
-            aria-current={selected ? "page" : undefined}
-            className={pillClass(selected)}
+            current={selected}
           >
             {label}
-          </Link>
+          </PillLink>
         );
       })}
     </Toolbar>

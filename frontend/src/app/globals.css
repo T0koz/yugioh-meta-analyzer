@@ -122,6 +122,42 @@
   --stagger: 70ms;  /* décalage entre éléments d'une même séquence */
   --glow: rgba(255, 90, 60, 0.28); /* lueur d'accent, réservée à la carte vedette */
 
+  /* composants d'interaction (lot 8, components/ds/control.tsx) : seuls éléments du site à
+     porter une ombre, avec la carte. Chaque liste d'ombres garde le même nombre de couches
+     (2 internes, 3 portées) d'un état à l'autre, sinon la transition saute au lieu d'interpoler. */
+  --r-ctl: 12px;         /* boutons, rail d'onglets */
+  --r-ctl-sm: 10px;      /* petit bouton */
+  --r-tab: 8px;          /* onglet dans son rail (rayon du rail moins son retrait) */
+  --r-pill: 999px;       /* pill de filtre, bascule */
+  --ease-soft: cubic-bezier(0.3, 0.7, 0.4, 1);        /* survol, appui */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);   /* retour après appui : dépasse puis se pose */
+  --dur-press: 120ms;    /* enfoncement */
+  --dur-spring: 200ms;   /* retour */
+  /* teintes d'état (hexadécimales : lues par npm run contrast) */
+  --ctl-raise: #1b2433;       /* surface neutre survolée, onglet actif */
+  --ctl-primary-lo: #f65638;  /* bouton principal enfoncé */
+  --ctl-on-hi: #f6f8fb;       /* pill active survolée */
+  --ctl-on-lo: #cdd5e2;       /* pill active enfoncée */
+  /* variation de teinte du haut vers le bas, posée sur la couleur de fond */
+  --ctl-sheen-top: rgba(255, 255, 255, 0.07);
+  --ctl-sheen-bottom: rgba(0, 0, 0, 0.1);
+  /* reflet interne (haut) et arête basse */
+  --ctl-inset: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  --ctl-inset-bright: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+  --ctl-inset-press: inset 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0);
+  --ctl-inset-none: inset 0 0 0 rgba(0, 0, 0, 0), inset 0 0 0 rgba(0, 0, 0, 0);
+  --ctl-inset-well: inset 0 1px 2px rgba(0, 0, 0, 0.55), inset 0 -1px 0 rgba(170, 195, 235, 0.05);
+  /* ombre de contact, ombre proche, ombre diffuse */
+  --ctl-drop: 0 1px 1px rgba(0, 0, 0, 0.55), 0 2px 5px -1px rgba(0, 0, 0, 0.5), 0 10px 20px -8px rgba(0, 0, 0, 0.6);
+  --ctl-drop-hover: 0 1px 2px rgba(0, 0, 0, 0.55), 0 5px 10px -2px rgba(0, 0, 0, 0.5), 0 18px 30px -10px rgba(0, 0, 0, 0.7);
+  --ctl-drop-press: 0 0 1px rgba(0, 0, 0, 0.6), 0 1px 2px 0 rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --ctl-drop-low: 0 1px 1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.45), 0 6px 12px -6px rgba(0, 0, 0, 0.5);
+  --ctl-drop-none: 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
+  /* bouton principal : l'ombre diffuse prend la teinte de la braise */
+  --ctl-glow: 0 1px 1px rgba(0, 0, 0, 0.55), 0 3px 8px -2px rgba(255, 90, 60, 0.3), 0 12px 26px -10px rgba(255, 90, 60, 0.45);
+  --ctl-glow-hover: 0 1px 2px rgba(0, 0, 0, 0.55), 0 6px 14px -3px rgba(255, 90, 60, 0.4), 0 20px 38px -12px rgba(255, 90, 60, 0.6);
+  --ctl-glow-press: 0 0 1px rgba(0, 0, 0, 0.6), 0 1px 3px 0 rgba(255, 90, 60, 0.3), 0 3px 8px -4px rgba(255, 90, 60, 0.35);
+
   /* mapping shadcn */
   --background: var(--ink);
   --foreground: var(--text);
@@ -395,6 +431,180 @@
 }
 ::view-transition-new(.slide-forward) { --vt-offset: 24px; }
 ::view-transition-new(.slide-back) { --vt-offset: -24px; }
+
+/* ---------- Composants d'interaction (lot 8) ----------
+   Source unique des boutons, pills, onglets et bascules : la classe `.ctl`, posée
+   par components/ds/control.tsx. Aucun autre fichier ne décrit un fond, une ombre
+   ou un état de bouton. CSS seul : les états sont :hover, :active, :focus-visible.
+
+   Une variante ne change que cinq variables (--_bg, --_fg, --_bd, --_inset, --_drop) ;
+   un état en change une partie. On n'anime que transform, box-shadow et des couleurs :
+   rien ne décale la mise en page (CLS 0).
+
+   Dans @layer components pour qu'un utilitaire (w-full, justify-start) puisse ajuster. */
+@layer components {
+  .ctl {
+    --_bg: var(--ink-3);
+    --_fg: var(--text);
+    --_bd: var(--line-2);
+    --_inset: var(--ctl-inset);
+    --_drop: var(--ctl-drop);
+    --_y: 0px;
+    --_s: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--_bd);
+    border-radius: var(--r-ctl);
+    background-color: var(--_bg);
+    background-image: linear-gradient(180deg, var(--ctl-sheen-top), transparent 52%, var(--ctl-sheen-bottom));
+    box-shadow: var(--_inset), var(--_drop);
+    color: var(--_fg);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transform: translateY(var(--_y)) scale(var(--_s));
+    /* Le retour (relâchement, fin de survol) suit le ressort ; l'aller est réglé par :active. */
+    transition:
+      transform var(--dur-spring) var(--ease-spring),
+      box-shadow var(--dur-1) var(--ease-soft),
+      background-color var(--dur-1) var(--ease-soft),
+      border-color var(--dur-1) var(--ease-soft),
+      color var(--dur-1) var(--ease-soft);
+  }
+  .ctl:focus-visible {
+    outline: 2px solid var(--signal-hi);
+    outline-offset: 3px;
+  }
+  /* dans un rail, l'anneau reste à l'intérieur du retrait de 4 px */
+  .ctl-tab:focus-visible { outline-offset: 1px; }
+  summary.ctl { list-style: none; }
+  summary.ctl::-webkit-details-marker { display: none; }
+
+  /* tailles (boutons) */
+  .ctl-sm { min-height: 36px; padding: 0 14px; border-radius: var(--r-ctl-sm); font-size: 13px; }
+  .ctl-lg { min-height: 48px; padding: 0 22px; font-size: 15px; }
+
+  /* principal : un seul par écran */
+  .ctl-primary {
+    --_bg: var(--signal);
+    --_fg: var(--on-signal);
+    --_bd: var(--signal);
+    --_inset: var(--ctl-inset-bright);
+    --_drop: var(--ctl-glow);
+  }
+  /* discret : aucune surface au repos */
+  .ctl-ghost,
+  .ctl-tab {
+    --_bg: transparent;
+    --_bd: transparent;
+    --_inset: var(--ctl-inset-none);
+    --_drop: var(--ctl-drop-none);
+    background-image: none;
+  }
+  .ctl-ghost { --_fg: var(--soft); }
+
+  /* pill de filtre et bascule : active = aria-pressed, aria-current ou .ctl-on */
+  .ctl-pill {
+    --_fg: var(--soft);
+    --_drop: var(--ctl-drop-low);
+    min-height: 34px;
+    padding: 0 13px;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+  }
+  .ctl-pill:is([aria-pressed="true"], [aria-current="page"], .ctl-on) {
+    --_bg: var(--text);
+    --_fg: var(--ink);
+    --_bd: var(--text);
+    --_inset: var(--ctl-inset-bright);
+  }
+
+  /* onglet : à plat dans son rail, l'onglet actif est en relief */
+  .ctl-tab {
+    --_fg: var(--muted-text);
+    min-height: 32px;
+    padding: 0 10px; /* pas plus : à 768 px la nav loge quatre onglets et la recherche */
+    gap: 4px;
+    border-radius: var(--r-tab);
+    font-size: 13px;
+  }
+  .ctl-tab:is([aria-current="page"], [aria-selected="true"], .ctl-on) {
+    --_bg: var(--ink-4);
+    --_fg: var(--text);
+    --_bd: var(--line);
+    --_inset: var(--ctl-inset);
+    --_drop: var(--ctl-drop-low);
+    background-image: linear-gradient(180deg, var(--ctl-sheen-top), transparent 52%, var(--ctl-sheen-bottom));
+  }
+  .ctl-rail {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-ctl);
+    background-color: var(--ink-2);
+    box-shadow: var(--ctl-inset-well);
+  }
+
+  /* survol : teinte éclaircie, ombre plus profonde, 1 px d'élévation */
+  @media (hover: hover) {
+    .ctl:hover { --_drop: var(--ctl-drop-hover); }
+    .ctl-secondary:hover { --_bg: var(--ink-4); --_bd: var(--muted-text); }
+    .ctl-primary:hover { --_bg: var(--signal-hi); --_bd: var(--signal-hi); --_drop: var(--ctl-glow-hover); }
+    .ctl-ghost:hover { --_bg: var(--ink-4); --_fg: var(--text); --_drop: var(--ctl-drop-none); }
+    .ctl-pill:hover { --_bg: var(--ink-4); --_fg: var(--text); --_bd: var(--muted-text); }
+    .ctl-pill:is([aria-pressed="true"], [aria-current="page"], .ctl-on):hover {
+      --_bg: var(--ctl-on-hi); --_fg: var(--ink); --_bd: var(--ctl-on-hi);
+    }
+    .ctl-tab:hover { --_bg: var(--ink-3); --_fg: var(--text); --_drop: var(--ctl-drop-none); }
+    .ctl-tab:is([aria-current="page"], [aria-selected="true"], .ctl-on):hover {
+      --_bg: var(--ctl-raise); --_drop: var(--ctl-drop);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .ctl:hover { --_y: -1px; }
+      .ctl-ghost:hover, .ctl-tab:hover { --_y: 0px; }
+    }
+  }
+
+  /* appui : enfoncement rapide ; au relâchement la transition de base (ressort) reprend */
+  .ctl:active {
+    --_inset: var(--ctl-inset-press);
+    --_drop: var(--ctl-drop-press);
+    transition-duration: var(--dur-press);
+    transition-timing-function: var(--ease-soft);
+  }
+  .ctl-primary:active { --_bg: var(--ctl-primary-lo); --_bd: var(--ctl-primary-lo); --_drop: var(--ctl-glow-press); }
+  .ctl-secondary:active, .ctl-pill:active { --_bg: var(--ink-3); }
+  .ctl-ghost:active, .ctl-tab:active { --_bg: var(--ink-4); --_drop: var(--ctl-drop-none); }
+  .ctl-pill:is([aria-pressed="true"], [aria-current="page"], .ctl-on):active { --_bg: var(--ctl-on-lo); --_bd: var(--ctl-on-lo); }
+  @media (prefers-reduced-motion: no-preference) {
+    .ctl:active { --_y: 0.5px; --_s: 0.97; }
+  }
+
+  /* désactivé : à plat, sans opacité réduite (le texte reste à 4,5:1) */
+  .ctl:is(:disabled, [aria-disabled="true"]) {
+    --_bg: var(--ink-4);
+    --_fg: var(--faint);
+    --_bd: var(--line);
+    --_inset: var(--ctl-inset-none);
+    --_drop: var(--ctl-drop-none);
+    --_y: 0px;
+    --_s: 1;
+    background-image: none;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
 
 @layer base {
   * {

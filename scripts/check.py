@@ -284,6 +284,11 @@ def check_frontend(report: Report, files: set[str]) -> None:
         report.fail("tsc", tsc.stdout + tsc.stderr)
     else:
         report.ok("tsc --noEmit")
+    stats = run(["node", "scripts/test-stats.mjs"], cwd=FRONTEND)
+    if stats.returncode:
+        report.fail("test des calculs du front (intervalle de Wilson)", stats.stdout + stats.stderr)
+    else:
+        report.ok(stats.stdout.strip().splitlines()[-1].lstrip("✓ "))
     targets = sorted(
         f.removeprefix("frontend/") for f in files
         if f.startswith("frontend/src/") and f.endswith((".ts", ".tsx")) and (ROOT / f).exists()

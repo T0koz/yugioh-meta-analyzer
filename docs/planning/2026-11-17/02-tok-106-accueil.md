@@ -1,6 +1,6 @@
 # 02 — TOK-106 : nouvelle page d'accueil d'après le prototype
 
-Modèle : le plus puissant disponible (travail de design et de code front).
+Modèle : le plus puissant disponible (Fable, sinon Opus) — règle front.
 
 **Lis** : `docs/audit-front/3-proposition.md` (§ 10 « Mois 1 », § 11), `decisions-2026-11-16.md`,
 `lighthouse-2026-11-16.md`, `docs/audit-front/prototype/index.html`, `docs/journal/refonte-front-braise-vivante.md`.

@@ -1,6 +1,6 @@
 # 01 — TOK-114 : Decks, index des archétypes et fiche de composition
 
-Modèle : le plus puissant disponible (données + front). Sous-agents autorisés : `gardien-donnees` (table,
+Modèle : le plus puissant disponible (Fable, sinon Opus) — règle front. Sous-agents autorisés : `gardien-donnees` (table,
 `SERVED_TABLES`), `data-scientist-ygo` (seuils), en lecture seule sauf la table créée par ce ticket.
 
 **Pourquoi** : le graphe de synergies ne montre que des cartes jouées ensemble ; une liste de deck le dit mieux.

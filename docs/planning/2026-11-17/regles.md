@@ -21,3 +21,13 @@
   pour chaque critère. Pas d'« à vue d'œil ».
 - Compte rendu de fin de session, bref : critères atteints ou non (avec mesures), fichiers touchés, pièges,
   décisions prises par défaut.
+
+## Modèle
+- **Front = toujours le modèle le plus puissant disponible** (Fable, sinon Opus), pour un rendu visuellement au
+  top. Le modèle économique est réservé aux tâches de données, de doc ou mécaniques.
+
+## Session de lot lancée à la main (lots 02 à 05)
+- Pars de la branche d'intégration `claude/front-nuit-17-11` (crée-la depuis `main` à jour si elle n'existe pas).
+- Travaille dans un worktree neuf `.claude/worktrees/<ticket>`, branche `claude/<ticket>`.
+- À la fin : fusionne ta branche dans `claude/front-nuit-17-11` (`--no-ff`), lance `python scripts/check.py`,
+  ajoute une ligne à `docs/planning/2026-11-17/compte-rendu.md`, puis supprime ton worktree. Ni `main`, ni push.

@@ -1,6 +1,6 @@
 # 05 — TOK-100 : SEO de partage et tests visuels (EN DERNIER)
 
-Modèle : Sonnet. À lancer après 02, 03, 04 : les images de référence reflètent l'interface finale.
+Modèle : le plus puissant disponible (Fable, sinon Opus) — règle front. À lancer après 02, 03, 04 : les images de référence reflètent l'interface finale.
 
 **À faire** : Open Graph + images de partage (sans reproduire d'illustration de carte protégée au-delà de ce que
 le site affiche déjà), sitemap, robots ; suite Playwright de tests visuels sur 9+ pages × 3 largeurs, avec seuil de

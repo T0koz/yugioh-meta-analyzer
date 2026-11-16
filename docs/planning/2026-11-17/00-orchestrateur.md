@@ -7,13 +7,14 @@ Thomas a validé cette file en avance : lancer les sessions ci-dessous **l'une a
 ## Lis d'abord
 `CLAUDE.md`, `context.md` (§ Travail en sessions parallèles, § À faire), `BACKLOG.md`, puis `regles.md` (ce dossier).
 
-## File d'attente (dans cet ordre, une session neuve par ticket)
-1. `01-seuil-boutique.md` — seuil absolu Fort / Modéré / Faible (court, modèle économique)
-2. `02-tok-106-accueil.md` — nouvelle accueil (le plus lourd, modèle le plus puissant disponible)
-3. `03-tok-99-dataviz.md` — /evolution et /predictions en SVG (D3), palette
-4. `04-tok-101-archetype.md` — page d'archétype + transitions de vue
-5. `05-tok-100-seo-tests-visuels.md` — Open Graph, sitemap, tests visuels (EN DERNIER : les images de référence
-   doivent être prises sur l'interface finale)
+## File d'attente
+Tu ne lances QUE le lot 1, puis tu t'arrêtes et écris le compte rendu.
+1. `01-seuil-boutique.md` — seuil absolu Fort / Modéré / Faible (données, Sonnet)
+
+Les lots front (02 accueil, 03 dataviz, 04 page d'archétype, 05 SEO et tests visuels) sont lancés **à la main
+par Thomas**, un par session, sur le modèle le plus puissant disponible (règle du projet : le front se fait
+toujours avec le modèle le plus puissant). Chaque session de lot fusionne elle-même sa branche dans la branche
+d'intégration (voir `regles.md`). Ordre : 02 → 03 → 04 → 05.
 
 ## Méthode
 - Branche d'intégration : `claude/front-nuit-17-11`, créée depuis `main` à jour (vérifie d'abord `git status` propre

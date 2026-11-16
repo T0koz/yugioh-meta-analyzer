@@ -1,6 +1,6 @@
 # 03 — TOK-99 : dataviz maison (D3) et palette de données
 
-Modèle : Sonnet. Décisions déjà prises (audit) : 6 (un bleu pour l'OCG, palette de 6 teintes), 8 (SVG maison + D3).
+Modèle : le plus puissant disponible (Fable, sinon Opus) — règle front. Décisions déjà prises (audit) : 6 (un bleu pour l'OCG, palette de 6 teintes), 8 (SVG maison + D3).
 
 **À faire** : `/evolution` et `/predictions` en SVG avec D3 ; recharts supprimé ; palette documentée dans
 `docs/design-system.md` ; pied de données (source + date) sous chaque visualisation et tableau.

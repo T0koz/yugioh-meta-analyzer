@@ -1,6 +1,6 @@
 # 04 — TOK-101 : page d'archétype et transitions de vue
 
-Modèle : Sonnet. Décision déjà prise (audit) : 10 — transitions de page en embellissement (drapeau expérimental
+Modèle : le plus puissant disponible (Fable, sinon Opus) — règle front. Décision déjà prise (audit) : 10 — transitions de page en embellissement (drapeau expérimental
 de Next 16), le site doit marcher sans.
 
 **À faire** : page par archétype (depuis la tier list) : part de méta, tendance, cartes clés (`CardArt`), signal

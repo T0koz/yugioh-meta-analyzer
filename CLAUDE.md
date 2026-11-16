@@ -20,6 +20,8 @@ des deux est en face de toi, regarde `git config user.name` ou demande.
 - **Commits : tu proposes, la personne valide. Push : jamais sans son accord explicite**,
   et jamais si `python scripts/check.py` échoue. Jamais `git push --force` sur `main`,
   jamais `--no-verify` de ta propre initiative.
+- **Front : toujours le modèle le plus puissant disponible** (Fable, sinon Opus), pour un rendu visuellement
+  au top. Le modèle économique sert aux données, à la doc et aux tâches mécaniques.
 - Après chaque fonctionnalité, mets à jour `context.md` (pièges, résultats) et
   `BACKLOG.md` (statut des tickets TOK). C'est la mémoire du projet.
 - Linear (tickets TOK) : MCP à reconnecter avant toute synchro.

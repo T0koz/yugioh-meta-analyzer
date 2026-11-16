@@ -1,6 +1,6 @@
 # 03 — TOK-103 : boutique regroupée par archétype, courbes de prix
 
-Modèle : Sonnet. Sous-agent autorisé : `data-scientist-ygo` (lecture seule).
+Modèle : le plus puissant disponible (Fable, sinon Opus) — règle front. Sous-agent autorisé : `data-scientist-ygo` (lecture seule).
 
 **À faire** : page boutique regroupée par archétype (signal v3, fenêtre d'arrivée en TCG, libellé du seuil du
 sprint 1), courbe de prix par carte en SVG maison (palette de TOK-99). L'historique est irrégulier avant

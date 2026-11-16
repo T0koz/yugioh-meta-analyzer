@@ -39,3 +39,9 @@ pas de vouvoiement commercial ni de point d'exclamation. Chaque phrase porte une
 et une source, ou elle disparaît. Les explications passent d'abord par le graphique (annotations,
 légendes, intervalles), le texte est réduit au minimum. Reprends le prototype pour sa structure et son
 design, pas pour ses textes. Liste tous les textes de l'accueil dans le compte rendu.
+
+## Ton des textes (décision du 16/11)
+Sobre, factuel, orienté statistique. Aucune formule publicitaire ni appel à l'action (« avant tout le monde »,
+« agir », « voir la preuve »), pas de point d'exclamation. Chaque phrase porte une mesure, une période et une
+source, ou elle disparaît. L'explication passe d'abord par le graphique (annotations, légendes, intervalles),
+le texte est réduit au minimum. Liste les textes ajoutés dans ton compte rendu.

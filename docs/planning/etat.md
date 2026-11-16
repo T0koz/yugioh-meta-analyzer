@@ -11,11 +11,11 @@
 | 11 | TOK-103 boutique | 🏗️ démarré le 17/11, en parallèle du lot 12 | Opus 5.5 (demandé) | session « Lot 11 — TOK-103 boutique par archétype » ; pas de nav, pas d'écriture en base |
 | 12 | TOK-55 Ban Predictor historique | 🏗️ démarré le 17/11, en parallèle du lot 11 | Opus 5.5 (demandé) | session « Lot 12 — TOK-55 Ban Predictor » ; onglet du Ban Center, pas de nav, pas d'écriture en base |
 | 13 | Outillage | ✅ fusionné (`3e1ad8b`) | Sonnet 5.5 | `.claude/settings.json` (38 commandes pré-autorisées, 13 refus), hook `garde_fou.py` (28 bloquées / 24 autorisées, étape de `check.py`), `/fin-de-journee`, règle d'or + journal de décisions + plan mode dans `CLAUDE.md`. Vérifié après fusion : le hook laisse passer fusion, commit, `worktree remove`, `check.py`, copie de sauvegarde, et bloque push et `rm -rf data`. **Faux positif constaté** : une commande dont un heredoc cite la commande de push entre accents graves est bloquée (contournement : éditer le fichier sans heredoc). Non mesuré : « zéro invite » en session interactive. `npm run lighthouse` non pré-autorisé (lance un serveur). |
-| 14 | TOK-35 | à faire | | |
+| 14 | TOK-35 | 🏗️ démarré le 17/11, en parallèle des lots 11 et 12 | Sonnet 5.5 (demandé) | session « Lot 14 — TOK-35 préparation du déploiement » ; configuration et guide seulement, aucun déploiement, aucune page ni API touchée |
 | 15 | Charte + explication graphique | ⏸ étape 1 fusionnée et **validée par Thomas le 17/11** (`4c4d86e`, réponses dans `decisions-prises.md`) ; étape 2 (composants, `/methode` sans formule) après les lots 11 et 12 | Opus 5.5 | 6 infobulles et 8 formules relevées (annexe A), 10 exemples avant/après ; étape 2 (composants, `/methode`) après validation et après les lots 11 et 12 ; la session reste ouverte pour l'étape 2 |
 | 16 | Réécriture des textes | à faire | | |
 
-Dernière mise à jour : 2026-11-17, lots 10 et 15 (charte validée) fusionnés ; lots 11 et 12 en cours en parallèle. Seul l'orchestrateur écrit le tableau des lots.
+Dernière mise à jour : 2026-11-17, lots 10 et 15 (charte validée) fusionnés ; lots 11, 12 et 14 en cours en parallèle (consigne de Thomas : avancer sur ce qui n'interagit pas). Seul l'orchestrateur écrit le tableau des lots.
 
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |

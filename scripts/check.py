@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import json
 import os
 import re
 import subprocess
@@ -346,6 +347,23 @@ def check_backtest(report: Report) -> None:
     report.ok("backtest exécuté : compare les rangs médians à ceux de context.md avant de pousser")
 
 
+def check_garde_fou(report: Report) -> None:
+    report.step("Garde-fou des commandes (hook .claude/hooks/garde_fou.py)")
+    try:
+        json.loads((ROOT / ".claude" / "settings.json").read_text())
+    except FileNotFoundError:
+        report.skip("garde-fou", ".claude/settings.json absent")
+        return
+    except ValueError as exc:
+        report.fail("settings.json", f".claude/settings.json invalide : {exc}")
+        return
+    res = run([sys.executable, ".claude/hooks/test_garde_fou.py"])
+    if res.returncode:
+        report.fail("garde-fou", res.stdout + res.stderr)
+    else:
+        report.ok(res.stdout.strip())
+
+
 def check_visual(report: Report) -> None:
     """Sur demande seulement : ≈ 45 s, et le build télécharge les polices (réseau requis)."""
     report.step("Tests visuels du front (45 captures comparées aux références)")
@@ -417,6 +435,7 @@ def main() -> int:
         check_backend(report)
     if mode != "ci" and (args.all or BAN_RADAR_FILES & files):
         check_backtest(report)
+    check_garde_fou(report)  # 0,2 s : toujours lancé
     if args.visuel and mode != "ci":
         check_visual(report)
     if mode != "ci":

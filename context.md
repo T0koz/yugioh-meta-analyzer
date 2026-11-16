@@ -342,6 +342,16 @@ Mesuré : LCP mobile 1,75 à 1,87 s, Accessibilité 100, `serving.db` 10,7 → 1
 - Dans un worktree : `build_archetype_profiles.py --db <dépôt principal>/data/yugioh.db`.
 → détail complet : `docs/journal/decks-tok-114.md`
 
+### 🛠 Outillage : pré-autorisations, garde-fou, fin de journée (lot 13, 2026-11-16, branche `claude/lot13-outillage-195837`, non fusionnée)
+
+`.claude/settings.json` (partagé) : règles `allow` précises (lecture, `git status/diff/log/show`, `check.py`, `tsc`, `eslint`, build, pytest) et `deny` des
+compositions dangereuses (`find -delete/-exec`, `--fix`, `rg --pre`, `--output`). Hook `PreToolUse` `.claude/hooks/garde_fou.py` : refuse `git push` (toutes
+formes), `--force`, `--no-verify`, `rm -rf` hors `.claude/worktrees/` ; 52 cas testés (`python .claude/hooks/test_garde_fou.py`, branché dans `check.py`).
+Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context.md` et `BACKLOG.md`, ne commite pas.
+- **Une règle `Bash(...)` porte sur le texte, pas sur le sens** : `Bash(rm *)` ne bloque pas `bash -c 'rm …'`, `git push *` ne bloque pas `git -C . push`. Le hook, lui, découpe la commande (`shlex`) et examine chaque segment ; il tourne même sans règle.
+- **Un hook ne se déclenche qu'après fusion** de la branche dans celle de travail ; les worktrees déjà ouverts le lisent depuis leur propre copie de `.claude/`.
+- **`npm run lighthouse` n'est pas pré-autorisé** (il lance un serveur). Détail : `docs/planning/2026-11-17/decisions-prises.md`, essai : `docs/planning/2026-11-17/essai-fin-de-journee-16-11.md`.
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

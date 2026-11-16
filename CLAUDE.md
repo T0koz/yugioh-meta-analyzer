@@ -25,6 +25,16 @@ des deux est en face de toi, regarde `git config user.name` ou demande.
 - Après chaque fonctionnalité, mets à jour `context.md` (pièges, résultats) et
   `BACKLOG.md` (statut des tickets TOK). C'est la mémoire du projet.
 - Linear (tickets TOK) : MCP à reconnecter avant toute synchro.
+- **Règle d'or : une seule session de travail à la fois ; une deuxième seulement sur demande explicite de
+  Thomas.** Une session ne lance ni autre session ni sous-agent de sa propre initiative.
+- **Journal de décisions** : toute décision structurante (architecture, données, design, process) est notée dans
+  `docs/decisions/` (une note par décision, modèle et index dans `docs/decisions/README.md`). Une décision prise
+  par défaut en autonomie va d'abord dans le `decisions-prises.md` du jour, et rejoint le journal après validation.
+- **Plan mode** : ne le propose à Thomas que lorsqu'il est vraiment la solution (changement large, risqué ou mal
+  cadré, que le brief n'a pas préparé), jamais par défaut ni par habitude.
+- **Garde-fou** (`.claude/settings.json`, hook `.claude/hooks/garde_fou.py`) : `git push`, `--force`, `--no-verify`
+  et `rm -rf` hors `.claude/worktrees/` sont refusés. Le push, c'est Thomas, depuis son terminal, après
+  `python scripts/check.py`. `/fin-de-journee` propose la mise à jour de `context.md` et `BACKLOG.md` (sans commiter).
 
 ## Travailler à deux sans casser (règles complètes : `docs/ONBOARDING.md` §8)
 

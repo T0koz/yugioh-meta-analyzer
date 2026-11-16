@@ -368,6 +368,21 @@ Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context
 - **TOK-35** : choisir le stockage, y envoyer le dossier, renseigner la variable.
 → détail : `docs/journal/images-tok-92.md`
 
+### 📜 Ban Radar contre l'historique (TOK-55, lot 12, 2026-11-17, branche `claude/lot12-tok-55-ban-historique-206ce4`, non fusionnée)
+
+Onglet `/ban?tab=historique` : 20 banlists rejouées (10 TCG, 10 OCG), rang médian des cartes touchées face à la bande du
+hasard (90 %) et à la base « staples les plus jouées », top 25 de la veille face aux cartes touchées, 6 listes écartées
+affichées. `scripts/build_ban_history.py` → `ban_backtest_lists`, `ban_backtest_cards` (servies) → `GET /ban-radar/history`.
+- **Ordre** : `build_ban_history.py` puis `build_serving_db.py` (sinon « Table absente »). Pas encore dans `refresh_all.py`.
+- **Mêmes chiffres que `--backtest`** : le script passe par `build_ban_radar.backtest_lists`, la boucle de `backtest()`.
+  Toute modification du backtest passe par cette fonction, jamais par une copie.
+- **⚠ La base staples bat le score en rang médian sur 7 listes TCG sur 10** (le score reste devant en OCG, 8 sur 10, et
+  en tête de classement : top 25 touché 29 contre 16 en TCG, 41 contre 18 en OCG). Le piège « l'omniprésence seule ne
+  prédit rien » (section Ban Radar ci-dessus) vient de la v1 sur données biaisées : à réviser après validation de Thomas.
+- **Veille de l'entrée en vigueur, pas de l'annonce** : les decks joués entre les deux sont dans la fenêtre (jusqu'à 10 %).
+  Ne jamais écrire « avant l'annonce ». Seules 3 listes sont postérieures au calage des poids (2026-08-14).
+→ détail complet (sorties brutes, vérification du data scientist) : `docs/journal/ban-historique-tok-55.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)
@@ -377,7 +392,7 @@ Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials
 - **TOK-52** : Mode Joueur / Mode Boutique (toggle UX) — nécessite de trancher ce que chaque mode change concrètement (pas fait en autonome pour cette raison)
-- **TOK-55** : Ban Predictor vs History — deux points de mesure concluants disponibles (TCG mai 2026, OCG juillet 2026), la page publique reste à faire
+- **TOK-55** : page faite (lot 12, section ci-dessus) ; reste les dates d'annonce des banlists (veille de l'annonce au lieu de l'entrée en vigueur) et l'ajout à `refresh_all.py`
 - **Phase B/C (TOK-54 à 67)** : Deck Builder, Referral boutique, API freemium — voir BACKLOG.md
 
 ### ✅ Fait en autonome / avec Thomas le 2026-08-05

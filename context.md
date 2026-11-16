@@ -342,11 +342,23 @@ Mesuré : LCP mobile 1,75 à 1,87 s, Accessibilité 100, `serving.db` 10,7 → 1
 - Dans un worktree : `build_archetype_profiles.py --db <dépôt principal>/data/yugioh.db`.
 → détail complet : `docs/journal/decks-tok-114.md`
 
+### 🖼 Images de cartes hébergées (TOK-92, lot 10, 2026-11-17, branche `claude/lot10-tok-92-images-5c0cd5`, non fusionnée)
+
+0 requête vers `images.ygoprodeck.com` (navigateur et serveur, mesuré sur build de production, 10 pages × 2 largeurs).
+- **Incrémental** : `python scripts/download_card_images.py` (ajoute seulement les cartes sans fichier ; fait aussi partie de
+  `refresh_all.py`, en dernier). Emplacement : `<dépôt principal>/data/card-images/` (`art`, `card-sm`, `card-lg`, 1,1 Go, ignoré).
+- **Front** : `NEXT_PUBLIC_CARD_IMAGES_URL` (défaut `/card-images`, servi par une route locale lisant `CARD_IMAGES_DIR`,
+  par défaut `../data/card-images` : dans un worktree, la renseigner). `lib/card-images.ts` seul connaît les URL.
+- `fetch_cards.py` ne met pas `cards` à jour (JSON seul) ; la chaîne utilise `fetch_new_cards.py`. Ne jamais y mettre `init_db.py`.
+- Les tests visuels remplacent `/_next/image` par un aplat : ils ne dépendent pas du dossier d'images.
+- **TOK-35** : choisir le stockage, y envoyer le dossier, renseigner la variable.
+→ détail : `docs/journal/images-tok-92.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)
 - **Suites de TOK-113** : rafraîchir `cards` dans la chaîne (`views_week` figé au 13 juin), seuil absolu pour Fort / Modéré / Faible
-- **TOK-92** : images de cartes à ré-héberger avant le déploiement ; des cartes récentes n'ont toujours pas d'image (`fetch_new_cards.py` tourne désormais le lundi)
+- **TOK-92** : images faites (section ci-dessous) ; reste l'envoi vers le stockage définitif au déploiement (TOK-35)
 - **Vérifier** au prochain `fetch_cards.py` que le nom corrigé par la session combos n'est pas écrasé
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials

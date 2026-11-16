@@ -107,6 +107,15 @@ d'annonce, verdict de la page Historique).
 
 ---
 
+## Lot 16 — Réécriture des textes selon la charte (file du 2026-11-17)
+
+🟡 Première moitié livrée le 2026-11-17 sur `claude/lot16-reecriture-textes-9d97ee` (non fusionnée) : `docs/textes-avant-apres.md`
+(846 textes relevés : 775 conformes, 43 à changer, 28 en attente du formulaire TOK-115), formulaire de validation en tête,
+`scripts/check_copy.py` (mots interdits, branché dans `check.py` en avertissement). **Aucun texte du site modifié.** Reste :
+validation par Thomas, puis application et passage du script en bloquant (`--strict`).
+
+---
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à

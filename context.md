@@ -455,6 +455,19 @@ backtest, validation temporelle à fenêtre croissante, bootstrap par liste + te
 - Avec 10 listes par format, seul l'écart de top 25 en OCG (9/10, p = 0,02) dépasse le hasard au test du signe.
 → détail complet et formulaire : `docs/journal/ban-radar-tcg-diagnostic.md`
 
+### ✍️ Réécriture des textes (lot 16, première moitié, 2026-11-17, branche `claude/lot16-reecriture-textes-9d97ee`, non fusionnée)
+
+`docs/textes-avant-apres.md` : tous les textes visibles de `frontend/src/` (846), page, fichier:ligne, problème, proposition ;
+formulaire en tête. 43 à changer (titres en question ou en promesse, intros sans effectif, « trustent », « réessaie »), 28 textes
+du Ban Radar qui jugent le score **en attente du formulaire TOK-115** (formulations tirées de la relecture). Boutique, Decks et
+Méthode déjà conformes. Rien n’est appliqué avant la validation de Thomas.
+- **`scripts/check_copy.py`** (bibliothèque standard) : règles de la charte §1 et §5 sur le texte visible seulement ;
+  `--dump` liste les textes relevés, `--strict` rend l’étape bloquante. Dans `check.py` : avertissement quand
+  `frontend/src/` change (ou `--all`), à passer en `--strict` une fois les textes appliqués.
+- **Extraction heuristique** : un texte JSX coupé par `{expr}` sort en morceaux ; le titre de l’accueil (tableau `TITLE`)
+  échappe à l’extracteur. Un faux positif se déclare dans `ALLOW`, jamais en affaiblissant une règle.
+- « Yu-Gi-Oh! » est exclu de la règle du point d’exclamation (nom de marque).
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

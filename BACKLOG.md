@@ -88,6 +88,12 @@ Suites sans ticket : option de chemin pour `build_serving_db.py` (worktrees) ; t
 
 ---
 
+## Lot 15 — Charte « ton et explication » (file du 2026-11-17)
+
+🟡 Étape 1 livrée le 2026-11-17 sur `claude/lot15-charte-23027e` : `docs/charte-ton-et-explication.md`, formulaire à valider par Thomas avant l'étape 2 (composants, `/methode`).
+
+---
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à

@@ -6,12 +6,12 @@
 //   npm run check:meta -- http://localhost:3100
 //
 // Variables lues (les mêmes que le build) : NEXT_PUBLIC_SITE_URL (adresse publique attendue
-// dans les balises, défaut http://localhost:3000) et NEXT_PUBLIC_API_URL (liste des archétypes).
+// dans les balises, défaut http://localhost:3000) et API_URL, sinon NEXT_PUBLIC_API_URL (liste des archétypes).
 // `python scripts/visual_tests.py` le lance aussi, sur son propre serveur.
 
 const base = (process.argv[2] ?? "http://localhost:3100").replace(/\/+$/, "");
 const site = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
 const STATIC_PATHS = [
   "/",

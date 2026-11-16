@@ -45,6 +45,10 @@ data/backup_*.db
 .env.*
 !.env.example
 
+# Vercel : lien du projet, variables téléchargées par `vercel pull` (peuvent contenir un jeton),
+# sortie de `vercel build` (.vercel/output). Jamais commités (TOK-35).
+.vercel/
+
 # Fichiers personnels de Thomas : jamais commités (dépôt public)
 HANDOFF.md
 docs/hebergement-multi-tcg.html

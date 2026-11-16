@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { api } from "@/lib/api";
 import { artCropUrl } from "@/lib/card-images";
 import { fmtDate, fmtMonthRange, fmtMonthShort, fmtNum, fmtPct, fmtRank } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
-import { CardArt } from "@/components/card-art";
+import { CardArt, CardImage } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { ButtonLink, controlClass } from "@/components/ds/control";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -119,7 +118,7 @@ export default async function ArchetypePage({ params }: Params) {
                 aria-hidden
                 className="pointer-events-none absolute inset-x-[calc(var(--gutter)*-1)] top-0 -z-10 hidden h-[360px] [mask-image:linear-gradient(180deg,rgb(0_0_0/0.3),transparent)] min-[760px]:block"
               >
-                <Image
+                <CardImage
                   src={artCropUrl(a.image_url)}
                   alt=""
                   fill

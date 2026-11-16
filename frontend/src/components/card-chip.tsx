@@ -2,8 +2,7 @@
 
 import { useRef } from "react";
 import { useHoverPreview } from "@/components/hover-preview-context";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+import { apiBaseUrl } from "@/lib/api";
 
 export function CardChip({
   name,
@@ -28,7 +27,7 @@ export function CardChip({
       return;
     }
     try {
-      const res = await fetch(`${API_BASE}/cards/${encodeURIComponent(name)}`);
+      const res = await fetch(`${apiBaseUrl()}/cards/${encodeURIComponent(name)}`);
       const imageUrl = res.ok ? ((await res.json()).image_url_small ?? null) : null;
       cachedImageRef.current = imageUrl;
       // Ignore la réponse si la souris a déjà quitté cette carte (fetch trop lent).

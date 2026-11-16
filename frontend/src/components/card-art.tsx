@@ -1,10 +1,11 @@
-import Image from "next/image";
+import Image, { type ImageProps } from "next/image";
 import { SafeImage } from "@/components/safe-image";
 import { artCropUrl, fullCardUrl, smallCardUrl } from "@/lib/card-images";
 
 // Image de carte à dimensions fixes (rapport 59:86 d'une carte Yu-Gi-Oh!).
-// `width`/`height` réservent la place avant le chargement (CLS nul) et
-// next/image sert un fichier à la taille d'affichage, différé hors écran.
+// `width`/`height` réservent la place avant le chargement (CLS nul), chargement
+// différé hors écran. Les fichiers sont déjà en WebP à la taille d'affichage
+// (lib/card-images.ts) : ils ne passent pas par /_next/image (TOK-35).
 // Les cartes récentes absentes de la table `cards` n'ont pas d'image : on
 // dessine alors un repli avec les initiales, jamais un trou.
 const SIZES = {
@@ -55,8 +56,8 @@ export function CardArt({
 
 /**
  * Carte entière qui remplit son parent (positionné, rapport 59:86) : éventail du
- * hero, carte vedette. `sizes` = largeur d'affichage, pour que next/image serve
- * le bon fichier. Sans image : le nom de la carte, jamais un trou.
+ * hero, carte vedette. `sizes` = largeur d'affichage (sans effet tant que
+ * l'image n'est pas optimisée). Sans image : le nom de la carte, jamais un trou.
  */
 export function CardArtFill({
   src,
@@ -91,10 +92,20 @@ export function CardArtFill({
   );
 }
 
+/**
+ * `next/image` sans optimisation, pour toute image de carte affichée hors de `CardArt` (bandeaux,
+ * tuiles) : le fichier est demandé tel quel à NEXT_PUBLIC_CARD_IMAGES_URL, jamais à /_next/image,
+ * dont le quota gratuit (5 000 transformations par mois) ne suffirait pas (TOK-35).
+ */
+export function CardImage(props: ImageProps) {
+  // eslint-disable-next-line jsx-a11y/alt-text -- `alt` est transmis par l'appelant
+  return <Image unoptimized {...props} />;
+}
+
 /** Pastille ronde recadrée sur l'illustration (pills, légendes). */
 export function ArtDot({ src, size = 18 }: { src: string; size?: number }) {
   return (
-    <Image
+    <CardImage
       src={artCropUrl(src)}
       alt=""
       width={size}

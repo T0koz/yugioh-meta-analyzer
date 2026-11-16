@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { artCropUrl } from "@/lib/card-images";
 import { fmtCopies, fmtDate, fmtNum, fmtPct, fmtWindow } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
-import { CardArt } from "@/components/card-art";
+import { CardArt, CardImage } from "@/components/card-art";
 import { DataFooter, Page, PageHero, StatBand } from "@/components/ds/page";
 import { TierTag } from "@/components/ds/tags";
 import { PageTransition } from "@/components/view-transitions";
@@ -37,7 +36,7 @@ function DeckTile({ entry, nWindow }: { entry: DeckIndexEntry; nWindow: number }
           aria-hidden
           className="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[62%] [mask-image:linear-gradient(270deg,rgb(0_0_0/0.34),transparent)] min-[760px]:block"
         >
-          <Image
+          <CardImage
             src={artCropUrl(entry.image_url)}
             alt=""
             fill

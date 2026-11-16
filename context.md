@@ -366,6 +366,7 @@ Chiffres VÉRIFIÉS (commande lancée) ; voir `docs/evaluation-prediction.md`, `
 - **TOK-74** : Kewl Tune pesait déjà 22-32 % du TCG légal de mai à juillet, 8,9 % en septembre, 0,4 % en octobre (Rotary Forbidden TCG 2026-09-21). Cartes du signal du 17 juin : −34,8 % (34 cartes ≥ 1 €) vs marché −0,8 %.
 - **TOK-77** : Genesys = 27-44 % des decks TCG depuis juillet ; l'ancien filtre `illegal = 0` ne laissait presque que du Genesys.
 - **TOK-75** : `python scripts/validate_predictions.py` (table `prediction_validation`) ; aucune prévision `live` n'est échue avant décembre 2026.
+- **TOK-83 (2026-11-16)** : `GET /ban-radar` mettait 10-20 s (jointure `REPLACE(REPLACE(c.name…))` sans index). Fix : index d'expression `idx_cards_name_clean` (créé par `init_db.py` et `build_serving_db.py`) ; **la comparaison doit s'écrire `= +r.card_name`** (le `+` coupe l'affinité TEXT, sinon SQLite ignore l'index). À reproduire pour toute nouvelle jointure sur `cards`.
 - `data/serving.db` reconstruite (10,2 Mo). Sauvegardes locales : `data/backup_avant_nettoyage_20261116.db`, `data/backup_serving_avant_nettoyage_20261116.db`.
 
 ### 🔜 À faire

@@ -114,6 +114,7 @@ traitement conseillé : TOK-70 → TOK-72 → TOK-69 → TOK-74 / TOK-73.
 | TOK-77 | Mesurer la pollution Genesys dans le méta TCG | ✅ Done — `docs/tok-77-genesys.md` (27-44 % des decks TCG depuis juillet) | 🟠 Medium |
 | TOK-78 | Onboarding d'une data scientist (`docs/ONBOARDING.md` fait, accès à décider) | 🟡 Partiel | 🟠 Medium |
 | TOK-79 | Agent `coordinateur` (Rapport + Dispatch) + point hebdo `yugioh-point-hebdo` | ✅ Done | 🟠 Medium |
+| TOK-83 | Perf : `GET /ban-radar` 10-20 s (jointure `REPLACE` sans index) | ✅ Done — index d'expression `idx_cards_name_clean` + `= +col` dans les routeurs (~30 ms) ; `serving.db` reconstruite | 🟠 Medium |
 
 ⚠ **Intitulé trompeur dans Linear** : TOK-25 s'appelle « Modèle séquentiel ARIMA ou LSTM ». Le modèle
 réellement retenu est **70 % naïf + 30 % Ridge** (l'AR(1) a été testé puis écarté, notebook 05).

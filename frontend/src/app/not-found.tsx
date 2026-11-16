@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Em } from "@/components/ds/em";
 import { Page, PageHero } from "@/components/ds/page";
 
-export const metadata: Metadata = { title: "Page introuvable" };
+export const metadata: Metadata = { title: "Page introuvable", robots: { index: false, follow: false } };
 
 export default function NotFound() {
   return (

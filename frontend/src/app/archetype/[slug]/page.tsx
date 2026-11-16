@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { api } from "@/lib/api";
 import { artCropUrl } from "@/lib/card-images";
 import { fmtDate, fmtMonthRange, fmtMonthShort, fmtNum, fmtPct, fmtRank } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
 import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -64,8 +65,13 @@ function describe(a: ArchetypeResponse): string {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const archetype = await api.archetype(slug);
-  if (!archetype) return { title: "Archétype introuvable" };
-  return { title: archetype.archetype, description: describe(archetype) };
+  if (!archetype) return { title: "Archétype introuvable", robots: { index: false, follow: false } };
+  // Toute variante de casse rend la même page : l'adresse canonique est le slug servi par l'API.
+  return pageMetadata({
+    title: archetype.archetype,
+    description: describe(archetype),
+    path: `/archetype/${archetype.slug}`,
+  });
 }
 
 export default async function ArchetypePage({ params }: Params) {

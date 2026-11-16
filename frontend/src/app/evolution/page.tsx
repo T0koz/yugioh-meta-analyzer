@@ -1,14 +1,24 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
-import { fmtMonthShort } from "@/lib/format";
+import { fmtMonthRange, fmtMonthShort } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { Em } from "@/components/ds/em";
 import { Page, PageHero } from "@/components/ds/page";
 import { EvolutionChart } from "./EvolutionChart";
 
-export const metadata: Metadata = {
-  title: "Évolution de la méta",
-  description: "Score méta mensuel de chaque archétype Yu-Gi-Oh! : qui monte, qui s’efface, mois après mois.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { data } = await api.evolution();
+  const months = Object.values(data)
+    .flatMap((points) => points.map((p) => p.month))
+    .sort();
+  const period = months.length ? `, ${fmtMonthRange(months[0], months[months.length - 1])}` : "";
+  return pageMetadata({
+    title: "Évolution de la méta",
+    description: `Score méta mensuel des ${Object.keys(data).length} premiers archétypes Yu-Gi-Oh! TCG${period}. Source : decklists de tournoi, ${DECK_SOURCE}.`,
+    path: "/evolution",
+  });
+}
 
 export default async function EvolutionPage() {
   const { data, images, decks_by_month } = await api.evolution();

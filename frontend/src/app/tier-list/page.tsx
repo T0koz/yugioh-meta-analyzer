@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
-import { fmtMonthShort, fmtNum } from "@/lib/format";
+import { fmtMonthRange, fmtMonthShort, fmtNum } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -10,10 +12,15 @@ import { DataFooter, Page, PageHero, StatBand } from "@/components/ds/page";
 import { PageTransition } from "@/components/view-transitions";
 import { TierList } from "./TierList";
 
-export const metadata: Metadata = {
-  title: "Tier list TCG",
-  description: "Les archétypes Yu-Gi-Oh! qui dominent les tournois TCG, classés par part de méta et par performance.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { data, window_start, window_end, n_decks } = await api.tierList();
+  const period = fmtMonthRange(window_start, window_end) ?? "fenêtre courante";
+  return pageMetadata({
+    title: "Tier list TCG",
+    description: `${data.length} archétypes Yu-Gi-Oh! TCG classés par part de decks sur ${fmtNum(n_decks)} decklists de tournoi, ${period}. Source : ${DECK_SOURCE}.`,
+    path: "/tier-list",
+  });
+}
 
 export default async function TierListPage() {
   const { data, window_start, window_end, n_decks } = await api.tierList();

@@ -1,0 +1,1014 @@
+{
+ "data": [
+  {
+   "card_name": "Ash Blossom & Joyous Spring",
+   "ban_risk_score": 100.0,
+   "risk_label": "Critique",
+   "current_status": "Unlimited",
+   "deck_share": 92.99,
+   "decks": 1751,
+   "n_archetypes": 95,
+   "mean_copies": 2.93,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg",
+   "criteria": {
+    "ubiquity": 52.33,
+    "carrier": 7.24,
+    "copies": 36.17,
+    "restriction": 0.0,
+    "momentum": 1.28,
+    "bridge": 2.98
+   }
+  },
+  {
+   "card_name": "Mulcharmy Fuwalos",
+   "ban_risk_score": 97.9,
+   "risk_label": "Critique",
+   "current_status": "Unlimited",
+   "deck_share": 96.55,
+   "decks": 1818,
+   "n_archetypes": 99,
+   "mean_copies": 2.94,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg",
+   "criteria": {
+    "ubiquity": 54.32,
+    "carrier": 6.48,
+    "copies": 36.34,
+    "restriction": 0.0,
+    "momentum": 0.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Droll & Lock Bird",
+   "ban_risk_score": 97.8,
+   "risk_label": "Critique",
+   "current_status": "Limited",
+   "deck_share": 93.57,
+   "decks": 1762,
+   "n_archetypes": 95,
+   "mean_copies": 1.82,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg",
+   "criteria": {
+    "ubiquity": 52.67,
+    "carrier": 6.5,
+    "copies": 15.48,
+    "restriction": 18.76,
+    "momentum": 1.12,
+    "bridge": 3.26
+   }
+  },
+  {
+   "card_name": "Griffoh",
+   "ban_risk_score": 81.1,
+   "risk_label": "Critique",
+   "current_status": "Limited",
+   "deck_share": 14.71,
+   "decks": 277,
+   "n_archetypes": 23,
+   "mean_copies": 2.78,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg",
+   "criteria": {
+    "ubiquity": 8.28,
+    "carrier": 1.84,
+    "copies": 33.46,
+    "restriction": 18.76,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Mulcharmy Purulia",
+   "ban_risk_score": 79.9,
+   "risk_label": "Critique",
+   "current_status": "Unlimited",
+   "deck_share": 66.97,
+   "decks": 1261,
+   "n_archetypes": 89,
+   "mean_copies": 2.56,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg",
+   "criteria": {
+    "ubiquity": 37.69,
+    "carrier": 4.86,
+    "copies": 29.23,
+    "restriction": 0.0,
+    "momentum": 8.13,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Elfnote Lucina",
+   "ban_risk_score": 69.9,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 14.07,
+   "decks": 265,
+   "n_archetypes": 5,
+   "mean_copies": 2.99,
+   "top_archetype": "Elfnote",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13597785.jpg",
+   "criteria": {
+    "ubiquity": 7.91,
+    "carrier": 5.87,
+    "copies": 37.36,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Ghost Ogre & Snow Rabbit",
+   "ban_risk_score": 69.6,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 55.87,
+   "decks": 1052,
+   "n_archetypes": 76,
+   "mean_copies": 2.11,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg",
+   "criteria": {
+    "ubiquity": 31.46,
+    "carrier": 6.85,
+    "copies": 20.85,
+    "restriction": 0.0,
+    "momentum": 10.44,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Elfnote Regina",
+   "ban_risk_score": 69.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 14.07,
+   "decks": 265,
+   "n_archetypes": 5,
+   "mean_copies": 2.97,
+   "top_archetype": "Elfnote",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/56651978.jpg",
+   "criteria": {
+    "ubiquity": 7.92,
+    "carrier": 5.88,
+    "copies": 36.95,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Dominus Impulse",
+   "ban_risk_score": 68.0,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 21.61,
+   "decks": 407,
+   "n_archetypes": 39,
+   "mean_copies": 2.92,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/40366667.jpg",
+   "criteria": {
+    "ubiquity": 12.17,
+    "carrier": 1.67,
+    "copies": 35.97,
+    "restriction": 0.0,
+    "momentum": 18.19,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Prohibited Power Patron Portal - Terminus",
+   "ban_risk_score": 67.2,
+   "risk_label": "Élevé",
+   "current_status": "Limited",
+   "deck_share": 22.89,
+   "decks": 431,
+   "n_archetypes": 11,
+   "mean_copies": 2.12,
+   "top_archetype": "Elfnote",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/25661743.jpg",
+   "criteria": {
+    "ubiquity": 12.89,
+    "carrier": 5.85,
+    "copies": 21.11,
+    "restriction": 18.77,
+    "momentum": 8.21,
+    "bridge": 0.38
+   }
+  },
+  {
+   "card_name": "Pot of Sloth",
+   "ban_risk_score": 65.8,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 31.86,
+   "decks": 600,
+   "n_archetypes": 64,
+   "mean_copies": 2.48,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg",
+   "criteria": {
+    "ubiquity": 17.93,
+    "carrier": 1.35,
+    "copies": 27.77,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Branded in High Spirits",
+   "ban_risk_score": 63.2,
+   "risk_label": "Élevé",
+   "current_status": "Limited",
+   "deck_share": 12.59,
+   "decks": 237,
+   "n_archetypes": 3,
+   "mean_copies": 2.73,
+   "top_archetype": "Branded",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg",
+   "criteria": {
+    "ubiquity": 7.08,
+    "carrier": 4.16,
+    "copies": 32.46,
+    "restriction": 18.75,
+    "momentum": 0.0,
+    "bridge": 0.76
+   }
+  },
+  {
+   "card_name": "Nibiru, the Primal Being",
+   "ban_risk_score": 62.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 33.99,
+   "decks": 640,
+   "n_archetypes": 71,
+   "mean_copies": 2.15,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg",
+   "criteria": {
+    "ubiquity": 19.13,
+    "carrier": 3.04,
+    "copies": 21.57,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Dominus Purge",
+   "ban_risk_score": 62.0,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 10.83,
+   "decks": 204,
+   "n_archetypes": 17,
+   "mean_copies": 2.9,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/97045737.jpg",
+   "criteria": {
+    "ubiquity": 6.09,
+    "carrier": 1.47,
+    "copies": 35.68,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Fydraulis Harmonia",
+   "ban_risk_score": 61.3,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 28.47,
+   "decks": 536,
+   "n_archetypes": 23,
+   "mean_copies": 2.85,
+   "top_archetype": "Kewl Tune",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/70088809.jpg",
+   "criteria": {
+    "ubiquity": 16.02,
+    "carrier": 6.75,
+    "copies": 34.73,
+    "restriction": 0.0,
+    "momentum": 0.0,
+    "bridge": 3.8
+   }
+  },
+  {
+   "card_name": "Angelechy Opening to e4",
+   "ban_risk_score": 60.3,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 5.05,
+   "decks": 95,
+   "n_archetypes": 7,
+   "mean_copies": 2.98,
+   "top_archetype": "Angelechy",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/80565021.jpg",
+   "criteria": {
+    "ubiquity": 2.84,
+    "carrier": 1.54,
+    "copies": 37.14,
+    "restriction": 0.0,
+    "momentum": 18.77,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Angelechy Opposition",
+   "ban_risk_score": 59.8,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 3.56,
+   "decks": 67,
+   "n_archetypes": 4,
+   "mean_copies": 3.0,
+   "top_archetype": "Angelechy",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/86457955.jpg",
+   "criteria": {
+    "ubiquity": 2.0,
+    "carrier": 1.54,
+    "copies": 37.5,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Angelechy Strategy Score",
+   "ban_risk_score": 59.8,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 3.56,
+   "decks": 67,
+   "n_archetypes": 4,
+   "mean_copies": 3.0,
+   "top_archetype": "Angelechy",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13068112.jpg",
+   "criteria": {
+    "ubiquity": 2.0,
+    "carrier": 1.54,
+    "copies": 37.5,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Typhoon",
+   "ban_risk_score": 59.3,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 10.41,
+   "decks": 196,
+   "n_archetypes": 39,
+   "mean_copies": 2.77,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/14883228.jpg",
+   "criteria": {
+    "ubiquity": 5.85,
+    "carrier": 1.47,
+    "copies": 33.23,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Inspector Boarder",
+   "ban_risk_score": 59.2,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 3.03,
+   "decks": 57,
+   "n_archetypes": 4,
+   "mean_copies": 3.0,
+   "top_archetype": "Angelechy",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/15397015.jpg",
+   "criteria": {
+    "ubiquity": 1.71,
+    "carrier": 1.22,
+    "copies": 37.52,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Surge Blitzclique",
+   "ban_risk_score": 59.0,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 2.81,
+   "decks": 53,
+   "n_archetypes": 2,
+   "mean_copies": 3.0,
+   "top_archetype": "Blitzclique",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22912101.jpg",
+   "criteria": {
+    "ubiquity": 1.58,
+    "carrier": 1.14,
+    "copies": 37.52,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Blitzclique - Breakaway",
+   "ban_risk_score": 58.7,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 2.81,
+   "decks": 53,
+   "n_archetypes": 2,
+   "mean_copies": 2.98,
+   "top_archetype": "Blitzclique",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/64049762.jpg",
+   "criteria": {
+    "ubiquity": 1.58,
+    "carrier": 1.15,
+    "copies": 37.19,
+    "restriction": 0.0,
+    "momentum": 18.77,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Hideout in the Sky, Coulomb",
+   "ban_risk_score": 58.6,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 2.81,
+   "decks": 53,
+   "n_archetypes": 2,
+   "mean_copies": 2.98,
+   "top_archetype": "Blitzclique",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/37654623.jpg",
+   "criteria": {
+    "ubiquity": 1.58,
+    "carrier": 1.14,
+    "copies": 37.13,
+    "restriction": 0.0,
+    "momentum": 18.74,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "The Fallen & The Virtuous",
+   "ban_risk_score": 58.4,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 42.22,
+   "decks": 795,
+   "n_archetypes": 53,
+   "mean_copies": 2.62,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg",
+   "criteria": {
+    "ubiquity": 23.76,
+    "carrier": 4.18,
+    "copies": 30.46,
+    "restriction": 0.0,
+    "momentum": 0.0,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Grain Blitzclique",
+   "ban_risk_score": 58.3,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 2.81,
+   "decks": 53,
+   "n_archetypes": 2,
+   "mean_copies": 2.96,
+   "top_archetype": "Blitzclique",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/84401954.jpg",
+   "criteria": {
+    "ubiquity": 1.58,
+    "carrier": 1.14,
+    "copies": 36.81,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Whisker Blitzclique",
+   "ban_risk_score": 58.3,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 2.81,
+   "decks": 53,
+   "n_archetypes": 2,
+   "mean_copies": 2.96,
+   "top_archetype": "Blitzclique",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/85523502.jpg",
+   "criteria": {
+    "ubiquity": 1.58,
+    "carrier": 1.14,
+    "copies": 36.81,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Crackle Blitzclique",
+   "ban_risk_score": 58.0,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 2.81,
+   "decks": 53,
+   "n_archetypes": 2,
+   "mean_copies": 2.94,
+   "top_archetype": "Blitzclique",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/58916810.jpg",
+   "criteria": {
+    "ubiquity": 1.58,
+    "carrier": 1.15,
+    "copies": 36.5,
+    "restriction": 0.0,
+    "momentum": 18.77,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Infinity of the Sacred Beasts - Raviel, Lord of Phantasms",
+   "ban_risk_score": 57.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 1.27,
+   "decks": 24,
+   "n_archetypes": 3,
+   "mean_copies": 3.0,
+   "top_archetype": "Sacred Beast",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/96345184.jpg",
+   "criteria": {
+    "ubiquity": 0.71,
+    "carrier": 0.55,
+    "copies": 37.49,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Martyr of the Sacred Beasts",
+   "ban_risk_score": 57.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 1.27,
+   "decks": 24,
+   "n_archetypes": 3,
+   "mean_copies": 3.0,
+   "top_archetype": "Sacred Beast",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/59138498.jpg",
+   "criteria": {
+    "ubiquity": 0.71,
+    "carrier": 0.55,
+    "copies": 37.48,
+    "restriction": 0.0,
+    "momentum": 18.74,
+    "bridge": 0.01
+   }
+  },
+  {
+   "card_name": "Sacred Beasts Thunderclap",
+   "ban_risk_score": 57.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 1.27,
+   "decks": 24,
+   "n_archetypes": 3,
+   "mean_copies": 3.0,
+   "top_archetype": "Sacred Beast",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1259915.jpg",
+   "criteria": {
+    "ubiquity": 0.71,
+    "carrier": 0.55,
+    "copies": 37.49,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Ragged Records of Rites",
+   "ban_risk_score": 57.1,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 14.71,
+   "decks": 277,
+   "n_archetypes": 25,
+   "mean_copies": 2.68,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg",
+   "criteria": {
+    "ubiquity": 8.28,
+    "carrier": 1.72,
+    "copies": 31.5,
+    "restriction": 0.0,
+    "momentum": 15.61,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Ghost Belle & Haunted Mansion",
+   "ban_risk_score": 57.1,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 42.17,
+   "decks": 794,
+   "n_archetypes": 60,
+   "mean_copies": 2.39,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/73642296.jpg",
+   "criteria": {
+    "ubiquity": 23.71,
+    "carrier": 7.19,
+    "copies": 26.13,
+    "restriction": 0.0,
+    "momentum": 0.0,
+    "bridge": 0.06
+   }
+  },
+  {
+   "card_name": "Kuriboh - Multiply!",
+   "ban_risk_score": 57.0,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 5.15,
+   "decks": 97,
+   "n_archetypes": 18,
+   "mean_copies": 2.83,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/14965712.jpg",
+   "criteria": {
+    "ubiquity": 2.9,
+    "carrier": 0.97,
+    "copies": 34.28,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.09
+   }
+  },
+  {
+   "card_name": "Neptabyss, the Atlantean Prince",
+   "ban_risk_score": 56.9,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.69,
+   "decks": 13,
+   "n_archetypes": 2,
+   "mean_copies": 3.0,
+   "top_archetype": "Mermail Atlantean",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/21565445.jpg",
+   "criteria": {
+    "ubiquity": 0.39,
+    "carrier": 0.25,
+    "copies": 37.51,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Mermail Shadow Squad",
+   "ban_risk_score": 56.9,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.64,
+   "decks": 12,
+   "n_archetypes": 2,
+   "mean_copies": 3.0,
+   "top_archetype": "Mermail Atlantean",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/53085623.jpg",
+   "criteria": {
+    "ubiquity": 0.36,
+    "carrier": 0.25,
+    "copies": 37.53,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Synchro Emergency",
+   "ban_risk_score": 56.8,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 1.81,
+   "decks": 34,
+   "n_archetypes": 5,
+   "mean_copies": 2.94,
+   "top_archetype": "Elfnote",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/49415281.jpg",
+   "criteria": {
+    "ubiquity": 1.02,
+    "carrier": 0.55,
+    "copies": 36.38,
+    "restriction": 0.0,
+    "momentum": 18.74,
+    "bridge": 0.11
+   }
+  },
+  {
+   "card_name": "Sacred Beasts Released",
+   "ban_risk_score": 56.8,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 1.27,
+   "decks": 24,
+   "n_archetypes": 3,
+   "mean_copies": 2.96,
+   "top_archetype": "Sacred Beast",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/38776201.jpg",
+   "criteria": {
+    "ubiquity": 0.72,
+    "carrier": 0.55,
+    "copies": 36.76,
+    "restriction": 0.0,
+    "momentum": 18.77,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Calamity of the Sacred Beasts - Hamon, Lord of Striking Thunder",
+   "ban_risk_score": 56.8,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 1.27,
+   "decks": 24,
+   "n_archetypes": 3,
+   "mean_copies": 2.96,
+   "top_archetype": "Sacred Beast",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/50251045.jpg",
+   "criteria": {
+    "ubiquity": 0.72,
+    "carrier": 0.55,
+    "copies": 36.76,
+    "restriction": 0.0,
+    "momentum": 18.77,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Dark Time Wizard",
+   "ban_risk_score": 56.7,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.53,
+   "decks": 10,
+   "n_archetypes": 3,
+   "mean_copies": 3.0,
+   "top_archetype": "Radiant Typhoon",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/40235813.jpg",
+   "criteria": {
+    "ubiquity": 0.3,
+    "carrier": 0.13,
+    "copies": 37.52,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Treasures of the Kings",
+   "ban_risk_score": 56.6,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.32,
+   "decks": 6,
+   "n_archetypes": 1,
+   "mean_copies": 3.0,
+   "top_archetype": "Odion",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/69299029.jpg",
+   "criteria": {
+    "ubiquity": 0.18,
+    "carrier": 0.15,
+    "copies": 37.51,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "The Phantom Knights of Doomed Soleret",
+   "ban_risk_score": 56.6,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.48,
+   "decks": 9,
+   "n_archetypes": 6,
+   "mean_copies": 3.0,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/83566725.jpg",
+   "criteria": {
+    "ubiquity": 0.27,
+    "carrier": 0.1,
+    "copies": 37.49,
+    "restriction": 0.0,
+    "momentum": 18.74,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Fusion Destiny",
+   "ban_risk_score": 56.6,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.42,
+   "decks": 8,
+   "n_archetypes": 2,
+   "mean_copies": 3.0,
+   "top_archetype": "Destiny HERO",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/52947044.jpg",
+   "criteria": {
+    "ubiquity": 0.24,
+    "carrier": 0.13,
+    "copies": 37.49,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Winged Kuriboh Sabatiel LV10",
+   "ban_risk_score": 56.6,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.32,
+   "decks": 6,
+   "n_archetypes": 2,
+   "mean_copies": 3.0,
+   "top_archetype": "Destiny HERO",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/40237839.jpg",
+   "criteria": {
+    "ubiquity": 0.18,
+    "carrier": 0.13,
+    "copies": 37.53,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Destiny HERO - Doom Overlord",
+   "ban_risk_score": 56.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.27,
+   "decks": 5,
+   "n_archetypes": 1,
+   "mean_copies": 3.0,
+   "top_archetype": "Destiny HERO",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/62542673.jpg",
+   "criteria": {
+    "ubiquity": 0.15,
+    "carrier": 0.13,
+    "copies": 37.48,
+    "restriction": 0.0,
+    "momentum": 18.74,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Heat Wave",
+   "ban_risk_score": 56.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 1.96,
+   "decks": 37,
+   "n_archetypes": 15,
+   "mean_copies": 2.95,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/45141013.jpg",
+   "criteria": {
+    "ubiquity": 1.1,
+    "carrier": 0.15,
+    "copies": 36.49,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Chaos Hunter",
+   "ban_risk_score": 56.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.27,
+   "decks": 5,
+   "n_archetypes": 2,
+   "mean_copies": 3.0,
+   "top_archetype": "Angelechy",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/97940434.jpg",
+   "criteria": {
+    "ubiquity": 0.15,
+    "carrier": 0.1,
+    "copies": 37.5,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Dark City at Midnight",
+   "ban_risk_score": 56.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 0.27,
+   "decks": 5,
+   "n_archetypes": 1,
+   "mean_copies": 3.0,
+   "top_archetype": "Destiny HERO",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/4663194.jpg",
+   "criteria": {
+    "ubiquity": 0.15,
+    "carrier": 0.13,
+    "copies": 37.48,
+    "restriction": 0.0,
+    "momentum": 18.74,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Dark Magical Curtain",
+   "ban_risk_score": 56.2,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 6.0,
+   "decks": 113,
+   "n_archetypes": 13,
+   "mean_copies": 2.72,
+   "top_archetype": "Dark Magician Chaos Ritual",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/41350417.jpg",
+   "criteria": {
+    "ubiquity": 3.38,
+    "carrier": 1.84,
+    "copies": 32.21,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Effect Veiler",
+   "ban_risk_score": 56.1,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 28.25,
+   "decks": 532,
+   "n_archetypes": 37,
+   "mean_copies": 2.73,
+   "top_archetype": "Kewl Tune",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/97268402.jpg",
+   "criteria": {
+    "ubiquity": 15.89,
+    "carrier": 7.12,
+    "copies": 32.48,
+    "restriction": 0.0,
+    "momentum": 0.0,
+    "bridge": 0.61
+   }
+  },
+  {
+   "card_name": "Harpie's Feather Duster",
+   "ban_risk_score": 56.0,
+   "risk_label": "Élevé",
+   "current_status": "Limited",
+   "deck_share": 55.5,
+   "decks": 1045,
+   "n_archetypes": 81,
+   "mean_copies": 1.0,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/18144507.jpg",
+   "criteria": {
+    "ubiquity": 31.24,
+    "carrier": 6.0,
+    "copies": 0.0,
+    "restriction": 18.76,
+    "momentum": 0.0,
+    "bridge": 0.0
+   }
+  }
+ ],
+ "as_of": "2026-11-14",
+ "n_decks_window": 1883,
+ "weights": {
+  "ubiquity": 0.3,
+  "carrier": 0.25,
+  "copies": 0.2,
+  "restriction": 0.1,
+  "momentum": 0.1,
+  "bridge": 0.05
+ }
+}

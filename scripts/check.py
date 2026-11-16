@@ -5,6 +5,7 @@ Vérifications avant de pousser — une seule commande pour tout le monde.
     python scripts/check.py --all        # tout, même si rien n'a changé
     python scripts/check.py --ci         # mode GitHub Actions : sans base de données, sur tout le dépôt
     python scripts/check.py --pre-push   # appelé par .githooks/pre-push (lit les refs sur stdin)
+    python scripts/check.py --visuel     # ajoute les tests visuels du front (≈ 45 s, voir docs/tests-visuels.md)
 
 Pourquoi ce script : le dépôt est public et deux personnes poussent directement sur
 `main`, sans revue. Les garde-fous existaient déjà, mais éparpillés (CLAUDE.md, context.md) :
@@ -18,6 +19,7 @@ ici, ils sont lancés d'un coup, et seulement ceux qui concernent ce qui a chang
 | build_serving_db.py --check        | backend/ ou scripts/ modifié (base requise)| oui       |
 | Test de fumée, yugioh.db + serving | backend/ ou scripts/ modifié (base requise)| oui       |
 | Backtest du Ban Radar              | scoring modifié (base requise)             | non : à lire, pas de seuil défini |
+| Tests visuels du front             | seulement avec --visuel (≈ 45 s, réseau)   | oui       |
 
 Bibliothèque standard uniquement : le script tourne sans venv (GitHub Actions, hook).
 Les étapes qui demandent une base ou `node_modules` absents sont **ignorées et signalées**,
@@ -344,10 +346,26 @@ def check_backtest(report: Report) -> None:
     report.ok("backtest exécuté : compare les rangs médians à ceux de context.md avant de pousser")
 
 
+def check_visual(report: Report) -> None:
+    """Sur demande seulement : ≈ 45 s, et le build télécharge les polices (réseau requis)."""
+    report.step("Tests visuels du front (36 captures comparées aux références)")
+    res = run([python_bin(), "scripts/visual_tests.py"])
+    last = (res.stdout.strip().splitlines() or [""])[-1]
+    if res.returncode == 0:
+        report.ok(last.lstrip("✓ "))
+    elif res.returncode == 3:  # dépendance absente (navigateur, venv, node_modules, réseau)
+        report.skip("tests visuels", last.removeprefix("⚠ Tests visuels ignorés : "))
+    else:
+        report.fail("tests visuels", res.stdout + res.stderr)
+
+
 # ── Rappels non bloquants ──────────────────────────────────────────────────────
 
-def reminders(files: set[str]) -> None:
+def reminders(files: set[str], visual_done: bool = False) -> None:
     notes = []
+    if not visual_done and any(f.startswith("frontend/src/") for f in files):
+        notes.append("Tu as touché l'interface : `python scripts/check.py --visuel` compare 36 captures aux "
+                     "références (≈ 45 s). Changement voulu → `python scripts/visual_tests.py --update`.")
     if any(f.startswith(("notebooks/", "scripts/build_", "scripts/refresh_all")) for f in files):
         notes.append("Tu as touché un calcul : si une table a été recalculée, lancer "
                      "`python scripts/log_predictions.py` (Thomas seul commite data/prediction_log.jsonl).")
@@ -368,6 +386,8 @@ def main() -> int:
     group.add_argument("--all", action="store_true", help="tout vérifier, même sans changement")
     group.add_argument("--ci", action="store_true", help="mode GitHub Actions (sans base, tout le dépôt)")
     group.add_argument("--pre-push", action="store_true", help="appelé par le hook pre-push")
+    parser.add_argument("--visuel", action="store_true",
+                        help="lancer aussi les tests visuels du front (≈ 45 s, scripts/visual_tests.py)")
     args = parser.parse_args()
 
     if args.pre_push:
@@ -397,8 +417,10 @@ def main() -> int:
         check_backend(report)
     if mode != "ci" and (args.all or BAN_RADAR_FILES & files):
         check_backtest(report)
+    if args.visuel and mode != "ci":
+        check_visual(report)
     if mode != "ci":
-        reminders(files)
+        reminders(files, visual_done=args.visuel)
 
     print()
     if report.skipped:

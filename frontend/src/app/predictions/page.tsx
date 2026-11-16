@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { fmtDate, fmtMonthShort, fmtNum, fmtSigned } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { Em } from "@/components/ds/em";
@@ -8,15 +10,22 @@ import { DataFooter, Page, PageHero } from "@/components/ds/page";
 import { TrendLabel } from "@/components/ds/tags";
 import { PredictionsChart } from "./PredictionsChart";
 
-export const metadata: Metadata = {
-  title: "Prédictions de méta",
-  description: "Score méta prévu le mois prochain pour chaque archétype Yu-Gi-Oh! TCG, avec les limites du modèle.",
-};
 
 /** « 2026-10 » → « 2026-11 ». */
 function nextMonth(yearMonth: string): string {
   const [year, month] = yearMonth.split("-").map(Number);
   return month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, "0")}`;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { data, model, data_month, computed_at } = await api.predictions();
+  const target = data_month ? ` pour ${fmtMonthShort(nextMonth(data_month))}` : "";
+  const computed = computed_at ? `, calcul du ${fmtDate(computed_at)}` : "";
+  return pageMetadata({
+    title: "Prédictions de méta",
+    description: `Score méta prévu${target} sur ${data.length} archétypes Yu-Gi-Oh! TCG, modèle ${model}${computed}. Données : decklists de tournoi, ${DECK_SOURCE}.`,
+    path: "/predictions",
+  });
 }
 
 export default async function PredictionsPage() {

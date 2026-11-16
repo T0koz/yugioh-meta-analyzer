@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YGO Meta — prototype d'accueil (direction « Braise vivante »)</title>
+<meta name="description" content="Prototype statique : illustration de la direction recommandée dans docs/audit-front/3-proposition.md. Données figées au 16 novembre 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens Ember (inchangés) + ajouts de la proposition ---------- */
+:root{
+  color-scheme:dark;
+  --ink:#05070b;--ink-2:#090d14;--ink-3:#0e131c;--ink-4:#151c28;
+  --line:rgba(170,195,235,.12);--line-2:rgba(170,195,235,.22);
+  --text:#e8edf5;--soft:#b4bfcf;--muted:#8591a6;
+  --signal:#ff5a3c;--signal-hi:#ff8a6b;--on-signal:#1f0700;
+  --good:#3ddc97;--warn:#f5c451;
+  /* ajouts : seconde série de données, lueur, profondeur, mouvement */
+  --ocg:#7fb0ff;              /* série « OCG » : 8,9:1 sur --ink */
+  --glow:rgba(255,90,60,.28);
+  --shadow-card:0 30px 60px -20px rgba(0,0,0,.8),0 0 0 1px rgba(170,195,235,.14);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --dur-1:.2s;--dur-2:.6s;--dur-3:1.1s;
+  --gutter:clamp(16px,3.2vw,44px);--maxw:1200px;
+  --sans:"Inter Tight",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;--mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--ink);color:var(--text);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--signal-hi);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+em.a{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--signal);letter-spacing:-.01em}
+.eyebrow{display:flex;align-items:center;gap:10px;font:400 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 0 var(--glow);animation:pulse 2.4s var(--ease) infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--glow)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:99;background:var(--signal);color:var(--on-signal);padding:10px 14px;border-radius:4px}
+
+/* ---------- Nav ---------- */
+.nav{position:sticky;top:12px;z-index:40;margin-top:12px;padding:0 var(--gutter)}
+.nav>div{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:18px;padding:10px 12px 10px 16px;border:1px solid var(--line-2);border-radius:12px;background:rgba(9,13,20,.72);backdrop-filter:blur(14px) saturate(140%)}
+.logo{display:flex;align-items:center;gap:8px;font:600 14px var(--mono);letter-spacing:.08em}
+.logo i{width:14px;height:14px;background:var(--signal);clip-path:polygon(0 100%,30% 0,50% 60%,70% 0,100% 100%,80% 100%,70% 45%,50% 100%,30% 45%,20% 100%)}
+.nav nav{display:flex;gap:4px;margin-right:auto}
+.nav nav a{font-size:14px;color:var(--muted);padding:10px 12px;border-radius:6px;transition:color var(--dur-1),background var(--dur-1)}
+.nav nav a:hover{color:var(--text);background:var(--ink-4)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:6px;font:500 15px var(--sans);border:1px solid var(--line-2);background:var(--ink-3);transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+.btn.primary{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
+@media (hover:hover){.btn:hover{transform:translateY(-2px)}.btn.primary:hover{box-shadow:0 14px 40px -10px var(--glow)}}
+@media (max-width:760px){.nav nav{display:none}.nav .btn{margin-left:auto}}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;isolation:isolate;min-height:min(880px,100svh);display:grid;align-items:center;padding-block:56px 40px;overflow:clip}
+#embers{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.hero::before{content:"";position:absolute;z-index:-1;right:-6%;top:8%;width:70%;aspect-ratio:1;background:radial-gradient(closest-side,var(--glow),transparent 70%);filter:blur(30px);opacity:.75}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center}
+h1{font:500 clamp(40px,6.6vw,96px)/.95 var(--sans);letter-spacing:-.05em;margin-top:20px;text-wrap:balance}
+h1 .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em}
+h1 .w>span{display:inline-block;transform:translateY(105%);animation:rise var(--dur-3) var(--ease) forwards;animation-delay:calc(var(--i)*70ms + 150ms)}
+@keyframes rise{to{transform:none}}
+.lede{margin-top:24px;max-width:50ch;color:var(--soft);font-size:18px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.fade{opacity:0;transform:translateY(14px);animation:fadeup var(--dur-3) var(--ease) forwards;animation-delay:var(--d,.7s)}
+@keyframes fadeup{to{opacity:1;transform:none}}@keyframes fadein{to{opacity:1}}
+
+/* éventail de cartes en 3D (CSS seul, pas de WebGL) */
+.stage{perspective:1400px;height:clamp(340px,44vw,560px);display:grid;place-items:center}
+.fan{position:relative;width:clamp(150px,17vw,230px);aspect-ratio:59/86;transform-style:preserve-3d;transform:rotateX(var(--rx,8deg)) rotateY(var(--ry,-14deg));transition:transform .5s var(--ease)}
+.card{position:absolute;inset:0;border-radius:9px;overflow:hidden;background:linear-gradient(160deg,#1b2433,#0b0f16);box-shadow:var(--shadow-card);transform-origin:50% 120%;
+  transform:rotate(calc(var(--k)*11deg)) translate3d(calc(var(--k)*34%),calc(var(--k)*var(--k)*4%),calc(var(--z)*1px));
+  animation:deal 1.2s var(--ease) backwards;animation-delay:calc(var(--n)*90ms + .35s)}
+@keyframes deal{from{transform:rotate(0) translate3d(0,60%,-200px);opacity:0}}
+.card img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+.card::after{content:"";position:absolute;inset:0;z-index:2;mix-blend-mode:color-dodge;opacity:.55;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,140,110,.55) 45%,rgba(127,176,255,.5) 52%,transparent 66%);
+  background-size:260% 260%;background-position:var(--sx,30%) var(--sy,30%);transition:background-position .4s var(--ease)}
+.card .fallback{position:absolute;inset:0;display:grid;place-items:center;font:500 11px var(--mono);letter-spacing:.1em;color:var(--muted);text-transform:uppercase;text-align:center;padding:12px}
+.card.hot{box-shadow:var(--shadow-card),0 0 60px -6px var(--glow)}
+.stage{position:relative}.tag{position:absolute;z-index:5;left:50%;bottom:2%;translate:-50% 0;white-space:nowrap;opacity:0;animation:fadein 1s var(--ease) 1.5s forwards;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:8px 12px;border-radius:6px;background:rgba(9,13,20,.86);border:1px solid var(--line-2);backdrop-filter:blur(8px)}
+.tag b{color:var(--signal);font-weight:500}
+
+/* bande de chiffres */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--line);margin-top:28px}
+.stats div{padding:18px 18px 18px 0;border-left:1px solid var(--line);padding-left:18px}
+.stats div:first-child{border-left:0;padding-left:0}
+.stats dd{font:500 clamp(26px,3.2vw,40px)/1 var(--sans);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stats dt{margin-top:8px;font:400 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- Section « preuve » : graphique piloté par le défilement ---------- */
+.proof{position:relative;height:340vh}
+.proof .sticky{position:sticky;top:0;height:100svh;display:grid;align-items:center}
+.proof-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:48px;align-items:center}
+h2{font:500 clamp(30px,4.2vw,56px)/1.02 var(--sans);letter-spacing:-.04em;text-wrap:balance}
+.steps{margin-top:28px;display:grid;gap:6px}
+.step{padding:14px 16px;border-left:2px solid var(--line-2);color:var(--muted);transition:color var(--dur-2),border-color var(--dur-2),background var(--dur-2)}
+.step b{display:block;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.step.on{color:var(--text);border-color:var(--signal);background:linear-gradient(90deg,rgba(255,90,60,.08),transparent)}
+.chart{border:1px solid var(--line-2);border-radius:14px;background:linear-gradient(180deg,var(--ink-3),var(--ink-2));padding:22px 22px 14px;box-shadow:0 40px 80px -40px #000}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.chart text{font:400 11px var(--mono);fill:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font:400 12px var(--mono);color:var(--soft);margin-bottom:10px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:8px;vertical-align:middle}
+.note{margin-top:12px;font:400 12px/1.6 var(--mono);color:var(--muted)}
+#ocg{transition:transform 1.2s var(--ease),opacity .6s}
+.lagmark{opacity:0;transition:opacity .6s}
+.lagmark.on{opacity:1}
+
+/* ---------- Outils (bento avec images) ---------- */
+.tools{padding:120px 0 60px}
+.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;margin-top:40px}
+.tile{position:relative;overflow:hidden;border:1px solid var(--line-2);border-radius:14px;background:var(--ink-3);padding:26px;display:grid;gap:18px;align-content:space-between;min-height:340px;transition:transform var(--dur-2) var(--ease),border-color var(--dur-2)}
+.tile::before{content:"";position:absolute;inset:0;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,90,60,.13),transparent 60%);opacity:0;transition:opacity var(--dur-2);pointer-events:none}
+@media (hover:hover){.tile:hover{transform:translateY(-3px);border-color:rgba(255,138,107,.45)}.tile:hover::before{opacity:1}}
+.t7{grid-column:span 7}.t5{grid-column:span 5}.t12{grid-column:span 12}
+h3{font:500 clamp(22px,2.4vw,32px)/1.08 var(--sans);letter-spacing:-.03em;text-wrap:balance}
+.tile p{color:var(--muted);font-size:15px;max-width:46ch}
+.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.row img{width:44px;height:64px;object-fit:cover;border-radius:4px;border:1px solid var(--line-2);background:var(--ink-4)}
+.row strong{font-weight:500;font-size:16px;display:block}
+.row small{font:400 12px var(--mono);color:var(--muted)}
+.row .score{font:500 30px var(--sans);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stack{display:flex;gap:2px;height:8px;margin-top:8px;border-radius:2px;overflow:hidden}
+.stack i{display:block;height:100%;width:0;transition:width 1.1s var(--ease);transition-delay:calc(var(--n,0)*80ms)}
+.in .stack i{width:var(--w)}
+.buy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:end}
+.buy .bigcard{width:clamp(120px,13vw,170px);aspect-ratio:59/86;border-radius:8px;overflow:hidden;box-shadow:var(--shadow-card),0 0 50px -10px var(--glow);transform:rotate(-5deg);transition:transform var(--dur-3) var(--ease)}
+.tile:hover .bigcard{transform:rotate(-2deg) scale(1.04)}
+.bigcard img{width:100%;height:100%;object-fit:cover}
+.huge{font:500 clamp(72px,9vw,128px)/.85 var(--sans);letter-spacing:-.07em;font-variant-numeric:tabular-nums}
+.huge sup{font:400 14px var(--mono);letter-spacing:0;color:var(--muted);vertical-align:top;margin-left:6px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills span{font:400 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line-2);border-radius:4px;padding:5px 8px;color:var(--soft)}
+#constellation{width:100%;height:320px;display:block}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:calc(var(--n,0)*90ms)}
+.reveal.in{opacity:1;transform:none}
+
+footer{border-top:1px solid var(--line);margin-top:80px;padding:36px 0 60px;color:var(--muted);font:400 12px/1.8 var(--mono)}
+footer b{color:var(--soft);font-weight:500}
+
+@media (max-width:900px){
+  .hero-grid,.proof-grid{grid-template-columns:1fr}
+  .stage{order:-1;height:340px;margin-bottom:8px}.fan{width:128px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats div:nth-child(3){border-left:0;padding-left:0}
+  .t7,.t5{grid-column:span 12}
+  .proof{height:auto}.proof .sticky{position:static;height:auto;padding:80px 0}
+}
+/* Mouvement réduit : tout est affiché dans son état final, rien ne bouge. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  h1 .w>span,.fade,.reveal,.tag{opacity:1;transform:none}
+  .stack i{width:var(--w)}
+  .proof{height:auto}.proof .sticky{position:static;height:auto;padding:80px 0}
+  #embers{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="nav"><div>
+  <a class="logo" href="#"><i aria-hidden="true"></i>YGO META</a>
+  <nav aria-label="Navigation principale"><a href="#preuve">La preuve</a><a href="#outils">Ban Radar</a><a href="#outils">Boutique</a><a href="#outils">Graphe</a></nav>
+  <a class="btn primary" href="#outils">Voir les signaux</a>
+</div></header>
+
+<main id="contenu">
+<section class="hero">
+  <canvas id="embers" aria-hidden="true"></canvas>
+  <div class="wrap">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow fade" style="--d:.1s">Méta Yu-Gi-Oh! · données au 14 novembre 2026</p>
+      <h1 id="title" aria-label="Le TCG suit l’OCG, quatre mois plus tard."></h1>
+      <p class="lede fade">Ce qui gagne au Japon aujourd’hui se joue en Europe au trimestre suivant. On mesure cet écart sur 19 888 decklists de tournoi, pour dire quoi acheter, quoi jouer et quoi craindre avant tout le monde.</p>
+      <div class="cta fade" style="--d:.85s">
+        <a class="btn primary" href="#outils">Voir les signaux boutique →</a>
+        <a class="btn" href="#preuve">Voir la preuve</a>
+      </div>
+    </div>
+    <div class="stage" id="stage" aria-hidden="true">
+      <div class="fan" id="fan">
+        <div class="card" style="--k:-2;--z:0;--n:0"><span class="fallback">Kewl Tune Mix</span><img src="https://images.ygoprodeck.com/images/cards_small/16509007.jpg" alt="" onerror="this.remove()"></div>
+        <div class="card" style="--k:-1;--z:20;--n:1"><span class="fallback">Branded Fusion</span><img src="https://images.ygoprodeck.com/images/cards_small/44362883.jpg" alt="" onerror="this.remove()"></div>
+        <div class="card hot" style="--k:0;--z:60;--n:4"><span class="fallback">Elfnotes: Rhapsodia of Madness</span><img src="https://images.ygoprodeck.com/images/cards_small/24092792.jpg" alt="" onerror="this.remove()"></div>
+        <div class="card" style="--k:1;--z:20;--n:3"><span class="fallback">Kewl Tune RS</span><img src="https://images.ygoprodeck.com/images/cards_small/15665977.jpg" alt="" onerror="this.remove()"></div>
+        <div class="card" style="--k:2;--z:0;--n:2"><span class="fallback">Ash Blossom</span><img src="https://images.ygoprodeck.com/images/cards_small/14558127.jpg" alt="" onerror="this.remove()"></div>
+      </div>
+      <span class="tag">Signal d’achat <b>100/100</b> · Elfnote</span>
+    </div>
+  </div>
+  <dl class="stats fade" style="--d:1s">
+    <div><dd data-count="19888">19 888</dd><dt>Decklists analysées</dt></div>
+    <div><dd data-count="13797">13 797</dd><dt>Cartes suivies</dt></div>
+    <div><dd data-count="0.771" data-dec="3">0,771</dd><dt>Corrélation OCG → TCG</dt></div>
+    <div><dd data-count="4" data-suffix=" mois">4 mois</dd><dt>D’avance sur le TCG</dt></div>
+  </dl>
+  </div>
+</section>
+
+<section class="proof" id="preuve" aria-labelledby="h-preuve">
+  <div class="sticky"><div class="wrap proof-grid">
+    <div>
+      <p class="eyebrow">La preuve · un archétype, deux formats</p>
+      <h2 id="h-preuve" style="margin-top:18px">Kewl Tune a percé au Japon <em class="a">avant</em> d’arriver chez nous.</h2>
+      <div class="steps" id="steps">
+        <div class="step on"><b>1 · OCG</b>En février 2026, Kewl Tune passe de 2 % à 10 % des decks de tournoi au Japon. Pic à 26,7 % en avril.</div>
+        <div class="step"><b>2 · TCG</b>En TCG, rien ne bouge jusqu’en avril. Puis 22,5 % en mai, et un pic à 32,1 % en juillet.</div>
+        <div class="step"><b>3 · L’écart</b>Décalez la courbe japonaise de trois mois : elle se pose sur la courbe TCG. Cet écart, c’est le temps que vous avez pour agir.</div>
+      </div>
+    </div>
+    <figure class="chart">
+      <div class="legend"><span><i style="background:var(--ocg)"></i>OCG (Japon)</span><span><i style="background:var(--signal)"></i>TCG (Europe, Amériques)</span></div>
+      <svg id="chart" viewBox="0 0 720 380" role="img" aria-label="Part de Kewl Tune dans les decks de tournoi, par mois, d’août 2025 à novembre 2026. L’OCG décolle en février 2026 et culmine à 26,7 % en avril. Le TCG décolle en mai et culmine à 32,1 % en juillet."></svg>
+      <figcaption class="note">Part des decks de tournoi, par mois. Source : tables <code>meta_scores</code> et <code>meta_scores_ocg</code>, relevé du 16 novembre 2026. Sur cet archétype l’écart est de 3 mois ; le chiffre « 4 mois » est la moyenne affichée par le site.</figcaption>
+    </figure>
+  </div></div>
+</section>
+
+<section class="tools wrap" id="outils" aria-labelledby="h-outils">
+  <p class="eyebrow reveal">Trois outils, une même base</p>
+  <h2 id="h-outils" class="reveal" style="margin-top:18px;max-width:18ch">Acheter, jouer, <em class="a">anticiper</em>.</h2>
+  <div class="bento">
+    <a class="tile t5 reveal" href="#" style="--n:0">
+      <p class="eyebrow">Signal boutique</p>
+      <div class="buy">
+        <div class="bigcard"><img src="https://images.ygoprodeck.com/images/cards_small/24092792.jpg" alt="Elfnotes: Rhapsodia of Madness" loading="lazy" width="268" height="391"></div>
+        <div><div class="huge"><span data-count="100">100</span><sup>/100</sup></div></div>
+      </div>
+      <div>
+        <h3>Elfnotes: Rhapsodia of Madness</h3>
+        <div class="pills" style="margin-top:12px"><span>Elfnote</span><span>Cardmarket 0,12 €</span><span>Score d’achat le plus élevé</span></div>
+      </div>
+    </a>
+    <a class="tile t7 reveal" href="#" style="--n:1">
+      <div><p class="eyebrow">Ban Radar · pièces d’archétype</p><h3 style="margin-top:14px">Les cartes que Konami risque de <em class="a">toucher</em>.</h3></div>
+      <div>
+        <div class="row"><img src="https://images.ygoprodeck.com/images/cards_small/13597785.jpg" alt="" loading="lazy" width="268" height="391"><div><strong>Elfnote Lucina</strong><small>14,1 % des decks · 2,99 ex. en moyenne</small><div class="stack" aria-hidden="true"><i style="--w:11%;background:var(--signal);--n:0"></i><i style="--w:8%;background:#d9502f;--n:1"></i><i style="--w:54%;background:var(--warn);--n:2"></i><i style="--w:27%;background:var(--ocg);--n:3"></i></div></div><span class="score" data-count="69.9" data-dec="1">69,9</span></div>
+        <div class="row"><img src="https://images.ygoprodeck.com/images/cards_small/56651978.jpg" alt="" loading="lazy" width="268" height="391"><div><strong>Elfnote Regina</strong><small>14,1 % des decks · 2,97 ex. en moyenne</small><div class="stack" aria-hidden="true"><i style="--w:11%;background:var(--signal);--n:0"></i><i style="--w:8%;background:#d9502f;--n:1"></i><i style="--w:53%;background:var(--warn);--n:2"></i><i style="--w:27%;background:var(--ocg);--n:3"></i></div></div><span class="score" data-count="69.5" data-dec="1">69,5</span></div>
+        <div class="row"><img src="https://images.ygoprodeck.com/images/cards_small/25661743.jpg" alt="" loading="lazy" width="268" height="391"><div><strong>Prohibited Power Patron Portal - Terminus</strong><small>22,9 % des decks · 2,12 ex. · Limitée</small><div class="stack" aria-hidden="true"><i style="--w:19%;background:var(--signal);--n:0"></i><i style="--w:9%;background:#d9502f;--n:1"></i><i style="--w:31%;background:var(--warn);--n:2"></i><i style="--w:41%;background:var(--ocg);--n:3"></i></div></div><span class="score" data-count="67.2" data-dec="1">67,2</span></div>
+        <p class="note">Barre : ubiquité, deck porteur, exemplaires joués, puis restriction et élan.</p>
+      </div>
+    </a>
+    <a class="tile t12 reveal" href="#" style="--n:2;min-height:0">
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px;align-items:center">
+        <div><p class="eyebrow">Graphe de synergies</p><h3 style="margin-top:14px">Chaque point est une carte. Chaque trait, deux cartes jouées <em class="a">ensemble</em>.</h3><p style="margin-top:12px">Survolez pour isoler un archétype. Les cartes « pont », en orange, relient plusieurs decks : ce sont elles qu’un ban fait le plus souffrir.</p></div>
+        <canvas id="constellation" role="img" aria-label="Illustration animée : trois amas de cartes reliés par deux cartes pont."></canvas>
+      </div>
+    </a>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">
+  <p><b>Prototype statique</b> · illustration de la direction recommandée, pas une page du site. Un seul fichier HTML, aucun framework, aucune bibliothèque d’animation.</p>
+  <p>Chiffres : relevés de l’API locale et de <code>yugioh.db</code> le 16 novembre 2026. Les constellations du graphe sont une illustration, pas une donnée.</p>
+  <p>Mouvement : transitions CSS, <code>IntersectionObserver</code>, un <code>canvas</code> 2D. Tout s’arrête avec le réglage système « réduire les animations ».</p>
+</div></footer>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fr = (v, dec = 0) => v.toLocaleString('fr-FR', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+
+  /* 1. Titre : révélation mot par mot (le texte complet reste dans aria-label) */
+  const parts = [['Le'],['TCG'],['suit'],['l’OCG,'],['quatre','a'],['mois','a'],['plus'],['tard.']];
+  document.getElementById('title').innerHTML = parts.map(([w, cls], i) =>
+    `<span class="w" aria-hidden="true"><span style="--i:${i}">${cls ? `<em class="a">${w}</em>` : w}</span></span>`).join(' ');
+
+  /* 2. Compteurs : comptent une fois, quand ils entrent à l'écran */
+  const count = el => {
+    const end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), suf = el.dataset.suffix || '';
+    if (reduce) return;
+    const t0 = performance.now(), dur = 1400;
+    const tick = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 4);
+      el.textContent = fr(end * e, dec) + suf; if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return;
+    e.target.classList.add('in'); e.target.querySelectorAll('[data-count]').forEach(count);
+    if (e.target.dataset.count) count(e.target); io.unobserve(e.target); }), {threshold: .25});
+  document.querySelectorAll('.reveal, .stats dd').forEach(el => io.observe(el));
+
+  /* 3. Éventail : inclinaison au pointeur + reflet holographique */
+  const stage = document.getElementById('stage'), fan = document.getElementById('fan');
+  if (!reduce && matchMedia('(hover:hover)').matches) {
+    stage.addEventListener('pointermove', e => { const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      fan.style.setProperty('--ry', (-14 + x * 26) + 'deg'); fan.style.setProperty('--rx', (8 - y * 18) + 'deg');
+      fan.querySelectorAll('.card').forEach(c => { c.style.setProperty('--sx', (30 + x * 80) + '%'); c.style.setProperty('--sy', (30 + y * 80) + '%'); }); });
+    stage.addEventListener('pointerleave', () => { fan.style.removeProperty('--ry'); fan.style.removeProperty('--rx'); });
+  }
+  document.querySelectorAll('.tile').forEach(t => t.addEventListener('pointermove', e => { const r = t.getBoundingClientRect();
+    t.style.setProperty('--mx', (e.clientX - r.left) + 'px'); t.style.setProperty('--my', (e.clientY - r.top) + 'px'); }));
+
+  /* 4. Braises du hero : canvas 2D, 70 particules, en pause hors écran */
+  const cv = document.getElementById('embers');
+  if (!reduce) {
+    const ctx = cv.getContext('2d'); let W, H, P = [], on = true;
+    const size = () => { const d = Math.min(devicePixelRatio, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+    size(); addEventListener('resize', size);
+    for (let i = 0; i < 70; i++) P.push({x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.6, v: .00025 + Math.random() * .0007, p: Math.random() * 6.28});
+    new IntersectionObserver(e => on = e[0].isIntersecting).observe(cv);
+    const draw = t => { if (on) { ctx.clearRect(0, 0, W, H);
+      for (const p of P) { p.y -= p.v; if (p.y < -.02) { p.y = 1.02; p.x = Math.random(); }
+        const x = (p.x + Math.sin(t / 2400 + p.p) * .012) * W, a = .12 + .3 * (.5 + .5 * Math.sin(t / 900 + p.p));
+        ctx.fillStyle = p.r > 1.7 ? `rgba(255,110,80,${a})` : `rgba(170,195,235,${a * .6})`;
+        ctx.beginPath(); ctx.arc(x, p.y * H, p.r, 0, 6.28); ctx.fill(); } }
+      requestAnimationFrame(draw); };
+    requestAnimationFrame(draw);
+  }
+
+  /* 5. Graphique « preuve » : données réelles, tracé piloté par le défilement */
+  const months = ['août 25','','oct.','','déc.','','févr. 26','','avr.','','juin','','août','','oct.',''];
+  const OCG = [.8,.8,.6,.7,0,2.2,10.3,18.3,26.7,17.6,25.1,11.6,9.9,6.8,1.1,2.1];
+  const TCG = [0,0,0,0,1.4,2.6,1.4,1.0,.7,22.5,26.7,32.1,19.9,8.9,.4,0];
+  const svg = document.getElementById('chart'), X0 = 44, X1 = 700, Y0 = 330, Y1 = 20, MAX = 35;
+  const sx = i => X0 + i * (X1 - X0) / 15, sy = v => Y0 - v / MAX * (Y0 - Y1), STEP = (X1 - X0) / 15;
+  const path = a => a.map((v, i) => (i ? 'L' : 'M') + sx(i).toFixed(1) + ' ' + sy(v).toFixed(1)).join(' ');
+  let g = '';
+  for (const v of [0, 10, 20, 30]) g += `<line x1="${X0}" x2="${X1}" y1="${sy(v)}" y2="${sy(v)}" stroke="rgba(170,195,235,.12)" stroke-dasharray="3 5"/><text x="${X0 - 8}" y="${sy(v) + 4}" text-anchor="end">${v} %</text>`;
+  months.forEach((m, i) => { if (m) g += `<text x="${sx(i)}" y="${Y0 + 22}" text-anchor="middle">${m}</text>`; });
+  g += `<defs><clipPath id="plot"><rect x="${X0}" y="0" width="${X1 - X0 + 8}" height="${Y0 + 2}"/></clipPath></defs><g clip-path="url(#plot)"><g id="ocg"><path d="${path(OCG)}" fill="none" stroke="var(--ocg)" stroke-width="2.5" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" id="p-ocg"/>
+        <circle cx="${sx(8)}" cy="${sy(26.7)}" r="5" fill="var(--ocg)" class="lagmark" id="d-ocg"/><text x="${sx(8)}" y="${sy(26.7) - 12}" text-anchor="middle" class="lagmark" id="l-ocg" style="fill:var(--ocg)">26,7 % · avril</text></g></g>
+        <path d="${path(TCG)}" fill="none" stroke="var(--signal)" stroke-width="3" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" id="p-tcg"/>
+        <circle cx="${sx(11)}" cy="${sy(32.1)}" r="5.5" fill="var(--signal)" class="lagmark" id="d-tcg"/><text x="${sx(11)}" y="${sy(32.1) - 12}" text-anchor="middle" class="lagmark" id="l-tcg" style="fill:var(--signal-hi)">32,1 % · juillet</text>
+        <g class="lagmark" id="lag"><line x1="${sx(8)}" x2="${sx(11)}" y1="${sy(33.8)}" y2="${sy(33.8)}" stroke="var(--text)" stroke-width="1.5"/><text x="${sx(9.5)}" y="${sy(33.8) - 8}" text-anchor="middle" style="fill:var(--text);font-weight:500">3 mois</text></g>`;
+  svg.innerHTML = g;
+  const $ = id => document.getElementById(id), steps = [...document.querySelectorAll('.step')], proof = document.querySelector('.proof');
+  const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+  const render = p => {
+    $('p-ocg').style.strokeDashoffset = 1 - clamp(p / .3);
+    $('p-tcg').style.strokeDashoffset = 1 - clamp((p - .33) / .3);
+    const s = p < .33 ? 0 : p < .66 ? 1 : 2;
+    steps.forEach((el, i) => el.classList.toggle('on', i === s));
+    $('d-ocg').classList.toggle('on', p > .28); $('l-ocg').classList.toggle('on', p > .28 && s < 2);
+    $('d-tcg').classList.toggle('on', p > .6); $('l-tcg').classList.toggle('on', p > .6);
+    $('ocg').style.transform = s === 2 ? `translateX(${3 * STEP}px)` : 'none';
+    $('ocg').style.opacity = s === 2 ? .55 : 1;
+    $('lag').classList.toggle('on', s === 1 && p > .6);
+  };
+  const stat = getComputedStyle(document.querySelector('.proof .sticky')).position !== 'sticky';
+  if (reduce || stat) { render(.64); steps.forEach(el => el.classList.add('on')); }
+  else { let tick = false; const onScroll = () => { if (tick) return; tick = true; requestAnimationFrame(() => { tick = false;
+      const r = proof.getBoundingClientRect(); render(clamp(-r.top / (r.height - innerHeight))); }); };
+    addEventListener('scroll', onScroll, {passive: true}); onScroll(); }
+
+  /* 6. Constellation : illustration animée du graphe (canvas 2D) */
+  const c2 = document.getElementById('constellation'), x2 = c2.getContext('2d');
+  const clusters = [{x: .2, y: .5, n: 9, name: 'Kewl Tune'}, {x: .52, y: .32, n: 11, name: 'Elfnote'}, {x: .82, y: .58, n: 8, name: 'Branded'}];
+  const nodes = [], links = [];
+  clusters.forEach((c, ci) => { const base = nodes.length;
+    for (let i = 0; i < c.n; i++) { const a = i / c.n * 6.28, r = .06 + (i % 3) * .035; nodes.push({x: c.x + Math.cos(a) * r, y: c.y + Math.sin(a) * r * 1.9, c: ci, ph: Math.random() * 6.28}); }
+    for (let i = 0; i < c.n; i++) for (let j = i + 1; j < c.n; j++) if ((i + j) % 3 === 0 || j === i + 1) links.push([base + i, base + j]); });
+  const bridges = [{x: .36, y: .43, a: [0, 9, 12]}, {x: .68, y: .44, a: [10, 14, 20, 24]}];
+  bridges.forEach(b => { const k = nodes.length; nodes.push({x: b.x, y: b.y, c: -1, ph: 0}); b.a.forEach(t => links.push([k, t])); });
+  let hover = -2, vis = true;
+  new IntersectionObserver(e => vis = e[0].isIntersecting).observe(c2);
+  c2.addEventListener('pointermove', e => { const r = c2.getBoundingClientRect(), px = (e.clientX - r.left) / r.width; hover = px < .36 ? 0 : px < .68 ? 1 : 2; });
+  c2.addEventListener('pointerleave', () => hover = -2);
+  const paint = t => { if (vis) { const d = Math.min(devicePixelRatio, 2), W = c2.clientWidth, H = c2.clientHeight;
+      if (c2.width !== W * d) { c2.width = W * d; c2.height = H * d; } x2.setTransform(d, 0, 0, d, 0, 0); x2.clearRect(0, 0, W, H);
+      const pos = n => [n.x * W + (reduce ? 0 : Math.sin(t / 1700 + n.ph) * 3), n.y * H + (reduce ? 0 : Math.cos(t / 2100 + n.ph) * 3)];
+      for (const [a, b] of links) { const A = nodes[a], B = nodes[b], br = A.c < 0 || B.c < 0, dim = hover > -2 && !(A.c === hover || B.c === hover);
+        const [ax, ay] = pos(A), [bx, by] = pos(B); x2.strokeStyle = br ? `rgba(255,90,60,${dim ? .15 : .55})` : `rgba(170,195,235,${dim ? .05 : .2})`; x2.lineWidth = br ? 1.4 : 1;
+        x2.beginPath(); x2.moveTo(ax, ay); x2.lineTo(bx, by); x2.stroke();
+        if (br && !reduce) { const k = (t / 1800 + a * .13) % 1; x2.fillStyle = 'rgba(255,138,107,.9)'; x2.beginPath(); x2.arc(ax + (bx - ax) * k, ay + (by - ay) * k, 2, 0, 6.28); x2.fill(); } }
+      for (const n of nodes) { const [x, y] = pos(n), dim = hover > -2 && n.c !== hover && n.c >= 0;
+        if (n.c < 0) { x2.fillStyle = 'rgba(255,90,60,.16)'; x2.beginPath(); x2.arc(x, y, 15, 0, 6.28); x2.fill(); x2.fillStyle = '#ff5a3c'; x2.beginPath(); x2.arc(x, y, 7, 0, 6.28); x2.fill(); }
+        else { x2.fillStyle = dim ? 'rgba(133,145,166,.25)' : ['#7fb0ff', '#e8edf5', '#f5c451'][n.c]; x2.beginPath(); x2.arc(x, y, 4, 0, 6.28); x2.fill(); } }
+      x2.font = '500 11px "JetBrains Mono", monospace'; x2.textAlign = 'center';
+      clusters.forEach((c, i) => { x2.fillStyle = hover === i || hover === -2 ? '#b4bfcf' : 'rgba(133,145,166,.4)'; x2.fillText(c.name.toUpperCase(), c.x * W, c.y * H + H * .36); });
+      x2.fillStyle = '#ff8a6b'; bridges.forEach(b => x2.fillText('PONT', b.x * W, b.y * H - 22)); }
+    requestAnimationFrame(paint); };
+  requestAnimationFrame(paint);
+})();
+</script>
+</body>
+</html>

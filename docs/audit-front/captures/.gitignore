@@ -1,0 +1,6 @@
+# Captures de sites tiers : locales uniquement, jamais commitées ni publiées.
+bench/
+# Captures de notre propre site : locales aussi (≈ 12 Mo, dépôt public, l'historique ne s'allège jamais).
+# Les .md de l'audit y renvoient : les régénérer avec Playwright si besoin.
+*.png
+*.jpg

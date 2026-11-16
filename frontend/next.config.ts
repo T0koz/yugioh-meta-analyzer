@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Transitions de vue entre la tier list et la page d'archétype (TOK-101).
+    // Embellissement : sans prise en charge du navigateur, la navigation est inchangée.
+    viewTransition: true,
+  },
   images: {
     // Les images de cartes viennent encore de YGOPRODeck : next/image les
     // redimensionne et les met en cache côté serveur, le navigateur ne charge

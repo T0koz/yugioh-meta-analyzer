@@ -50,7 +50,7 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-106 | Nouvelle page d'accueil d'après le prototype | 🟡 Livrée le 2026-11-16 sur `claude/tok-106-accueil-66ff33` (non fusionnée dans `main`) : Perf. 98, Access. 100, LCP mobile ≈ 1,8 s, JS 180 ko. Reste la relecture des textes par Thomas — `docs/journal/accueil-tok-106.md` | 🔴 High |
 | TOK-99 | Dataviz maison en SVG (D3) + palette de données | 🟡 Livrée le 2026-11-17 sur `claude/tok-99-dataviz-923148` (non fusionnée dans `main`) : recharts supprimé, `/evolution` 190,6 ko de JavaScript (avant 274,1), Access. 100, palette `--cat-1` à `--cat-6` ≥ 5,1:1, pied source + date sur 9 vues (2 sans date servie : graphe, simulateur) — `docs/journal/dataviz-tok-99.md` | 🟠 Medium |
 | TOK-100 | Qualité : SEO de partage + tests visuels Playwright | 🔜 Backlog | 🟠 Medium |
-| TOK-101 | Page d'archétype + transitions de vue | 🔜 Backlog | 🟠 Medium |
+| TOK-101 | Page d'archétype + transitions de vue | 🟡 Livrée le 2026-11-17 sur `claude/tok-101-archetype-49be45` (non fusionnée dans `main`) : `/archetype/{slug}` (63 pages construites d'avance, les autres à la demande), `GET /archetypes/{slug}`, transitions de vue depuis la tier list ; LCP mobile 1,72 à 1,84 s, Access. 100, CLS 0 — `docs/journal/archetype-tok-101.md` | 🟠 Medium |
 | TOK-102 | Graphe de synergies refondu (Sigma.js ou PixiJS) | 🔜 Backlog | 🟠 Medium |
 | TOK-103 | Boutique regroupée par archétype avec courbes de prix | 🔜 Backlog | 🟠 Medium |
 | TOK-104 | Suivi des Web Vitals réels (suppose TOK-35) | 🔜 Backlog | 🟢 Low |

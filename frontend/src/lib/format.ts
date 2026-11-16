@@ -53,3 +53,8 @@ export function fmtMonthShort(yearMonth: string): string {
   if (Number.isNaN(date.getTime())) return yearMonth;
   return date.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
 }
+
+/** Rang ordinal : 1 → « 1er », 18 → « 18ᵉ ». */
+export function fmtRank(rank: number): string {
+  return rank === 1 ? "1er" : `${rank}ᵉ`;
+}

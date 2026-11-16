@@ -274,6 +274,12 @@ Sous **chaque** graphique et tableau : `Source : … · date · échantillon · 
 - Focus clavier toujours visible (`outline 2px --signal-hi`). Contraste : texte `--soft`/`--muted-text` sur `--ink` ≥ 4.5:1 ; le texte sur fond `--signal` utilise `--on-signal`.
 - L'information ne passe jamais par la couleur seule (tendances : flèche + mot ; risque : libellé + score).
 
+### Transitions de vue (TOK-101)
+Embellissement, jamais une condition : sans l'API du navigateur, la navigation est inchangée. Deux effets seulement,
+entre une liste et sa page de détail : l'élément partagé (`SharedElement` : vignette et nom, 420 ms, `--ease`) et le
+contenu qui glisse de 24 px selon le sens du lien (`PageTransition`, `transitionTypes` sur le `Link`). Rien au premier
+chargement. En mouvement réduit, aucune animation (règle `::view-transition-*` de `globals.css`).
+
 ## 7. Copy
 
 - Français, phrases courtes, voix active. Nommer par ce que l'utilisateur reconnaît (« cartes à acheter », pas « buy_signals »).

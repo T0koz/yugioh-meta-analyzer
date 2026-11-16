@@ -264,6 +264,30 @@ LCP mobile 1,76 s.
   pour le graphe de co-occurrences : le pied du graphe et du simulateur l'écrit.
 → détail complet : `docs/journal/dataviz-tok-99.md`
 
+### 🧬 Page d'archétype et transitions de vue (TOK-101, 2026-11-17, branche `claude/tok-101-archetype-49be45`, non fusionnée dans `main`)
+
+`/archetype/{slug}` : part de méta, tier, tendance, part mensuelle (SVG serveur), cartes clés, signal boutique.
+`GET /api/v1/archetypes/{slug}` (`routers/archetypes.py`) ne lit que des tables servies, aucun calcul nouveau.
+Mesuré (build de production, mobile, `LH_THROTTLING=devtools`, 9 pages) : LCP 1,72 à 1,84 s, Accessibilité 100, CLS 0.
+- **Le slug est calculé par l'API** (`backend/app/slugs.py`, a-z 0-9 et tiret) et servi (`slug` dans la tier list,
+  `archetype_slug` dans les signaux boutique). Le front ne le recalcule jamais. 231 archétypes, aucune collision.
+- **Résolution tolérante à la casse, exprès.** Le cache de pages de Next est rangé par chemin : sur macOS (disque
+  insensible à la casse) une 404 calculée pour `/archetype/Branded` écrasait la page de `/archetype/branded`. Toute
+  casse rend donc la même page ; l'adresse canonique est le slug servi. Une réécriture par expression régulière dans
+  `next.config.ts` ne marche pas : ces motifs sont insensibles à la casse.
+- **Les archétypes d'un signal boutique ne sont pas dans la tier list** (pas encore en TCG) : leur page existe quand
+  même, sans graphique ni cartes clés, et s'ouvre depuis `/boutique`.
+- **Fenêtres différentes sur la même page** : part et tier sur la fenêtre de la tier list (396 decks), cartes clés sur
+  celle du Ban Radar (1 883 decks). Chaque bloc a son `DataFooter`.
+- **Transitions de vue** (`experimental.viewTransition`, `components/view-transitions.tsx`) : `PageTransition` se place
+  AUTOUR de `<Page>` (dans un nœud DOM qui vient d'être monté, l'entrée et la sortie ne se jouent pas) et prend un
+  `id` qui sert de clé. `SharedElement` porte le même nom sur les deux pages. Tout est en `default="none"`.
+- **Mouvement réduit** : la règle globale `*` ne couvre pas `::view-transition-*`, d'où une règle dédiée dans `globals.css`.
+- **Texte de graphique en HTML positionné en pourcentage** (`ShareChart`) : dans un SVG à `viewBox`, 12 px deviennent
+  6 px sur mobile. Le tracé est dans un SVG étiré (`vector-effect: non-scaling-stroke`).
+- À faire au lot SEO : lien canonique vers le slug servi (les variantes de casse rendent la même page).
+→ détail complet : `docs/journal/archetype-tok-101.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

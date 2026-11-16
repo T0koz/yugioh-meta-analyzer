@@ -1,4 +1,5 @@
 import type {
+  ArchetypeResponse,
   BanRadarKind,
   BanRadarResponse,
   BanSimResult,
@@ -22,6 +23,13 @@ async function apiFetch<T>(path: string): Promise<T> {
 
 export const api = {
   tierList: () => apiFetch<TierListResponse>("/meta/tier-list"),
+  /** Page d'archétype ; null si le slug ne correspond à aucun archétype (404). */
+  async archetype(slug: string): Promise<ArchetypeResponse | null> {
+    const res = await fetch(`${BASE_URL}/archetypes/${encodeURIComponent(slug)}`, { next: { revalidate: 300 } });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`API error ${res.status}: /archetypes/${slug}`);
+    return res.json() as Promise<ArchetypeResponse>;
+  },
   evolution: () => apiFetch<EvolutionResponse>("/meta/evolution"),
   predictions: () => apiFetch<PredictionsResponse>("/meta/predictions"),
   boutiqueSignals: () => apiFetch<BoutiqueResponse>("/boutique/signals"),

@@ -5,9 +5,13 @@ export type RiskLabel = "Critique" | "Élevé" | "Modéré" | "Faible";
 
 export interface TierEntry {
   archetype: string;
+  /** Identifiant d'URL de la page d'archétype, calculé par l'API. */
+  slug: string;
   tier: Tier;
   meta_score: number;
   share: number;
+  /** Decks de l'archétype dans la fenêtre. */
+  decks: number;
   trend: Trend;
   image_url: string | null;
 }
@@ -52,6 +56,8 @@ export interface PredictionsResponse {
 
 export interface BoutiqueSignal {
   archetype: string;
+  /** Identifiant d'URL de la page d'archétype, calculé par l'API. */
+  archetype_slug: string;
   card_name: string;
   /** Classement dans le lot (0-100, le premier vaut toujours 100) : ordre d'affichage, PAS une force de signal. */
   buy_score: number;
@@ -179,4 +185,66 @@ export interface SearchResult {
 
 export interface SearchResponse {
   data: SearchResult[];
+}
+
+// ---------- Page d'archétype (TOK-101) ----------
+
+export interface ArchetypeTcg {
+  tier: Tier;
+  trend: Trend;
+  /** Rang dans la tier list (1 = plus forte part). */
+  rank: number;
+  n_archetypes: number;
+  share: number;
+  decks: number;
+  meta_score: number;
+  /** Fenêtre précédente, base de la tendance ; null s'il n'y en a pas. */
+  share_prev: number | null;
+  decks_prev: number;
+  n_decks_prev: number;
+}
+
+/** Fenêtre courante de la tier list (mois « AAAA-MM »). */
+export interface TierWindow {
+  start: string;
+  end: string;
+  n_decks: number;
+}
+
+export interface ArchetypeMonth {
+  month: string;
+  decks: number;
+  total_decks: number;
+  share: number;
+}
+
+export interface ArchetypeKeyCard {
+  card_name: string;
+  decks: number;
+  /** En pourcentage de tous les decks de la fenêtre. */
+  deck_share: number;
+  mean_copies: number;
+  current_status: string;
+  image_url: string | null;
+}
+
+export interface ArchetypeResponse {
+  archetype: string;
+  slug: string;
+  image_url: string | null;
+  tcg_window: TierWindow | null;
+  /** null si aucun deck dans la fenêtre courante de la tier list. */
+  tcg: ArchetypeTcg | null;
+  history: ArchetypeMonth[];
+  key_cards: { data: ArchetypeKeyCard[]; as_of: string; n_decks_window: number } | null;
+  ocg: { share: number; decks: number; computed_at: string | null } | null;
+  boutique: {
+    signal_label: BuyLabel | null;
+    archetype_rank: number | null;
+    label_rule: SignalLabelRule | null;
+    tcg_window_start: string | null;
+    tcg_window_end: string | null;
+    computed_at: string | null;
+    signals: BoutiqueSignal[];
+  } | null;
 }

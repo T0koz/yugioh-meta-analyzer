@@ -26,6 +26,8 @@ client = TestClient(app)
 EXPLICIT_GETS = {
     "/api/v1/cards/search": ["/api/v1/cards/search?q=Ash"],
     "/api/v1/cards/{name}": ["/api/v1/cards/Ash Blossom & Joyous Spring"],
+    # Un archétype de la tier list, un nom à barre oblique (signal boutique, absent du TCG).
+    "/api/v1/archetypes/{slug}": ["/api/v1/archetypes/branded", "/api/v1/archetypes/harpie-amazoness"],
     "/api/v1/ban-radar": [
         "/api/v1/ban-radar?kind=archetype",
         "/api/v1/ban-radar?kind=generic",
@@ -74,3 +76,16 @@ def test_get_returns_200(url):
 def test_simulate_ban_returns_200():
     response = client.post("/api/v1/simulate-ban", json={"card_name": "Ash Blossom & Joyous Spring"})
     assert response.status_code == 200, response.text[:300]
+
+
+def test_unknown_archetype_is_a_404():
+    assert client.get("/api/v1/archetypes/archetype-qui-n-existe-pas").status_code == 404
+
+
+def test_tier_list_slugs_resolve_to_their_archetype():
+    # Chaque slug servi par la tier list doit ramener à la page du même archétype.
+    for entry in client.get("/api/v1/meta/tier-list").json()["data"]:
+        detail = client.get(f"/api/v1/archetypes/{entry['slug']}")
+        assert detail.status_code == 200, entry
+        assert detail.json()["archetype"] == entry["archetype"]
+        assert detail.json()["tcg"]["share"] == entry["share"]

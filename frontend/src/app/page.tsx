@@ -136,7 +136,7 @@ export default async function Home() {
                   ))}
                 </h1>
                 <p className="enter mt-6 max-w-[50ch] text-[18px] text-soft [--i:2]">
-                  {`Corrélation r ≈ ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)} (IC 95 % : ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}) entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes et ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi (yugiohmeta.com, mai 2023 à novembre 2026).`}
+                  {`Corrélation de ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)} (IC 95 % : ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}) entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes et ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi (yugiohmeta.com, mai 2023 à novembre 2026).`}
                 </p>
                 <div className="enter mt-[30px] flex flex-wrap gap-2.5 [--i:3]">
                   <ButtonLink href="/boutique" variant="primary" size="lg">
@@ -229,7 +229,8 @@ export default async function Home() {
                 <ProofChart />
                 <figcaption className={`mt-3 ${SOURCE}`}>
                   Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists
-                  yugiohmeta.com, relevé du {fmtDate(PROOF.asOf)}.
+                  yugiohmeta.com, relevé du {fmtDate(PROOF.asOf)}. Incertitude non dessinée : les effectifs mensuels
+                  n’ont pas été relevés avec cette série figée.
                 </figcaption>
               </figure>
             </div>
@@ -403,7 +404,7 @@ export default async function Home() {
             <Reveal className="min-w-0">
               <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">Le signal OCG → TCG</h3>
               <p className="mt-4 text-[clamp(22px,2.6vw,30px)] leading-[1.15] font-medium tracking-[-0.03em]">
-                r ≈ {fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)}
+                {fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)}
                 <span className="ml-3 font-mono text-[12px] font-normal tracking-normal text-muted-text">
                   IC 95 % : {fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à {fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}
                 </span>
@@ -503,7 +504,7 @@ export default async function Home() {
                 {`Top 10 du radar sur ${SITE_FACTS.banBacktestLists} banlists TCG (avril 2024 à octobre 2026) : ${SITE_FACTS.banTop10HitsArchetype} places sur 100 suivies d’une restriction pour les pièces d’archétype, ${SITE_FACTS.banTop10HitsGeneric} sur 100 pour les staples génériques.`}
               </p>
               <p className={`mt-3 ${SOURCE}`}>
-                {`Source : backtest du ${fmtDate(SITE_FACTS.banBacktestDate)}, ${SITE_FACTS.banBacktest.length} des ${SITE_FACTS.banBacktestTotalLists} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026.`}
+                {`Source : backtest du ${fmtDate(SITE_FACTS.banBacktestDate)}, ${SITE_FACTS.banBacktest.length} des ${SITE_FACTS.banBacktestTotalLists} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026. Trait : milieu du classement ; la bande du hasard à 90 % est dans l’historique du Ban Center.`}
               </p>
             </Reveal>
           </div>

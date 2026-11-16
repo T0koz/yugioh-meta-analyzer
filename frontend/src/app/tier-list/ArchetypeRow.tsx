@@ -89,7 +89,10 @@ export function ArchetypeRow({
           </SharedElement>
         </Link>
         <small className={`block text-[12px] font-normal tabular-nums ${banner ? "text-soft" : "text-muted-text"}`}>
-          {fmtNum(entry.decks)} sur {fmtNum(nDecks)} decks · score {fmtNum(entry.meta_score * 100, 1)} ·{" "}
+          {/* Sous 760 px, l'effectif seul : la colonne du nom est étroite. */}
+          {fmtNum(entry.decks)}
+          <span className="max-[759px]:hidden"> sur {fmtNum(nDecks)}</span> decks ·{" "}
+          <span className="max-[759px]:hidden">score {fmtNum(entry.meta_score * 100, 1)} · </span>
           {/* Au-dessus du lien de ligne (::after) : mène à la fiche de composition (TOK-114). */}
           <Link
             href={`/decks/${entry.slug}`}

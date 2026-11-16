@@ -129,7 +129,7 @@ export function EvolutionChart({ data, images, decks_by_month }: EvolutionRespon
 
   const { w, h } = size;
   const compact = w < 620;
-  const margin = { top: 26, right: compact ? 46 : 172, bottom: 30 + STRIP_H + 14, left: 34 };
+  const margin = { top: 26, right: compact ? 60 : 172, bottom: 30 + STRIP_H + 14, left: 38 };
   const plotBottom = h - margin.bottom;
 
   const step = months.length > 1 ? (w - margin.left - margin.right) / (months.length - 1) : 0;
@@ -148,7 +148,7 @@ export function EvolutionChart({ data, images, decks_by_month }: EvolutionRespon
   const segmentsOf = (points: Point[]) =>
     points.slice(1).map((p, i) => ({ from: points[i], to: p, weak: p.weak || points[i].weak }));
 
-  const tickEvery = step > 0 ? Math.max(1, Math.ceil((compact ? 72 : 58) / step)) : 1;
+  const tickEvery = step > 0 ? Math.max(1, Math.ceil((compact ? 92 : 58) / step)) : 1;
   const lastIndex = months.length - 1;
 
   const maxDecks = max(months, (m) => decks_by_month[m] ?? 0) ?? 0;
@@ -313,7 +313,7 @@ export function EvolutionChart({ data, images, decks_by_month }: EvolutionRespon
                 className={AXIS}
               >
                 {compact
-                  ? `n = ${fmtNum(decks_by_month[months[lastIndex]] ?? 0)}`
+                  ? fmtNum(decks_by_month[months[lastIndex]] ?? 0)
                   : `en cours, n = ${fmtNum(decks_by_month[months[lastIndex]] ?? 0)}`}
               </text>
             )}

@@ -399,6 +399,31 @@ chiffres, avant la nouvelle page d'accueil) → TOK-98 (semaine 1). Une étape n
   Angelechy, Blitzclique, Sacred Beasts…). Relancer `fetch_cards.py` puis `build_serving_db.py`.
 - Captures avant/après (locales, non suivies) : `docs/audit-front/captures/tok-96/`.
 
+**TOK-97, crédibilité des chiffres (2026-11-16)** — analyse `data-scientist-ygo` en lecture seule, correctifs dans l'API :
+
+- **Tier list maison** : `GET /meta/tier-list` ne lit plus `meta_tier_list` (figée au 17 juin) ni `archetype_trend`.
+  Elle est calculée à la volée depuis `meta_scores` ; règles dans `backend/app/tiering.py`, testées par
+  `backend/tests/test_tiering.py`. La réponse porte `window_start`, `window_end`, `n_decks` (plus de `generated_at`).
+  - Fenêtre : mois récents cumulés jusqu'à **300 decks** (au 16/11 : oct. + nov., 396 decks). Novembre seul
+    (156 decks) donne ±3,4 points d'incertitude sur une part de 5 %.
+  - Tiers sur la **part de decks** (T0 ≥ 40 %, T1 ≥ 15 %, T2 ≥ 7 %, T3 ≥ 3 %, Rogue sinon ou sous 5 decks), **pas sur
+    `meta_score`** : un deck unique classé premier y vaut `sqrt(1/n)` et passe devant des archétypes dix fois plus joués.
+  - Tendance : test de deux proportions contre la fenêtre précédente (|z| ≥ 1,96), Stable d'office sous 10 decks cumulés.
+    L'ancienne `archetype_trend` étiquetait « émergence » tout archétype nouveau (45 sur 90) et « stable » les disparus.
+  - Limites connues : la fenêtre chevauche la banlist du 2026-10-19 (25 % des decks datent d'avant) ; les hybrides sont
+    comptés à part (« Angelechy Elfnote ») ; Angelechy et Blitzclique n'ont pas d'image (absents de `cards`).
+- **`tcg_entry_estimated` n'est pas une estimation** : le notebook 10 y écrit `date.today() + 4 mois`, identique pour
+  toutes les lignes. Le champ n'est plus servi ni affiché. ⚠ `scripts/log_predictions.py` le journalise encore comme
+  `target_date` : à neutraliser avant l'échéance de mars 2027.
+- **Signaux boutique filtrés dans l'API** : un archétype qui cumule ≥ 5 decks TCG sur 12 mois de `meta_scores`
+  (`TCG_PRESENCE_MIN_DECKS`) est écarté. 7 archétypes sur 10 sortent (Elfnote, Kewl Tune, Branded, Sky Striker…),
+  il reste Toon, Witchcrafter, Raise Moon : 41 lignes, **aucun signal « Fort »**, des staples à quelques centimes.
+  Le score mesurait « fort en OCG », pas « fort en OCG et absent du TCG » : le vrai correctif est dans le notebook 10.
+- **Ban Radar** : poids inchangés. `SITE_FACTS.banTop10Hits*` porte le constat affiché sur les vues Staples et Tout :
+  6 des 100 places du top 10 des staples suivies d'une restriction sur 10 banlists TCG, contre 19 pour les pièces
+  d'archétype ; Ash Blossom, première à chaque fois, jamais touchée. **À recalculer à chaque banlist.**
+- Fallback d'image d'archétype par mots entiers (« Ashtra » prenait l'image de « Ra »).
+
 ### 🔜 À faire
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials

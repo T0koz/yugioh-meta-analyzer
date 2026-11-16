@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { CardChip } from "@/components/card-chip";
 import { Em } from "@/components/ds/em";
-import { Callout, Eyebrow, PageHero, StatBand } from "@/components/ds/page";
+import { Callout, DataFooter, Eyebrow, PageHero, StatBand } from "@/components/ds/page";
 import { api } from "@/lib/api";
 import { fmtNum, fmtPct } from "@/lib/format";
 import type { BanSimResult } from "@/types";
@@ -128,6 +128,10 @@ export function BanSimulatorView({
               </div>
             </div>
           )}
+          <DataFooter
+            source="graphe de co-occurrences des decklists de tournoi, yugiohmeta.com"
+            date="date de calcul non enregistrée dans la base servie"
+          />
         </section>
       )}
     </>

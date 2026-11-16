@@ -35,6 +35,8 @@ class EvolutionResponse(BaseModel):
     data: dict[str, list[EvolutionPoint]]
     # Vignette de chaque archétype (absente si aucune carte connue).
     images: dict[str, str] = {}
+    # Decks de tournoi comptés chaque mois (taille d'échantillon, « AAAA-MM » → n).
+    decks_by_month: dict[str, int] = {}
 
 
 class PredictionEntry(BaseModel):
@@ -48,6 +50,9 @@ class PredictionEntry(BaseModel):
 class PredictionsResponse(BaseModel):
     data: list[PredictionEntry]
     model: str
+    # Mois observé (« AAAA-MM ») : la prévision porte sur le mois suivant.
+    data_month: Optional[str] = None
+    computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
 
 
 class BoutiqueSignal(BaseModel):
@@ -84,6 +89,7 @@ class BoutiqueResponse(BaseModel):
     data: list[BoutiqueSignal]
     # NULL quand les libellés sont indisponibles (aucun signal_label dans `data`).
     label_rule: Optional[SignalLabelRule] = None
+    computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
 
 
 class EarlySignal(BaseModel):
@@ -97,6 +103,7 @@ class EarlySignal(BaseModel):
 
 class EarlySignalsResponse(BaseModel):
     data: list[EarlySignal]
+    computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
 
 
 class CommunityImpact(BaseModel):

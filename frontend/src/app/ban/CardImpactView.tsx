@@ -3,7 +3,7 @@ import { api } from "@/lib/api";
 import { fmtDate, fmtNum } from "@/lib/format";
 import { CardChip } from "@/components/card-chip";
 import { Em } from "@/components/ds/em";
-import { Explainer, Meter, PageHero } from "@/components/ds/page";
+import { DataFooter, Explainer, Meter, PageHero } from "@/components/ds/page";
 import type { CardImpactEntry } from "@/types";
 import { KindFilterTabs, apiKind, type KindView } from "./kind-filter";
 import { BigScore, RankedThumb, ROW_GRID } from "./BanRadarView";
@@ -90,6 +90,11 @@ export async function CardImpactView({ view, tabs }: { view: KindView; tabs: Rea
           <ImpactRow key={entry.card_name} entry={entry} rank={index + 1} max={max} />
         ))}
       </div>
+      <DataFooter
+        source="decklists de tournoi TCG, yugiohmeta.com"
+        date={`au ${fmtDate(as_of)}, 6 mois glissants`}
+        sample={`${fmtNum(n_decks_window)} decks, ${fmtNum(data.length)} cartes affichées`}
+      />
     </>
   );
 }

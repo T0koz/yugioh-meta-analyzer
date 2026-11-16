@@ -6,7 +6,7 @@ import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
-import { Page, PageHero, StatBand } from "@/components/ds/page";
+import { DataFooter, Page, PageHero, StatBand } from "@/components/ds/page";
 import { TierList } from "./TierList";
 
 export const metadata: Metadata = {
@@ -53,6 +53,11 @@ export default async function TierListPage() {
         </PageHero>
 
         <TierList data={data} />
+        <DataFooter
+          source="decklists de tournoi TCG, yugiohmeta.com"
+          date={period}
+          sample={`${fmtNum(n_decks)} decks, ${fmtNum(data.length)} archétypes`}
+        />
       </Page>
     </HoverPreviewProvider>
   );

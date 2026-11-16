@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
-import { fmtMonthRange, fmtNum } from "@/lib/format";
+import { fmtDate, fmtMonthRange, fmtNum } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { CardArt } from "@/components/card-art";
@@ -8,7 +8,7 @@ import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
-import { Page, PageHero, StatBand } from "@/components/ds/page";
+import { DataFooter, Page, PageHero, StatBand } from "@/components/ds/page";
 import { BanStatus, Tag } from "@/components/ds/tags";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { BuyLabel } from "@/types";
@@ -30,7 +30,7 @@ function fmtRank(rank: number): string {
 }
 
 export default async function BoutiquePage() {
-  const { data, label_rule } = await api.boutiqueSignals();
+  const { data, label_rule, computed_at } = await api.boutiqueSignals();
   const strong = data.filter((s) => s.signal_label === "Fort").length;
   const archetypes = new Set(data.map((s) => s.archetype)).size;
 
@@ -121,6 +121,11 @@ export default async function BoutiquePage() {
             </TableBody>
           </Table>
         </div>
+        <DataFooter
+          source="decklists OCG (yugiohmeta.com), vues et prix Cardmarket (YGOPRODeck)"
+          date={computed_at ? `calcul du ${fmtDate(computed_at)}` : "date de calcul inconnue"}
+          sample={`${fmtNum(data.length)} cartes, ${fmtNum(archetypes)} archétypes`}
+        />
       </Page>
     </HoverPreviewProvider>
   );

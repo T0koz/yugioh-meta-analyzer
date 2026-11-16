@@ -50,6 +50,9 @@
   --color-paper-muted: var(--paper-muted);
   --color-good: var(--good);  --color-warn: var(--warn);
   --color-ocg: var(--ocg);
+  --color-cat-1: var(--cat-1);  --color-cat-2: var(--cat-2);
+  --color-cat-3: var(--cat-3);  --color-cat-4: var(--cat-4);
+  --color-cat-5: var(--cat-5);  --color-cat-6: var(--cat-6);
   --font-sans: var(--font-inter-tight);
   --font-serif: var(--font-instrument-serif);
   --font-mono: var(--font-jetbrains-mono);
@@ -90,6 +93,15 @@
   --warn: #f5c451;       /* restrictions de banlist uniquement */
   /* tendance baissière = --muted-text + ▼ (le rouge est réservé à l'accent) */
   --ocg: #7fb0ff;        /* série de données « OCG » uniquement (décision 6) : 8,9:1 sur --ink */
+
+  /* palette catégorielle de données (TOK-99, décision 6) : identité d'une série ou d'un critère,
+     jamais un état. Ordre fixe, jamais recyclé. ≥ 5,1:1 sur --ink à --ink-4 (npm run contrast). */
+  --cat-1: var(--signal); /* braise : série principale */
+  --cat-2: #4795ee;       /* azur */
+  --cat-3: #1fa894;       /* sarcelle */
+  --cat-4: #ba880f;       /* or */
+  --cat-5: #dc6497;       /* rose */
+  --cat-6: #9183ea;       /* violet */
 
   /* profondeur et reflet : réservés à la carte, objet-signature (TOK-106) */
   --shadow-card: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(170, 195, 235, 0.14);

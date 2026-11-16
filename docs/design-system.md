@@ -61,6 +61,10 @@ Thème **sombre uniquement** (pas de mode clair). Définir sur `:root` (pas de c
   --good: #3ddc97;       /* tendance haussière uniquement */
   --warn: #f5c451;       /* restrictions de banlist uniquement */
   /* tendance baissière = --muted-text + ▼ (le rouge est réservé à l'accent) */
+  --ocg: #7fb0ff;        /* série de données « OCG » uniquement */
+  /* palette catégorielle de données : voir §4 « Palette de données » */
+  --cat-1: var(--signal);  --cat-2: #4795ee;  --cat-3: #1fa894;
+  --cat-4: #ba880f;  --cat-5: #dc6497;  --cat-6: #9183ea;
 
   /* forme */
   --r: 4px;              /* rayon par défaut (boutons, pills, lignes) */
@@ -211,7 +215,7 @@ Home : hero = « Le TCG suit l'OCG, `<Em>quatre mois</Em>` plus tard. » (chiffr
 ### Ban Radar (`/ban`, onglet Radar)
 - En-tête : eyebrow + h1 « Qui sera `<Em>banni</Em>` ensuite ? » à gauche ; à droite, bloc mono 11 px aligné à droite (`DONNÉES AU 9 AOÛT 2026 / 2 018 DECKS · 6 MOIS`).
 - Carte-ligne : grille `110px 40px 1fr auto`, padding 20, bordure haute `--line`. Score 40–60 px Inter Tight 500 (`tabular-nums`) avec, dessous, le libellé de risque en mono 11 px MAJUSCULES couleur `--signal` (`CRITIQUE`). Puis rang `#1`, nom (20 px), méta mono (`83,4 % des decks · 1 682 decks · 82 archétypes`), **barre empilée des 6 critères**, puis statut banlist à droite.
-- Barre empilée : hauteur 8, gap 2, un segment par critère dont la largeur = sa contribution en points (somme = score, sur 100). Un seul teinte (`--signal`) avec opacité décroissante par critère : ubiquité .9, porteur .75, copies .6, restriction .45, élan .3, pont .18. Légende mono 10,5 px sous la 1re ligne seulement.
+- Barre empilée : hauteur 8, gap 2, un segment par critère dont la largeur = sa contribution en points (somme = score, sur 100). Une teinte de la palette de données par critère (`--cat-1` à `--cat-6`, voir « Palette de données »). Légende mono 10,5 px sous la 1re ligne seulement.
 - Statut : mono 500 11 px, bordure 1 px ; `Unlimited` en `--soft` ; `Limited`/`Semi-Limited` en `--warn` (contour + texte).
 - L'encart « Comment lire ce score » (actuellement un pavé) passe dans une info-bulle ou un panneau repliable ouvert par un bouton `Comment lire ce score ?`.
 - Les poids des critères restent **dupliqués** entre `scripts/build_ban_radar.py` (`WEIGHTS`) et `backend/app/routers/ban_radar.py` : ne pas les toucher dans un travail de design.
@@ -225,8 +229,36 @@ Surface `--ink-3`, bordure `--line-2`, rayon 4, padding 14×16. Titre mono 11 px
 ### Card chip (`card-chip.tsx`)
 Vignette mini + nom, fond `--ink-4`, bordure `--line`, rayon 4, mono 12 px ; au survol le panneau de prévisualisation s'affiche (comportement existant).
 
-### Graphiques (recharts)
-Série principale `--signal` (trait 2 px), séries secondaires `--soft` / `--muted-text` / `--faint`, grille `--line` en pointillés, axes et légendes en mono 11 px `--muted-text`, tooltip sur surface `--ink-3`. Pas de dégradés multicolores. Point final de la série principale mis en évidence (cercle 4,5 px).
+### Graphiques (SVG maison + D3, TOK-99)
+Plus de recharts. D3 calcule (échelles, tracés), React rend le SVG, côté serveur d'abord : le graphique est dans le HTML et se lit sans JavaScript ; survol et clavier s'ajoutent ensuite.
+- Modules autorisés : `d3-array`, `d3-shape`, `d3-scale`. Jamais le paquet `d3` entier. **`d3-scale` reste côté serveur** (≈ 20 ko compressés) : dans un composant client, une échelle linéaire s'écrit à la main avec `nice` et `ticks` de `d3-array` (budget : 200 ko de JavaScript par page).
+- Trait 2 px, point de 2 px sur chaque mois mesuré, point final 4,5 px cerclé de la surface. Grille `--line` en pointillés, ligne de zéro pleine. Axes en mono 12 px `--muted-text` (pas 11 px : Lighthouse compte le texte de moins de 12 px).
+- L'axe vertical part de zéro et s'arrête au maximum des séries affichées ; l'axe du temps commence au premier mois mesuré d'une série affichée (TOK-96).
+- **Étiquette directe** en bout de courbe (valeur en `--text`, nom en `--soft`) : le texte ne porte jamais la couleur de la série, c'est la marque à côté qui la porte.
+- **Taille d'échantillon visible** : bande de barres `--line-2` sous l'axe du temps (decks comptés par mois).
+- Survol : fil vertical + infobulle sur surface `--ink-3`. Clavier : le cadre du graphique est focalisable, flèches gauche et droite, Début, Fin, Échap ; la lecture est annoncée par une zone `aria-live`.
+- **Alternative tabulaire** : un `<details>` « Tableau des valeurs » sous chaque graphique.
+- Écart entre deux mesures (`/predictions`) : haltère (anneau = observé, point plein `--text` = prévu), trait `--good` pour une hausse, `--muted-text` pour une baisse ; l'écart a sa propre colonne et sa propre échelle, centrée sur zéro. Coordonnées en pourcentage de la largeur : le même SVG sert à 375 et à 1440 px.
+
+### Palette de données (TOK-99, décision 6)
+Six teintes catégorielles, dans cet ordre, jamais recyclées (une 7e série se replie dans « autres » ou dans un second graphique). Elles disent **qui** (une série, un critère), jamais **dans quel état** : `--good` et `--warn` gardent leur sens, `--ocg` reste réservé à la série OCG et ne se mélange pas aux `--cat-*` dans un même graphique.
+
+| Token | Valeur | Nom | Contraste sur `--ink` / `--ink-4` | Usage |
+|---|---|---|---|---|
+| `--cat-1` | `var(--signal)` `#ff5a3c` | braise | 6,51 / 5,52 | série principale ; critère ubiquité |
+| `--cat-2` | `#4795ee` | azur | 6,53 / 5,54 | 2e série ; porteur |
+| `--cat-3` | `#1fa894` | sarcelle | 6,80 / 5,77 | 3e série ; copies |
+| `--cat-4` | `#ba880f` | or | 6,35 / 5,39 | 4e série ; restriction (voisin du jaune des statuts de banlist) |
+| `--cat-5` | `#dc6497` | rose | 6,06 / 5,14 | élan |
+| `--cat-6` | `#9183ea` | violet | 6,37 / 5,40 | pont |
+
+- Contrôle : `npm run contrast` (dans `frontend/`) lit `globals.css` et échoue sous 4,5:1 sur `--ink` à `--ink-4`. À relancer à chaque retouche d'un token de couleur.
+- Séparation entre teintes voisines (OKLab ×100, validateur de palette du 2026-11-16) : au pire 12,8 en vision daltonienne simulée (cible ≥ 8) et 16,4 en vision normale (plancher 15). Toutes les paires non voisines ne sont pas séparables (rose et sarcelle en deutéranopie) : **l'identité ne passe jamais par la couleur seule**, toujours une étiquette directe ou une légende.
+- Une série garde sa teinte tant qu'elle est affichée : en retirer une ne repeint pas les autres.
+- Barre empilée du Ban Radar : une teinte par critère, écart de 2 px entre segments, légende sous la première ligne.
+
+### Pied de données (`DataFooter`, `components/ds/page.tsx`)
+Sous **chaque** graphique et tableau : `Source : … · date · échantillon · note de lecture`, en mono 12 px `--muted-text`. La date est une propriété obligatoire du composant. Quand la base servie n'enregistre pas la date d'un calcul, le pied le dit (« date de calcul non enregistrée ») plutôt que d'en afficher une autre.
 
 ## 5. Mise en page
 

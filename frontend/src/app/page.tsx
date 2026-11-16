@@ -304,9 +304,9 @@ export default async function Home() {
                           {entry.current_status !== "Unlimited" && ` · ${banStatusLabel(entry.current_status)}`}
                         </small>
                         <div aria-hidden className="mt-2 flex h-2 gap-0.5 overflow-hidden rounded-[2px] bg-ink-4">
-                          {CRITERIA.map(({ key, opacity }) =>
+                          {CRITERIA.map(({ key, color }) =>
                             entry.criteria[key] > 0 ? (
-                              <i key={key} className="fill-in block h-full bg-signal" style={{ width: `${entry.criteria[key]}%`, opacity }} />
+                              <i key={key} className="fill-in block h-full" style={{ width: `${entry.criteria[key]}%`, backgroundColor: color }} />
                             ) : null
                           )}
                         </div>

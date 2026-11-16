@@ -98,20 +98,18 @@ D7 — Format
 Commentaire libre :
 ```
 
-## D8 — Les quatre cartes sans texte
+## D8 — Les quatre cartes sans texte : ✅ fait le 16 novembre 2026
 
-`The Fallen & The Virtuous` (×3), `Hyperinvoked Aeon`, `Mixousia the Confounder` et `The Three
-Champions of Swordsoul` sont absentes de `cards` (dernière carte : 4 septembre 2026). Trois sont
-jouées par 9 decks Branded sur 9. Le jalon J1 est bloqué sans elles. `fetch_cards.py` écrit dans
-`yugioh.db` : ce n'est pas le rôle de cette session.
+Décision de Thomas : relancer `fetch_cards.py`. Fait : 288 cartes nouvelles insérées, un nom corrigé
+(`The Fallen &amp; The Virtuous`). Détail dans `jeu-de-tests-branded.md` § 1. Reste une décision :
 
 ```
-D8 — Cartes sans texte
-[x] Relancer scripts/fetch_cards.py dans une session dédiée (agent gardien-donnees), puis
-    vérifier que les 4 cartes sont arrivées ; je complète ensuite les tests marqués « incomplet »
-[ ] Ajouter fetch_cards.py au job du lundi (règle aussi le problème pour les prochaines sorties)
-[ ] Les deux
-[ ] Ne rien faire pour l'instant (les 4 cartes restent des cas « non couvert »)
+D8 bis — Garder `cards` à jour
+[x] Ajouter au job du lundi une étape « cartes nouvelles seulement » (insertion sans réécriture),
+    et corriger init_db.py qui duplique card_sets à chaque relance
+[ ] Rafraîchir toute la table chaque lundi (met aussi à jour views_week et les statuts de banlist ;
+    à décider avec le data scientist, car le signal précoce lit views_week)
+[ ] Rester manuel
 Commentaire libre :
 ```
 

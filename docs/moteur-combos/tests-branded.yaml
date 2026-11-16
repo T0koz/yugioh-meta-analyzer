@@ -1,4 +1,5 @@
-# Jeu de tests Branded, écrit à la main (TOK-87) — version 1 du 2026-11-16
+# Jeu de tests Branded, écrit à la main (TOK-87) — version 2 du 2026-11-16
+# v2 : les 4 cartes sans texte ont été chargées en base (D8) ; 14 situations corrigées.
 #
 # TOUTES les situations sont « à valider par un juge humain (TOK-89) » : leur auteur n'est pas un
 # juge et Thomas ne joue pas. Aucun script de simulateur n'a été consulté.
@@ -12,11 +13,11 @@
 #   memoire     : faits du tour déjà acquis (voir « mémoire du tour », definitions-et-schema.md § 2.1).
 #   attendu.verdict : legal | illegal | non_couvert
 #   choix       : liste EXACTE attendue des options légales. exclus : pièges qui ne doivent pas y être.
-#   incomplet   : cartes sans texte qui rendent la liste « peut-être incomplète » (§ 3.4, cas 3).
+#   incomplet   : cartes non couvertes qui rendent la liste « peut-être incomplète » (§ 3.4, cas 3).
 #   confiance   : haute | moyenne | basse — celle de l'auteur, PAS une validation.
 #   perimetre   : pilote | hors_pilote (réservé : adversaire, tours suivants).
 
-version: 1
+version: 2
 deck_source: 6af240d29e8b7a3a8eb28d8d
 validation_par_defaut: "à valider par un juge humain (TOK-89)"
 
@@ -40,7 +41,7 @@ cartes:
   NADIR: "Nadir Servant"
   SKITT: "Springans Kitt"
   SPOLY: "Super Polymerization"
-  TFTV: "The Fallen & The Virtuous"            # texte absent de `cards`
+  TFTV: "The Fallen & The Virtuous"
   GSWORD: "The Golden Swordsoul"
   MERC: "Tri-Brigade Mercourier"
   TBKITT: "Tri-Brigade Springans Kitt"
@@ -49,14 +50,14 @@ cartes:
   EDD: "Ecclesia and the Dark Dragon"
   GARURA: "Garura, Wings of Resonant Life"
   GRANG: "Granguignol the Dusk Dragon"
-  AEON: "Hyperinvoked Aeon"                    # texte absent de `cards`
+  AEON: "Hyperinvoked Aeon"
   MIRROR: "Mirrorjade the Iceblade Dragon"
-  MIXOUSIA: "Mixousia the Confounder"          # texte absent de `cards`
+  MIXOUSIA: "Mixousia the Confounder"
   DRAGO: "Predaplant Dragostapelia"
   RIND: "Rindbrumm the Striking Dragon"
   SPRIND: "Sprind the Irondash Dragon"
   DOGMA: "The Dragon that Devours the Dogma"
-  CHAMPIONS: "The Three Champions of Swordsoul"  # texte absent de `cards`
+  CHAMPIONS: "The Three Champions of Swordsoul"
   TITAN: "Titaniklad the Ash Dragon"
   LAVA: "Lava Golem"                           # side deck, texte présent, non formalisée
 
@@ -70,26 +71,28 @@ situations:
     action: "Invocation Normale d'ALUBER, puis activer son effet déclenché (chercher une Magie/Piège « Branded » dans le Deck)."
     attendu:
       verdict: legal
-      choix: [BFUSION, BOPENING, BHIGH]
-      incomplet: [TFTV]
+      choix: [BFUSION, BOPENING, BHIGH, TFTV]
       etat: "la carte choisie est en main ; Invocation Normale consommée ; « une fois par tour » d'ALUBER consommé ; deck mélangé."
       note: "L'effet est facultatif (« You can ») : ne pas l'activer est aussi légal."
-    source: "Texte d'ALUBER (1er effet)."
+    source: "Textes d'ALUBER (1er effet) et de TFTV (« always treated as a Branded card »)."
     regles: [R02, R11]
     confiance: haute
 
   - id: T02
     mecanique: activation_sans_resolution_possible
     perimetre: pilote
-    depart: {main: [ALUBER, BFUSION, BOPENING, BHIGH, ASH]}
-    action: "Invocation Normale d'ALUBER, puis activer son effet de recherche."
+    depart:
+      main: [BFUSION, BOPENING, BHIGH]
+      terrain: ["ALUBER (vient d'être Invoqué Normalement)"]
+      cimetiere: [TFTV, TFTV, TFTV]
+      memoire: ["Invocation Normale utilisée"]
+    action: "Activer l'effet de recherche d'ALUBER."
     attendu:
       verdict: illegal
-      raison: "Les trois Magies/Pièges « Branded » du deck sont en main : rien à chercher. L'invocation elle-même est légale, pas l'activation."
-    source: "Texte d'ALUBER ; règle générale d'activation."
+      raison: "Aucune Magie/Piège « Branded » ne reste dans le Deck : BFUSION, BOPENING et BHIGH sont en main, les 3 TFTV (traitées comme « Branded ») au Cimetière."
+    source: "Textes d'ALUBER et de TFTV ; règle générale d'activation."
     regles: [R01]
     confiance: moyenne
-
   - id: T03
     mecanique: invocation_normale_unique
     perimetre: pilote
@@ -145,8 +148,7 @@ situations:
       choix:
         - {fusion: SANCTIFIRE, materiel_1: [ALBAZ, WHITE], materiel_2: [CARTESIA, DECCLESIA, QUEM, IECCLESIA, GSWORD]}
         - {fusion: RIND, materiel_1: [ALBAZ, WHITE], materiel_2: [SKITT, TBKITT, MERC, COCA, FUWALOS]}
-      exclus: [MIRROR, SPRIND, TITAN, DOGMA, GRANG, GARURA, DRAGO, LULU, EDD]
-      incomplet: [AEON, MIXOUSIA, CHAMPIONS, TFTV]
+      exclus: [MIRROR, SPRIND, TITAN, DOGMA, GRANG, GARURA, DRAGO, LULU, EDD, AEON, MIXOUSIA, CHAMPIONS]
       etat: "les 2 matériels sont au Cimetière ; le monstre Fusion est sur le terrain, « correctement invoqué » ; verrou « Extra Deck = Fusion seulement » pour tout le tour ; BFUSION activée ce tour."
       note: "ASH, OGRE (main) et DROLL ne remplissent aucune ligne de matériel : OGRE est LUMIÈRE Psychique, DROLL est VENT Magicien."
     source: "Textes de BFUSION, SANCTIFIRE, RIND, WHITE (« always treated as »)."
@@ -357,9 +359,8 @@ situations:
     action: "Invocation Normale de QUEM, puis activer son 1er effet : lister les cartes du Deck qu'on peut envoyer au Cimetière (« Fallen of Albaz » ou une carte qui le mentionne)."
     attendu:
       verdict: legal
-      choix: [ALBAZ, WHITE, CARTESIA, IECCLESIA, SKITT, GSWORD, MERC, TBKITT, BFUSION, BHIGH, NADIR]
+      choix: [ALBAZ, WHITE, CARTESIA, IECCLESIA, SKITT, GSWORD, MERC, TBKITT, BFUSION, BHIGH, NADIR, TFTV]
       exclus: [ALUBER, BOPENING, DECCLESIA, COCA, FUWALOS, SARC, SPOLY, ASH, OGRE, DROLL]
-      incomplet: [TFTV]
       note: "« card that mentions it » : les Magies comptent. Liste calculée en cherchant « Fallen of Albaz » entre guillemets dans les textes."
     source: "Texte de QUEM et textes des 23 cartes du Main Deck."
     regles: [R04]
@@ -433,11 +434,10 @@ situations:
     action: "Activer l'effet de WHITE en main : lister les monstres de l'Extra Deck qu'on peut envoyer au Cimetière en coût (« monster that mentions Fallen of Albaz »)."
     attendu:
       verdict: legal
-      choix: [SANCTIFIRE, MIRROR, RIND, SPRIND, DOGMA, TITAN, EDD]
-      exclus: [GRANG, GARURA, LULU, DRAGO]
-      incomplet: [AEON, MIXOUSIA, CHAMPIONS]
+      choix: [SANCTIFIRE, MIRROR, RIND, SPRIND, DOGMA, TITAN, EDD, CHAMPIONS]
+      exclus: [GRANG, GARURA, LULU, DRAGO, AEON, MIXOUSIA]
       etat: "WHITE sur le terrain ; verrou « Extra Deck = Fusion ou Synchro de Niveau 8 seulement » ; le monstre envoyé est au Cimetière, non invoqué."
-      note: "EDD est un monstre Synchro mais son texte mentionne « Fallen of Albaz » : il compte."
+      note: "EDD est un monstre Synchro mais son texte mentionne « Fallen of Albaz » : il compte. CHAMPIONS (Synchro) aussi : son 2e effet cite « Fallen of Albaz »."
     source: "Texte de WHITE et textes des 15 cartes de l'Extra Deck."
     regles: [R04]
     confiance: moyenne
@@ -617,9 +617,8 @@ situations:
         - {revele: CARTESIA, type: Magicien, envoi: [GRANG]}
         - {revele: MERC, type: Bête Ailée, envoi: [RIND]}
         - {revele: SKITT, type: Bête, envoi: [DOGMA]}
-      exclus: [GARURA, MIRROR, SPRIND, DRAGO, LULU, EDD]
-      incomplet: [AEON, MIXOUSIA, CHAMPIONS]
-      note: "DOGMA (3000/2500) passe par sa DEF. GARURA est Niveau 6. LULU et EDD sont Synchro."
+      exclus: [GARURA, MIRROR, SPRIND, DRAGO, LULU, EDD, AEON, MIXOUSIA, CHAMPIONS]
+      note: "DOGMA (3000/2500) passe par sa DEF. GARURA est Niveau 6. LULU, EDD et CHAMPIONS sont Synchro. MIXOUSIA est Magicien de Niveau 8 mais 2700/1500. AEON est Niveau 10."
     source: "Texte de BHIGH et caractéristiques des 15 cartes de l'Extra Deck."
     regles: [R17, R21]
     confiance: moyenne
@@ -629,11 +628,10 @@ situations:
     perimetre: pilote
     depart: {main: [BHIGH, ALUBER, ASH, OGRE, ASH]}
     action: "Activer BHIGH."
-    attendu: {verdict: illegal, raison: "Monstres en main : Elfe (ALUBER), Zombie (ASH), Psychique (OGRE). Aucun monstre Fusion de Niveau 8 de ces Types dans l'Extra Deck."}
+    attendu: {verdict: illegal, raison: "Monstres en main : Elfe (ALUBER), Zombie (ASH), Psychique (OGRE). Aucun monstre Fusion de Niveau 8 de ces Types dans l'Extra Deck (AEON est Démon de Niveau 10)."}
     source: "Texte de BHIGH."
     regles: [R01, R21]
     confiance: moyenne
-    incomplet_possible: [AEON, MIXOUSIA, CHAMPIONS]
 
   - id: T45
     mecanique: declencheurs_simultanes
@@ -692,14 +690,13 @@ situations:
     action: "Activer l'effet déclenché de SKITT : ajouter 1 Magie/Piège « Branded » (bannie, Deck ou Cimetière), puis placer 1 carte de la main au-dessous du Deck."
     attendu:
       verdict: legal
-      choix: [BFUSION, BOPENING, BHIGH]
+      choix: [BFUSION, BOPENING, BHIGH, TFTV]
       choix_dessous_du_deck: ["la carte ajoutée", ASH, OGRE]
       etat: "la carte placée est connue comme dernière carte du Deck. Cette connaissance disparaît au prochain mélange."
       note: "L'ordre des opérations compte : recherche dans le Deck (mélange), PUIS pose au-dessous."
     source: "Texte de SKITT (2e effet)."
     regles: [R02]
     confiance: moyenne
-    incomplet_possible: [TFTV]
 
   - id: T50
     mecanique: verrou_pose_par_un_effet
@@ -708,12 +705,12 @@ situations:
     action: "Invoquer Spécialement DECCLESIA depuis la main (« si un monstre Invoqué Spécialement depuis l'Extra Deck est sur le terrain »), puis activer son effet de recherche."
     attendu:
       verdict: legal
-      choix: [QUEM]
+      choix: [QUEM, TFTV]
       exclus: [ALBAZ, WHITE, CARTESIA, IECCLESIA]
       etat: "verrou supplémentaire : plus aucune Invocation Spéciale depuis l'Extra Deck ce tour."
-      note: "Seule carte « Dogmatika » du Main Deck hors DECCLESIA : QUEM (« always treated as »). `cards.archetype` classe ALBAZ en « Dogmatika » : c'est faux pour les règles."
+      note: "Cartes « Dogmatika » du Main Deck hors DECCLESIA : QUEM et TFTV, toutes deux par « always treated as » (l'effet dit « card », une Magie convient). `cards.archetype` classe ALBAZ en « Dogmatika » : c'est faux pour les règles."
     source: "Textes de DECCLESIA et de QUEM."
-    regles: [R11]
+    regles: [R04, R11]
     confiance: moyenne
 
   # ── F. Matériels de Fusion ───────────────────────────────────────────────────────────────
@@ -747,8 +744,7 @@ situations:
     action: "Effet rapide de CARTESIA : Invocation Fusion de GRANG avec CARTESIA (terrain) + ALUBER (main), puis effet de GRANG (envoyer 1 monstre LUMIÈRE ou TÉNÈBRES de Niveau 6 ou plus du Deck ou de l'Extra Deck au Cimetière)."
     attendu:
       verdict: legal
-      choix: [SANCTIFIRE, LULU, EDD, GARURA, MIRROR, DRAGO, RIND, SPRIND, DOGMA, TITAN]
-      incomplet: [AEON, MIXOUSIA, CHAMPIONS]
+      choix: [SANCTIFIRE, LULU, EDD, GARURA, MIRROR, DRAGO, RIND, SPRIND, DOGMA, TITAN, AEON, MIXOUSIA, CHAMPIONS]
       note: "Aucun monstre du Main Deck n'est de Niveau 6 ou plus. Le monstre envoyé peut ouvrir un effet de Phase de Fin (TITAN, SPRIND, DOGMA, LULU) ou immédiat (GARURA)."
     source: "Textes de CARTESIA et de GRANG ; caractéristiques des cartes de l'Extra Deck."
     regles: []
@@ -883,46 +879,43 @@ situations:
     regles: [R26]
     confiance: moyenne
 
-  # ── H. « Non couvert » ───────────────────────────────────────────────────────────────────
+  # ── H. Cartes ajoutées en v2, et « non couvert » ─────────────────────────────────────────
   - id: T65
-    mecanique: non_couvert
+    mecanique: cible_obligatoire
     perimetre: pilote
     depart: {main: [TFTV, ASH, ASH, OGRE, DROLL]}
-    action: "Activer TFTV."
-    attendu: {verdict: non_couvert, raison: "Texte absent de la table `cards` : carte au statut `non_traitee`. Le moteur ne doit renvoyer ni « légal » ni « illégal »."}
-    source: "Absence constatée dans `cards` le 2026-11-16."
-    regles: []
-    confiance: haute
-
+    action: "Activer TFTV (1er effet : envoyer 1 monstre qui mentionne ALBAZ de l'Extra Deck au Cimetière, puis cibler 1 carte face visible sur le terrain ; la détruire). Terrain vide des deux côtés, aucun monstre « Ecclesia » au Cimetière."
+    attendu: {verdict: illegal, raison: "1er effet : aucune carte face visible à cibler (TFTV ne peut pas se cibler elle-même). 2e effet : condition « Ecclesia » fausse et aucun monstre dans les Cimetières."}
+    source: "Texte de TFTV (chargé en base le 2026-11-16)."
+    regles: [R34]
+    confiance: basse
   - id: T66
-    mecanique: non_couvert
+    mecanique: nombre_de_materiels
     perimetre: pilote
     depart: {main: [ALUBER, ASH], terrain: ["CARTESIA (Invoquée Spécialement)", ALBAZ]}
     action: "Effet rapide de CARTESIA pour invoquer AEON."
-    attendu: {verdict: non_couvert, raison: "Texte d'AEON absent : ni son type, ni son Niveau, ni ses matériels ne sont connus."}
-    source: "Absence constatée dans `cards` le 2026-11-16."
+    attendu: {verdict: illegal, raison: "AEON demande « 2+ Fusion Monsters with different Attributes » : aucun monstre Fusion en main ni sur le terrain."}
+    source: "Textes de CARTESIA et d'AEON (chargé en base le 2026-11-16)."
     regles: []
     confiance: haute
-
   - id: T67
     mecanique: non_couvert
     perimetre: pilote
-    depart: {main: [ALUBER, TFTV, ASH, OGRE, DROLL]}
-    action: "Explorer tous les combos de cette main."
+    depart: {main: [ALUBER, LAVA, ASH, OGRE, DROLL]}
+    action: "Explorer tous les combos de cette main (LAVA, carte du Side Deck, n'est pas formalisée)."
     attendu:
       verdict: legal
-      etat: "les lignes qui n'utilisent pas TFTV sont rendues ; l'exploration est marquée incomplète (`complete = 0`) avec le motif `non_couvert` ; aucun combo n'est étiqueté « démontré » tant que TFTV peut agir depuis la main."
+      etat: "les lignes qui n'utilisent pas LAVA sont rendues ; l'exploration est marquée incomplète (`complete = 0`) avec le motif `non_couvert` ; aucun combo n'est étiqueté « démontré » tant que LAVA peut agir depuis la main."
       note: "Dépend de la décision D5 (propagation du « non couvert »)."
     source: "Décisions du 16/11, § 4 (« Ce qui est affiché »)."
     regles: []
     confiance: moyenne
-
   - id: T68
     mecanique: non_couvert
     perimetre: pilote
     depart: {main: [LAVA, ASH, ASH, OGRE, DROLL]}
     action: "Invoquer LAVA."
-    attendu: {verdict: non_couvert, raison: "Le texte existe dans `cards`, mais la carte (side deck) n'est pas formalisée : statut `non_traitee`. Distinct de T65 : ici le texte existe."}
+    attendu: {verdict: non_couvert, raison: "Le texte existe dans `cards`, mais la carte (side deck) n'est pas formalisée : statut `non_traitee`."}
     source: "Statuts de formalisation, definitions-et-schema.md § 3.4."
     regles: []
     confiance: haute

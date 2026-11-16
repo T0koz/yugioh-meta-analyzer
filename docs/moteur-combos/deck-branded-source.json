@@ -18,12 +18,7 @@
     "extra": 15,
     "side": 15
   },
-  "missing_from_cards_table": [
-    "Hyperinvoked Aeon",
-    "Mixousia the Confounder",
-    "The Fallen & The Virtuous",
-    "The Three Champions of Swordsoul"
-  ],
+  "missing_from_cards_table": [],
   "cards": [
     {
       "zone": "main",
@@ -314,16 +309,16 @@
       "zone": "main",
       "name": "The Fallen & The Virtuous",
       "amount": 3,
-      "card_id": null,
-      "type": null,
+      "card_id": 30271097,
+      "type": "Spell Card",
       "attribute": null,
-      "race": null,
+      "race": "Quick-Play",
       "level": null,
       "atk": null,
       "def": null,
       "ban_tcg": null,
-      "text_sha256": null,
-      "in_cards_table": false
+      "text_sha256": "672abc2df26edd16e1c9f8ddc67d2f874a33713ee04107a5fc735934420e5b91",
+      "in_cards_table": true
     },
     {
       "zone": "main",
@@ -449,16 +444,16 @@
       "zone": "extra",
       "name": "Hyperinvoked Aeon",
       "amount": 1,
-      "card_id": null,
-      "type": null,
-      "attribute": null,
-      "race": null,
-      "level": null,
-      "atk": null,
-      "def": null,
+      "card_id": 33166263,
+      "type": "Fusion Monster",
+      "attribute": "DARK",
+      "race": "Fiend",
+      "level": 10,
+      "atk": 3800,
+      "def": 3200,
       "ban_tcg": null,
-      "text_sha256": null,
-      "in_cards_table": false
+      "text_sha256": "2b2749f2389511ba319b15bfbd1812c803957f4b4e92e7cd94dada0ee7595549",
+      "in_cards_table": true
     },
     {
       "zone": "extra",
@@ -479,16 +474,16 @@
       "zone": "extra",
       "name": "Mixousia the Confounder",
       "amount": 1,
-      "card_id": null,
-      "type": null,
-      "attribute": null,
-      "race": null,
-      "level": null,
-      "atk": null,
-      "def": null,
+      "card_id": 80843006,
+      "type": "Fusion Monster",
+      "attribute": "DARK",
+      "race": "Spellcaster",
+      "level": 8,
+      "atk": 2700,
+      "def": 1500,
       "ban_tcg": null,
-      "text_sha256": null,
-      "in_cards_table": false
+      "text_sha256": "0ccdbda0782284255544ce3c661758989ed81dcd8cac48b0b2a346ff63b55ad4",
+      "in_cards_table": true
     },
     {
       "zone": "extra",
@@ -554,16 +549,16 @@
       "zone": "extra",
       "name": "The Three Champions of Swordsoul",
       "amount": 1,
-      "card_id": null,
-      "type": null,
-      "attribute": null,
-      "race": null,
-      "level": null,
-      "atk": null,
-      "def": null,
+      "card_id": 74405783,
+      "type": "Synchro Monster",
+      "attribute": "LIGHT",
+      "race": "Spellcaster",
+      "level": 8,
+      "atk": 2500,
+      "def": 2500,
       "ban_tcg": null,
-      "text_sha256": null,
-      "in_cards_table": false
+      "text_sha256": "ab942e56c87fc4224b1dc79209f106dfec7449c2232bc2cfd9e33fcafb97980e",
+      "in_cards_table": true
     },
     {
       "zone": "extra",

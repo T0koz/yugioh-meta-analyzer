@@ -1,6 +1,7 @@
 # Moteur de combos — jeu de tests Branded écrit à la main (TOK-87)
 
-> **Statut : version 1, non validée.** Écrit le 16 novembre 2026, avant tout code de moteur.
+> **Statut : version 2, non validée.** Écrit le 16 novembre 2026, avant tout code de moteur.
+> La version 2 intègre les textes de quatre cartes chargées en base le même jour (décision D8).
 > **Chaque situation est « à valider par un juge humain (TOK-89) »** : son auteur (Claude) n'est pas
 > un juge, Thomas ne joue pas, et aucun simulateur n'a été consulté (condition d'indépendance).
 > Un test non validé peut être faux : il sert à poser les questions, pas encore à trancher.
@@ -10,7 +11,7 @@ Fichiers :
 - [`tests-branded.yaml`](tests-branded.yaml) : les 72 situations, lisibles par un programme ;
 - [`deck-branded-source.json`](deck-branded-source.json) : la decklist extraite de la base
   (`scripts/combos_extract_deck.py`, lecture seule) ;
-- [`points-de-regle-a-valider.md`](points-de-regle-a-valider.md) : les 33 points de règle à soumettre au juge.
+- [`points-de-regle-a-valider.md`](points-de-regle-a-valider.md) : les 34 points de règle à soumettre au juge.
 
 ---
 
@@ -50,29 +51,43 @@ Cartesia, the Virtuous ×2 · Branded Fusion ×1 · Branded Opening ×1 · Brand
 Cocatorium the Heavy Metal Avian ×1 · Dogmatika Ecclesia, the Virtuous ×1 · Droll & Lock Bird ×1 ·
 Fallen of Albaz ×1 · Fallen of the White Dragon ×2 · Ghost Ogre & Snow Rabbit ×3 · Gold Sarcophagus ×1
 · Guiding Quem, the Virtuous ×1 · Incredible Ecclesia, the Virtuous ×2 · Mulcharmy Fuwalos ×3 · Nadir
-Servant ×3 · Springans Kitt ×1 · Super Polymerization ×3 · **The Fallen & The Virtuous ×3** · The
+Servant ×3 · Springans Kitt ×1 · Super Polymerization ×3 · The Fallen & The Virtuous ×3 · The
 Golden Swordsoul ×1 · Tri-Brigade Mercourier ×1 · Tri-Brigade Springans Kitt ×1.
 
 **Extra Deck (15)** : Albion the Sanctifire Dragon · Despian Luluwalilith · Ecclesia and the Dark
-Dragon · Garura, Wings of Resonant Life · Granguignol the Dusk Dragon · **Hyperinvoked Aeon** ·
-Mirrorjade the Iceblade Dragon · **Mixousia the Confounder** · Predaplant Dragostapelia · Rindbrumm
-the Striking Dragon · Sprind the Irondash Dragon · The Dragon that Devours the Dogma ×2 · **The Three
-Champions of Swordsoul** · Titaniklad the Ash Dragon.
+Dragon · Garura, Wings of Resonant Life · Granguignol the Dusk Dragon · Hyperinvoked Aeon ·
+Mirrorjade the Iceblade Dragon · Mixousia the Confounder · Predaplant Dragostapelia · Rindbrumm
+the Striking Dragon · Sprind the Irondash Dragon · The Dragon that Devours the Dogma ×2 · The Three
+Champions of Swordsoul · Titaniklad the Ash Dragon.
 
-### ⚠ Quatre cartes n'ont pas de texte dans la base
+### Quatre cartes manquaient dans la base (corrigé le 16 novembre 2026)
 
-Les cartes en gras ci-dessus (**6 exemplaires sur 55**) sont absentes de la table `cards`, dont la
-carte la plus récente date du 4 septembre 2026. Trois d'entre elles sont pourtant jouées par
-**9 decks Branded sur 9**.
+À la première extraction, quatre cartes du deck (6 exemplaires sur 55) n'avaient pas de texte :
 
-Conséquences :
+| Carte | Cause | Correction |
+|---|---|---|
+| `The Fallen & The Virtuous` (×3) | présente dans `cards`, mais sous le nom `The Fallen &amp; The Virtuous` (entité HTML) : la jointure par nom échouait | nom corrigé en base |
+| `Hyperinvoked Aeon`, `Mixousia the Confounder`, `The Three Champions of Swordsoul` | sorties le 2 juillet 2026, jamais chargées (`cards.json` datait de juin) | insérées avec 285 autres cartes nouvelles |
 
-- je n'ai **pas** écrit leur effet de mémoire : la seule source de texte autorisée est `cards`. Elles
-  servent de cas « non couvert » réels (T65, T66, T67) ;
-- 8 situations portent le champ `incomplet` : leur liste de choix est exacte pour les cartes connues,
-  mais une carte sans texte pourrait s'y ajouter ;
-- **le jalon J1 est bloqué** tant que `scripts/fetch_cards.py` n'a pas été relancé (décision D8). Ce
-  script écrit dans `yugioh.db` : il relève de l'agent `gardien-donnees`, pas de cette session.
+`scripts/fetch_cards.py` a été relancé, puis **seules les cartes absentes ont été insérées** (288
+lignes, `cards` passe de 13 797 à 14 085). Les cartes déjà en base n'ont pas été réécrites, pour ne
+pas changer `views_week` ni les statuts de banlist hors de la chaîne du lundi.
+
+Ce que les textes ont changé dans les tests (14 situations retouchées) :
+
+- `The Fallen & The Virtuous` est « always treated as a "Branded" and "Dogmatika" card » : `Aluber`
+  et `Springans Kitt` peuvent la chercher (T01, T49), `Dogmatika Ecclesia` aussi (T50), et `Guiding
+  Quem` peut l'envoyer au Cimetière (T23). **T02 était faux en v1** : avec trois exemplaires dans le
+  Deck, `Aluber` avait bien une carte à chercher. Le test a été réécrit.
+- `The Three Champions of Swordsoul` cite « Fallen of Albaz » : elle peut payer le coût de `Fallen of
+  the White Dragon` (T29).
+- Les trois cartes de l'Extra Deck sont de Niveau 8 ou 10, LUMIÈRE ou TÉNÈBRES : `Granguignol` peut
+  les envoyer au Cimetière (T53).
+
+**Anomalie de la source** : le texte de `The Three Champions of Swordsoul` se termine par « You can
+only use each effect of "The Three Brave Swordsouls" once per turn » : le nom ne correspond pas à
+celui de la carte. C'est une incohérence de la source (cause non vérifiée), à faire trancher
+lors de la formalisation, et un argument pour garder l'empreinte du texte (`text_sha256`).
 
 ---
 
@@ -99,8 +114,8 @@ Conventions :
 - **État de départ par défaut** : tour 1, nous commençons, Phase Principale 1, pas de pioche, terrain
   adverse vide, Extra Deck complet, deck = les 40 cartes moins celles placées ailleurs, mémoire du
   tour vide. Seul ce qui s'en écarte est écrit.
-- **Deux sortes de départ** : une main de 5 cartes (situation d’ouverture, 27 cas), ou un état en
-  cours de tour décrit directement (45 cas). Ces derniers isolent une mécanique sans dépendre d'une
+- **Deux sortes de départ** : une main de 5 cartes (situation d’ouverture, 26 cas), ou un état en
+  cours de tour décrit directement (46 cas). Ces derniers isolent une mécanique sans dépendre d'une
   longue séquence ; certains ne sont pas atteignables depuis une ouverture, ce qui n'enlève rien à la
   question de légalité qu'ils posent.
 - **Alias** : les noms complets des cartes sont dans la section `cartes` du fichier.
@@ -113,8 +128,9 @@ Conventions :
 
 ## 3. Répartition
 
-72 situations : **35 légales, 34 illégales, 3 « non couvert »**. 70 dans le périmètre du pilote, 2
-hors pilote (places réservées). Confiance de l'auteur : 25 haute, 45 moyenne, 2 basse.
+72 situations : **35 légales, 36 illégales, 1 « non couvert »** (plus T67, exploration marquée
+incomplète). 70 dans le périmètre du pilote, 2 hors pilote (places réservées). Confiance de
+l'auteur : 24 haute, 45 moyenne, 3 basse.
 
 | Bloc | Situations | Mécaniques |
 |---|---|---|
@@ -125,7 +141,7 @@ hors pilote (places réservées). Confiance de l'auteur : 25 haute, 45 moyenne, 
 | E. Coût ou effet, Magies Jeu-Rapide | T34 à T50 | ponctuation « ; », carte posée, chaîne interdite, effet obligatoire, Synchro, ordre du deck, déclencheurs simultanés |
 | F. Matériels de Fusion | T51 à T58 | niveau, nombre de matériels, « ne peut pas servir de matériel », mémoire d'invocation |
 | G. Chaînes | T59 à T64 | enchaîner, vitesses, effet sur son propre terrain, effet différé |
-| H. « Non couvert » | T65 à T68 | texte absent, carte non formalisée, exploration incomplète |
+| H. Cartes ajoutées en v2, « non couvert » | T65 à T68 | cible obligatoire, matériels d'`Hyperinvoked Aeon`, carte non formalisée, exploration incomplète |
 | I. Recenser sans juger | T69 à T70 | actions légales sans intérêt |
 | J. Hors pilote | T71 à T72 | matériel adverse, interruption adverse |
 
@@ -150,10 +166,14 @@ montrent que le moteur a compris la règle et pas seulement un cas.
 ## 4. Ce que ce jeu de tests ne couvre pas
 
 - **Aucun combo complet de bout en bout.** Les tests portent sur des étapes (1 à 3 actions). Je n'ai
-  pas écrit « la » ligne Branded de référence : sans les textes de `The Fallen & The Virtuous`,
-  `Mixousia`, `Hyperinvoked Aeon` et `The Three Champions of Swordsoul`, toute ligne complète
-  serait soit fausse, soit amputée de cartes que tous les decks jouent. Les 5 à 10 combos des guides
-  publics (jalon J2) restent à collecter.
+  pas écrit « la » ligne Branded de référence : je ne joue pas, et une ligne inventée par moi ne
+  prouverait rien. Les 5 à 10 combos des guides publics (jalon J2) restent à collecter, et c'est la
+  tranche 0 (TOK-90) qui en écrira un premier.
+- **Les quatre cartes ajoutées en v2 sont peu testées** : `The Fallen & The Virtuous` (T01, T23, T49,
+  T50, T65), `Hyperinvoked Aeon` (T66), `The Three Champions of Swordsoul` (T29), `Mixousia the
+  Confounder` (aucun test propre : son effet de Fusion ne s'active qu'au tour adverse).
+- **Le cas « texte absent de la source »** n'a plus d'exemple réel dans ce deck. Il reste à tester
+  avec un nom de carte fictif.
 - **L'état d'arrivée n'est pas formalisé** (texte libre), en attendant la validation du schéma.
 - **Les zones** (colonnes de `Sprind`, zones centrales d'`Albion the Sanctifire Dragon`) : aucun
   test, en attendant la décision D3.
@@ -166,7 +186,7 @@ montrent que le moteur a compris la règle et pas seulement un cas.
 
 ## 5. Comment le faire valider
 
-1. Le juge lit `points-de-regle-a-valider.md` : 33 questions fermées, chacune avec ma lecture.
+1. Le juge lit `points-de-regle-a-valider.md` : 34 questions fermées, chacune avec ma lecture.
    C'est plus court que 72 tests, et une réponse corrige tous les tests qui en dépendent.
 2. Pour chaque point : « d'accord », « faux, parce que… », ou « ça dépend de… ».
 3. Je corrige le YAML et je passe `confiance` à `validee` avec le nom du juge et la date.

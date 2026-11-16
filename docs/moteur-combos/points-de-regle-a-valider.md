@@ -1,6 +1,6 @@
 # Moteur de combos — points de règle à soumettre à un juge humain (TOK-89)
 
-> 33 points. Pour chacun : **ma lecture** (celle d'un modèle de langage, à partir des textes de la
+> 34 points. Pour chacun : **ma lecture** (celle d'un modèle de langage, à partir des textes de la
 > table `cards` et du livret de règles cité de mémoire), ma confiance, et les tests qui en dépendent.
 > Aucun n'est validé. Réponse attendue par point : « d'accord », « faux, parce que… », « ça dépend de… ».
 > Les noms de cartes sont en anglais, comme dans les textes officiels utilisés.
@@ -19,6 +19,7 @@
 | R22 | Deux effets facultatifs du même joueur se déclenchent en même temps (`Granguignol` invoqué par Fusion, `Tri-Brigade Springans Kitt` envoyée au Cimetière). Qui choisit l'ordre dans la chaîne ? | Le joueur, librement. Il peut aussi n'en activer qu'un. | moyenne | T45, T62 |
 | R23 | `Incredible Ecclesia` : « During the End Phase, if a Fusion Monster(s) was sent to your GY this turn: Add this card from the GY to your hand » (sans « You can »). Obligatoire ? Et dans quel ordre résout-on plusieurs effets de Phase de Fin ? | Obligatoire. Le joueur du tour active ses effets de Phase de Fin un par un, dans l'ordre qu'il veut, chacun dans sa chaîne. | moyenne | T37 |
 | R27 | `Cocatorium` bannit `Tri-Brigade Mercourier` du Deck (coût) et prend son nom. (a) Compte-t-il comme monstre « Tri-Brigade » pour `Tri-Brigade Springans Kitt` ? (b) Le bannissement en coût depuis le Deck est-il « face visible », et déclenche-t-il `Mercourier` et `The Golden Swordsoul` ? | (a) oui ; (b) oui aux deux. | moyenne (a), basse (b) | T32, T33, T62 |
+| R34 | `The Fallen & The Virtuous` : « Send 1 monster… from your Extra Deck to the GY, **then target** 1 face-up card on the field; destroy it ». (a) La carte peut-elle se cibler elle-même ? (b) La cible se choisit-elle à l'activation ou à la résolution ? (c) Sans aucune carte face visible sur le terrain, peut-on l'activer ? | (a) non ; (b) je ne sais pas : la formulation « then target » est inhabituelle ; (c) non. | basse | T65 |
 | R30 | Est-il légal d'activer `Mulcharmy Fuwalos` pendant son propre tour, ou d'enchaîner son propre `Ash Blossom` à son propre effet ? | Oui : rien dans les textes ne l'interdit. | moyenne | T69, T70 |
 
 ## Lecture des textes : noms, « mentionne », archétypes
@@ -26,9 +27,9 @@
 | N° | Question | Ma lecture | Confiance | Tests |
 |---|---|---|---|---|
 | R03 | `Fallen of the White Dragon` (« always treated as "Fallen of Albaz" ») compte-t-il comme « Fallen of Albaz » partout : matériel pris dans le Deck par `Branded Fusion`, carte cherchée par `Nadir Servant`, condition de `Blazing Cartesia` ? | Oui, dans toutes les zones. | moyenne | T07, T11, T17, T18, T25, T28 |
-| R04 | « A card / monster that mentions "Fallen of Albaz" » : est-ce toute carte dont le texte contient ce nom entre guillemets ? `Ecclesia and the Dark Dragon` (Synchro) compte-t-il ? Les Magies comptent-elles quand le texte dit « card » ? | Oui aux trois. | moyenne | T23, T29, T33 |
+| R04 | « A card / monster that mentions "Fallen of Albaz" » : est-ce toute carte dont le texte contient ce nom entre guillemets ? `Ecclesia and the Dark Dragon` et `The Three Champions of Swordsoul` (Synchro) comptent-ils ? Les Magies comptent-elles quand le texte dit « card » ? | Oui aux trois. | moyenne | T23, T29, T33, T50 |
 | R05 | « A Fusion Monster that mentions "Fallen of Albaz" **as material** » : faut-il que le nom soit dans la ligne de matériels ? | Oui. `Granguignol` (matériels : `Blazing Cartesia` + 1 LIGHT ou DARK) ne compte pas ; `Titaniklad`, `Rindbrumm`, `Mirrorjade`, `Albion the Sanctifire Dragon`, `Sprind`, `The Dragon that Devours the Dogma` comptent. | haute | T07, T08, T47, T48 |
-| R11 | Appartenance à un archétype : par le nom ou par « always treated as ». `Guiding Quem` est-il « Dogmatika » et « Despia » ? `Fallen of Albaz` est-il « Dogmatika » ? `Incredible Ecclesia` et `Dogmatika Ecclesia` sont-ils des monstres « Ecclesia » ? | `Quem` : les deux. `Fallen of Albaz` : **non**. Les deux Ecclesia : oui. `Blazing Cartesia` : ni « Dogmatika » ni « Ecclesia ». | moyenne | T01, T17, T18, T28, T30, T35, T50 |
+| R11 | Appartenance à un archétype : par le nom ou par « always treated as ». `Guiding Quem` est-il « Dogmatika » et « Despia » ? `Fallen of Albaz` est-il « Dogmatika » ? `Incredible Ecclesia` et `Dogmatika Ecclesia` sont-ils des monstres « Ecclesia » ? | `Quem` : les deux. `Fallen of Albaz` : **non**. Les deux Ecclesia : oui. `Blazing Cartesia` : ni « Dogmatika » ni « Ecclesia ». `The Fallen & The Virtuous` (« always treated as a "Branded" and "Dogmatika" card ») : cherchable par `Aluber` et par `Dogmatika Ecclesia`. | moyenne | T01, T17, T18, T28, T30, T35, T49, T50 |
 | R32 | `Springans Kitt` : « If you have a Fusion Monster that mentions "Fallen of Albaz" as material on your field or in your GY ». Un monstre Fusion envoyé au Cimetière sans avoir été invoqué suffit-il ? | Oui : la condition ne demande que sa présence. | moyenne | T47 |
 
 ## Fusion et Synchro

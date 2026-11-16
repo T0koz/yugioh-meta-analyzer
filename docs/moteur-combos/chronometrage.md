@@ -27,6 +27,20 @@
 
 Les bornes des étapes 1 et 2 sont approximatives : l'heure n'a pas été relevée entre les deux.
 
+## Session du 16 novembre 2026 — cartes manquantes (décision D8)
+
+| # | Étape | Début | Fin | Durée (agent) | Produit | Temps humain de validation |
+|---|---|---|---|---|---|---|
+| 7 | Lecture de `fetch_cards.py` et `init_db.py`, téléchargement, comparaison à la base sans écrire | ≈ 16:53 | ≈ 16:58 | ≈ 5 min (dont 2 min perdues sur une requête de contrôle trop lente, arrêtée) | diagnostic : 3 cartes absentes, 1 mal nommée | — |
+| 8 | Insertion des 288 cartes nouvelles, correction d'un nom, contrôle d'intégrité, test de fumée de l'API | ≈ 16:58 | ≈ 17:02 | ≈ 4 min | `cards` : 13 797 → 14 085 | — |
+| 9 | Lecture des 4 textes, correction de 14 situations, mise à jour des documents | ≈ 17:02 | ≈ 17:09 | ≈ 7 min | version 2 du jeu de tests, 34 points de règle | à mesurer |
+
+Heures approximatives : seule l'heure de 17:07:32 a été relevée pendant cette session.
+
+**Leçon pour les estimations** : quatre textes de cartes ont obligé à retoucher 14 situations sur 72
+(19 %), dont une qui était fausse (T02). Une carte ajoutée au périmètre ne coûte pas seulement sa
+formalisation : elle remet en cause les listes exactes des tests existants.
+
 ## Ratios utiles pour les estimations futures
 
 | Mesure | Valeur | Remarque |

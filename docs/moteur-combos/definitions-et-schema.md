@@ -462,8 +462,8 @@ de `formalisee` + `verifiee`, et le taux démontré la part de `verifiee`.
    sur le terrain, au Cimetière) → la branche s'arrête avec le motif `non_couvert`, l'exploration est
    `complete = 0` ;
 3. une énumération porte sur une zone qui **contient** une carte non couverte (ex. « un monstre
-   Fusion de l'Extra Deck qui mentionne Albaz » alors que 3 cartes de l'Extra Deck n'ont pas de
-   texte) → les résultats trouvés sont donnés, étiquetés « liste peut-être incomplète : N cartes non
+   Fusion de l'Extra Deck qui mentionne Albaz » alors que des cartes de l'Extra Deck ne sont pas
+   formalisées) → les résultats trouvés sont donnés, étiquetés « liste peut-être incomplète : N cartes non
    couvertes dans la zone ».
 
 ### 3.5 Piège de données trouvé : `cards.archetype` ne dit pas la règle
@@ -522,7 +522,7 @@ transitions traversent un changement de tour (colonne `turn` de l'état).
 
 | N° | Question | Position |
 |---|---|---|
-| 1 | Qui juge ? | **Reste ouverte.** Ce document produit la matière à juger : 33 points de règle listés dans `points-de-regle-a-valider.md`. |
+| 1 | Qui juge ? | **Reste ouverte.** Ce document produit la matière à juger : 34 points de règle listés dans `points-de-regle-a-valider.md`. |
 | 2 | Budget | Reste ouverte. Le chronométrage de cette session donne un premier point de calibrage. |
 | 3 | L'oracle liste-t-il toutes les actions légales ? | **Reste ouverte, et devient bloquante** : le niveau « pas » (§ 2.2) suppose qu'on puisse comparer une liste d'actions légales, pas seulement un résultat. Si l'oracle ne la donne pas, la comparaison se fera au niveau « transition » (états d'arrivée), moins fine. |
 | 4, 5 | Banc sur Mac, rulings TCG/OCG | Non traitées (TOK-86). |

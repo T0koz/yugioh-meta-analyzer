@@ -26,7 +26,7 @@ Dernière mise à jour : 2026-11-17, lot 19 fusionné. **Tous les lots restants 
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |
 |---|---|---|---|
-| 1 | Revue du code fusionné | jamais | |
+| 1 | Revue du code fusionné | 🏗️ démarrée le 17/11 (accord de Thomas), commits `cb2e9fb..claude/front-nuit-17-11` | session « Fond — revue du code fusionné », Sonnet 5.5, branche `claude/fond-2026-11-17-…`, rapport seul |
 | 2 | Vérification des données | jamais | |
 | 3 | Documentation désynchronisée | jamais | |
 | 4 | Tests | jamais | |

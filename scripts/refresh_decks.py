@@ -4,7 +4,7 @@ Rafraîchissement hebdomadaire des decklists (TOK-70) + journal de santé des fe
     python scripts/refresh_decks.py            # TCG, OCG, légalité, puis contrôle de fraîcheur
     python scripts/refresh_decks.py --status   # n'exécute rien : affiche les 10 derniers runs + fraîcheur
 
-Enchaîne `fetch_tournament_decks.py`, `fetch_ocg_decks.py`, `compute_deck_legality.py`
+Enchaîne `fetch_tournament_decks.py`, `fetch_ocg_decks.py`, `fetch_banlist_history.py`, `compute_deck_legality.py`
 en sous-processus, **en séquence** (un seul écrivain sur `yugioh.db`). Chaque étape est
 journalisée dans `data/fetch_health.jsonl` (fichier, pas table : il reste lisible quand la
 base est verrouillée et il survit à une reconstruction de la base) : code de retour, durée,
@@ -31,6 +31,9 @@ FRESHNESS_MAX_DAYS = 7   # au-delà, les decks sont considérés périmés
 STEPS = [
     ("fetch_tcg", "scripts/fetch_tournament_decks.py"),
     ("fetch_ocg", "scripts/fetch_ocg_decks.py"),
+    # La banlist doit être à jour AVANT la légalité : sinon les decks postérieurs à une nouvelle liste
+    # sont jugés contre l'ancienne, donc illégaux, donc exclus de tous les scores.
+    ("banlist", "scripts/fetch_banlist_history.py"),
     ("legality", "scripts/compute_deck_legality.py"),
 ]
 

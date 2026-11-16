@@ -61,9 +61,10 @@ Deux pièges à ne pas refaire si le scoring est retouché :
   Thomas ; remplace « l'omniprésence seule ne prédit rien »). L'ancien constat venait de la v1 (rang médian 302/681,
   le hasard), calculée sur des données biaisées par le drapeau `illegal`. Sur données légales (backtest rangé liste par
   liste, lot 12, `docs/journal/ban-historique-tok-55.md`), une base « staples les plus jouées » (même univers classé
-  par la seule part des decks) fait **mieux que le score en rang médian sur 7 listes TCG sur 10** ; le score reste
-  devant en OCG (8 sur 10) et **en tête de classement** : top 25 de la veille touché 29 fois sur 250 contre 16 pour les
-  staples en TCG, 41 contre 18 en OCG. Lecture : le score sert à désigner les premières cartes visées, pas à classer
+  par la seule part des decks) fait **mieux que le score en rang médian sur 7 listes TCG sur 10** — tendance, **pas un
+  écart démontré** (test du signe p = 0,34, diagnostic TOK-115) ; le score reste devant en OCG (8 sur 10) et **en tête
+  de classement** : top 25 de la veille touché 29 fois sur 250 contre 16 pour les staples en TCG, 41 contre 18 en OCG
+  (seul l'écart OCG est démontré, 9 listes sur 10, p = 0,02). Lecture : le score sert à désigner les premières cartes visées, pas à classer
   l'ensemble mieux que la popularité. Toute retouche du scoring se compare aux deux bases (hasard et staples), pas au
   hasard seul. Le nombre d'archétypes qui jouent une carte ne discrimine toujours pas (médiane 4 chez les touchées
   comme chez les autres, constat v1 non recalculé).

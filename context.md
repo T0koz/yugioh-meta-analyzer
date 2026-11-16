@@ -424,6 +424,30 @@ chiffres, avant la nouvelle page d'accueil) → TOK-98 (semaine 1). Une étape n
   d'archétype ; Ash Blossom, première à chaque fois, jamais touchée. **À recalculer à chaque banlist.**
 - Fallback d'image d'archétype par mots entiers (« Ashtra » prenait l'image de « Ra »).
 
+**TOK-98, semaine 1 (2026-11-16)** — cartes, mouvement, typographie, mesurés par script Playwright et Lighthouse :
+
+- **Images** : `components/card-art.tsx` (`CardArt` en tailles `xs`/`sm`/`lg`, `ArtDot` pastille ronde) remplace
+  `CardThumb`. Il passe par **`next/image`** (`images.remotePatterns` dans `next.config.ts`) : le serveur Next
+  redimensionne et met en cache, le navigateur ne parle plus à `images.ygoprodeck.com`. C'est une étape : l'hébergement
+  propre reste TOK-92. `lib/card-images.ts` (`artCropUrl`) est le seul fichier qui connaît la forme des URL.
+  Next 16 : la prop `priority` est dépréciée (`preload`), on utilise `loading="eager"` au premier écran.
+- **L'API renvoie `image_url`** sur `/boutique/signals`, `/early-signals`, `/meta/predictions`, et une carte `images`
+  sur `/meta/evolution`. Jointure `cards` avec l'expression indexée et `= +s.card_name` (TOK-83).
+- **Bandeau d'archétype** (tier list, lignes T0 à T3, ≥ 760 px) : illustration recadrée derrière le nom, sous un masque
+  qui la garde sombre sous le texte. Si on touche au masque, revérifier le contraste du nom sur une illustration claire.
+- **Mouvement, CSS seul** : tokens `--dur-1/2/3`, `--stagger`, `--glow` ; utilitaires `enter` (avec `[--i:n]` pour
+  décaler), `fill-in` (barres), `cursor-blink`. Les keyframes ne décrivent que l'état de départ : sans animation,
+  l'élément est à sa place. `components/reveal.tsx` (apparition au défilement, une fois) ne cache un élément que
+  depuis le JavaScript, s'il est sous l'écran et si le mouvement est autorisé : ne jamais poser `reveal-pending` dans
+  le HTML serveur. Limite : l'animation d'ouverture se rejoue à chaque navigation.
+- **Typographie** : Inter Tight en police variable ; noms de cartes (`CardChip`), tendances, pills de filtre et lignes
+  de détail en Inter Tight ; le mono reste aux chiffres, rangs et labels en majuscules.
+- **Accent rationné** : barres de la tier list et des prédictions en neutre ; la barre de la tier list montre la
+  **part de méta** (la mesure du tri), plus le score.
+- Titres : `h2` après le `h1` (les `h3` directs faisaient échouer `heading-order` dans Lighthouse).
+- **Lighthouse** : `npm run lighthouse` (`frontend/scripts/lighthouse.mjs`), référence dans
+  `docs/audit-front/lighthouse-2026-11-16.md`. LCP mobile ≈ 3,3 s sur 8 pages : cause à isoler avant TOK-106.
+
 ### 🔜 À faire
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials

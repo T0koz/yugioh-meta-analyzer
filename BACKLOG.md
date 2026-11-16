@@ -135,7 +135,7 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | ✅ Done (2026-11-16) — branche fusionnée (`/ban-radar` 7 s → 0,05 s), `archetype` nullable, test de fumée `backend/tests` | 🔴 Urgent |
 | TOK-96 | Jour 1 : gains rapides sans décision de design | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation et de fusion | 🔴 High |
 | TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation | 🔴 High |
-| TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🔜 À faire | 🔴 High |
+| TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation | 🔴 High |
 | TOK-106 | Nouvelle page d'accueil d'après le prototype (bloqué par TOK-95 et TOK-97) | 🔜 Backlog | 🔴 High |
 | TOK-99 | Dataviz maison en SVG (D3) + palette de données | 🔜 Backlog | 🟠 Medium |
 | TOK-100 | Qualité : SEO de partage + tests visuels Playwright | 🔜 Backlog | 🟠 Medium |
@@ -164,6 +164,13 @@ radar (et non 50), parce que 22 cartes récentes manquent dans la table `cards` 
 - **Écart OCG → TCG** : « 2 à 6 mois » partout.
 - Suites hors chantier : `log_predictions.py` journalise la fausse date comme `target_date` ; le notebook 10 ne
   filtre pas les archétypes déjà en TCG ; `/meta/evolution` choisit son top 15 sur un mois à petits effectifs.
+
+**TOK-98 — état (2026-11-16)** : `CardArt` sur `next/image` (0 image surdimensionnée, 0 requête du navigateur vers
+YGOPRODeck) ; une image de carte au premier écran de 8 pages sur 9 (le graphe est l'exception) ; bandeaux d'archétype
+sur les lignes T0 à T3 ; tokens de mouvement, ouverture de page et `Reveal` en CSS seul (0 animation en mouvement
+réduit) ; mono sous 40 % des caractères sur les 9 pages (11 à 37 %) ; barre de la tier list = part de méta ; plus de
+colonne de barres orange dans les tableaux ; Lighthouse installé, référence dans `docs/audit-front/lighthouse-2026-11-16.md`
+(desktop 100 partout ; mobile 91+ sauf `/` 77 et `/graph` 71 ; LCP mobile ≈ 3,3 s, au-dessus de l'objectif de TOK-106).
 
 ---
 

@@ -69,6 +69,13 @@ Thème **sombre uniquement** (pas de mode clair). Définir sur `:root` (pas de c
   --maxw: 1200px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* mouvement (TOK-98) */
+  --dur-1: 180ms;   /* survol, focus, pression */
+  --dur-2: 500ms;   /* apparition d'un bloc */
+  --dur-3: 1000ms;  /* remplissage d'une barre, ouverture */
+  --stagger: 70ms;  /* décalage dans une séquence */
+  --glow: rgba(255, 90, 60, 0.28); /* lueur d'accent, carte vedette uniquement */
+
   /* mapping shadcn (pour que table, badge, input, select… héritent du thème) */
   --background: var(--ink);
   --foreground: var(--text);

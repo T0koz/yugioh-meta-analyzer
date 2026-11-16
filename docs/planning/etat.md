@@ -26,7 +26,7 @@ Dernière mise à jour : 2026-11-17, lot 19 fusionné. **Tous les lots restants 
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |
 |---|---|---|---|
-| 1 | Revue du code fusionné | 🏗️ démarrée le 17/11 (accord de Thomas), commits `cb2e9fb..claude/front-nuit-17-11` | session « Fond — revue du code fusionné », Sonnet 5.5, branche `claude/fond-2026-11-17-…`, rapport seul |
+| 1 | Revue du code fusionné | ✅ 17/11, commits `cb2e9fb..claude/front-nuit-17-11` | rapport `docs/planning/fond/2026-11-17.md` sur la branche `claude/fond-2026-11-17-b80f1e` (`fc39c26`, non fusionnée, selon `taches-de-fond.md`) : 0 bloquant, 4 importants (garde-fou contournable par la syntaxe du shell, faux positif du heredoc, `build_ban_history.py` non atomique, `deploy_prebuilt.py` ne vérifie pas la base du build), 8 mineurs ; Sonnet 5.5 |
 | 2 | Vérification des données | jamais | |
 | 3 | Documentation désynchronisée | jamais | |
 | 4 | Tests | jamais | |

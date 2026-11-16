@@ -52,3 +52,6 @@ data/early_signal_*.html
 
 # Images de cartes téléchargées (TOK-92) : jamais dans Git
 data/card-images/
+
+# Copie de la base de service embarquée dans l'API au déploiement Vercel (TOK-35) : jamais dans Git
+backend/data/

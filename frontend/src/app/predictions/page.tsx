@@ -8,6 +8,7 @@ import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { controlClass } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
 import { DataFooter, Page, PageHero } from "@/components/ds/page";
+import { MethodNote } from "@/components/ds/explain";
 import { TrendLabel } from "@/components/ds/tags";
 import { PredictionsChart } from "./PredictionsChart";
 
@@ -19,18 +20,18 @@ function nextMonth(yearMonth: string): string {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { data, model, data_month, computed_at } = await api.predictions();
+  const { data, data_month, computed_at } = await api.predictions();
   const target = data_month ? ` pour ${fmtMonthShort(nextMonth(data_month))}` : "";
   const computed = computed_at ? `, calcul du ${fmtDate(computed_at)}` : "";
   return pageMetadata({
     title: "Prédictions de méta",
-    description: `Score méta prévu${target} sur ${data.length} archétypes Yu-Gi-Oh! TCG, modèle ${model}${computed}. Données : decklists de tournoi, ${DECK_SOURCE}.`,
+    description: `Score méta prévu${target} sur ${data.length} archétypes Yu-Gi-Oh! TCG${computed}. Données : decklists de tournoi, ${DECK_SOURCE}.`,
     path: "/predictions",
   });
 }
 
 export default async function PredictionsPage() {
-  const { data, model, data_month, computed_at } = await api.predictions();
+  const { data, data_month, computed_at } = await api.predictions();
   const rows = [...data].sort((a, b) => b.predicted - a.predicted);
   const observed = data_month ? fmtMonthShort(data_month) : "dernier mois";
   const target = data_month ? fmtMonthShort(nextMonth(data_month)) : "mois suivant";
@@ -46,8 +47,12 @@ export default async function PredictionsPage() {
         }
         intro={
           <>
-            Score méta ×100 de {rows.length} archétypes TCG : observé en {observed}, prévu pour {target}. Modèle : 70 % de prévision naïve et 30 % de régression Ridge. Il prolonge la tendance et ramène vers la moyenne : il n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
-            <InfoTooltip text="Mélange : 70 % de prévision naïve (rien ne change) + 30 % de régression Ridge (α = 50, variation mensuelle). Validation glissante dans le temps : l’erreur sur la variation mensuelle baisse d’environ 5 % par rapport à « rien ne change », autant qu’une régression à une variable (retour à la moyenne)." />
+            Score méta ×100 de {rows.length} archétypes TCG : observé en {observed}, prévu
+            <InfoTooltip
+              term="Prévision"
+              text="Valeur attendue si la situation récente se prolonge, en ramenant les écarts vers la moyenne."
+            />{" "}
+            pour {target}. Le modèle n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
           </>
         }
       />
@@ -56,10 +61,15 @@ export default async function PredictionsPage() {
       <DataFooter
         source="decklists de tournoi TCG, yugiohmeta.com"
         date={`observé ${observed}, calcul du ${computed_at ? fmtDate(computed_at) : "date inconnue"}`}
-        sample={`${rows.length} archétypes · modèle ${model}`}
+        sample={`${rows.length} archétypes`}
+        uncertainty="aucun intervalle par archétype : le modèle ne produit qu’une valeur ; son erreur moyenne est mesurée sur l’historique (page Méthode)"
       >
-        anneau : observé ; point plein : prévu ; aucun intervalle d’incertitude n’est calculé par archétype
+        anneau : observé ; point plein : prévu
       </DataFooter>
+      <MethodNote anchor="predictions">
+        <p>Prévision : surtout la valeur du mois observé, corrigée d’une part de retour à la moyenne.</p>
+        <p>Rejouée mois par mois sur l’historique, elle se trompe d’environ 5 % de moins que « rien ne change ».</p>
+      </MethodNote>
 
       <details className="group mt-5">
         <summary className={controlClass({ size: "sm" })}>

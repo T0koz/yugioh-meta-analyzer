@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const period = months.length ? `, ${fmtMonthRange(months[0], months[months.length - 1])}` : "";
   return pageMetadata({
     title: "Évolution de la méta",
-    description: `Score méta mensuel des ${Object.keys(data).length} premiers archétypes Yu-Gi-Oh! TCG${period}. Source : decklists de tournoi, ${DECK_SOURCE}.`,
+    description: `Part mensuelle des decks de tournoi des ${Object.keys(data).length} premiers archétypes Yu-Gi-Oh! TCG${period}, avec intervalle à 95 %. Source : decklists de tournoi, ${DECK_SOURCE}.`,
     path: "/evolution",
   });
 }
@@ -34,7 +34,7 @@ export default async function EvolutionPage() {
             Qui monte, qui <Em>s’efface</Em>.
           </>
         }
-        intro={`Score méta mensuel ×100 des ${archetypes.length} premiers archétypes TCG${lastMonth ? ` de ${fmtMonthShort(lastMonth)}` : ""}, quatre séries au plus.`}
+        intro={`Part mensuelle des decks de tournoi TCG des ${archetypes.length} premiers archétypes${lastMonth ? ` de ${fmtMonthShort(lastMonth)}` : ""}, quatre séries au plus.`}
       />
       <EvolutionChart data={data} images={images} decks_by_month={decks_by_month} />
     </Page>

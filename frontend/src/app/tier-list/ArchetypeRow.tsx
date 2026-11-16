@@ -4,10 +4,11 @@ import { useHoverPreview } from "@/components/hover-preview-context";
 import Link from "next/link";
 import { CardArt, CardImage } from "@/components/card-art";
 import { artCropUrl } from "@/lib/card-images";
-import { Meter } from "@/components/ds/page";
+import { IntervalBar } from "@/components/ds/explain";
 import { TierTag, TrendLabel } from "@/components/ds/tags";
 import { NAV_FORWARD, SharedElement, archetypeArtName, archetypeTitleName } from "@/components/view-transitions";
 import { fmtNum, fmtPct } from "@/lib/format";
+import { wilsonInterval } from "@/lib/wilson";
 import type { TierEntry } from "@/types";
 
 // Colonnes : rang · vignette · nom · tier · barre (part de méta) · part · tendance.
@@ -18,16 +19,20 @@ const GRID =
 export function ArchetypeRow({
   entry,
   rank,
+  nDecks,
   maxShare,
   highlighted,
 }: {
   entry: TierEntry;
   rank: number;
+  /** Decks de la fenêtre, tous archétypes : n de la part. */
+  nDecks: number;
   maxShare: number;
   highlighted: boolean;
 }) {
   const { setPreview } = useHoverPreview();
   const banner = entry.tier !== "Rogue";
+  const [lo, hi] = wilsonInterval(entry.decks, nDecks);
 
   return (
     <div
@@ -84,7 +89,7 @@ export function ArchetypeRow({
           </SharedElement>
         </Link>
         <small className={`block text-[12px] font-normal tabular-nums ${banner ? "text-soft" : "text-muted-text"}`}>
-          score {fmtNum(entry.meta_score * 100, 1)} ·{" "}
+          {fmtNum(entry.decks)} sur {fmtNum(nDecks)} decks · score {fmtNum(entry.meta_score * 100, 1)} ·{" "}
           {/* Au-dessus du lien de ligne (::after) : mène à la fiche de composition (TOK-114). */}
           <Link
             href={`/decks/${entry.slug}`}
@@ -100,7 +105,14 @@ export function ArchetypeRow({
       </span>
 
       <span className="hidden min-[760px]:block">
-        <Meter value={entry.share} max={maxShare} tone="soft" />
+        <IntervalBar
+          value={entry.share}
+          lo={lo}
+          hi={hi}
+          max={maxShare}
+          color="var(--soft)"
+          label={`Part ${fmtPct(entry.share * 100)}, intervalle à 95 % de ${fmtPct(lo * 100)} à ${fmtPct(hi * 100)}`}
+        />
       </span>
 
       <span className="text-right font-mono text-[14px] font-medium tabular-nums">{fmtPct(entry.share * 100)}</span>

@@ -10,6 +10,7 @@ import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
 import { DataFooter, Meter, Page, PageHero } from "@/components/ds/page";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { MethodNote } from "@/components/ds/explain";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { data, computed_at } = await api.earlySignals();
@@ -42,8 +43,11 @@ export default async function EarlySignalsPage() {
           intro={
             <>
               Nouvelles cartes qui entrent dans la méta, repérées par leurs vues, leurs co-occurrences et le tier de
-              leur archétype.
-              <InfoTooltip text="Score 0-100 combinant les vues par semaine, la co-occurrence avec les decks de la méta et le tier de l'archétype. Un tiers du score reprend l'alert_score des Signaux Boutique." />
+              leur archétype. Score
+              <InfoTooltip
+                term="Score"
+                text="Note de 0 à 100 : plus elle est haute, plus la carte est consultée et jouée avec les decks du moment."
+              />
             </>
           }
         />
@@ -86,7 +90,12 @@ export default async function EarlySignalsPage() {
           source="vues par semaine (YGOPRODeck), co-occurrences dans les decklists de tournoi (yugiohmeta.com)"
           date={computed_at ? `calcul du ${fmtDate(computed_at)}` : "date de calcul inconnue"}
           sample={`${fmtNum(data.length)} cartes`}
+          uncertainty="aucun intervalle : le score classe les cartes entre elles, il n’estime pas une quantité ; les vues sont un relevé unique"
         />
+        <MethodNote anchor="signaux-precoces">
+          <p>Le score réunit trois mesures : les vues de la carte sur une semaine, sa présence dans les decks de la méta et le niveau de son archétype.</p>
+          <p>Les vues des cartes anciennes ne sont pas rafraîchies au même rythme que celles des cartes nouvelles.</p>
+        </MethodNote>
       </Page>
     </HoverPreviewProvider>
   );

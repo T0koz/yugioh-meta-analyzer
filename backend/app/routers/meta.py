@@ -151,7 +151,7 @@ def get_evolution(db: sqlite3.Connection = Depends(get_db)) -> EvolutionResponse
     placeholders = ",".join("?" for _ in top_archetypes)
     rows = db.execute(
         f"""
-        SELECT archetype, month, meta_score, share
+        SELECT archetype, month, meta_score, share, deck_count
         FROM meta_scores
         WHERE archetype IN ({placeholders})
         ORDER BY archetype, month
@@ -162,7 +162,9 @@ def get_evolution(db: sqlite3.Connection = Depends(get_db)) -> EvolutionResponse
     data: dict[str, list[EvolutionPoint]] = {a: [] for a in top_archetypes}
     for row in rows:
         data[row["archetype"]].append(
-            EvolutionPoint(month=row["month"], meta_score=row["meta_score"], share=row["share"])
+            EvolutionPoint(
+                month=row["month"], meta_score=row["meta_score"], share=row["share"], decks=row["deck_count"]
+            )
         )
     images = {a: url for a in top_archetypes if (url := get_archetype_image(db, a))}
     decks_by_month = {

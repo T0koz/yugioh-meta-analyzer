@@ -4,6 +4,7 @@ import { CardArt } from "@/components/card-art";
 import { PillLink } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
 import { DataFooter, PageHero } from "@/components/ds/page";
+import { MethodNote } from "@/components/ds/explain";
 import { banStatusLabel } from "@/components/ds/tags";
 import type { BanHistoryCard, BanHistoryList } from "@/types";
 
@@ -380,6 +381,7 @@ function ListDetail({ list, topN }: { list: Retained; topN: number }) {
         source={SOURCE}
         date={`classement reconstitué au ${fmtDate(list.as_of)}, decks des 6 mois précédents`}
         sample={`${fmtNum(list.n_decks)} decks, ${fmtNum(list.n_cards)} cartes classées, ${fmtNum(list.n_hits_ranked)} touchées classées sur ${fmtNum(list.n_hits)}`}
+        uncertainty="aucun intervalle : les deux colonnes listent des cartes, elles ne mesurent rien ; le rang de chaque carte est celui du classement reconstitué"
       />
     </section>
   );
@@ -497,6 +499,7 @@ export async function BanHistoryView({ selected, tabs }: { selected: string | un
         source={SOURCE}
         date={`calcul du ${fmtDate(computed_at)}, listes du ${fmtDate(firstDate)} au ${fmtDate(lastDate)}`}
         sample={`${fmtNum(retained.length)} listes retenues ; le seuil de ${fmtNum(min_decks)} decks et ${fmtNum(min_hits)} cartes touchées en écarte ${fmtNum(lists.length - retained.length)}`}
+        uncertainty="chaque liste est comparée au hasard (90 % des tirages au sort) ; avec 10 listes par format, un bilan reste fragile"
       />
 
       {(["TCG", "OCG"] as const).map((format) => (
@@ -513,9 +516,14 @@ export async function BanHistoryView({ selected, tabs }: { selected: string | un
         source={SOURCE}
         date={`classements reconstitués la veille de chaque liste, calcul du ${fmtDate(computed_at)}`}
         sample={`${fmtNum(retained.length)} listes, 700 à 1 250 cartes classées par liste`}
+        uncertainty="bande grise : rangs médians que donneraient 90 % des tirages au sort ; un point dans la bande ne se distingue pas du hasard"
       >
         position de gauche à droite : du premier au dernier du classement
       </DataFooter>
+      <MethodNote anchor="ban-historique">
+        <p>Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures.</p>
+        <p>Une liste n’est retenue qu’au-delà de {fmtNum(min_decks)} decks et {fmtNum(min_hits)} cartes touchées : en dessous, le classement ne vaut pas mieux que le hasard.</p>
+      </MethodNote>
       <DataTable lists={lists} topN={top_n} />
 
       <section aria-labelledby="detail-titre" className="mt-14">

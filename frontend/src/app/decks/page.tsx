@@ -114,7 +114,7 @@ export default async function DecksPage() {
               { value: fmtNum(profiled.length), label: `Archétypes à ${rule.min_decks} listes ou plus` },
               { value: fmtNum(covered), label: `Listes couvertes sur ${fmtNum(nWindow)}` },
               { value: nWindow ? fmtPct((covered / nWindow) * 100, 0) : "—", label: "Part des decks de la fenêtre" },
-              { value: `≥ ${basePct}`, label: "Des listes : carte « de base »" },
+              { value: `dès ${basePct}`, label: "Des listes : carte « de base »" },
             ]}
           />
         </PageHero>
@@ -134,7 +134,7 @@ export default async function DecksPage() {
                   <DeckTile key={entry.slug} entry={entry} nWindow={nWindow} />
                 ))}
               </ul>
-              <DataFooter source={SOURCE} date={`${period}, ${calc}`} sample={`${fmtNum(covered)} listes, ${fmtNum(profiled.length)} archétypes`}>
+              <DataFooter source={SOURCE} date={`${period}, ${calc}`} sample={`${fmtNum(covered)} listes, ${fmtNum(profiled.length)} archétypes`} uncertainty={"pas d’intervalle : à 8 listes il serait trop large pour être lu ; chaque pourcentage est donné avec son effectif"}>
                 carte de base : dans au moins {basePct} des listes de l’archétype ; pourcentage sous une vignette :
                 part des listes qui jouent la carte ; exemplaires : somme des médianes ; tier : celui de la tier list,
                 même fenêtre
@@ -168,7 +168,7 @@ export default async function DecksPage() {
                     </li>
                   ))}
                 </ul>
-                <DataFooter source={SOURCE} date={`${period}, ${calc}`} sample={`${fmtNum(nWindow - covered)} listes, ${fmtNum(others.length)} archétypes`}>
+                <DataFooter source={SOURCE} date={`${period}, ${calc}`} sample={`${fmtNum(nWindow - covered)} listes, ${fmtNum(others.length)} archétypes`} uncertainty="sous 8 listes, aucune part n’est calculée : seules les listes sont montrées">
                   seuil de {rule.min_decks} listes : à 5 listes, 19 à 24 % des étiquettes changent d’un tirage de
                   listes à l’autre, 9 à 13 % à 8 listes (mesuré sur Elfnote et Angelechy)
                 </DataFooter>

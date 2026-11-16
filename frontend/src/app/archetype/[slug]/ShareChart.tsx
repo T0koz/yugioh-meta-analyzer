@@ -1,6 +1,8 @@
 import { max } from "d3-array";
 import { scaleLinear } from "d3-scale";
+import { BAND_OPACITY, ChartAnnotation, ChartLegend, WEAK_STROKE, bandPath, isWeakMonth } from "@/components/ds/explain";
 import { fmtMonthShort, fmtNum, fmtPct } from "@/lib/format";
+import { wilsonInterval } from "@/lib/wilson";
 import type { ArchetypeMonth, TierWindow } from "@/types";
 
 // Part mensuelle de l'archétype dans les decks de tournoi TCG. Rendu côté serveur,
@@ -9,6 +11,12 @@ import type { ArchetypeMonth, TierWindow } from "@/types";
 // toujours à 12 px quelle que soit la largeur. Sous le tracé, une bande donne le
 // nombre de decks relevés chaque mois : une part sur 76 decks ne pèse pas comme
 // une part sur 519.
+//
+// Incertitude (lot 15, charte §3) : bande de Wilson à 95 % autour de chaque part
+// (lib/wilson.ts) ; mois de moins de 100 decks et dernier mois (en cours) tracés
+// en pointillé et plus pâles. L'axe s'arrête au plus haut point des bandes des
+// mois pleins : la bande d'un mois à 1 deck irait jusqu'à 100 % et écraserait le
+// reste ; elle est coupée au bord du cadre.
 
 const PLOT_H = 220;
 const BOX = "relative ml-11 mr-1";
@@ -26,21 +34,35 @@ export function ShareChart({
   const n = history.length;
   // Chaque mois occupe une colonne de largeur égale ; le point est au milieu.
   const x = (index: number) => ((index + 0.5) / n) * 100;
-  const top = (max(history, (h) => h.share) ?? 0) * 100;
+  const withBand = history.map((h, i) => {
+    const [lo, hi] = wilsonInterval(h.decks, h.total_decks);
+    // Le dernier mois est en cours de relevé (job hebdomadaire) : même convention
+    // que le reste de la page.
+    const small = isWeakMonth(h.total_decks);
+    return { ...h, lo: lo * 100, hi: hi * 100, small, weak: small || i === n - 1 };
+  });
+  // Un mois à 1 deck peut valoir 100 % : seuls les mois d'au moins 100 decks
+  // fixent l'échelle ; un point plus haut est posé au bord du cadre.
+  const full = withBand.filter((h) => !h.small);
+  const top = Math.max(max(full, (h) => h.share * 100) ?? 0, max(full, (h) => h.hi) ?? 0);
   const y = scaleLinear().domain([0, top || 1]).nice(4).range([100, 0]);
+  const yTop = y.domain()[1];
   const ticks = y.ticks(4);
-  const points = history.map((h, i) => ({ ...h, x: x(i), y: y(h.share * 100) }));
-  const line = points.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(" ");
-  const area = `${line} L${points[n - 1].x.toFixed(2)} 100 L${points[0].x.toFixed(2)} 100 Z`;
+  const points = withBand.map((h, i) => ({ ...h, x: x(i), y: y(Math.min(h.share * 100, yTop)) }));
+  const band = bandPath(points.map((p) => ({ x: p.x, lo: y(p.lo), hi: y(Math.min(p.hi, yTop)) })));
+  // Un segment est atténué si l'un de ses deux mois l'est.
+  const segments = points.slice(1).map((p, i) => ({ from: points[i], to: p, weak: p.weak || points[i].weak }));
+  const weakMonths = points.filter((p) => p.weak && p !== points[n - 1]).length;
 
-  const peak = points.reduce((best, p) => (p.share > best.share ? p : best), points[0]);
+  const candidates = points.filter((p) => !p.small);
+  const peak = (candidates.length ? candidates : points).reduce((best, p) => (p.share > best.share ? p : best));
   const last = points[n - 1];
   // Le dernier mois n'est annoté à part que s'il est loin du maximum (étiquettes lisibles).
   const labelled = last.x - peak.x > 18 ? [peak, last] : [peak];
 
   // Mois de la fenêtre de la tier list : c'est sur eux que portent part, tier et tendance.
   const inWindow = window ? points.filter((p) => p.month >= window.start && p.month <= window.end) : [];
-  const band = inWindow.length
+  const zone = inWindow.length
     ? { x: inWindow[0].x - 50 / n, width: (inWindow.length * 100) / n }
     : null;
 
@@ -52,23 +74,30 @@ export function ShareChart({
 
   return (
     <figure className="rounded-[6px] border border-line bg-ink-2 px-3 pt-4 pb-3 min-[760px]:px-5 min-[760px]:pt-5">
-      <figcaption className={`mb-9 flex flex-wrap items-center gap-x-5 gap-y-1.5 ${LABEL}`}>
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="h-0.5 w-4 bg-cat-1" />
-          part mensuelle des decks TCG
-        </span>
-        {band && window && (
-          <span className="inline-flex items-center gap-1.5">
-            <span aria-hidden className="h-3 w-3 border-x border-line-2 bg-ink-4" />
-            fenêtre de la tier list ({fmtMonthShort(window.start)}
-            {window.start !== window.end && ` à ${fmtMonthShort(window.end)}`})
-          </span>
-        )}
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="h-3 w-1 bg-faint" />
-          decks relevés par mois (max. {fmtNum(maxDecks)})
-        </span>
-      </figcaption>
+      <ChartLegend
+        as="figcaption"
+        className="mb-9"
+        items={[
+          { swatch: "line", color: "var(--cat-1)", label: "part mensuelle des decks TCG" },
+          { swatch: "band", color: "var(--cat-1)", label: "intervalle à 95 %" },
+          {
+            swatch: "dashed",
+            color: "var(--cat-1)",
+            label: weakMonths ? "mois de moins de 100 decks, mois en cours" : "mois en cours",
+          },
+          ...(zone && window
+            ? [
+                {
+                  swatch: "zone" as const,
+                  label: `fenêtre de la tier list (${fmtMonthShort(window.start)}${
+                    window.start !== window.end ? ` à ${fmtMonthShort(window.end)}` : ""
+                  })`,
+                },
+              ]
+            : []),
+          { swatch: "bar", color: "var(--faint)", label: `decks relevés par mois (max. ${fmtNum(maxDecks)})` },
+        ]}
+      />
 
       <div className={BOX} style={{ height: PLOT_H }}>
         <svg
@@ -78,7 +107,7 @@ export function ShareChart({
           role="img"
           aria-label={`Part de ${archetype} dans les decks de tournoi TCG, par mois, de ${fmtMonthShort(points[0].month)} à ${fmtMonthShort(last.month)}. Maximum ${fmtPct(peak.share * 100)} en ${fmtMonthShort(peak.month)} (${fmtNum(peak.decks)} decks sur ${fmtNum(peak.total_decks)}). Dernier mois : ${fmtPct(last.share * 100)} (${fmtNum(last.decks)} decks sur ${fmtNum(last.total_decks)}).`}
         >
-          {band && <rect x={band.x} y="0" width={band.width} height="100" fill="var(--ink-4)" />}
+          {zone && <rect x={zone.x} y="0" width={zone.width} height="100" fill="var(--ink-4)" />}
           {ticks.map((tick) => (
             <line
               key={tick}
@@ -90,16 +119,21 @@ export function ShareChart({
               vectorEffect="non-scaling-stroke"
             />
           ))}
-          <path d={area} fill="var(--cat-1)" fillOpacity="0.12" />
-          <path
-            d={line}
-            fill="none"
-            stroke="var(--cat-1)"
-            strokeWidth="2"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
+          <path d={band} fill="var(--cat-1)" fillOpacity={BAND_OPACITY} />
+          {segments.map((s) => (
+            <line
+              key={s.to.month}
+              x1={s.from.x}
+              y1={s.from.y}
+              x2={s.to.x}
+              y2={s.to.y}
+              stroke="var(--cat-1)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+              {...(s.weak ? WEAK_STROKE : {})}
+            />
+          ))}
         </svg>
         {/* Points : SVG non étiré, pour des cercles ronds. */}
         <svg aria-hidden className="absolute inset-0 h-full w-full overflow-visible">
@@ -114,8 +148,9 @@ export function ShareChart({
                 fill={marked ? "var(--cat-1)" : "var(--ink-2)"}
                 stroke="var(--cat-1)"
                 strokeWidth="1.5"
+                {...(p.weak && !marked ? { strokeOpacity: WEAK_STROKE.strokeOpacity } : {})}
               >
-                <title>{`${fmtMonthShort(p.month)} : ${fmtPct(p.share * 100)} (${fmtNum(p.decks)} decks sur ${fmtNum(p.total_decks)})`}</title>
+                <title>{`${fmtMonthShort(p.month)} : ${fmtPct(p.share * 100)} (${fmtNum(p.decks)} decks sur ${fmtNum(p.total_decks)}), intervalle à 95 % de ${fmtPct(p.lo)} à ${fmtPct(p.hi)}`}</title>
               </circle>
             );
           })}
@@ -126,16 +161,10 @@ export function ShareChart({
           </span>
         ))}
         {labelled.map((p) => (
-          <span
-            key={p.month}
-            aria-hidden
-            className={`absolute -mt-3 -translate-y-full font-mono text-[12px] leading-none font-medium whitespace-nowrap text-text tabular-nums ${
-              p.x < 15 ? "" : p.x > 80 ? "-translate-x-full" : "-translate-x-1/2"
-            }`}
-            style={{ left: `${p.x < 15 ? p.x - 1 : p.x > 80 ? p.x + 1.5 : p.x}%`, top: `${p.y}%` }}
-          >
+          <ChartAnnotation key={p.month} x={p.x} y={p.y} decorative>
             {fmtPct(p.share * 100)} · {fmtMonthShort(p.month)}
-          </span>
+            {p === last && `, en cours, n = ${fmtNum(p.total_decks)}`}
+          </ChartAnnotation>
         ))}
       </div>
 

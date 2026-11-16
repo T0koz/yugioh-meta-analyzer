@@ -336,7 +336,7 @@ export default async function Home() {
                       Cartes jouées <Em>ensemble</Em> dans les mêmes decks.
                     </h3>
                     <p className="mt-3 max-w-[46ch] text-[15px] text-muted-text">
-                      {`${SITE_FACTS.graphCommunities} communautés de cartes détectées. En orange, les cartes « pont », qui en relient plusieurs (centralité d’intermédiarité).`}
+                      {`${SITE_FACTS.graphCommunities} communautés de cartes détectées. En orange, les cartes « pont », qui en relient plusieurs.`}
                     </p>
                   </div>
                   <figure>

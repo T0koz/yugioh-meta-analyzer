@@ -5,6 +5,7 @@ import { CardChip } from "@/components/card-chip";
 import { CardArt } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
 import { Callout, DataFooter, Explainer, PageHero } from "@/components/ds/page";
+import { MethodNote } from "@/components/ds/explain";
 import { BanStatus } from "@/components/ds/tags";
 import type { BanRadarCriteria, BanRadarEntry, RiskLabel } from "@/types";
 import { CRITERIA } from "@/lib/ban-criteria";
@@ -194,7 +195,12 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
         source="decklists de tournoi TCG (yugiohmeta.com), banlists (Yugipedia)"
         date={`au ${fmtDate(as_of)}, 6 mois glissants`}
         sample={`${fmtNum(n_decks_window)} decks, ${fmtNum(data.length)} cartes affichées`}
+        uncertainty="aucun intervalle : un score de risque classe les cartes, ce n’est pas une probabilité ; sa fiabilité se lit dans l’onglet Historique"
       />
+      <MethodNote anchor="ban-radar">
+        <p>Le score rapproche chaque carte du profil des cartes déjà touchées par Konami, sur six critères ; la barre en donne la part de chacun.</p>
+        <p>Fenêtre : les 6 derniers mois de decks de tournoi TCG.</p>
+      </MethodNote>
     </>
   );
 }

@@ -1,6 +1,7 @@
 # Onboarding — Yu-Gi-Oh! Meta Analyzer
 
 > Pour une data scientist qui rejoint le projet. Temps de lecture : ~15 min.
+> **Pressée ? Lis le §8 « Travailler à deux » : c'est la page qui dit comment ne rien casser.**
 > État des chiffres : 16 novembre 2026 (après nettoyage du backlog fiabilité). En cas de doute, `context.md` fait foi (c'est la
 > mémoire du projet, mise à jour après chaque fonctionnalité).
 
@@ -30,7 +31,7 @@ Thomas (le fondateur) apprend la data science en parallèle (bootcamp). Il veut 
 | **Yugipedia** (scraping) | Historique des banlists TCG + OCG | ~24 000 lignes | Wiki : amende les listes passées rétroactivement, donc la table est reconstruite intégralement à chaque run |
 | **YouTube** (transcripts) | Séquences de cartes citées dans des combo guides | quelques centaines de lignes | Transcription automatique qui déforme les noms japonais (« Kewl Tune » → « Cool Tune ») |
 
-Stockage : **SQLite** (`data/yugioh.db`, ~236 Mo, 36 tables). Les tables dérivées
+Stockage : **SQLite** (`data/yugioh.db`, ~270 Mo, une quarantaine de tables). Les tables dérivées
 (scores, prédictions, graphe…) sont produites par les notebooks et scripts, pas par l'API.
 Schéma complet : [`data-models.md`](data-models.md).
 
@@ -50,9 +51,11 @@ Schéma complet : [`data-models.md`](data-models.md).
 - L'API ne calcule rien : elle sert des tables **précalculées**. Toute la science est en
   amont, dans `notebooks/` et `scripts/`.
 - Un dashboard Streamlit historique (`app.py`) existe encore ; le site Next.js est la cible.
-- **Il n'y a aucun test automatisé dans le dépôt.** Le seul garde-fou *statistique* est le
-  backtest du Ban Radar (§7) ; côté API, `build_serving_db.py --check` vérifie seulement
-  que les tables servies existent.
+- **Peu de tests automatisés.** `python scripts/check.py` regroupe ce qui existe (§8) : test
+  de fumée de l'API (tous les endpoints répondent 200), `build_serving_db.py --check` (les
+  tables servies existent), tsc + eslint, et le backtest du Ban Radar (§7), seul garde-fou
+  *statistique*. Aucun test ne vérifie qu'un chiffre affiché est juste : c'est un chantier
+  pour toi (voir [`collaboration/avis-stack.md`](collaboration/avis-stack.md)).
 
 ## 4. Ce que font les modèles — et leurs réserves
 
@@ -108,15 +111,19 @@ Classés par impact. Les trois premiers touchent à la **validité** de ce qu'on
 
 ### Accès au code et aux données
 
-- Code : `git clone https://github.com/T0koz/yugioh-meta-analyzer.git` (accès à confirmer
-  avec Thomas).
-- **La base `data/yugioh.db` n'est pas dans Git** (236 Mo). Trois voies :
-  - **Demander la base à Thomas** (lien privé) : le plus rapide, et le seul moyen d'avoir
-    exactement les mêmes chiffres que lui. Les données viennent de sources tierces
-    (yugiohmeta, Yugipedia) : ne les republie pas publiquement.
-  - **La reconstruire** : ~20 min de récupération + les notebooks dans l'ordre. Dépend de
-    l'API yugiohmeta (qui peut ne plus répondre).
-  - **`data/serving.db`** (9 Mo) suffit pour lancer l'API et le site, **pas** pour les notebooks.
+- **Code** : Thomas t'invite sur GitHub avec les droits d'**écriture** sur
+  `T0koz/yugioh-meta-analyzer`. Le dépôt est **public** : tout ce que tu pousses est visible
+  de tous, immédiatement.
+  `git clone git@github.com:T0koz/yugioh-meta-analyzer.git` (ou en HTTPS).
+- **La base `data/yugioh.db` n'est pas dans Git** (~270 Mo, données de tiers et pseudos de
+  joueurs). Thomas te la partage en privé (dossier Google Drive à ton nom, ~50 Mo compressée,
+  avec un `.json` qui dit de quand elle date). Installation et mise à jour :
+  [`collaboration/transmission-base.md`](collaboration/transmission-base.md). **Ne la
+  republie nulle part.**
+- `data/serving.db` (~10 Mo) suffit pour lancer l'API et le site, **pas** pour les notebooks.
+  Elle se régénère : `python scripts/build_serving_db.py`.
+- En dernier recours, la base se reconstruit (~20 min + les notebooks), mais tu n'auras pas
+  exactement les mêmes chiffres que Thomas, et ça dépend de l'API yugiohmeta.
 
 ### Installation
 
@@ -127,7 +134,8 @@ est dans le README.
 python3 -m venv .venv && source .venv/bin/activate
 pip install pandas numpy jupyter ipykernel networkx pyvis scikit-learn streamlit plotly \
             statsmodels youtube-transcript-api requests scipy
-pip install -r backend/requirements.txt
+pip install -r backend/requirements-dev.txt     # API + pytest pour le test de fumée
+git config core.hooksPath .githooks             # optionnel : vérifications avant chaque push
 ```
 
 ### Reconstruire la base (ordre à respecter)
@@ -153,7 +161,7 @@ python scripts/build_serving_db.py                # produit serving.db pour l'AP
 ```bash
 cd backend  && ../.venv/bin/uvicorn app.main:app --reload --port 8000   # → :8000/api/v1
 cd frontend && npm install && npm run dev                                # → :3000
-cd frontend && npx tsc --noEmit                                          # vérif types
+python scripts/check.py --all                                            # tout doit être vert
 ```
 
 ## 7. Règles du jeu et pièges
@@ -180,13 +188,70 @@ cd frontend && npx tsc --noEmit                                          # véri
 - Le détail des autres pièges (SQLite multi-thread, cache Next.js 16, design system…) est
   dans `context.md` et `CLAUDE.md`.
 
-## 8. Façon de travailler
+## 8. Travailler à deux
 
-- Commits conventionnels : `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`.
-- Thomas valide chaque commit et fait lui-même les `push`.
-- Le suivi est dans [`BACKLOG.md`](../BACKLOG.md) (tickets `TOK-xx`, miroir de Linear).
-  Après chaque fonctionnalité : mettre à jour `context.md` (pièges, résultats) et `BACKLOG.md`.
-- *À définir avec Thomas :* branches + pull requests, ou autre ; accès Linear.
+Deux personnes poussent **directement sur `main`, sans revue**, sur un dépôt **public**. Ce
+qui protège le projet, ce sont les quelques règles ci-dessous. Les mêmes règles sont écrites
+pour les agents IA dans [`CLAUDE.md`](../CLAUDE.md) : si tu utilises Claude Code, il les
+applique ; avec un autre agent, pointe-le vers ce fichier.
+
+### Avant chaque push : une commande
+
+```bash
+git pull --rebase                # l'autre a peut-être poussé entre-temps
+python scripts/check.py          # vérifie ce qui a changé depuis origin/main
+git push
+```
+
+`scripts/check.py` choisit seul ce qu'il lance selon les fichiers modifiés (~3 s en général,
+~30 s avec le front et le backtest) :
+
+| Vérification | Quand | Bloque |
+|---|---|---|
+| Fichiers interdits (`.env`, `*.db`, clés, `HANDOFF.md`) et identifiants dans le code | toujours | oui |
+| `WEIGHTS` identiques dans `build_ban_radar.py` et l'API | toujours | oui |
+| `tsc --noEmit` + `eslint` | `frontend/` modifié | oui |
+| `build_serving_db.py --check` + test de fumée sur `yugioh.db` **et** `serving.db` | `backend/` ou `scripts/` modifié | oui |
+| Backtest du Ban Radar | scoring modifié | non : il affiche les rangs médians, **à comparer à `context.md`** |
+
+Une étape « ignorée » (base ou `node_modules` absents) n'est **pas** réussie : lance-la, ou
+dis pourquoi tu ne l'as pas fait dans le message de commit.
+
+Trois filets supplémentaires, sans action de ta part :
+- le **hook pre-push** (si tu l'as activé : `git config core.hooksPath .githooks`) lance
+  `check.py` à chaque `git push` ; `git push --no-verify` le contourne, en connaissance de cause ;
+- la **CI GitHub** (`.github/workflows/verifications.yml`, gratuite) relance la partie sans base
+  (secrets, `WEIGHTS`, tsc, eslint) après chaque push et prévient par e-mail en cas d'échec ;
+- la **protection de push de GitHub** refuse les clés des grands fournisseurs (AWS, GitHub…).
+
+### Les données
+
+- **Une seule base de référence** : celle de Thomas, mise à jour chaque lundi à 8 h 30 par
+  `scripts/refresh_decks.py` (decks, banlists, légalité, puis tout `refresh_all.py`).
+- **Ta copie est un bac à sable** : recalcule, casse, expérimente. Ce qui devient officiel
+  passe par du **code commité** (un script dans `scripts/`), que le job du lundi rejoue sur la
+  base de référence. On ne s'échange jamais de tables recalculées.
+- **Un calcul qui écrit en base va dans `scripts/`**, pas dans un notebook : un `.ipynb` est du
+  JSON, on ne peut ni le relire ni le fusionner à deux. Les notebooks servent à explorer et à
+  expliquer.
+- **`data/prediction_log.jsonl`** (la preuve datée des prédictions) n'est commité **que par
+  Thomas**, depuis la base de référence. Ne lance pas `log_predictions.py` sur ta copie.
+- **Identifiants** (base hébergée un jour, API…) : dans un fichier `.env`, exclu par
+  `.gitignore`. S'il t'arrive d'en pousser un : **le révoquer** immédiatement, l'effacer du code
+  ne suffit pas (il reste dans l'historique public).
+
+### Conventions
+
+- Commits conventionnels en français : `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`,
+  suivis du ticket quand il y en a un : `fix(TOK-95): …`.
+- Petits commits, poussés souvent : moins de conflits.
+- Après chaque fonctionnalité : `context.md` (pièges, résultats chiffrés) et `BACKLOG.md`
+  (statut du ticket). Ce sont les deux fichiers les plus édités : `git pull --rebase` avant
+  d'y toucher, et ajoute ta section plutôt que de réécrire celle de l'autre.
+- Les tickets `TOK-xx` vivent dans Linear (équipe Tokoz) ; `BACKLOG.md` en est le miroir.
+- Changement du **Ban Radar** : backtest obligatoire (§7), et l'agent `data-scientist-ygo` si tu
+  utilises Claude Code. Script qui **écrit en base** ou nouvel **endpoint** : l'agent
+  `gardien-donnees`.
 
 ## 9. Pour une première semaine
 

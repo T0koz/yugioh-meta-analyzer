@@ -79,15 +79,28 @@ def main() -> int:
         p = subprocess.run([sys.executable, script], cwd=ROOT, capture_output=True, text=True)
         ok = p.returncode == 0
         failed += not ok
-        log({"step": name, "ok": ok, "returncode": p.returncode,
-             "seconds": round(time.time() - t0), "stderr_tail": p.stderr[-600:] if not ok else ""})
-        print(f"[{name}] {'ok' if ok else 'ÉCHEC'} ({round(time.time() - t0)} s)")
+        # Les fetchs avalent les erreurs par deck (« ⚠ Erreur sur deck », « decklist API douteuse ») et
+        # continuent : on les compte, sinon un champ d'API qui change de forme passe inaperçu.
+        warns = [l.strip() for l in p.stdout.replace("\r", "\n").splitlines() if "⚠" in l]
+        log({"step": name, "ok": ok, "returncode": p.returncode, "seconds": round(time.time() - t0),
+             "n_warnings": len(warns), "warnings_sample": warns[:5],
+             "stderr_tail": p.stderr[-600:] if not ok else ""})
+        print(f"[{name}] {'ok' if ok else 'ÉCHEC'} ({round(time.time() - t0)} s, {len(warns)} avertissements)")
         if not ok:
             print(p.stderr[-600:], file=sys.stderr)
 
     f = freshness()
     stale = [k for k, v in f.items() if v["age_days"] is None or v["age_days"] > FRESHNESS_MAX_DAYS]
-    log({"step": "freshness", "ok": not stale, **{k: v for k, v in f.items()}})
+    con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True, timeout=60)
+    counts = {"n_decks_tcg": con.execute("SELECT COUNT(*) FROM tournament_decks WHERE ocg=0").fetchone()[0],
+              "n_decks_ocg": con.execute("SELECT COUNT(*) FROM tournament_decks WHERE ocg=1").fetchone()[0]}
+    con.close()
+    prev = [json.loads(l) for l in HEALTH.read_text().splitlines() if '"freshness"' in l] if HEALTH.exists() else []
+    shrunk = bool(prev) and any(counts[k] < prev[-1].get(k, 0) for k in counts)  # le nombre de decks ne doit jamais baisser
+    if shrunk:
+        print("⚠ le nombre de decks a BAISSÉ depuis le dernier run : API tronquée ou purge ?", file=sys.stderr)
+    log({"step": "freshness", "ok": not stale and not shrunk, **counts, **{k: v for k, v in f.items()}})
+    stale = stale or (["nombre_de_decks_en_baisse"] if shrunk else [])
     if stale:
         print(f"⚠ decks périmés (> {FRESHNESS_MAX_DAYS} j) : {', '.join(stale)}", file=sys.stderr)
     return 1 if (failed or stale) else 0

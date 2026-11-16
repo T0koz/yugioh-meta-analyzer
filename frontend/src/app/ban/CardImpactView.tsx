@@ -18,10 +18,10 @@ function ImpactRow({ entry, rank, max }: { entry: CardImpactEntry; rank: number;
       <BigScore value={fmtNum(entry.bridge_score)} label="Impact" tone="text-muted-text" />
       <RankedThumb src={entry.image_url} name={entry.card_name} rank={rank} />
       <div className="min-w-0">
-        <h3 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
+        <h2 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
           <CardChip name={entry.card_name} subtitle={origin} variant="plain" />
-        </h3>
-        <p className="mt-1 font-mono text-[12px] text-muted-text">
+        </h2>
+        <p className="mt-1 text-[13px] text-muted-text">
           {[origin, `${fmtNum(entry.n_archetypes)} archétypes`, `${fmtNum(entry.decks)} decks`].join(" · ")}
         </p>
         <div className="mt-3">
@@ -30,7 +30,7 @@ function ImpactRow({ entry, rank, max }: { entry: CardImpactEntry; rank: number;
       </div>
       <Link
         href={`/ban?tab=simulateur&card=${encodeURIComponent(entry.card_name)}`}
-        className="col-start-3 w-fit rounded-[4px] border border-line-2 px-3 py-1.5 font-mono text-[12px] text-soft transition-colors duration-200 hover:text-text min-[760px]:col-start-auto min-[760px]:justify-self-end"
+        className="col-start-3 w-fit rounded-[4px] border border-line-2 px-3 py-1.5 text-[13px] text-soft transition-colors duration-200 hover:text-text min-[760px]:col-start-auto min-[760px]:justify-self-end"
       >
         Simuler le ban →
       </Link>

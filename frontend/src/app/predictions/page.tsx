@@ -3,6 +3,7 @@ import { api } from "@/lib/api";
 import { fmtNum, fmtSigned } from "@/lib/format";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { CardArt } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
 import { Meter, Page, PageHero } from "@/components/ds/page";
 import { TrendLabel } from "@/components/ds/tags";
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   description: "Score méta prévu le mois prochain pour chaque archétype Yu-Gi-Oh! TCG, avec les limites du modèle.",
 };
 
-// Une hausse en --good, une baisse en gris : le rouge reste réservé à l'accent.
+// Les deux barres sont neutres : seul l'écart est coloré. Une hausse en --good,
+// une baisse en gris (le rouge reste réservé à l'accent).
 function Delta({ current, predicted }: { current: number; predicted: number }) {
   const delta = (predicted - current) * 100;
   const tone = delta > 0 ? "text-good" : "text-muted-text";
@@ -66,14 +68,19 @@ export default async function PredictionsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {rows.map((entry) => (
+            {rows.map((entry, index) => (
               <TableRow key={entry.archetype}>
-                <TableCell className="font-medium tracking-[-0.01em]">{entry.archetype}</TableCell>
+                <TableCell className="font-medium tracking-[-0.01em]">
+                  <span className="flex items-center gap-3">
+                    <CardArt src={entry.image_url} name={entry.archetype} eager={index < 8} />
+                    {entry.archetype}
+                  </span>
+                </TableCell>
                 <TableCell>
                   <ScoreCell value={entry.current} max={maxScore} tone="soft" />
                 </TableCell>
                 <TableCell>
-                  <ScoreCell value={entry.predicted} max={maxScore} tone="signal" />
+                  <ScoreCell value={entry.predicted} max={maxScore} tone="soft" />
                 </TableCell>
                 <TableCell className="text-right">
                   <Delta current={entry.current} predicted={entry.predicted} />

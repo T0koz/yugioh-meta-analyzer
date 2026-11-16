@@ -2,6 +2,7 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
+import { ArtDot } from "@/components/card-art";
 import { Toolbar, pillClass } from "@/components/ds/page";
 import { fmtMonthShort } from "@/lib/format";
 import type { EvolutionResponse } from "@/types";
@@ -13,7 +14,7 @@ const MAX_SERIES = SERIES_COLORS.length;
 
 const AXIS_TICK = { fill: "var(--muted-text)", fontSize: 11, fontFamily: "var(--font-jetbrains-mono)" };
 
-export function EvolutionChart({ data }: { data: EvolutionResponse["data"] }) {
+export function EvolutionChart({ data, images }: Pick<EvolutionResponse, "data" | "images">) {
   const archetypes = Object.keys(data);
   // Ordre de sélection = ordre des couleurs : la première série choisie porte l'accent.
   const [selected, setSelected] = useState<string[]>(archetypes.slice(0, 3));
@@ -61,6 +62,7 @@ export function EvolutionChart({ data }: { data: EvolutionResponse["data"] }) {
               {slot >= 0 && (
                 <span aria-hidden className="h-2 w-2 rounded-full" style={{ backgroundColor: SERIES_COLORS[slot] }} />
               )}
+              {images[arch] && <ArtDot src={images[arch]} />}
               {arch}
             </button>
           );

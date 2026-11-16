@@ -3,6 +3,7 @@ import { api } from "@/lib/api";
 import { fmtNum } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
@@ -69,13 +70,16 @@ export default async function BoutiquePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((signal) => (
+              {data.map((signal, index) => (
                 <TableRow key={`${signal.archetype}-${signal.card_name}`}>
                   <TableCell>
                     <Tag tone={LABEL_TONE[signal.buy_label]}>{signal.buy_label.toUpperCase()}</Tag>
                   </TableCell>
                   <TableCell>
-                    <CardChip name={signal.card_name} subtitle={signal.archetype} />
+                    <span className="flex items-center gap-3">
+                      <CardArt src={signal.image_url} name={signal.card_name} eager={index < 6} />
+                      <CardChip name={signal.card_name} subtitle={signal.archetype} variant="plain" className="font-medium tracking-[-0.01em]" />
+                    </span>
                   </TableCell>
                   <TableCell className="text-[14px] text-soft">{signal.archetype}</TableCell>
                   <TableCell className="text-right font-mono text-[13px] font-medium tabular-nums">

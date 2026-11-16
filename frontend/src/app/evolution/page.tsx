@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EvolutionPage() {
-  const { data } = await api.evolution();
+  const { data, images } = await api.evolution();
 
   return (
     <Page>
@@ -23,7 +23,7 @@ export default async function EvolutionPage() {
         }
         intro="Score méta mensuel par archétype (×100). Compare jusqu'à quatre archétypes : le premier choisi passe en accent."
       />
-      <EvolutionChart data={data} />
+      <EvolutionChart data={data} images={images} />
     </Page>
   );
 }

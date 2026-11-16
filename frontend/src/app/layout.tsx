@@ -3,7 +3,8 @@ import { Inter_Tight, Instrument_Serif, JetBrains_Mono } from "next/font/google"
 import { Nav } from "@/components/nav";
 import "./globals.css";
 
-const sans = Inter_Tight({ variable: "--font-inter-tight", subsets: ["latin"], weight: ["400", "500", "600"] });
+// Sans `weight` : next/font charge la version variable (un fichier, toutes les graisses).
+const sans = Inter_Tight({ variable: "--font-inter-tight", subsets: ["latin"] });
 const serif = Instrument_Serif({ variable: "--font-instrument-serif", subsets: ["latin"], weight: "400", style: "italic" });
 const mono = JetBrains_Mono({ variable: "--font-jetbrains-mono", subsets: ["latin"], weight: ["400", "500"] });
 

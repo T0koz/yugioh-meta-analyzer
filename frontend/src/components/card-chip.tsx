@@ -51,7 +51,7 @@ export function CardChip({
       onMouseLeave={handleLeave}
       className={`cursor-default transition-colors duration-200 ${
         variant === "chip"
-          ? "inline-flex rounded-[4px] border border-line bg-ink-4 px-2 py-0.5 font-mono text-[12px] text-soft hover:border-line-2 hover:text-text"
+          ? "inline-flex rounded-[4px] border border-line bg-ink-4 px-2 py-0.5 text-[14px] text-text hover:border-line-2"
           : "hover:text-signal-hi"
       } ${className}`}
     >

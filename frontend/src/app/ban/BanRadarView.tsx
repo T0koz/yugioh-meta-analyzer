@@ -2,7 +2,7 @@ import { api } from "@/lib/api";
 import { fmtDate, fmtNum, fmtPct } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { CardChip } from "@/components/card-chip";
-import { CardThumb } from "@/components/card-thumb";
+import { CardArt } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
 import { Callout, Explainer, PageHero } from "@/components/ds/page";
 import { BanStatus } from "@/components/ds/tags";
@@ -37,7 +37,7 @@ export const ROW_GRID =
 export function RankedThumb({ src, name, rank }: { src: string | null; name: string; rank: number }) {
   return (
     <div className="grid justify-items-center gap-1.5">
-      <CardThumb src={src} name={name} size="md" eager={rank <= 6} />
+      <CardArt src={src} name={name} size="sm" eager={rank <= 6} />
       <span className="font-mono text-[11px] text-faint tabular-nums">#{rank}</span>
     </div>
   );
@@ -95,10 +95,10 @@ function RadarRow({ entry, rank }: { entry: BanRadarEntry; rank: number }) {
       <BigScore value={fmtNum(score, Number.isInteger(score) ? 0 : 1)} label={entry.risk_label} tone={RISK_TONE[entry.risk_label]} />
       <RankedThumb src={entry.image_url} name={entry.card_name} rank={rank} />
       <div className="min-w-0">
-        <h3 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
+        <h2 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
           <CardChip name={entry.card_name} subtitle={origin} variant="plain" />
-        </h3>
-        <p className="mt-1 font-mono text-[12px] text-muted-text">
+        </h2>
+        <p className="mt-1 text-[13px] text-muted-text">
           {[
             origin,
             `${fmtPct(entry.deck_share)} des decks`,

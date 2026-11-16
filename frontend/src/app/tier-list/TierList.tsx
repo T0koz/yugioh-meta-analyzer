@@ -16,9 +16,9 @@ export function TierList({ data }: { data: TierEntry[] }) {
   const [filterId, setFilterId] = useState("all");
   const filter = FILTERS.find((f) => f.id === filterId) ?? FILTERS[0];
 
-  // meta_score = sqrt(share × placement_score_norm) ne dépasse jamais ~0.15 en pratique :
-  // la barre est calibrée en relatif au max du snapshot (pas du filtre) plutôt qu'en absolu sur [0,1].
-  const maxScore = Math.max(...data.map((d) => d.meta_score), 0);
+  // La barre montre la part de méta, la mesure sur laquelle la liste est triée,
+  // relative à la plus forte part (de la liste complète, pas du filtre).
+  const maxShare = Math.max(...data.map((d) => d.share), 0);
   // Le rang reste celui de la liste complète : filtrer ne renumérote pas.
   const rows = data.map((entry, i) => ({ entry, rank: i + 1 })).filter(({ entry }) => filter.keep(entry));
 
@@ -40,7 +40,7 @@ export function TierList({ data }: { data: TierEntry[] }) {
 
       <div className="overflow-hidden rounded-[6px] border border-line">
         {rows.map(({ entry, rank }) => (
-          <ArchetypeRow key={entry.archetype} entry={entry} rank={rank} maxScore={maxScore} highlighted={rank === 1} />
+          <ArchetypeRow key={entry.archetype} entry={entry} rank={rank} maxShare={maxShare} highlighted={rank === 1} />
         ))}
         {rows.length === 0 && (
           <p className="px-4 py-6 font-mono text-[12px] text-muted-text">Aucun archétype dans ce filtre.</p>

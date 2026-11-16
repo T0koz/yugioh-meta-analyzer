@@ -38,7 +38,7 @@ export default async function TierListPage() {
             <>
               Classement calculé sur nos decklists de tournoi TCG. Tier selon la part de méta, tendance par rapport
               à la période précédente.
-              <InfoTooltip text="Tiers : T0 à partir de 40 % des decks, T1 15 %, T2 7 %, T3 3 %, Rogue en dessous ou sous 5 decks. Tendance : en hausse ou en baisse seulement si la part a bougé au-delà du bruit d’échantillonnage (test de deux proportions à 5 %) ; sur une soixantaine d’archétypes, deux ou trois signaux peuvent être dus au hasard. Score = racine de (part × placement moyen normalisé) ; la barre est relative au meilleur score." />
+              <InfoTooltip text="Tiers : T0 à partir de 40 % des decks, T1 15 %, T2 7 %, T3 3 %, Rogue en dessous ou sous 5 decks. Tendance : en hausse ou en baisse seulement si la part a bougé au-delà du bruit d’échantillonnage (test de deux proportions à 5 %) ; sur une soixantaine d’archétypes, deux ou trois signaux peuvent être dus au hasard. La barre montre la part de méta, relative à la plus forte. Score = racine de (part × placement moyen normalisé)." />
             </>
           }
         >

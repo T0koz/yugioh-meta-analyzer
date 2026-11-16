@@ -37,7 +37,7 @@ const TREND = {
 export function TrendLabel({ trend }: { trend: Trend }) {
   const { arrow, label, className } = TREND[trend];
   return (
-    <span className={`font-mono text-[12px] font-medium whitespace-nowrap ${className}`}>
+    <span className={`text-[13px] font-medium whitespace-nowrap ${className}`}>
       {arrow} {label}
     </span>
   );

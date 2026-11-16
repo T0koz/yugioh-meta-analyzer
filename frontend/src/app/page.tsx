@@ -3,7 +3,9 @@ import { api } from "@/lib/api";
 import { fmtNum, fmtPct } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { Em } from "@/components/ds/em";
+import { CardArt } from "@/components/card-art";
 import { Eyebrow, Page } from "@/components/ds/page";
+import { Reveal } from "@/components/reveal";
 import { banStatusLabel } from "@/components/ds/tags";
 import type { PredictionEntry } from "@/types";
 
@@ -85,15 +87,15 @@ export default async function Home() {
           className="bg-dots absolute inset-y-0 -inset-x-[var(--gutter)] -z-10 [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
         />
         <div>
-          <Eyebrow>Analyse de méta · Yu-Gi-Oh! TCG &amp; OCG</Eyebrow>
-          <h1 className="mt-[18px] max-w-[16ch] text-[clamp(36px,6vw,72px)] leading-[0.98] font-medium tracking-[-0.045em] text-balance">
+          <Eyebrow className="enter">Analyse de méta · Yu-Gi-Oh! TCG &amp; OCG</Eyebrow>
+          <h1 className="enter mt-[18px] max-w-[16ch] [--i:1] text-[clamp(36px,6vw,72px)] leading-[0.98] font-medium tracking-[-0.045em] text-balance">
             Le TCG suit l’OCG, <Em>avec quelques mois</Em> de retard.
           </h1>
         </div>
-        <p className="mt-[22px] max-w-[52ch] text-soft">
+        <p className="enter mt-[22px] max-w-[52ch] text-soft [--i:2]">
           {`Corrélation d’environ ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)} entre la méta OCG et la méta TCG ${SITE_FACTS.ocgTcgLagRange} plus tard (IC 95 % : ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}, ${SITE_FACTS.ocgTcgArchetypes} archétypes), sur ${fmtNum(SITE_FACTS.decklists)} decklists de tournoi. Un signal réel mais modéré : une aide à la décision, pas une garantie.`}
         </p>
-        <div className="mt-7 flex flex-wrap gap-2.5">
+        <div className="enter mt-7 flex flex-wrap gap-2.5 [--i:3]">
           <Link
             href="/boutique"
             className="rounded-[4px] border border-signal bg-signal px-[18px] py-[11px] text-[14px] font-medium text-on-signal transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-px"
@@ -109,18 +111,28 @@ export default async function Home() {
         </div>
       </header>
 
-      <div className="mt-2 grid grid-cols-12 gap-3">
+      <div className="enter mt-2 grid grid-cols-12 gap-3 [--i:4]">
         {topBuy && (
-          <Link href="/boutique" className={`${TILE} border-transparent bg-paper text-paper-ink min-[900px]:col-span-5`}>
+          <Link href="/boutique" className={`${TILE} group border-transparent bg-paper text-paper-ink min-[900px]:col-span-5`}>
             <TileTag letter="A" className="text-paper-muted">Signal boutique</TileTag>
-            <p className="text-[clamp(80px,12vw,148px)] leading-[0.85] font-medium tracking-[-0.07em] tabular-nums">
-              {fmtNum(topBuy.buy_score)}
-              <sup className="ml-1.5 align-top font-mono text-[14px] font-normal tracking-normal text-paper-muted">/100</sup>
-            </p>
+            <div className="flex items-start justify-between gap-4">
+              <p className="text-[clamp(80px,12vw,148px)] leading-[0.85] font-medium tracking-[-0.07em] tabular-nums">
+                {fmtNum(topBuy.buy_score)}
+                <sup className="ml-1.5 align-top font-mono text-[14px] font-normal tracking-normal text-paper-muted">/100</sup>
+              </p>
+              {/* La carte est le seul objet du site qui porte une ombre (profondeur réservée à la carte). */}
+              <CardArt
+                src={topBuy.image_url}
+                name={topBuy.card_name}
+                size="lg"
+                eager
+                className="border-transparent shadow-[0_18px_40px_-12px_rgb(11_15_22/0.55)] transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:-rotate-3 motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:rotate-0"
+              />
+            </div>
             <div>
-              <h3 className={H3}>
+              <h2 className={H3}>
                 {topBuy.card_name}, <em className="font-serif font-normal italic tracking-[-0.01em] text-signal-deep">{topBuy.archetype}</em>.
-              </h3>
+              </h2>
               <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">Archétype actif en OCG, pas encore vu en tournoi TCG.</p>
               <div className="flex flex-wrap gap-1.5">
                 {[
@@ -143,13 +155,16 @@ export default async function Home() {
 
         <Link href="/ban" className={`${TILE} border-line-2 bg-ink-3 min-[900px]:col-span-4`}>
           <TileTag letter="B" className="text-muted-text">Ban Radar</TileTag>
-          <h3 className={H3}>
+          <h2 className={H3}>
             Les cartes que Konami va <Em>toucher</Em>.
-          </h3>
+          </h2>
           <div>
             {radar.data.map((entry) => (
-              <div key={entry.card_name} className="flex justify-between gap-3 border-t border-line py-[9px] text-[14px] first:border-t-0">
-                <span className="min-w-0 [overflow-wrap:anywhere]">{entry.card_name}</span>
+              <div key={entry.card_name} className="flex items-center justify-between gap-3 border-t border-line py-[9px] text-[14px] first:border-t-0">
+                <span className="flex min-w-0 items-center gap-3 [overflow-wrap:anywhere]">
+                  <CardArt src={entry.image_url} name={entry.card_name} eager />
+                  {entry.card_name}
+                </span>
                 <b className="font-mono text-[13px] font-medium text-signal tabular-nums">{fmtNum(entry.ban_risk_score, 1)}</b>
               </div>
             ))}
@@ -160,64 +175,68 @@ export default async function Home() {
           <Link href="/predictions" className={`${TILE} border-transparent bg-signal text-on-signal min-[900px]:col-span-3`}>
             <TileTag letter="C" className="text-on-signal">Prédictions</TileTag>
             <div>
-              <h3 className={H3}>
+              <h2 className={H3}>
                 {rise.archetype}
                 <br />
                 <span className="tabular-nums">
                   {fmtNum(rise.current * 100, 1)} → {fmtNum(rise.predicted * 100, 1)}
                 </span>
-              </h3>
+              </h2>
               <p className="mt-2 text-[14px] text-on-signal">Score méta actuel, puis prévu le mois prochain (×100).</p>
             </div>
             <PredictionSpark current={rise.current} predicted={rise.predicted} />
           </Link>
         )}
 
-        <Link href="/graph" className={`${TILE} border-line-2 bg-ink-3 min-[900px]:col-span-7`}>
-          <TileTag letter="D" className="text-muted-text">Graphe de synergies</TileTag>
-          <div className="grid items-center gap-[22px] min-[700px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-            <div>
-              <h3 className={H3}>
-                {SITE_FACTS.graphCommunities} communautés de cartes, <Em>une</Em> carte pont.
-              </h3>
-              <p className="mt-2.5 text-[14px] text-muted-text">
-                La centralité d’intermédiarité montre quelles cartes relient les archétypes : les premières touchées
-                par un ban.
-              </p>
-            </div>
-            <GraphSketch />
-          </div>
-        </Link>
-
-        {topRisk && (
-          <Link
-            href={`/ban?tab=simulateur&card=${encodeURIComponent(topRisk.card_name)}`}
-            className={`${TILE} border-line-2 bg-ink-3 min-[900px]:col-span-5`}
-          >
-            <TileTag letter="E" className="text-muted-text">Recherche</TileTag>
-            <h3 className={H3}>
-              Tape une carte. <Em>Vois</Em> son impact.
-            </h3>
-            <div className="rounded-[6px] border border-line bg-ink px-4 py-3.5 font-mono text-[13px] leading-[1.9] text-soft">
-              <p>
-                <span className="text-faint">&gt;</span> impact si ban de
-              </p>
-              <p className="text-text">
-                {topRisk.card_name}
-                <span aria-hidden className="ml-0.5 inline-block h-[15px] w-2 bg-signal align-[-3px]" />
-              </p>
-              {[
-                ["archétypes qui la jouent", fmtNum(topRisk.n_archetypes)],
-                ["part des decks", fmtPct(topRisk.deck_share, 2)],
-                ["risque de ban", `${fmtNum(topRisk.ban_risk_score, 1)} / 100`],
-              ].map(([label, value]) => (
-                <p key={label} className="mt-1.5 flex justify-between gap-3 border-t border-dashed border-line pt-1.5">
-                  <span>{label}</span>
-                  <span className="text-signal">{value}</span>
+        <Reveal className="col-span-12 grid min-[900px]:col-span-7">
+          <Link href="/graph" className={`${TILE} border-line-2 bg-ink-3`}>
+            <TileTag letter="D" className="text-muted-text">Graphe de synergies</TileTag>
+            <div className="grid items-center gap-[22px] min-[700px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+              <div>
+                <h2 className={H3}>
+                  {SITE_FACTS.graphCommunities} communautés de cartes, <Em>une</Em> carte pont.
+                </h2>
+                <p className="mt-2.5 text-[14px] text-muted-text">
+                  La centralité d’intermédiarité montre quelles cartes relient les archétypes : les premières touchées
+                  par un ban.
                 </p>
-              ))}
+              </div>
+              <GraphSketch />
             </div>
           </Link>
+        </Reveal>
+
+        {topRisk && (
+          <Reveal className="col-span-12 grid min-[900px]:col-span-5">
+            <Link
+              href={`/ban?tab=simulateur&card=${encodeURIComponent(topRisk.card_name)}`}
+              className={`${TILE} border-line-2 bg-ink-3`}
+            >
+              <TileTag letter="E" className="text-muted-text">Recherche</TileTag>
+              <h2 className={H3}>
+                Tape une carte. <Em>Vois</Em> son impact.
+              </h2>
+              <div className="rounded-[6px] border border-line bg-ink px-4 py-3.5 font-mono text-[13px] leading-[1.9] text-soft">
+                <p>
+                  <span className="text-faint">&gt;</span> impact si ban de
+                </p>
+                <p className="text-text">
+                  {topRisk.card_name}
+                  <span aria-hidden className="cursor-blink ml-0.5 inline-block h-[15px] w-2 bg-signal align-[-3px]" />
+                </p>
+                {[
+                  ["archétypes qui la jouent", fmtNum(topRisk.n_archetypes)],
+                  ["part des decks", fmtPct(topRisk.deck_share, 2)],
+                  ["risque de ban", `${fmtNum(topRisk.ban_risk_score, 1)} / 100`],
+                ].map(([label, value]) => (
+                  <p key={label} className="mt-1.5 flex justify-between gap-3 border-t border-dashed border-line pt-1.5">
+                    <span>{label}</span>
+                    <span className="text-signal">{value}</span>
+                  </p>
+                ))}
+              </div>
+            </Link>
+          </Reveal>
         )}
       </div>
     </Page>

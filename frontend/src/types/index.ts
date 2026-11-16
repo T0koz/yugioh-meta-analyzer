@@ -28,6 +28,8 @@ export interface EvolutionPoint {
 
 export interface EvolutionResponse {
   data: Record<string, EvolutionPoint[]>;
+  /** Vignette par archétype ; absente si aucune carte connue. */
+  images: Record<string, string>;
 }
 
 export interface PredictionEntry {
@@ -35,6 +37,7 @@ export interface PredictionEntry {
   current: number;
   predicted: number;
   direction: Trend;
+  image_url: string | null;
 }
 
 export interface PredictionsResponse {
@@ -49,6 +52,7 @@ export interface BoutiqueSignal {
   buy_label: BuyLabel;
   cm_price: number;
   ban_tcg: string | null;
+  image_url: string | null;
 }
 
 export interface BoutiqueResponse {
@@ -60,6 +64,7 @@ export interface EarlySignal {
   archetype: string | null;
   early_score: number;
   views_week: number;
+  image_url: string | null;
 }
 
 export interface EarlySignalsResponse {

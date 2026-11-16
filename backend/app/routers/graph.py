@@ -26,7 +26,7 @@ def get_synergies(
         -- yugiohmeta.com : "Maliss P March Hare") — sans le strip, la jointure
         -- échoue pour ces cartes, elles perdent leur archétype et deviennent
         -- invisibles dans le filtre.
-        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = g.card_name
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = +g.card_name -- le « + » désactive l'affinité TEXT : sans lui SQLite n'utilise pas idx_cards_name_clean (TOK-83)
         ORDER BY g.degree_weighted DESC
         LIMIT ?
         """,

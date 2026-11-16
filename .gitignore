@@ -35,3 +35,6 @@ _bmad/*
 
 # OS
 .DS_Store
+logs/
+data/fetch_health.jsonl
+data/backup_*.db

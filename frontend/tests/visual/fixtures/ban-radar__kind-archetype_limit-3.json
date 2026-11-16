@@ -1,0 +1,74 @@
+{
+ "data": [
+  {
+   "card_name": "Elfnote Lucina",
+   "ban_risk_score": 69.9,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 14.07,
+   "decks": 265,
+   "n_archetypes": 5,
+   "mean_copies": 2.99,
+   "top_archetype": "Elfnote",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13597785.jpg",
+   "criteria": {
+    "ubiquity": 7.91,
+    "carrier": 5.87,
+    "copies": 37.36,
+    "restriction": 0.0,
+    "momentum": 18.75,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Elfnote Regina",
+   "ban_risk_score": 69.5,
+   "risk_label": "Élevé",
+   "current_status": "Unlimited",
+   "deck_share": 14.07,
+   "decks": 265,
+   "n_archetypes": 5,
+   "mean_copies": 2.97,
+   "top_archetype": "Elfnote",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/56651978.jpg",
+   "criteria": {
+    "ubiquity": 7.92,
+    "carrier": 5.88,
+    "copies": 36.95,
+    "restriction": 0.0,
+    "momentum": 18.76,
+    "bridge": 0.0
+   }
+  },
+  {
+   "card_name": "Prohibited Power Patron Portal - Terminus",
+   "ban_risk_score": 67.2,
+   "risk_label": "Élevé",
+   "current_status": "Limited",
+   "deck_share": 22.89,
+   "decks": 431,
+   "n_archetypes": 11,
+   "mean_copies": 2.12,
+   "top_archetype": "Elfnote",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/25661743.jpg",
+   "criteria": {
+    "ubiquity": 12.89,
+    "carrier": 5.85,
+    "copies": 21.11,
+    "restriction": 18.77,
+    "momentum": 8.21,
+    "bridge": 0.38
+   }
+  }
+ ],
+ "as_of": "2026-11-14",
+ "n_decks_window": 1883,
+ "weights": {
+  "ubiquity": 0.3,
+  "carrier": 0.25,
+  "copies": 0.2,
+  "restriction": 0.1,
+  "momentum": 0.1,
+  "bridge": 0.05
+ }
+}

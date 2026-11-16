@@ -1,0 +1,5371 @@
+{
+ "nodes": [
+  {
+   "id": "Lunalight Kaleido Chick",
+   "group": "Lunalight",
+   "size": 11.0657,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/35618217.jpg"
+  },
+  {
+   "id": "Erebus the Underworld Monarch",
+   "group": "Monarch",
+   "size": 10.7176,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/23064604.jpg"
+  },
+  {
+   "id": "Eidos the Underworld Monarch",
+   "group": "Monarch",
+   "size": 10.6686,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/31596518.jpg"
+  },
+  {
+   "id": "Tenacity of the Monarchs",
+   "group": "Monarch",
+   "size": 10.6429,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/33609262.jpg"
+  },
+  {
+   "id": "Edea the Heavenly Squire",
+   "group": "Monarch",
+   "size": 10.5212,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/95457011.jpg"
+  },
+  {
+   "id": "Tessera the Primal Squire",
+   "group": null,
+   "size": 10.4422,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/67584223.jpg"
+  },
+  {
+   "id": "The Monarchs Masterplan",
+   "group": "Monarch",
+   "size": 10.4279,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/63899196.jpg"
+  },
+  {
+   "id": "The Monarchs Revolt",
+   "group": null,
+   "size": 10.4279,
+   "image_url": null
+  },
+  {
+   "id": "Pantheism of the Monarchs",
+   "group": "Monarch",
+   "size": 10.4279,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22842126.jpg"
+  },
+  {
+   "id": "Lunalight Silver Hound",
+   "group": "Lunalight",
+   "size": 10.3185,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/35763582.jpg"
+  },
+  {
+   "id": "Lunalight Fusion",
+   "group": "Lunalight",
+   "size": 9.6843,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/87931906.jpg"
+  },
+  {
+   "id": "Lunalight Yellow Marten",
+   "group": "Lunalight",
+   "size": 9.5189,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/50546208.jpg"
+  },
+  {
+   "id": "Luna Light Perfume",
+   "group": "Lunalight",
+   "size": 9.477,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/48444114.jpg"
+  },
+  {
+   "id": "Eidos the Underworld Squire",
+   "group": "Monarch",
+   "size": 9.462,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/59463312.jpg"
+  },
+  {
+   "id": "Branded Fusion",
+   "group": "Branded",
+   "size": 9.3159,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+  },
+  {
+   "id": "Mementotlan Goblin",
+   "group": "Goblin",
+   "size": 9.2656,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17943271.jpg"
+  },
+  {
+   "id": "Lunalight Black Sheep",
+   "group": "Lunalight",
+   "size": 9.2145,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/11317977.jpg"
+  },
+  {
+   "id": "K9-66a Jokul",
+   "group": "K9",
+   "size": 9.1723,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/28642461.jpg"
+  },
+  {
+   "id": "Lunalight Masquerade",
+   "group": "Lunalight",
+   "size": 9.0856,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/2344618.jpg"
+  },
+  {
+   "id": "Once Upon a Fairy Tail",
+   "group": "Fairy Tail",
+   "size": 9.0833,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/19326613.jpg"
+  },
+  {
+   "id": "Mementotlan Shleepy",
+   "group": "Memento",
+   "size": 9.0637,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/50042011.jpg"
+  },
+  {
+   "id": "Spell Card \"Soul Exchange\"",
+   "group": null,
+   "size": 9.0504,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/15735108.jpg"
+  },
+  {
+   "id": "Witchcrafter Genni",
+   "group": "Witchcrafter",
+   "size": 9.0077,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/64756282.jpg"
+  },
+  {
+   "id": "The Monarchs Stormforth",
+   "group": "Monarch",
+   "size": 9.0067,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/79844764.jpg"
+  },
+  {
+   "id": "Ehther the Heavenly Monarch",
+   "group": "Monarch",
+   "size": 8.9828,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/96570609.jpg"
+  },
+  {
+   "id": "Branded Retribution",
+   "group": "Branded",
+   "size": 8.9734,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17751597.jpg"
+  },
+  {
+   "id": "Lunalight Gold Leo",
+   "group": "Lunalight",
+   "size": 8.9049,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8379983.jpg"
+  },
+  {
+   "id": "Mementoal Tecuhtlica - Combined Creation",
+   "group": "Memento",
+   "size": 8.8935,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/23288411.jpg"
+  },
+  {
+   "id": "Mementomictlan",
+   "group": "Memento",
+   "size": 8.8935,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/43338320.jpg"
+  },
+  {
+   "id": "Mementotlan Mace",
+   "group": "Memento",
+   "size": 8.8931,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/81945676.jpg"
+  },
+  {
+   "id": "Mementotlan Ghattic",
+   "group": "Memento",
+   "size": 8.8928,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/52918032.jpg"
+  },
+  {
+   "id": "Mementotlan Akihiron",
+   "group": "Memento",
+   "size": 8.8253,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54207171.jpg"
+  },
+  {
+   "id": "Vanquish Soul Heavy Borger",
+   "group": "Vanquish Soul",
+   "size": 8.7787,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/92895501.jpg"
+  },
+  {
+   "id": "Guiding Quem, the Virtuous",
+   "group": "Despia",
+   "size": 8.7609,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/45883110.jpg"
+  },
+  {
+   "id": "Mitsurugi no Mikoto, Saji",
+   "group": "Mitsurugi",
+   "size": 8.7456,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/18176525.jpg"
+  },
+  {
+   "id": "Vanquish Soul Jiaolong",
+   "group": "Vanquish Soul",
+   "size": 8.6891,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/9091064.jpg"
+  },
+  {
+   "id": "\"A Case for K9\"",
+   "group": "K9",
+   "size": 8.668,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/80181649.jpg"
+  },
+  {
+   "id": "Mementotlan Angwitch",
+   "group": "Memento",
+   "size": 8.6443,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54550967.jpg"
+  },
+  {
+   "id": "Enneacraft Release",
+   "group": "Enneacraft",
+   "size": 8.6177,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54020393.jpg"
+  },
+  {
+   "id": "Deftero Enneacraft - \"alazoneIA\"",
+   "group": "Enneacraft",
+   "size": 8.6111,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/92171126.jpg"
+  },
+  {
+   "id": "Ekto Enneacraft - \"tromarIA\"",
+   "group": "Enneacraft",
+   "size": 8.6111,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/29570824.jpg"
+  },
+  {
+   "id": "Enneacraft - Atori.MAR",
+   "group": "Enneacraft",
+   "size": 8.6111,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54842941.jpg"
+  },
+  {
+   "id": "Proto Enneacraft - \"orgIA\"",
+   "group": "Enneacraft",
+   "size": 8.6111,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/56187077.jpg"
+  },
+  {
+   "id": "Enneacraft Reverth",
+   "group": "Enneacraft",
+   "size": 8.6062,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/80015408.jpg"
+  },
+  {
+   "id": "Mitsurugi Great Purification",
+   "group": "Mitsurugi",
+   "size": 8.5933,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17954937.jpg"
+  },
+  {
+   "id": "Vanquish Soul, Start!",
+   "group": "Vanquish Soul",
+   "size": 8.5901,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/35550352.jpg"
+  },
+  {
+   "id": "Vanquish Soul Hollie Sue",
+   "group": "Vanquish Soul",
+   "size": 8.5901,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/93156774.jpg"
+  },
+  {
+   "id": "Enato Enneacraft - \"oknirIA\"",
+   "group": "Enneacraft",
+   "size": 8.5892,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55965529.jpg"
+  },
+  {
+   "id": "Mementotlan Dark Blade",
+   "group": "Memento",
+   "size": 8.569,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/18165869.jpg"
+  },
+  {
+   "id": "Mementotlan Tatsunootoshigo",
+   "group": "Memento",
+   "size": 8.5664,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/81677154.jpg"
+  },
+  {
+   "id": "K9-66b Lantern",
+   "group": "K9",
+   "size": 8.5646,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55031170.jpg"
+  },
+  {
+   "id": "Mitsurugi no Mikoto, Kusanagi",
+   "group": "Mitsurugi",
+   "size": 8.5628,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/82782870.jpg"
+  },
+  {
+   "id": "Futsu no Mitama no Mitsurugi",
+   "group": "Mitsurugi",
+   "size": 8.5488,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55397172.jpg"
+  },
+  {
+   "id": "Mitsurugi Mirror",
+   "group": "Mitsurugi",
+   "size": 8.523,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/49721684.jpg"
+  },
+  {
+   "id": "Fairy Tail - Snow",
+   "group": null,
+   "size": 8.5048,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55623480.jpg"
+  },
+  {
+   "id": "Polymerization",
+   "group": null,
+   "size": 8.5044,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/24094653.jpg"
+  },
+  {
+   "id": "Tails of the Fairy Tails",
+   "group": "Fairy Tail",
+   "size": 8.4807,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/82119326.jpg"
+  },
+  {
+   "id": "Lunalight Wolf",
+   "group": "Lunalight",
+   "size": 8.4076,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/47705572.jpg"
+  },
+  {
+   "id": "Lunalight Tiger",
+   "group": "Lunalight",
+   "size": 8.4064,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/83190280.jpg"
+  },
+  {
+   "id": "Maliss P Dormouse",
+   "group": "Maliss",
+   "size": 8.3784,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/32061192.jpg"
+  },
+  {
+   "id": "Maliss C MTP-07",
+   "group": "Maliss",
+   "size": 8.3784,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/94722358.jpg"
+  },
+  {
+   "id": "Mementotlan Bone Party",
+   "group": "Memento",
+   "size": 8.3742,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/80722024.jpg"
+  },
+  {
+   "id": "Mementotlan Fusion",
+   "group": "Fusion",
+   "size": 8.3654,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/66518509.jpg"
+  },
+  {
+   "id": "Wizard @Ignister",
+   "group": "@Ignister",
+   "size": 8.2458,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/3723262.jpg"
+  },
+  {
+   "id": "K9-ØØ Lupis",
+   "group": "K9",
+   "size": 8.1694,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/91025875.jpg"
+  },
+  {
+   "id": "Fire Formation - Tenki",
+   "group": "Fire Formation",
+   "size": 8.1677,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/57103969.jpg"
+  },
+  {
+   "id": "Vanquish Soul Dr. Mad Love",
+   "group": "Vanquish Soul",
+   "size": 8.158,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/29280200.jpg"
+  },
+  {
+   "id": "Enneacraft - Aiza.LEON",
+   "group": "Enneacraft",
+   "size": 8.1155,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/82359538.jpg"
+  },
+  {
+   "id": "Stake your Soul!",
+   "group": "Vanquish Soul",
+   "size": 8.1108,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54562327.jpg"
+  },
+  {
+   "id": "Regulus, the Prince of Endymion",
+   "group": "Endymion",
+   "size": 8.0827,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/96228804.jpg"
+  },
+  {
+   "id": "Vanquish Soul Razen",
+   "group": "Vanquish Soul",
+   "size": 8.0392,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/29302858.jpg"
+  },
+  {
+   "id": "Tri-Brigade Fraktall",
+   "group": "Tri-Brigade",
+   "size": 8.0207,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/87209160.jpg"
+  },
+  {
+   "id": "Instant Fusion",
+   "group": null,
+   "size": 8.0198,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1845204.jpg"
+  },
+  {
+   "id": "Vanquish Soul Caesar Valius",
+   "group": "Vanquish Soul",
+   "size": 8.0063,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/91073013.jpg"
+  },
+  {
+   "id": "R.B. Ga10 Cutter",
+   "group": "R.B.",
+   "size": 7.9899,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/33438265.jpg"
+  },
+  {
+   "id": "R.B. Ga10 Driller",
+   "group": "R.B.",
+   "size": 7.9899,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/6043161.jpg"
+  },
+  {
+   "id": "Ame no Habakiri no Mitsurugi",
+   "group": "Mitsurugi",
+   "size": 7.9545,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13332685.jpg"
+  },
+  {
+   "id": "R.B. Lambda Cannon",
+   "group": "R.B.",
+   "size": 7.9338,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/81794107.jpg"
+  },
+  {
+   "id": "Empire of Endymion",
+   "group": null,
+   "size": 7.9069,
+   "image_url": null
+  },
+  {
+   "id": "Abyssrhine, the Atlantean Spirit",
+   "group": "Abyss-",
+   "size": 7.8496,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17080584.jpg"
+  },
+  {
+   "id": "Enneacraft - Asta.PIXEA",
+   "group": "Enneacraft",
+   "size": 7.809,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/28454232.jpg"
+  },
+  {
+   "id": "R.B. Next Phase",
+   "group": "R.B.",
+   "size": 7.7908,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/79859067.jpg"
+  },
+  {
+   "id": "Mermail Abysspike",
+   "group": "Mermail",
+   "size": 7.7881,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/58471134.jpg"
+  },
+  {
+   "id": "Kewl Tune Synchro",
+   "group": "Kewl Tune",
+   "size": 7.767,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/78058681.jpg"
+  },
+  {
+   "id": "Fire King Sky Burn",
+   "group": "Fire King",
+   "size": 7.7663,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/91703676.jpg"
+  },
+  {
+   "id": "Kewl Tune Cue",
+   "group": "Kewl Tune",
+   "size": 7.7525,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/16387555.jpg"
+  },
+  {
+   "id": "Kewl Tune Reco",
+   "group": "Kewl Tune",
+   "size": 7.7503,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/89392810.jpg"
+  },
+  {
+   "id": "R.B. VALCan Rocket",
+   "group": "R.B.",
+   "size": 7.7454,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/79436874.jpg"
+  },
+  {
+   "id": "Zoroa, the Magistus of Flame",
+   "group": "Magistus",
+   "size": 7.7419,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/36099130.jpg"
+  },
+  {
+   "id": "Enneapolis",
+   "group": "Enneacraft",
+   "size": 7.7392,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17621695.jpg"
+  },
+  {
+   "id": "Fire King Island",
+   "group": "Fire King",
+   "size": 7.7221,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/57554544.jpg"
+  },
+  {
+   "id": "R.B. Lambda Blade",
+   "group": "R.B.",
+   "size": 7.6886,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17188206.jpg"
+  },
+  {
+   "id": "Fairy Tail Ball",
+   "group": "Fairy Tail",
+   "size": 7.6712,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/56725612.jpg"
+  },
+  {
+   "id": "Blazing Cartesia, the Virtuous",
+   "group": null,
+   "size": 7.6703,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+  },
+  {
+   "id": "Kewl Tune Mix",
+   "group": "Kewl Tune",
+   "size": 7.6659,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/16509007.jpg"
+  },
+  {
+   "id": "Gold Sarcophagus",
+   "group": null,
+   "size": 7.6626,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/75500286.jpg"
+  },
+  {
+   "id": "Arias the Labrynth Butler",
+   "group": "Labrynth",
+   "size": 7.6551,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/73602965.jpg"
+  },
+  {
+   "id": "Verre Magic - Lacrima of Light",
+   "group": "Magistus",
+   "size": 7.6489,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/73664385.jpg"
+  },
+  {
+   "id": "Fallen of Albaz",
+   "group": "Dogmatika",
+   "size": 7.6217,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+  },
+  {
+   "id": "Fire King Sanctuary",
+   "group": "Fire King",
+   "size": 7.5901,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/65305978.jpg"
+  },
+  {
+   "id": "Big Welcome Labrynth",
+   "group": "Labrynth",
+   "size": 7.5886,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/92714517.jpg"
+  },
+  {
+   "id": "Sacred Fire King Garunix",
+   "group": "Fire King",
+   "size": 7.5858,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/66431519.jpg"
+  },
+  {
+   "id": "Welcome Labrynth",
+   "group": "Labrynth",
+   "size": 7.5803,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/5380979.jpg"
+  },
+  {
+   "id": "Legendary Fire King Ponix",
+   "group": "Fire King",
+   "size": 7.5681,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/90681088.jpg"
+  },
+  {
+   "id": "Fire King High Avatar Kirin",
+   "group": "Fire King",
+   "size": 7.549,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/2526224.jpg"
+  },
+  {
+   "id": "Synchro Overtake",
+   "group": "Synchro",
+   "size": 7.5348,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/99243014.jpg"
+  },
+  {
+   "id": "Fire King Courtier Ulcanix",
+   "group": "Fire King",
+   "size": 7.4912,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/44455560.jpg"
+  },
+  {
+   "id": "Kewl Tune Rotary",
+   "group": "Kewl Tune",
+   "size": 7.483,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17209452.jpg"
+  },
+  {
+   "id": "Mermail Abyssteus",
+   "group": "Mermail",
+   "size": 7.4798,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22446869.jpg"
+  },
+  {
+   "id": "Ame no Murakumo no Mitsurugi",
+   "group": "Mitsurugi",
+   "size": 7.4504,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/19899073.jpg"
+  },
+  {
+   "id": "Fairy Tail - Luna",
+   "group": null,
+   "size": 7.4274,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/86937530.jpg"
+  },
+  {
+   "id": "Dracotail Urgula",
+   "group": "Dracotail",
+   "size": 7.4207,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/70871153.jpg"
+  },
+  {
+   "id": "Tri-Brigade Mercourier",
+   "group": "Tri-Brigade",
+   "size": 7.4205,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/19096726.jpg"
+  },
+  {
+   "id": "Labrynth Stovie Torbie",
+   "group": "Labrynth",
+   "size": 7.4176,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/74018812.jpg"
+  },
+  {
+   "id": "Labrynth Chandraglier",
+   "group": "Labrynth",
+   "size": 7.417,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/37629703.jpg"
+  },
+  {
+   "id": "Mermail Shadow Squad",
+   "group": "Atlantean",
+   "size": 7.4,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/53085623.jpg"
+  },
+  {
+   "id": "Neptabyss, the Atlantean Prince",
+   "group": "Atlantean",
+   "size": 7.4,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/21565445.jpg"
+  },
+  {
+   "id": "Atlantean Dragoons",
+   "group": "Atlantean",
+   "size": 7.4,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/74311226.jpg"
+  },
+  {
+   "id": "Dracotail Mululu",
+   "group": "Dracotail",
+   "size": 7.3988,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/7375867.jpg"
+  },
+  {
+   "id": "Dracotail Flame",
+   "group": "Dracotail",
+   "size": 7.3897,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/5431722.jpg"
+  },
+  {
+   "id": "R.B. Ga10 Pile Bunker",
+   "group": "R.B.",
+   "size": 7.3769,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/44573911.jpg"
+  },
+  {
+   "id": "Ketu Dracotail",
+   "group": "Dracotail",
+   "size": 7.3561,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/6153210.jpg"
+  },
+  {
+   "id": "Blue-Eyes White Dragon",
+   "group": "Blue-Eyes",
+   "size": 7.3404,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/89631139.jpg"
+  },
+  {
+   "id": "Dracotail Sting",
+   "group": "Dracotail",
+   "size": 7.3401,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/80208225.jpg"
+  },
+  {
+   "id": "Poseidra, the Storming Atlantean",
+   "group": "Atlantean",
+   "size": 7.3288,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/99193444.jpg"
+  },
+  {
+   "id": "Absorouter Dragon",
+   "group": "Rokket",
+   "size": 7.2825,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/67748760.jpg"
+  },
+  {
+   "id": "The Prime Monarch",
+   "group": "Monarch",
+   "size": 7.2301,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54241725.jpg"
+  },
+  {
+   "id": "Fallen Paradise of the Sacred Beasts",
+   "group": "Phantasm",
+   "size": 7.2067,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/65861210.jpg"
+  },
+  {
+   "id": "Verre, the Maid of Endymion",
+   "group": "Endymion",
+   "size": 7.1924,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22623509.jpg"
+  },
+  {
+   "id": "Maliss in Underground",
+   "group": "Maliss",
+   "size": 7.1758,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/68337209.jpg"
+  },
+  {
+   "id": "Maliss P White Rabbit",
+   "group": "Maliss",
+   "size": 7.1619,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/69272449.jpg"
+  },
+  {
+   "id": "Rahu Dracotail",
+   "group": "Dracotail",
+   "size": 7.1588,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/32548318.jpg"
+  },
+  {
+   "id": "DoomZ V Five - Amalthe",
+   "group": "DoomZ",
+   "size": 7.153,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/28877382.jpg"
+  },
+  {
+   "id": "Goblin Biker Grand Breakout",
+   "group": "Goblin",
+   "size": 7.146,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/29111045.jpg"
+  },
+  {
+   "id": "Elfnote Power Patron",
+   "group": "Elfnote",
+   "size": 7.1353,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/12375297.jpg"
+  },
+  {
+   "id": "Arianna the Labrynth Servant",
+   "group": "Labrynth",
+   "size": 7.1317,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1225009.jpg"
+  },
+  {
+   "id": "Rokket Caliber",
+   "group": "Rokket",
+   "size": 7.115,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/67127799.jpg"
+  },
+  {
+   "id": "Dracotail Lukias",
+   "group": "Dracotail",
+   "size": 7.1007,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/75003700.jpg"
+  },
+  {
+   "id": "Maliss P March Hare",
+   "group": "Maliss",
+   "size": 7.1004,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/20938824.jpg"
+  },
+  {
+   "id": "Radiant Typhoon Meghala",
+   "group": "Radiant Typhoon",
+   "size": 7.0959,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/27755794.jpg"
+  },
+  {
+   "id": "Double Interlock",
+   "group": null,
+   "size": 7.0869,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/38129297.jpg"
+  },
+  {
+   "id": "Mitsurugi no Mikoto, Aramasa",
+   "group": "Mitsurugi",
+   "size": 7.0421,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/40543231.jpg"
+  },
+  {
+   "id": "DoomZ XII Zero - Drastea",
+   "group": "DoomZ",
+   "size": 7.0318,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/92472273.jpg"
+  },
+  {
+   "id": "Radiant Typhoon Ascendance",
+   "group": "Radiant Typhoon",
+   "size": 7.0094,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/25940932.jpg"
+  },
+  {
+   "id": "Mitsurugi Ritual",
+   "group": "Mitsurugi",
+   "size": 6.9546,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/81560239.jpg"
+  },
+  {
+   "id": "Dracotail Faimena",
+   "group": "Dracotail",
+   "size": 6.9482,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1498449.jpg"
+  },
+  {
+   "id": "Dracotail Phryxul",
+   "group": "Dracotail",
+   "size": 6.9434,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/84477320.jpg"
+  },
+  {
+   "id": "Wishes for Eyes of Blue",
+   "group": "with Eyes of Blue",
+   "size": 6.9295,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/80326401.jpg"
+  },
+  {
+   "id": "Triple Borrel Launch",
+   "group": "Borrel",
+   "size": 6.9264,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/89875646.jpg"
+  },
+  {
+   "id": "Maiden of White",
+   "group": null,
+   "size": 6.9198,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17947697.jpg"
+  },
+  {
+   "id": "Sage with Eyes of Blue",
+   "group": "Blue-Eyes",
+   "size": 6.9198,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8240199.jpg"
+  },
+  {
+   "id": "DoomZ Raiders",
+   "group": "DoomZ",
+   "size": 6.8862,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/32442017.jpg"
+  },
+  {
+   "id": "Dracotail Pan",
+   "group": "Dracotail",
+   "size": 6.8829,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/44482554.jpg"
+  },
+  {
+   "id": "Radiant Typhoon Fonix, the Great Flame",
+   "group": "Radiant Typhoon",
+   "size": 6.8691,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/85315450.jpg"
+  },
+  {
+   "id": "Radiant Typhoon Swen",
+   "group": "Radiant Typhoon",
+   "size": 6.8568,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/80538047.jpg"
+  },
+  {
+   "id": "R.B. Last Stand",
+   "group": "R.B.",
+   "size": 6.8511,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/43450363.jpg"
+  },
+  {
+   "id": "Atlantean Heavy Infantry",
+   "group": "Atlantean",
+   "size": 6.8462,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/37104630.jpg"
+  },
+  {
+   "id": "Wisca Blitzclique",
+   "group": null,
+   "size": 6.8374,
+   "image_url": null
+  },
+  {
+   "id": "Unleashing the Sacred Beasts",
+   "group": null,
+   "size": 6.825,
+   "image_url": null
+  },
+  {
+   "id": "Hamon, Lord of Striking Thunder - Sacred Beast of Sinful Catastrophe",
+   "group": null,
+   "size": 6.825,
+   "image_url": null
+  },
+  {
+   "id": "Skyfire of the Sacred Beast",
+   "group": null,
+   "size": 6.825,
+   "image_url": null
+  },
+  {
+   "id": "Raviel, Lord of Phantasms - Sacred Beast of Endless Eternity",
+   "group": null,
+   "size": 6.825,
+   "image_url": null
+  },
+  {
+   "id": "Martyr of the Sacred Beasts",
+   "group": "Phantasm",
+   "size": 6.825,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/59138498.jpg"
+  },
+  {
+   "id": "Radiant Typhoon Krosea",
+   "group": "Radiant Typhoon",
+   "size": 6.8177,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/16922142.jpg"
+  },
+  {
+   "id": "Crack Blitzclique",
+   "group": null,
+   "size": 6.8129,
+   "image_url": null
+  },
+  {
+   "id": "Grain Blitzclique",
+   "group": "Blitzclique",
+   "size": 6.812,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/84401954.jpg"
+  },
+  {
+   "id": "Surge Blitzclique",
+   "group": "Blitzclique",
+   "size": 6.8041,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22912101.jpg"
+  },
+  {
+   "id": "Kowloon, Citadel of the Sky",
+   "group": null,
+   "size": 6.8036,
+   "image_url": null
+  },
+  {
+   "id": "Blitzclique - Breakaway",
+   "group": "Blitzclique",
+   "size": 6.8033,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/64049762.jpg"
+  },
+  {
+   "id": "K9-17 Izuna",
+   "group": "K9",
+   "size": 6.7759,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/92248362.jpg"
+  },
+  {
+   "id": "Deep Sea Minstrel",
+   "group": "Deep Sea",
+   "size": 6.765,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/71978434.jpg"
+  },
+  {
+   "id": "Moulinglacia the Elemental Lord",
+   "group": "Elemental Lord",
+   "size": 6.7214,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13959634.jpg"
+  },
+  {
+   "id": "Crowley, the Gifted Magistus",
+   "group": "Magistus",
+   "size": 6.7209,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/875572.jpg"
+  },
+  {
+   "id": "D/D Scale Surveyor",
+   "group": "D/D",
+   "size": 6.7198,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/42382265.jpg"
+  },
+  {
+   "id": "Jurrac Megalo",
+   "group": "Jurrac",
+   "size": 6.6925,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/93170499.jpg"
+  },
+  {
+   "id": "D/D Gryphon",
+   "group": "D/D",
+   "size": 6.6887,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/28406301.jpg"
+  },
+  {
+   "id": "Sky Striker Mecha - Widow Anchor",
+   "group": "Sky Striker",
+   "size": 6.6836,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/98338152.jpg"
+  },
+  {
+   "id": "Elfnote Regina",
+   "group": "Elfnote",
+   "size": 6.6808,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/56651978.jpg"
+  },
+  {
+   "id": "Roar of the Blue-Eyed Dragons",
+   "group": null,
+   "size": 6.6782,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17725109.jpg"
+  },
+  {
+   "id": "True Light",
+   "group": "Blue-Eyes",
+   "size": 6.6708,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/62089826.jpg"
+  },
+  {
+   "id": "Mausoleum of White",
+   "group": null,
+   "size": 6.6688,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/24382602.jpg"
+  },
+  {
+   "id": "Majesty of the White Dragons",
+   "group": null,
+   "size": 6.6601,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/43219114.jpg"
+  },
+  {
+   "id": "Radiant Typhoon Eldam",
+   "group": "Radiant Typhoon",
+   "size": 6.6417,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54143349.jpg"
+  },
+  {
+   "id": "Maliss P Chessy Cat",
+   "group": "Maliss",
+   "size": 6.6346,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/96676583.jpg"
+  },
+  {
+   "id": "Vanquish Soul Snow Devil",
+   "group": "Vanquish Soul",
+   "size": 6.627,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/60883493.jpg"
+  },
+  {
+   "id": "DoomZ Change",
+   "group": "Change",
+   "size": 6.619,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/38007649.jpg"
+  },
+  {
+   "id": "Salamangreat Roar",
+   "group": "Salamangreat",
+   "size": 6.6056,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/51339637.jpg"
+  },
+  {
+   "id": "Salamangreat Weasel",
+   "group": "Salamangreat",
+   "size": 6.6056,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/57357130.jpg"
+  },
+  {
+   "id": "Maliss C TB-11",
+   "group": "Maliss",
+   "size": 6.6007,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/57111661.jpg"
+  },
+  {
+   "id": "Incredible Ecclesia, the Virtuous",
+   "group": null,
+   "size": 6.5691,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+  },
+  {
+   "id": "D/D Savant Kepler",
+   "group": "D/D",
+   "size": 6.5599,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/11609969.jpg"
+  },
+  {
+   "id": "D/D/D Zero Doom Queen Machinex",
+   "group": "D/D",
+   "size": 6.5599,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/20715411.jpg"
+  },
+  {
+   "id": "Allure of Darkness",
+   "group": null,
+   "size": 6.549,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1475311.jpg"
+  },
+  {
+   "id": "K9-04 Noroi",
+   "group": "K9",
+   "size": 6.5325,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/47960073.jpg"
+  },
+  {
+   "id": "Ritual of Light and Darkness",
+   "group": null,
+   "size": 6.5268,
+   "image_url": null
+  },
+  {
+   "id": "Boot Sector Launch",
+   "group": "Rokket",
+   "size": 6.523,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/36668118.jpg"
+  },
+  {
+   "id": "Elfnote Lucina",
+   "group": "Elfnote",
+   "size": 6.519,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13597785.jpg"
+  },
+  {
+   "id": "Albion the Shrouded Dragon",
+   "group": null,
+   "size": 6.5106,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/25451383.jpg"
+  },
+  {
+   "id": "Tales of the White Forest",
+   "group": "White Forest",
+   "size": 6.497,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/99289828.jpg"
+  },
+  {
+   "id": "Evil Box",
+   "group": null,
+   "size": 6.4917,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8915275.jpg"
+  }
+ ],
+ "edges": [
+  {
+   "source": "\"A Case for K9\"",
+   "target": "K9-04 Noroi",
+   "weight": 0.517
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "K9-17 Izuna",
+   "weight": 0.536
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "K9-66a Jokul",
+   "weight": 0.6237
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "K9-66b Lantern",
+   "weight": 0.7383
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "K9-ØØ Lupis",
+   "weight": 0.6054
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Stake your Soul!",
+   "weight": 0.3313
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul Caesar Valius",
+   "weight": 0.2911
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.3697
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.3217
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.3684
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.3758
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.2944
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.2635
+  },
+  {
+   "source": "\"A Case for K9\"",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.2919
+  },
+  {
+   "source": "Absorouter Dragon",
+   "target": "Boot Sector Launch",
+   "weight": 0.7062
+  },
+  {
+   "source": "Absorouter Dragon",
+   "target": "Double Interlock",
+   "weight": 0.6961
+  },
+  {
+   "source": "Absorouter Dragon",
+   "target": "Rokket Caliber",
+   "weight": 0.721
+  },
+  {
+   "source": "Absorouter Dragon",
+   "target": "Triple Borrel Launch",
+   "weight": 0.7405
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Atlantean Dragoons",
+   "weight": 0.8445
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Atlantean Heavy Infantry",
+   "weight": 0.4742
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Deep Sea Minstrel",
+   "weight": 0.4304
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Mermail Abysspike",
+   "weight": 0.8305
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Mermail Abyssteus",
+   "weight": 0.9301
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Mermail Shadow Squad",
+   "weight": 0.8555
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Moulinglacia the Elemental Lord",
+   "weight": 0.3683
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.8254
+  },
+  {
+   "source": "Abyssrhine, the Atlantean Spirit",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.8572
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Blazing Cartesia, the Virtuous",
+   "weight": 0.3749
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Branded Fusion",
+   "weight": 0.3724
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Branded Retribution",
+   "weight": 0.6282
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Fallen of Albaz",
+   "weight": 0.452
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Gold Sarcophagus",
+   "weight": 0.2225
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Guiding Quem, the Virtuous",
+   "weight": 0.5189
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.3588
+  },
+  {
+   "source": "Albion the Shrouded Dragon",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.4173
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Gold Sarcophagus",
+   "weight": 0.4134
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Maliss C MTP-07",
+   "weight": 0.4912
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Maliss C TB-11",
+   "weight": 0.4499
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Maliss P Chessy Cat",
+   "weight": 0.5172
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Maliss P Dormouse",
+   "weight": 0.4385
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Maliss P March Hare",
+   "weight": 0.4682
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Maliss P White Rabbit",
+   "weight": 0.3699
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Maliss in Underground",
+   "weight": 0.3929
+  },
+  {
+   "source": "Allure of Darkness",
+   "target": "Wizard @Ignister",
+   "weight": 0.4507
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Ame no Murakumo no Mitsurugi",
+   "weight": 0.7176
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Futsu no Mitama no Mitsurugi",
+   "weight": 0.3888
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Mitsurugi Great Purification",
+   "weight": 0.3725
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Mitsurugi Mirror",
+   "weight": 0.424
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Mitsurugi Ritual",
+   "weight": 0.799
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Aramasa",
+   "weight": 0.7577
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Kusanagi",
+   "weight": 0.4369
+  },
+  {
+   "source": "Ame no Habakiri no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.477
+  },
+  {
+   "source": "Ame no Murakumo no Mitsurugi",
+   "target": "Futsu no Mitama no Mitsurugi",
+   "weight": 0.558
+  },
+  {
+   "source": "Ame no Murakumo no Mitsurugi",
+   "target": "Mitsurugi Great Purification",
+   "weight": 0.5349
+  },
+  {
+   "source": "Ame no Murakumo no Mitsurugi",
+   "target": "Mitsurugi Mirror",
+   "weight": 0.5973
+  },
+  {
+   "source": "Ame no Murakumo no Mitsurugi",
+   "target": "Mitsurugi Ritual",
+   "weight": 0.9134
+  },
+  {
+   "source": "Ame no Murakumo no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Aramasa",
+   "weight": 0.8852
+  },
+  {
+   "source": "Ame no Murakumo no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Kusanagi",
+   "weight": 0.5771
+  },
+  {
+   "source": "Ame no Murakumo no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.6195
+  },
+  {
+   "source": "Arianna the Labrynth Servant",
+   "target": "Arias the Labrynth Butler",
+   "weight": 0.3571
+  },
+  {
+   "source": "Arianna the Labrynth Servant",
+   "target": "Big Welcome Labrynth",
+   "weight": 0.7952
+  },
+  {
+   "source": "Arianna the Labrynth Servant",
+   "target": "Labrynth Chandraglier",
+   "weight": 0.4338
+  },
+  {
+   "source": "Arianna the Labrynth Servant",
+   "target": "Labrynth Stovie Torbie",
+   "weight": 0.4662
+  },
+  {
+   "source": "Arianna the Labrynth Servant",
+   "target": "Welcome Labrynth",
+   "weight": 0.6248
+  },
+  {
+   "source": "Arias the Labrynth Butler",
+   "target": "Big Welcome Labrynth",
+   "weight": 0.4259
+  },
+  {
+   "source": "Arias the Labrynth Butler",
+   "target": "Labrynth Chandraglier",
+   "weight": 0.479
+  },
+  {
+   "source": "Arias the Labrynth Butler",
+   "target": "Labrynth Stovie Torbie",
+   "weight": 0.516
+  },
+  {
+   "source": "Arias the Labrynth Butler",
+   "target": "Welcome Labrynth",
+   "weight": 0.6602
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Atlantean Heavy Infantry",
+   "weight": 0.4237
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Deep Sea Minstrel",
+   "weight": 0.4217
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Mermail Abysspike",
+   "weight": 0.7854
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Mermail Abyssteus",
+   "weight": 0.8522
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Mermail Shadow Squad",
+   "weight": 0.9742
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Moulinglacia the Elemental Lord",
+   "weight": 0.3458
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.9939
+  },
+  {
+   "source": "Atlantean Dragoons",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.9111
+  },
+  {
+   "source": "Atlantean Heavy Infantry",
+   "target": "Deep Sea Minstrel",
+   "weight": 0.7709
+  },
+  {
+   "source": "Atlantean Heavy Infantry",
+   "target": "Mermail Abysspike",
+   "weight": 0.5296
+  },
+  {
+   "source": "Atlantean Heavy Infantry",
+   "target": "Mermail Abyssteus",
+   "weight": 0.4475
+  },
+  {
+   "source": "Atlantean Heavy Infantry",
+   "target": "Mermail Shadow Squad",
+   "weight": 0.4263
+  },
+  {
+   "source": "Atlantean Heavy Infantry",
+   "target": "Moulinglacia the Elemental Lord",
+   "weight": 0.8229
+  },
+  {
+   "source": "Atlantean Heavy Infantry",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.4147
+  },
+  {
+   "source": "Atlantean Heavy Infantry",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.5099
+  },
+  {
+   "source": "Big Welcome Labrynth",
+   "target": "Labrynth Chandraglier",
+   "weight": 0.3623
+  },
+  {
+   "source": "Big Welcome Labrynth",
+   "target": "Labrynth Stovie Torbie",
+   "weight": 0.3822
+  },
+  {
+   "source": "Big Welcome Labrynth",
+   "target": "Welcome Labrynth",
+   "weight": 0.5666
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Branded Fusion",
+   "weight": 0.6141
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Branded Retribution",
+   "weight": 0.3554
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Faimena",
+   "weight": 0.3373
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Flame",
+   "weight": 0.2303
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Lukias",
+   "weight": 0.3249
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Mululu",
+   "weight": 0.2377
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Pan",
+   "weight": 0.2557
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Phryxul",
+   "weight": 0.2025
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Sting",
+   "weight": 0.1969
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Dracotail Urgula",
+   "weight": 0.3253
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Fallen of Albaz",
+   "weight": 0.5359
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Gold Sarcophagus",
+   "weight": 0.1688
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Guiding Quem, the Virtuous",
+   "weight": 0.413
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.626
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Ketu Dracotail",
+   "weight": 0.2121
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Rahu Dracotail",
+   "weight": 0.2977
+  },
+  {
+   "source": "Blazing Cartesia, the Virtuous",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.2623
+  },
+  {
+   "source": "Blitzclique - Breakaway",
+   "target": "Grain Blitzclique",
+   "weight": 0.994
+  },
+  {
+   "source": "Blitzclique - Breakaway",
+   "target": "Surge Blitzclique",
+   "weight": 0.999
+  },
+  {
+   "source": "Blue-Eyes White Dragon",
+   "target": "Maiden of White",
+   "weight": 0.7912
+  },
+  {
+   "source": "Blue-Eyes White Dragon",
+   "target": "Majesty of the White Dragons",
+   "weight": 0.6578
+  },
+  {
+   "source": "Blue-Eyes White Dragon",
+   "target": "Mausoleum of White",
+   "weight": 0.6658
+  },
+  {
+   "source": "Blue-Eyes White Dragon",
+   "target": "Roar of the Blue-Eyed Dragons",
+   "weight": 0.6767
+  },
+  {
+   "source": "Blue-Eyes White Dragon",
+   "target": "Sage with Eyes of Blue",
+   "weight": 0.7898
+  },
+  {
+   "source": "Blue-Eyes White Dragon",
+   "target": "True Light",
+   "weight": 0.6668
+  },
+  {
+   "source": "Blue-Eyes White Dragon",
+   "target": "Wishes for Eyes of Blue",
+   "weight": 0.8395
+  },
+  {
+   "source": "Boot Sector Launch",
+   "target": "Double Interlock",
+   "weight": 0.7493
+  },
+  {
+   "source": "Boot Sector Launch",
+   "target": "Rokket Caliber",
+   "weight": 0.7812
+  },
+  {
+   "source": "Boot Sector Launch",
+   "target": "Triple Borrel Launch",
+   "weight": 0.5303
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Branded Retribution",
+   "weight": 0.3851
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Faimena",
+   "weight": 0.3432
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Flame",
+   "weight": 0.347
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Lukias",
+   "weight": 0.3446
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Mululu",
+   "weight": 0.2741
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Pan",
+   "weight": 0.3492
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Phryxul",
+   "weight": 0.3769
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Sting",
+   "weight": 0.3386
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Dracotail Urgula",
+   "weight": 0.4165
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Fallen of Albaz",
+   "weight": 0.6845
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Gold Sarcophagus",
+   "weight": 0.1755
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Guiding Quem, the Virtuous",
+   "weight": 0.4257
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.5908
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Ketu Dracotail",
+   "weight": 0.2939
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Rahu Dracotail",
+   "weight": 0.3554
+  },
+  {
+   "source": "Branded Fusion",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.3104
+  },
+  {
+   "source": "Branded Retribution",
+   "target": "Fallen of Albaz",
+   "weight": 0.5263
+  },
+  {
+   "source": "Branded Retribution",
+   "target": "Gold Sarcophagus",
+   "weight": 0.299
+  },
+  {
+   "source": "Branded Retribution",
+   "target": "Guiding Quem, the Virtuous",
+   "weight": 0.781
+  },
+  {
+   "source": "Branded Retribution",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.3922
+  },
+  {
+   "source": "Branded Retribution",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.6946
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Empire of Endymion",
+   "weight": 0.3229
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Fairy Tail - Luna",
+   "weight": 0.2699
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Fairy Tail - Snow",
+   "weight": 0.2506
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Fairy Tail Ball",
+   "weight": 0.2712
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Instant Fusion",
+   "weight": 0.2737
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Once Upon a Fairy Tail",
+   "weight": 0.3121
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Regulus, the Prince of Endymion",
+   "weight": 0.335
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.2846
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.314
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.3637
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Witchcrafter Genni",
+   "weight": 0.4335
+  },
+  {
+   "source": "Crowley, the Gifted Magistus",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.5752
+  },
+  {
+   "source": "D/D Gryphon",
+   "target": "D/D Savant Kepler",
+   "weight": 0.975
+  },
+  {
+   "source": "D/D Gryphon",
+   "target": "D/D Scale Surveyor",
+   "weight": 0.9189
+  },
+  {
+   "source": "D/D Gryphon",
+   "target": "D/D/D Zero Doom Queen Machinex",
+   "weight": 0.974
+  },
+  {
+   "source": "D/D Savant Kepler",
+   "target": "D/D Scale Surveyor",
+   "weight": 0.8814
+  },
+  {
+   "source": "D/D Savant Kepler",
+   "target": "D/D/D Zero Doom Queen Machinex",
+   "weight": 0.9989
+  },
+  {
+   "source": "D/D Scale Surveyor",
+   "target": "D/D/D Zero Doom Queen Machinex",
+   "weight": 0.8825
+  },
+  {
+   "source": "Deep Sea Minstrel",
+   "target": "Mermail Abysspike",
+   "weight": 0.4817
+  },
+  {
+   "source": "Deep Sea Minstrel",
+   "target": "Mermail Abyssteus",
+   "weight": 0.4189
+  },
+  {
+   "source": "Deep Sea Minstrel",
+   "target": "Mermail Shadow Squad",
+   "weight": 0.4241
+  },
+  {
+   "source": "Deep Sea Minstrel",
+   "target": "Moulinglacia the Elemental Lord",
+   "weight": 0.7729
+  },
+  {
+   "source": "Deep Sea Minstrel",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.4131
+  },
+  {
+   "source": "Deep Sea Minstrel",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.4608
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Ekto Enneacraft - \"tromarIA\"",
+   "weight": 1.0
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Enato Enneacraft - \"oknirIA\"",
+   "weight": 0.985
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Enneacraft - Aiza.LEON",
+   "weight": 0.9232
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Enneacraft - Asta.PIXEA",
+   "weight": 0.8516
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Enneacraft - Atori.MAR",
+   "weight": 0.99
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Enneacraft Release",
+   "weight": 0.9955
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Enneacraft Reverth",
+   "weight": 0.9992
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Enneapolis",
+   "weight": 0.8764
+  },
+  {
+   "source": "Deftero Enneacraft - \"alazoneIA\"",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 1.0
+  },
+  {
+   "source": "DoomZ Change",
+   "target": "DoomZ Raiders",
+   "weight": 0.8394
+  },
+  {
+   "source": "DoomZ Change",
+   "target": "DoomZ V Five - Amalthe",
+   "weight": 0.8433
+  },
+  {
+   "source": "DoomZ Change",
+   "target": "DoomZ XII Zero - Drastea",
+   "weight": 0.771
+  },
+  {
+   "source": "DoomZ Raiders",
+   "target": "DoomZ V Five - Amalthe",
+   "weight": 0.8944
+  },
+  {
+   "source": "DoomZ Raiders",
+   "target": "DoomZ XII Zero - Drastea",
+   "weight": 0.8521
+  },
+  {
+   "source": "DoomZ V Five - Amalthe",
+   "target": "DoomZ XII Zero - Drastea",
+   "weight": 0.892
+  },
+  {
+   "source": "Double Interlock",
+   "target": "Rokket Caliber",
+   "weight": 0.8355
+  },
+  {
+   "source": "Double Interlock",
+   "target": "Triple Borrel Launch",
+   "weight": 0.591
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Dracotail Flame",
+   "weight": 0.4253
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Dracotail Lukias",
+   "weight": 0.9779
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Dracotail Mululu",
+   "weight": 0.7054
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Dracotail Pan",
+   "weight": 0.546
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Dracotail Phryxul",
+   "weight": 0.2994
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Dracotail Sting",
+   "weight": 0.3048
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Dracotail Urgula",
+   "weight": 0.6992
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Fallen of Albaz",
+   "weight": 0.1808
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.2245
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Ketu Dracotail",
+   "weight": 0.6099
+  },
+  {
+   "source": "Dracotail Faimena",
+   "target": "Rahu Dracotail",
+   "weight": 0.8827
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Dracotail Lukias",
+   "weight": 0.4341
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Dracotail Mululu",
+   "weight": 0.5205
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Dracotail Pan",
+   "weight": 0.7506
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Dracotail Phryxul",
+   "weight": 0.7234
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Dracotail Sting",
+   "weight": 0.7533
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Dracotail Urgula",
+   "weight": 0.6177
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Fallen of Albaz",
+   "weight": 0.2339
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.1742
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Ketu Dracotail",
+   "weight": 0.5831
+  },
+  {
+   "source": "Dracotail Flame",
+   "target": "Rahu Dracotail",
+   "weight": 0.4529
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Dracotail Mululu",
+   "weight": 0.7192
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Dracotail Pan",
+   "weight": 0.5638
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Dracotail Phryxul",
+   "weight": 0.301
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Dracotail Sting",
+   "weight": 0.3139
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Dracotail Urgula",
+   "weight": 0.7182
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Fallen of Albaz",
+   "weight": 0.1764
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.2207
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Ketu Dracotail",
+   "weight": 0.6173
+  },
+  {
+   "source": "Dracotail Lukias",
+   "target": "Rahu Dracotail",
+   "weight": 0.8972
+  },
+  {
+   "source": "Dracotail Mululu",
+   "target": "Dracotail Pan",
+   "weight": 0.633
+  },
+  {
+   "source": "Dracotail Mululu",
+   "target": "Dracotail Phryxul",
+   "weight": 0.3119
+  },
+  {
+   "source": "Dracotail Mululu",
+   "target": "Dracotail Sting",
+   "weight": 0.3082
+  },
+  {
+   "source": "Dracotail Mululu",
+   "target": "Dracotail Urgula",
+   "weight": 0.6337
+  },
+  {
+   "source": "Dracotail Mululu",
+   "target": "Fallen of Albaz",
+   "weight": 0.1734
+  },
+  {
+   "source": "Dracotail Mululu",
+   "target": "Ketu Dracotail",
+   "weight": 0.8341
+  },
+  {
+   "source": "Dracotail Mululu",
+   "target": "Rahu Dracotail",
+   "weight": 0.7828
+  },
+  {
+   "source": "Dracotail Pan",
+   "target": "Dracotail Phryxul",
+   "weight": 0.5035
+  },
+  {
+   "source": "Dracotail Pan",
+   "target": "Dracotail Sting",
+   "weight": 0.5698
+  },
+  {
+   "source": "Dracotail Pan",
+   "target": "Dracotail Urgula",
+   "weight": 0.7251
+  },
+  {
+   "source": "Dracotail Pan",
+   "target": "Fallen of Albaz",
+   "weight": 0.1955
+  },
+  {
+   "source": "Dracotail Pan",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.1682
+  },
+  {
+   "source": "Dracotail Pan",
+   "target": "Ketu Dracotail",
+   "weight": 0.703
+  },
+  {
+   "source": "Dracotail Pan",
+   "target": "Rahu Dracotail",
+   "weight": 0.5505
+  },
+  {
+   "source": "Dracotail Phryxul",
+   "target": "Dracotail Sting",
+   "weight": 0.7726
+  },
+  {
+   "source": "Dracotail Phryxul",
+   "target": "Dracotail Urgula",
+   "weight": 0.4363
+  },
+  {
+   "source": "Dracotail Phryxul",
+   "target": "Fallen of Albaz",
+   "weight": 0.2589
+  },
+  {
+   "source": "Dracotail Phryxul",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.1749
+  },
+  {
+   "source": "Dracotail Phryxul",
+   "target": "Ketu Dracotail",
+   "weight": 0.3344
+  },
+  {
+   "source": "Dracotail Phryxul",
+   "target": "Rahu Dracotail",
+   "weight": 0.3074
+  },
+  {
+   "source": "Dracotail Sting",
+   "target": "Dracotail Urgula",
+   "weight": 0.4659
+  },
+  {
+   "source": "Dracotail Sting",
+   "target": "Fallen of Albaz",
+   "weight": 0.2157
+  },
+  {
+   "source": "Dracotail Sting",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.1631
+  },
+  {
+   "source": "Dracotail Sting",
+   "target": "Ketu Dracotail",
+   "weight": 0.3319
+  },
+  {
+   "source": "Dracotail Sting",
+   "target": "Rahu Dracotail",
+   "weight": 0.3096
+  },
+  {
+   "source": "Dracotail Urgula",
+   "target": "Fallen of Albaz",
+   "weight": 0.2159
+  },
+  {
+   "source": "Dracotail Urgula",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.2263
+  },
+  {
+   "source": "Dracotail Urgula",
+   "target": "Ketu Dracotail",
+   "weight": 0.6406
+  },
+  {
+   "source": "Dracotail Urgula",
+   "target": "Rahu Dracotail",
+   "weight": 0.7233
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "Eidos the Underworld Monarch",
+   "weight": 0.7945
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "Eidos the Underworld Squire",
+   "weight": 0.9262
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "Erebus the Underworld Monarch",
+   "weight": 0.8508
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "Pantheism of the Monarchs",
+   "weight": 0.7022
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "Spell Card \"Soul Exchange\"",
+   "weight": 0.4955
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "Tessera the Primal Squire",
+   "weight": 0.7945
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "The Monarchs Masterplan",
+   "weight": 0.7022
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "The Monarchs Revolt",
+   "weight": 0.7022
+  },
+  {
+   "source": "Edea the Heavenly Squire",
+   "target": "The Prime Monarch",
+   "weight": 0.6247
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "Eidos the Underworld Squire",
+   "weight": 0.8006
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "Erebus the Underworld Monarch",
+   "weight": 0.8796
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "Pantheism of the Monarchs",
+   "weight": 0.963
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "Spell Card \"Soul Exchange\"",
+   "weight": 0.5106
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "Tessera the Primal Squire",
+   "weight": 1.0
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "The Monarchs Masterplan",
+   "weight": 0.963
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "The Monarchs Revolt",
+   "weight": 0.963
+  },
+  {
+   "source": "Eidos the Underworld Monarch",
+   "target": "The Prime Monarch",
+   "weight": 0.467
+  },
+  {
+   "source": "Eidos the Underworld Squire",
+   "target": "Erebus the Underworld Monarch",
+   "weight": 0.9025
+  },
+  {
+   "source": "Eidos the Underworld Squire",
+   "target": "Pantheism of the Monarchs",
+   "weight": 0.7031
+  },
+  {
+   "source": "Eidos the Underworld Squire",
+   "target": "Spell Card \"Soul Exchange\"",
+   "weight": 0.4779
+  },
+  {
+   "source": "Eidos the Underworld Squire",
+   "target": "Tessera the Primal Squire",
+   "weight": 0.8006
+  },
+  {
+   "source": "Eidos the Underworld Squire",
+   "target": "The Monarchs Masterplan",
+   "weight": 0.7031
+  },
+  {
+   "source": "Eidos the Underworld Squire",
+   "target": "The Monarchs Revolt",
+   "weight": 0.7031
+  },
+  {
+   "source": "Eidos the Underworld Squire",
+   "target": "The Prime Monarch",
+   "weight": 0.7192
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Enato Enneacraft - \"oknirIA\"",
+   "weight": 0.985
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Enneacraft - Aiza.LEON",
+   "weight": 0.9232
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Enneacraft - Asta.PIXEA",
+   "weight": 0.8516
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Enneacraft - Atori.MAR",
+   "weight": 0.99
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Enneacraft Release",
+   "weight": 0.9955
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Enneacraft Reverth",
+   "weight": 0.9992
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Enneapolis",
+   "weight": 0.8764
+  },
+  {
+   "source": "Ekto Enneacraft - \"tromarIA\"",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 1.0
+  },
+  {
+   "source": "Elfnote Lucina",
+   "target": "Elfnote Power Patron",
+   "weight": 0.7959
+  },
+  {
+   "source": "Elfnote Lucina",
+   "target": "Elfnote Regina",
+   "weight": 0.8642
+  },
+  {
+   "source": "Elfnote Power Patron",
+   "target": "Elfnote Regina",
+   "weight": 0.916
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Fairy Tail - Luna",
+   "weight": 0.4126
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Fairy Tail - Snow",
+   "weight": 0.4685
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Fairy Tail Ball",
+   "weight": 0.4359
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Instant Fusion",
+   "weight": 0.5136
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Once Upon a Fairy Tail",
+   "weight": 0.6247
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Regulus, the Prince of Endymion",
+   "weight": 0.6119
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.5816
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.2807
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.4892
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Witchcrafter Genni",
+   "weight": 0.5168
+  },
+  {
+   "source": "Empire of Endymion",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.3785
+  },
+  {
+   "source": "Enato Enneacraft - \"oknirIA\"",
+   "target": "Enneacraft - Aiza.LEON",
+   "weight": 0.9303
+  },
+  {
+   "source": "Enato Enneacraft - \"oknirIA\"",
+   "target": "Enneacraft - Asta.PIXEA",
+   "weight": 0.8594
+  },
+  {
+   "source": "Enato Enneacraft - \"oknirIA\"",
+   "target": "Enneacraft - Atori.MAR",
+   "weight": 0.9883
+  },
+  {
+   "source": "Enato Enneacraft - \"oknirIA\"",
+   "target": "Enneacraft Release",
+   "weight": 0.9848
+  },
+  {
+   "source": "Enato Enneacraft - \"oknirIA\"",
+   "target": "Enneacraft Reverth",
+   "weight": 0.9842
+  },
+  {
+   "source": "Enato Enneacraft - \"oknirIA\"",
+   "target": "Enneapolis",
+   "weight": 0.8796
+  },
+  {
+   "source": "Enato Enneacraft - \"oknirIA\"",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 0.985
+  },
+  {
+   "source": "Enneacraft - Aiza.LEON",
+   "target": "Enneacraft - Asta.PIXEA",
+   "weight": 0.8628
+  },
+  {
+   "source": "Enneacraft - Aiza.LEON",
+   "target": "Enneacraft - Atori.MAR",
+   "weight": 0.9193
+  },
+  {
+   "source": "Enneacraft - Aiza.LEON",
+   "target": "Enneacraft Release",
+   "weight": 0.9339
+  },
+  {
+   "source": "Enneacraft - Aiza.LEON",
+   "target": "Enneacraft Reverth",
+   "weight": 0.9253
+  },
+  {
+   "source": "Enneacraft - Aiza.LEON",
+   "target": "Enneapolis",
+   "weight": 0.8563
+  },
+  {
+   "source": "Enneacraft - Aiza.LEON",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 0.9232
+  },
+  {
+   "source": "Enneacraft - Asta.PIXEA",
+   "target": "Enneacraft - Atori.MAR",
+   "weight": 0.8618
+  },
+  {
+   "source": "Enneacraft - Asta.PIXEA",
+   "target": "Enneacraft Release",
+   "weight": 0.8671
+  },
+  {
+   "source": "Enneacraft - Asta.PIXEA",
+   "target": "Enneacraft Reverth",
+   "weight": 0.8504
+  },
+  {
+   "source": "Enneacraft - Asta.PIXEA",
+   "target": "Enneapolis",
+   "weight": 0.9056
+  },
+  {
+   "source": "Enneacraft - Asta.PIXEA",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 0.8516
+  },
+  {
+   "source": "Enneacraft - Atori.MAR",
+   "target": "Enneacraft Release",
+   "weight": 0.9921
+  },
+  {
+   "source": "Enneacraft - Atori.MAR",
+   "target": "Enneacraft Reverth",
+   "weight": 0.9893
+  },
+  {
+   "source": "Enneacraft - Atori.MAR",
+   "target": "Enneapolis",
+   "weight": 0.8643
+  },
+  {
+   "source": "Enneacraft - Atori.MAR",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 0.99
+  },
+  {
+   "source": "Enneacraft Release",
+   "target": "Enneacraft Reverth",
+   "weight": 0.9947
+  },
+  {
+   "source": "Enneacraft Release",
+   "target": "Enneapolis",
+   "weight": 0.8773
+  },
+  {
+   "source": "Enneacraft Release",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 0.9955
+  },
+  {
+   "source": "Enneacraft Reverth",
+   "target": "Enneapolis",
+   "weight": 0.8753
+  },
+  {
+   "source": "Enneacraft Reverth",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 0.9992
+  },
+  {
+   "source": "Enneapolis",
+   "target": "Proto Enneacraft - \"orgIA\"",
+   "weight": 0.8764
+  },
+  {
+   "source": "Erebus the Underworld Monarch",
+   "target": "Pantheism of the Monarchs",
+   "weight": 0.847
+  },
+  {
+   "source": "Erebus the Underworld Monarch",
+   "target": "Spell Card \"Soul Exchange\"",
+   "weight": 0.6026
+  },
+  {
+   "source": "Erebus the Underworld Monarch",
+   "target": "Tessera the Primal Squire",
+   "weight": 0.8796
+  },
+  {
+   "source": "Erebus the Underworld Monarch",
+   "target": "The Monarchs Masterplan",
+   "weight": 0.847
+  },
+  {
+   "source": "Erebus the Underworld Monarch",
+   "target": "The Monarchs Revolt",
+   "weight": 0.847
+  },
+  {
+   "source": "Erebus the Underworld Monarch",
+   "target": "The Prime Monarch",
+   "weight": 0.6693
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Fairy Tail - Snow",
+   "weight": 0.4186
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Fairy Tail Ball",
+   "weight": 0.9326
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Instant Fusion",
+   "weight": 0.4441
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Once Upon a Fairy Tail",
+   "weight": 0.4862
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Regulus, the Prince of Endymion",
+   "weight": 0.6938
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.5245
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.5268
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.3401
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Witchcrafter Genni",
+   "weight": 0.3555
+  },
+  {
+   "source": "Fairy Tail - Luna",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.2734
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Fairy Tail Ball",
+   "weight": 0.4502
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Instant Fusion",
+   "weight": 0.5172
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Once Upon a Fairy Tail",
+   "weight": 0.6227
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Regulus, the Prince of Endymion",
+   "weight": 0.4249
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.6178
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.2252
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.3315
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Witchcrafter Genni",
+   "weight": 0.3994
+  },
+  {
+   "source": "Fairy Tail - Snow",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.334
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Instant Fusion",
+   "weight": 0.4771
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Once Upon a Fairy Tail",
+   "weight": 0.5308
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Regulus, the Prince of Endymion",
+   "weight": 0.6762
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.575
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.4939
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.3807
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Witchcrafter Genni",
+   "weight": 0.3836
+  },
+  {
+   "source": "Fairy Tail Ball",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.2878
+  },
+  {
+   "source": "Fallen Paradise of the Sacred Beasts",
+   "target": "Martyr of the Sacred Beasts",
+   "weight": 0.8382
+  },
+  {
+   "source": "Fallen of Albaz",
+   "target": "Gold Sarcophagus",
+   "weight": 0.2208
+  },
+  {
+   "source": "Fallen of Albaz",
+   "target": "Guiding Quem, the Virtuous",
+   "weight": 0.6015
+  },
+  {
+   "source": "Fallen of Albaz",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.589
+  },
+  {
+   "source": "Fallen of Albaz",
+   "target": "Ketu Dracotail",
+   "weight": 0.181
+  },
+  {
+   "source": "Fallen of Albaz",
+   "target": "Rahu Dracotail",
+   "weight": 0.1856
+  },
+  {
+   "source": "Fallen of Albaz",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.4303
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Luna Light Perfume",
+   "weight": 0.7874
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Black Sheep",
+   "weight": 0.7593
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Fusion",
+   "weight": 0.3744
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Gold Leo",
+   "weight": 0.8068
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Kaleido Chick",
+   "weight": 0.7213
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Masquerade",
+   "weight": 0.8205
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Silver Hound",
+   "weight": 0.5084
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Tiger",
+   "weight": 0.3932
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Wolf",
+   "weight": 0.4033
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.3854
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Polymerization",
+   "weight": 0.3152
+  },
+  {
+   "source": "Fire Formation - Tenki",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.4409
+  },
+  {
+   "source": "Fire King Courtier Ulcanix",
+   "target": "Fire King High Avatar Kirin",
+   "weight": 0.7695
+  },
+  {
+   "source": "Fire King Courtier Ulcanix",
+   "target": "Fire King Island",
+   "weight": 0.6994
+  },
+  {
+   "source": "Fire King Courtier Ulcanix",
+   "target": "Fire King Sanctuary",
+   "weight": 0.6414
+  },
+  {
+   "source": "Fire King Courtier Ulcanix",
+   "target": "Fire King Sky Burn",
+   "weight": 0.5744
+  },
+  {
+   "source": "Fire King Courtier Ulcanix",
+   "target": "Jurrac Megalo",
+   "weight": 0.6561
+  },
+  {
+   "source": "Fire King Courtier Ulcanix",
+   "target": "Legendary Fire King Ponix",
+   "weight": 0.8897
+  },
+  {
+   "source": "Fire King Courtier Ulcanix",
+   "target": "Sacred Fire King Garunix",
+   "weight": 0.8826
+  },
+  {
+   "source": "Fire King High Avatar Kirin",
+   "target": "Fire King Island",
+   "weight": 0.7448
+  },
+  {
+   "source": "Fire King High Avatar Kirin",
+   "target": "Fire King Sanctuary",
+   "weight": 0.6438
+  },
+  {
+   "source": "Fire King High Avatar Kirin",
+   "target": "Fire King Sky Burn",
+   "weight": 0.524
+  },
+  {
+   "source": "Fire King High Avatar Kirin",
+   "target": "Jurrac Megalo",
+   "weight": 0.5233
+  },
+  {
+   "source": "Fire King High Avatar Kirin",
+   "target": "Legendary Fire King Ponix",
+   "weight": 0.8716
+  },
+  {
+   "source": "Fire King High Avatar Kirin",
+   "target": "Sacred Fire King Garunix",
+   "weight": 0.8552
+  },
+  {
+   "source": "Fire King Island",
+   "target": "Fire King Sanctuary",
+   "weight": 0.7891
+  },
+  {
+   "source": "Fire King Island",
+   "target": "Fire King Sky Burn",
+   "weight": 0.7634
+  },
+  {
+   "source": "Fire King Island",
+   "target": "Jurrac Megalo",
+   "weight": 0.6179
+  },
+  {
+   "source": "Fire King Island",
+   "target": "Legendary Fire King Ponix",
+   "weight": 0.823
+  },
+  {
+   "source": "Fire King Island",
+   "target": "Sacred Fire King Garunix",
+   "weight": 0.8198
+  },
+  {
+   "source": "Fire King Sanctuary",
+   "target": "Fire King Sky Burn",
+   "weight": 0.8573
+  },
+  {
+   "source": "Fire King Sanctuary",
+   "target": "Jurrac Megalo",
+   "weight": 0.4857
+  },
+  {
+   "source": "Fire King Sanctuary",
+   "target": "Legendary Fire King Ponix",
+   "weight": 0.7307
+  },
+  {
+   "source": "Fire King Sanctuary",
+   "target": "Sacred Fire King Garunix",
+   "weight": 0.7391
+  },
+  {
+   "source": "Fire King Sky Burn",
+   "target": "Jurrac Megalo",
+   "weight": 0.4736
+  },
+  {
+   "source": "Fire King Sky Burn",
+   "target": "Legendary Fire King Ponix",
+   "weight": 0.6446
+  },
+  {
+   "source": "Fire King Sky Burn",
+   "target": "Sacred Fire King Garunix",
+   "weight": 0.6547
+  },
+  {
+   "source": "Futsu no Mitama no Mitsurugi",
+   "target": "Mitsurugi Great Purification",
+   "weight": 0.8758
+  },
+  {
+   "source": "Futsu no Mitama no Mitsurugi",
+   "target": "Mitsurugi Mirror",
+   "weight": 0.8538
+  },
+  {
+   "source": "Futsu no Mitama no Mitsurugi",
+   "target": "Mitsurugi Ritual",
+   "weight": 0.4825
+  },
+  {
+   "source": "Futsu no Mitama no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Aramasa",
+   "weight": 0.5223
+  },
+  {
+   "source": "Futsu no Mitama no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Kusanagi",
+   "weight": 0.9031
+  },
+  {
+   "source": "Futsu no Mitama no Mitsurugi",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.813
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementoal Tecuhtlica - Combined Creation",
+   "weight": 0.4383
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementomictlan",
+   "weight": 0.4382
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Akihiron",
+   "weight": 0.439
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Angwitch",
+   "weight": 0.5156
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Bone Party",
+   "weight": 0.5042
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Dark Blade",
+   "weight": 0.4669
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Fusion",
+   "weight": 0.5078
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.4375
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Goblin",
+   "weight": 0.6242
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Mace",
+   "weight": 0.4386
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.5133
+  },
+  {
+   "source": "Goblin Biker Grand Breakout",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.5102
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Guiding Quem, the Virtuous",
+   "weight": 0.2964
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.1823
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Maliss C MTP-07",
+   "weight": 0.6134
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Maliss C TB-11",
+   "weight": 0.5462
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Maliss P Chessy Cat",
+   "weight": 0.4315
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Maliss P Dormouse",
+   "weight": 0.5513
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Maliss P March Hare",
+   "weight": 0.4183
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Maliss P White Rabbit",
+   "weight": 0.4255
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Maliss in Underground",
+   "weight": 0.4205
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.3354
+  },
+  {
+   "source": "Gold Sarcophagus",
+   "target": "Wizard @Ignister",
+   "weight": 0.5479
+  },
+  {
+   "source": "Grain Blitzclique",
+   "target": "Surge Blitzclique",
+   "weight": 0.995
+  },
+  {
+   "source": "Guiding Quem, the Virtuous",
+   "target": "Incredible Ecclesia, the Virtuous",
+   "weight": 0.4334
+  },
+  {
+   "source": "Guiding Quem, the Virtuous",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.674
+  },
+  {
+   "source": "Incredible Ecclesia, the Virtuous",
+   "target": "Rahu Dracotail",
+   "weight": 0.2083
+  },
+  {
+   "source": "Incredible Ecclesia, the Virtuous",
+   "target": "Tri-Brigade Mercourier",
+   "weight": 0.2822
+  },
+  {
+   "source": "Instant Fusion",
+   "target": "Once Upon a Fairy Tail",
+   "weight": 0.7257
+  },
+  {
+   "source": "Instant Fusion",
+   "target": "Regulus, the Prince of Endymion",
+   "weight": 0.4427
+  },
+  {
+   "source": "Instant Fusion",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.7116
+  },
+  {
+   "source": "Instant Fusion",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.2341
+  },
+  {
+   "source": "Instant Fusion",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.355
+  },
+  {
+   "source": "Instant Fusion",
+   "target": "Witchcrafter Genni",
+   "weight": 0.4495
+  },
+  {
+   "source": "Instant Fusion",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.3804
+  },
+  {
+   "source": "Jurrac Megalo",
+   "target": "Legendary Fire King Ponix",
+   "weight": 0.702
+  },
+  {
+   "source": "Jurrac Megalo",
+   "target": "Sacred Fire King Garunix",
+   "weight": 0.7208
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "K9-17 Izuna",
+   "weight": 0.3105
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "K9-66a Jokul",
+   "weight": 0.2906
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "K9-66b Lantern",
+   "weight": 0.5998
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "K9-ØØ Lupis",
+   "weight": 0.4631
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Stake your Soul!",
+   "weight": 0.2638
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul Caesar Valius",
+   "weight": 0.2953
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.2971
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.2538
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.2987
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.3085
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.1634
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.2696
+  },
+  {
+   "source": "K9-04 Noroi",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.2977
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "K9-66a Jokul",
+   "weight": 0.7487
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "K9-66b Lantern",
+   "weight": 0.5038
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "K9-ØØ Lupis",
+   "weight": 0.5162
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Stake your Soul!",
+   "weight": 0.5634
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul Caesar Valius",
+   "weight": 0.2681
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.6033
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.4553
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.5903
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.5917
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.5027
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.2437
+  },
+  {
+   "source": "K9-17 Izuna",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.2664
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "K9-66b Lantern",
+   "weight": 0.5173
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "K9-ØØ Lupis",
+   "weight": 0.4901
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Stake your Soul!",
+   "weight": 0.5466
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul Caesar Valius",
+   "weight": 0.3245
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.5962
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.5138
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.6033
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.5943
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.6146
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.2906
+  },
+  {
+   "source": "K9-66a Jokul",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.3213
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "K9-ØØ Lupis",
+   "weight": 0.6965
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Stake your Soul!",
+   "weight": 0.4631
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul Caesar Valius",
+   "weight": 0.4195
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.4539
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.465
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.4471
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.4617
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.3621
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.405
+  },
+  {
+   "source": "K9-66b Lantern",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.4201
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Stake your Soul!",
+   "weight": 0.3875
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul Caesar Valius",
+   "weight": 0.5153
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.3897
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.4549
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.3896
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.3958
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.3988
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.4875
+  },
+  {
+   "source": "K9-ØØ Lupis",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.5197
+  },
+  {
+   "source": "Ketu Dracotail",
+   "target": "Rahu Dracotail",
+   "weight": 0.6691
+  },
+  {
+   "source": "Kewl Tune Cue",
+   "target": "Kewl Tune Mix",
+   "weight": 0.9362
+  },
+  {
+   "source": "Kewl Tune Cue",
+   "target": "Kewl Tune Reco",
+   "weight": 0.9896
+  },
+  {
+   "source": "Kewl Tune Cue",
+   "target": "Kewl Tune Rotary",
+   "weight": 0.8832
+  },
+  {
+   "source": "Kewl Tune Cue",
+   "target": "Kewl Tune Synchro",
+   "weight": 0.9727
+  },
+  {
+   "source": "Kewl Tune Cue",
+   "target": "Synchro Overtake",
+   "weight": 0.7667
+  },
+  {
+   "source": "Kewl Tune Mix",
+   "target": "Kewl Tune Reco",
+   "weight": 0.9355
+  },
+  {
+   "source": "Kewl Tune Mix",
+   "target": "Kewl Tune Rotary",
+   "weight": 0.8324
+  },
+  {
+   "source": "Kewl Tune Mix",
+   "target": "Kewl Tune Synchro",
+   "weight": 0.9144
+  },
+  {
+   "source": "Kewl Tune Mix",
+   "target": "Synchro Overtake",
+   "weight": 0.7748
+  },
+  {
+   "source": "Kewl Tune Reco",
+   "target": "Kewl Tune Rotary",
+   "weight": 0.8792
+  },
+  {
+   "source": "Kewl Tune Reco",
+   "target": "Kewl Tune Synchro",
+   "weight": 0.969
+  },
+  {
+   "source": "Kewl Tune Reco",
+   "target": "Synchro Overtake",
+   "weight": 0.7652
+  },
+  {
+   "source": "Kewl Tune Rotary",
+   "target": "Kewl Tune Synchro",
+   "weight": 0.9509
+  },
+  {
+   "source": "Kewl Tune Rotary",
+   "target": "Synchro Overtake",
+   "weight": 0.8179
+  },
+  {
+   "source": "Kewl Tune Synchro",
+   "target": "Synchro Overtake",
+   "weight": 0.8251
+  },
+  {
+   "source": "Labrynth Chandraglier",
+   "target": "Labrynth Stovie Torbie",
+   "weight": 0.9424
+  },
+  {
+   "source": "Labrynth Chandraglier",
+   "target": "Welcome Labrynth",
+   "weight": 0.6116
+  },
+  {
+   "source": "Labrynth Stovie Torbie",
+   "target": "Welcome Labrynth",
+   "weight": 0.6338
+  },
+  {
+   "source": "Legendary Fire King Ponix",
+   "target": "Sacred Fire King Garunix",
+   "weight": 0.9833
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Black Sheep",
+   "weight": 0.9075
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Fusion",
+   "weight": 0.5137
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Gold Leo",
+   "weight": 0.9164
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Kaleido Chick",
+   "weight": 0.9094
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Masquerade",
+   "weight": 0.9302
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Silver Hound",
+   "weight": 0.677
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Tiger",
+   "weight": 0.5306
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Wolf",
+   "weight": 0.5519
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.55
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Polymerization",
+   "weight": 0.3953
+  },
+  {
+   "source": "Luna Light Perfume",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.4336
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Fusion",
+   "weight": 0.4781
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Gold Leo",
+   "weight": 0.9266
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Kaleido Chick",
+   "weight": 0.8936
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Masquerade",
+   "weight": 0.9313
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Silver Hound",
+   "weight": 0.7009
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Tiger",
+   "weight": 0.4975
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Wolf",
+   "weight": 0.5085
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.5471
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Polymerization",
+   "weight": 0.4056
+  },
+  {
+   "source": "Lunalight Black Sheep",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.4346
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Lunalight Gold Leo",
+   "weight": 0.421
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Lunalight Kaleido Chick",
+   "weight": 0.6371
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Lunalight Masquerade",
+   "weight": 0.4433
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Lunalight Silver Hound",
+   "weight": 0.6867
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Lunalight Tiger",
+   "weight": 0.937
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Lunalight Wolf",
+   "weight": 0.9318
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.8317
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Polymerization",
+   "weight": 0.3467
+  },
+  {
+   "source": "Lunalight Fusion",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.282
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Lunalight Kaleido Chick",
+   "weight": 0.8579
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Lunalight Masquerade",
+   "weight": 0.9679
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Lunalight Silver Hound",
+   "weight": 0.6568
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Lunalight Tiger",
+   "weight": 0.4407
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Lunalight Wolf",
+   "weight": 0.4495
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.4739
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Polymerization",
+   "weight": 0.3727
+  },
+  {
+   "source": "Lunalight Gold Leo",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.4601
+  },
+  {
+   "source": "Lunalight Kaleido Chick",
+   "target": "Lunalight Masquerade",
+   "weight": 0.873
+  },
+  {
+   "source": "Lunalight Kaleido Chick",
+   "target": "Lunalight Silver Hound",
+   "weight": 0.8444
+  },
+  {
+   "source": "Lunalight Kaleido Chick",
+   "target": "Lunalight Tiger",
+   "weight": 0.6689
+  },
+  {
+   "source": "Lunalight Kaleido Chick",
+   "target": "Lunalight Wolf",
+   "weight": 0.6757
+  },
+  {
+   "source": "Lunalight Kaleido Chick",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.6864
+  },
+  {
+   "source": "Lunalight Kaleido Chick",
+   "target": "Polymerization",
+   "weight": 0.4404
+  },
+  {
+   "source": "Lunalight Kaleido Chick",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.4596
+  },
+  {
+   "source": "Lunalight Masquerade",
+   "target": "Lunalight Silver Hound",
+   "weight": 0.6581
+  },
+  {
+   "source": "Lunalight Masquerade",
+   "target": "Lunalight Tiger",
+   "weight": 0.466
+  },
+  {
+   "source": "Lunalight Masquerade",
+   "target": "Lunalight Wolf",
+   "weight": 0.476
+  },
+  {
+   "source": "Lunalight Masquerade",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.5016
+  },
+  {
+   "source": "Lunalight Masquerade",
+   "target": "Polymerization",
+   "weight": 0.3849
+  },
+  {
+   "source": "Lunalight Masquerade",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.4286
+  },
+  {
+   "source": "Lunalight Silver Hound",
+   "target": "Lunalight Tiger",
+   "weight": 0.7241
+  },
+  {
+   "source": "Lunalight Silver Hound",
+   "target": "Lunalight Wolf",
+   "weight": 0.6984
+  },
+  {
+   "source": "Lunalight Silver Hound",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.8111
+  },
+  {
+   "source": "Lunalight Silver Hound",
+   "target": "Polymerization",
+   "weight": 0.4341
+  },
+  {
+   "source": "Lunalight Silver Hound",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.4197
+  },
+  {
+   "source": "Lunalight Tiger",
+   "target": "Lunalight Wolf",
+   "weight": 0.9328
+  },
+  {
+   "source": "Lunalight Tiger",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.8291
+  },
+  {
+   "source": "Lunalight Tiger",
+   "target": "Polymerization",
+   "weight": 0.3598
+  },
+  {
+   "source": "Lunalight Tiger",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.2928
+  },
+  {
+   "source": "Lunalight Wolf",
+   "target": "Lunalight Yellow Marten",
+   "weight": 0.82
+  },
+  {
+   "source": "Lunalight Wolf",
+   "target": "Polymerization",
+   "weight": 0.3575
+  },
+  {
+   "source": "Lunalight Wolf",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.2924
+  },
+  {
+   "source": "Lunalight Yellow Marten",
+   "target": "Polymerization",
+   "weight": 0.4003
+  },
+  {
+   "source": "Lunalight Yellow Marten",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.3031
+  },
+  {
+   "source": "Maiden of White",
+   "target": "Majesty of the White Dragons",
+   "weight": 0.4309
+  },
+  {
+   "source": "Maiden of White",
+   "target": "Mausoleum of White",
+   "weight": 0.4363
+  },
+  {
+   "source": "Maiden of White",
+   "target": "Roar of the Blue-Eyed Dragons",
+   "weight": 0.446
+  },
+  {
+   "source": "Maiden of White",
+   "target": "Sage with Eyes of Blue",
+   "weight": 0.9945
+  },
+  {
+   "source": "Maiden of White",
+   "target": "True Light",
+   "weight": 0.4366
+  },
+  {
+   "source": "Maiden of White",
+   "target": "Wishes for Eyes of Blue",
+   "weight": 0.8684
+  },
+  {
+   "source": "Majesty of the White Dragons",
+   "target": "Mausoleum of White",
+   "weight": 0.9841
+  },
+  {
+   "source": "Majesty of the White Dragons",
+   "target": "Roar of the Blue-Eyed Dragons",
+   "weight": 0.9553
+  },
+  {
+   "source": "Majesty of the White Dragons",
+   "target": "Sage with Eyes of Blue",
+   "weight": 0.4312
+  },
+  {
+   "source": "Majesty of the White Dragons",
+   "target": "True Light",
+   "weight": 0.9879
+  },
+  {
+   "source": "Majesty of the White Dragons",
+   "target": "Wishes for Eyes of Blue",
+   "weight": 0.4822
+  },
+  {
+   "source": "Maliss C MTP-07",
+   "target": "Maliss C TB-11",
+   "weight": 0.8647
+  },
+  {
+   "source": "Maliss C MTP-07",
+   "target": "Maliss P Chessy Cat",
+   "weight": 0.4789
+  },
+  {
+   "source": "Maliss C MTP-07",
+   "target": "Maliss P Dormouse",
+   "weight": 0.7221
+  },
+  {
+   "source": "Maliss C MTP-07",
+   "target": "Maliss P March Hare",
+   "weight": 0.4853
+  },
+  {
+   "source": "Maliss C MTP-07",
+   "target": "Maliss P White Rabbit",
+   "weight": 0.4687
+  },
+  {
+   "source": "Maliss C MTP-07",
+   "target": "Maliss in Underground",
+   "weight": 0.4686
+  },
+  {
+   "source": "Maliss C MTP-07",
+   "target": "Wizard @Ignister",
+   "weight": 0.8851
+  },
+  {
+   "source": "Maliss C TB-11",
+   "target": "Maliss P Chessy Cat",
+   "weight": 0.3996
+  },
+  {
+   "source": "Maliss C TB-11",
+   "target": "Maliss P Dormouse",
+   "weight": 0.6087
+  },
+  {
+   "source": "Maliss C TB-11",
+   "target": "Maliss P March Hare",
+   "weight": 0.3952
+  },
+  {
+   "source": "Maliss C TB-11",
+   "target": "Maliss P White Rabbit",
+   "weight": 0.4116
+  },
+  {
+   "source": "Maliss C TB-11",
+   "target": "Maliss in Underground",
+   "weight": 0.4009
+  },
+  {
+   "source": "Maliss C TB-11",
+   "target": "Wizard @Ignister",
+   "weight": 0.7868
+  },
+  {
+   "source": "Maliss P Chessy Cat",
+   "target": "Maliss P Dormouse",
+   "weight": 0.5424
+  },
+  {
+   "source": "Maliss P Chessy Cat",
+   "target": "Maliss P March Hare",
+   "weight": 0.7776
+  },
+  {
+   "source": "Maliss P Chessy Cat",
+   "target": "Maliss P White Rabbit",
+   "weight": 0.8221
+  },
+  {
+   "source": "Maliss P Chessy Cat",
+   "target": "Maliss in Underground",
+   "weight": 0.8665
+  },
+  {
+   "source": "Maliss P Chessy Cat",
+   "target": "Wizard @Ignister",
+   "weight": 0.4308
+  },
+  {
+   "source": "Maliss P Dormouse",
+   "target": "Maliss P March Hare",
+   "weight": 0.4878
+  },
+  {
+   "source": "Maliss P Dormouse",
+   "target": "Maliss P White Rabbit",
+   "weight": 0.5763
+  },
+  {
+   "source": "Maliss P Dormouse",
+   "target": "Maliss in Underground",
+   "weight": 0.5685
+  },
+  {
+   "source": "Maliss P Dormouse",
+   "target": "Wizard @Ignister",
+   "weight": 0.534
+  },
+  {
+   "source": "Maliss P March Hare",
+   "target": "Maliss P White Rabbit",
+   "weight": 0.6763
+  },
+  {
+   "source": "Maliss P March Hare",
+   "target": "Maliss in Underground",
+   "weight": 0.725
+  },
+  {
+   "source": "Maliss P March Hare",
+   "target": "Wizard @Ignister",
+   "weight": 0.4798
+  },
+  {
+   "source": "Maliss P White Rabbit",
+   "target": "Maliss in Underground",
+   "weight": 0.9666
+  },
+  {
+   "source": "Maliss P White Rabbit",
+   "target": "Wizard @Ignister",
+   "weight": 0.4079
+  },
+  {
+   "source": "Maliss in Underground",
+   "target": "Wizard @Ignister",
+   "weight": 0.403
+  },
+  {
+   "source": "Mausoleum of White",
+   "target": "Roar of the Blue-Eyed Dragons",
+   "weight": 0.9745
+  },
+  {
+   "source": "Mausoleum of White",
+   "target": "Sage with Eyes of Blue",
+   "weight": 0.4367
+  },
+  {
+   "source": "Mausoleum of White",
+   "target": "True Light",
+   "weight": 0.9959
+  },
+  {
+   "source": "Mausoleum of White",
+   "target": "Wishes for Eyes of Blue",
+   "weight": 0.4898
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementomictlan",
+   "weight": 0.9986
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Akihiron",
+   "weight": 0.9826
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Angwitch",
+   "weight": 0.4385
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Bone Party",
+   "weight": 0.4292
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Dark Blade",
+   "weight": 0.4579
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Fusion",
+   "weight": 0.4355
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.9955
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Goblin",
+   "weight": 0.7853
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Mace",
+   "weight": 0.9994
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.8231
+  },
+  {
+   "source": "Mementoal Tecuhtlica - Combined Creation",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.4343
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Akihiron",
+   "weight": 0.9828
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Angwitch",
+   "weight": 0.4381
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Bone Party",
+   "weight": 0.4288
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Dark Blade",
+   "weight": 0.4575
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Fusion",
+   "weight": 0.4351
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.9941
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Goblin",
+   "weight": 0.7844
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Mace",
+   "weight": 0.998
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.8225
+  },
+  {
+   "source": "Mementomictlan",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.434
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Angwitch",
+   "weight": 0.429
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Bone Party",
+   "weight": 0.4196
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Dark Blade",
+   "weight": 0.4464
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Fusion",
+   "weight": 0.4273
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.9808
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Goblin",
+   "weight": 0.772
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Mace",
+   "weight": 0.982
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.8075
+  },
+  {
+   "source": "Mementotlan Akihiron",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.4245
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Bone Party",
+   "weight": 0.9893
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Dark Blade",
+   "weight": 0.949
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Fusion",
+   "weight": 0.9832
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.4361
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Goblin",
+   "weight": 0.5895
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Mace",
+   "weight": 0.4387
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.5435
+  },
+  {
+   "source": "Mementotlan Angwitch",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.9957
+  },
+  {
+   "source": "Mementotlan Bone Party",
+   "target": "Mementotlan Dark Blade",
+   "weight": 0.9435
+  },
+  {
+   "source": "Mementotlan Bone Party",
+   "target": "Mementotlan Fusion",
+   "weight": 0.9924
+  },
+  {
+   "source": "Mementotlan Bone Party",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.4267
+  },
+  {
+   "source": "Mementotlan Bone Party",
+   "target": "Mementotlan Goblin",
+   "weight": 0.5887
+  },
+  {
+   "source": "Mementotlan Bone Party",
+   "target": "Mementotlan Mace",
+   "weight": 0.4294
+  },
+  {
+   "source": "Mementotlan Bone Party",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.5295
+  },
+  {
+   "source": "Mementotlan Bone Party",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.9936
+  },
+  {
+   "source": "Mementotlan Dark Blade",
+   "target": "Mementotlan Fusion",
+   "weight": 0.9412
+  },
+  {
+   "source": "Mementotlan Dark Blade",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.4549
+  },
+  {
+   "source": "Mementotlan Dark Blade",
+   "target": "Mementotlan Goblin",
+   "weight": 0.566
+  },
+  {
+   "source": "Mementotlan Dark Blade",
+   "target": "Mementotlan Mace",
+   "weight": 0.4582
+  },
+  {
+   "source": "Mementotlan Dark Blade",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.553
+  },
+  {
+   "source": "Mementotlan Dark Blade",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.9478
+  },
+  {
+   "source": "Mementotlan Fusion",
+   "target": "Mementotlan Ghattic",
+   "weight": 0.4338
+  },
+  {
+   "source": "Mementotlan Fusion",
+   "target": "Mementotlan Goblin",
+   "weight": 0.595
+  },
+  {
+   "source": "Mementotlan Fusion",
+   "target": "Mementotlan Mace",
+   "weight": 0.4357
+  },
+  {
+   "source": "Mementotlan Fusion",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.539
+  },
+  {
+   "source": "Mementotlan Fusion",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.9868
+  },
+  {
+   "source": "Mementotlan Ghattic",
+   "target": "Mementotlan Goblin",
+   "weight": 0.7813
+  },
+  {
+   "source": "Mementotlan Ghattic",
+   "target": "Mementotlan Mace",
+   "weight": 0.9949
+  },
+  {
+   "source": "Mementotlan Ghattic",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.8147
+  },
+  {
+   "source": "Mementotlan Ghattic",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.4318
+  },
+  {
+   "source": "Mementotlan Goblin",
+   "target": "Mementotlan Mace",
+   "weight": 0.7851
+  },
+  {
+   "source": "Mementotlan Goblin",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.8296
+  },
+  {
+   "source": "Mementotlan Goblin",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.5869
+  },
+  {
+   "source": "Mementotlan Mace",
+   "target": "Mementotlan Shleepy",
+   "weight": 0.8236
+  },
+  {
+   "source": "Mementotlan Mace",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.4346
+  },
+  {
+   "source": "Mementotlan Shleepy",
+   "target": "Mementotlan Tatsunootoshigo",
+   "weight": 0.5382
+  },
+  {
+   "source": "Mermail Abysspike",
+   "target": "Mermail Abyssteus",
+   "weight": 0.7816
+  },
+  {
+   "source": "Mermail Abysspike",
+   "target": "Mermail Shadow Squad",
+   "weight": 0.8117
+  },
+  {
+   "source": "Mermail Abysspike",
+   "target": "Moulinglacia the Elemental Lord",
+   "weight": 0.447
+  },
+  {
+   "source": "Mermail Abysspike",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.7611
+  },
+  {
+   "source": "Mermail Abysspike",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.821
+  },
+  {
+   "source": "Mermail Abyssteus",
+   "target": "Mermail Shadow Squad",
+   "weight": 0.8889
+  },
+  {
+   "source": "Mermail Abyssteus",
+   "target": "Moulinglacia the Elemental Lord",
+   "weight": 0.3625
+  },
+  {
+   "source": "Mermail Abyssteus",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.825
+  },
+  {
+   "source": "Mermail Abyssteus",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.8689
+  },
+  {
+   "source": "Mermail Shadow Squad",
+   "target": "Moulinglacia the Elemental Lord",
+   "weight": 0.3576
+  },
+  {
+   "source": "Mermail Shadow Squad",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.9474
+  },
+  {
+   "source": "Mermail Shadow Squad",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.9086
+  },
+  {
+   "source": "Mitsurugi Great Purification",
+   "target": "Mitsurugi Mirror",
+   "weight": 0.8349
+  },
+  {
+   "source": "Mitsurugi Great Purification",
+   "target": "Mitsurugi Ritual",
+   "weight": 0.4572
+  },
+  {
+   "source": "Mitsurugi Great Purification",
+   "target": "Mitsurugi no Mikoto, Aramasa",
+   "weight": 0.4959
+  },
+  {
+   "source": "Mitsurugi Great Purification",
+   "target": "Mitsurugi no Mikoto, Kusanagi",
+   "weight": 0.8353
+  },
+  {
+   "source": "Mitsurugi Great Purification",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.7993
+  },
+  {
+   "source": "Mitsurugi Mirror",
+   "target": "Mitsurugi Ritual",
+   "weight": 0.507
+  },
+  {
+   "source": "Mitsurugi Mirror",
+   "target": "Mitsurugi no Mikoto, Aramasa",
+   "weight": 0.5447
+  },
+  {
+   "source": "Mitsurugi Mirror",
+   "target": "Mitsurugi no Mikoto, Kusanagi",
+   "weight": 0.8466
+  },
+  {
+   "source": "Mitsurugi Mirror",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.887
+  },
+  {
+   "source": "Mitsurugi Ritual",
+   "target": "Mitsurugi no Mikoto, Aramasa",
+   "weight": 0.8885
+  },
+  {
+   "source": "Mitsurugi Ritual",
+   "target": "Mitsurugi no Mikoto, Kusanagi",
+   "weight": 0.4957
+  },
+  {
+   "source": "Mitsurugi Ritual",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.5323
+  },
+  {
+   "source": "Mitsurugi no Mikoto, Aramasa",
+   "target": "Mitsurugi no Mikoto, Kusanagi",
+   "weight": 0.5308
+  },
+  {
+   "source": "Mitsurugi no Mikoto, Aramasa",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.5526
+  },
+  {
+   "source": "Mitsurugi no Mikoto, Kusanagi",
+   "target": "Mitsurugi no Mikoto, Saji",
+   "weight": 0.88
+  },
+  {
+   "source": "Moulinglacia the Elemental Lord",
+   "target": "Neptabyss, the Atlantean Prince",
+   "weight": 0.3342
+  },
+  {
+   "source": "Moulinglacia the Elemental Lord",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.3995
+  },
+  {
+   "source": "Neptabyss, the Atlantean Prince",
+   "target": "Poseidra, the Storming Atlantean",
+   "weight": 0.8966
+  },
+  {
+   "source": "Once Upon a Fairy Tail",
+   "target": "Regulus, the Prince of Endymion",
+   "weight": 0.4909
+  },
+  {
+   "source": "Once Upon a Fairy Tail",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.8928
+  },
+  {
+   "source": "Once Upon a Fairy Tail",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.2466
+  },
+  {
+   "source": "Once Upon a Fairy Tail",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.3957
+  },
+  {
+   "source": "Once Upon a Fairy Tail",
+   "target": "Witchcrafter Genni",
+   "weight": 0.5399
+  },
+  {
+   "source": "Once Upon a Fairy Tail",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.4658
+  },
+  {
+   "source": "Pantheism of the Monarchs",
+   "target": "Spell Card \"Soul Exchange\"",
+   "weight": 0.5278
+  },
+  {
+   "source": "Pantheism of the Monarchs",
+   "target": "Tessera the Primal Squire",
+   "weight": 0.963
+  },
+  {
+   "source": "Pantheism of the Monarchs",
+   "target": "The Monarchs Masterplan",
+   "weight": 1.0
+  },
+  {
+   "source": "Pantheism of the Monarchs",
+   "target": "The Monarchs Revolt",
+   "weight": 1.0
+  },
+  {
+   "source": "Pantheism of the Monarchs",
+   "target": "The Prime Monarch",
+   "weight": 0.4286
+  },
+  {
+   "source": "Polymerization",
+   "target": "Tri-Brigade Fraktall",
+   "weight": 0.2329
+  },
+  {
+   "source": "R.B. Ga10 Cutter",
+   "target": "R.B. Ga10 Driller",
+   "weight": 0.9977
+  },
+  {
+   "source": "R.B. Ga10 Cutter",
+   "target": "R.B. Ga10 Pile Bunker",
+   "weight": 0.9423
+  },
+  {
+   "source": "R.B. Ga10 Cutter",
+   "target": "R.B. Lambda Blade",
+   "weight": 0.9468
+  },
+  {
+   "source": "R.B. Ga10 Cutter",
+   "target": "R.B. Lambda Cannon",
+   "weight": 0.9805
+  },
+  {
+   "source": "R.B. Ga10 Cutter",
+   "target": "R.B. Last Stand",
+   "weight": 0.2625
+  },
+  {
+   "source": "R.B. Ga10 Cutter",
+   "target": "R.B. Next Phase",
+   "weight": 0.9727
+  },
+  {
+   "source": "R.B. Ga10 Cutter",
+   "target": "R.B. VALCan Rocket",
+   "weight": 0.9824
+  },
+  {
+   "source": "R.B. Ga10 Driller",
+   "target": "R.B. Ga10 Pile Bunker",
+   "weight": 0.9445
+  },
+  {
+   "source": "R.B. Ga10 Driller",
+   "target": "R.B. Lambda Blade",
+   "weight": 0.949
+  },
+  {
+   "source": "R.B. Ga10 Driller",
+   "target": "R.B. Lambda Cannon",
+   "weight": 0.9828
+  },
+  {
+   "source": "R.B. Ga10 Driller",
+   "target": "R.B. Last Stand",
+   "weight": 0.2631
+  },
+  {
+   "source": "R.B. Ga10 Driller",
+   "target": "R.B. Next Phase",
+   "weight": 0.9749
+  },
+  {
+   "source": "R.B. Ga10 Driller",
+   "target": "R.B. VALCan Rocket",
+   "weight": 0.9846
+  },
+  {
+   "source": "R.B. Ga10 Pile Bunker",
+   "target": "R.B. Lambda Blade",
+   "weight": 0.9529
+  },
+  {
+   "source": "R.B. Ga10 Pile Bunker",
+   "target": "R.B. Lambda Cannon",
+   "weight": 0.9299
+  },
+  {
+   "source": "R.B. Ga10 Pile Bunker",
+   "target": "R.B. Last Stand",
+   "weight": 0.2575
+  },
+  {
+   "source": "R.B. Ga10 Pile Bunker",
+   "target": "R.B. Next Phase",
+   "weight": 0.9221
+  },
+  {
+   "source": "R.B. Ga10 Pile Bunker",
+   "target": "R.B. VALCan Rocket",
+   "weight": 0.9416
+  },
+  {
+   "source": "R.B. Lambda Blade",
+   "target": "R.B. Lambda Cannon",
+   "weight": 0.9655
+  },
+  {
+   "source": "R.B. Lambda Blade",
+   "target": "R.B. Last Stand",
+   "weight": 0.2773
+  },
+  {
+   "source": "R.B. Lambda Blade",
+   "target": "R.B. Next Phase",
+   "weight": 0.9575
+  },
+  {
+   "source": "R.B. Lambda Blade",
+   "target": "R.B. VALCan Rocket",
+   "weight": 0.9336
+  },
+  {
+   "source": "R.B. Lambda Cannon",
+   "target": "R.B. Last Stand",
+   "weight": 0.2677
+  },
+  {
+   "source": "R.B. Lambda Cannon",
+   "target": "R.B. Next Phase",
+   "weight": 0.9919
+  },
+  {
+   "source": "R.B. Lambda Cannon",
+   "target": "R.B. VALCan Rocket",
+   "weight": 0.9676
+  },
+  {
+   "source": "R.B. Last Stand",
+   "target": "R.B. Next Phase",
+   "weight": 0.2597
+  },
+  {
+   "source": "R.B. Last Stand",
+   "target": "R.B. VALCan Rocket",
+   "weight": 0.2491
+  },
+  {
+   "source": "R.B. Next Phase",
+   "target": "R.B. VALCan Rocket",
+   "weight": 0.9752
+  },
+  {
+   "source": "Radiant Typhoon Ascendance",
+   "target": "Radiant Typhoon Eldam",
+   "weight": 0.5639
+  },
+  {
+   "source": "Radiant Typhoon Ascendance",
+   "target": "Radiant Typhoon Fonix, the Great Flame",
+   "weight": 0.6134
+  },
+  {
+   "source": "Radiant Typhoon Ascendance",
+   "target": "Radiant Typhoon Krosea",
+   "weight": 0.6643
+  },
+  {
+   "source": "Radiant Typhoon Ascendance",
+   "target": "Radiant Typhoon Meghala",
+   "weight": 0.694
+  },
+  {
+   "source": "Radiant Typhoon Ascendance",
+   "target": "Radiant Typhoon Swen",
+   "weight": 0.5693
+  },
+  {
+   "source": "Radiant Typhoon Eldam",
+   "target": "Radiant Typhoon Fonix, the Great Flame",
+   "weight": 0.3392
+  },
+  {
+   "source": "Radiant Typhoon Eldam",
+   "target": "Radiant Typhoon Krosea",
+   "weight": 0.8443
+  },
+  {
+   "source": "Radiant Typhoon Eldam",
+   "target": "Radiant Typhoon Meghala",
+   "weight": 0.4234
+  },
+  {
+   "source": "Radiant Typhoon Eldam",
+   "target": "Radiant Typhoon Swen",
+   "weight": 0.9892
+  },
+  {
+   "source": "Radiant Typhoon Fonix, the Great Flame",
+   "target": "Radiant Typhoon Krosea",
+   "weight": 0.4204
+  },
+  {
+   "source": "Radiant Typhoon Fonix, the Great Flame",
+   "target": "Radiant Typhoon Meghala",
+   "weight": 0.7783
+  },
+  {
+   "source": "Radiant Typhoon Fonix, the Great Flame",
+   "target": "Radiant Typhoon Swen",
+   "weight": 0.3437
+  },
+  {
+   "source": "Radiant Typhoon Krosea",
+   "target": "Radiant Typhoon Meghala",
+   "weight": 0.514
+  },
+  {
+   "source": "Radiant Typhoon Krosea",
+   "target": "Radiant Typhoon Swen",
+   "weight": 0.8534
+  },
+  {
+   "source": "Radiant Typhoon Meghala",
+   "target": "Radiant Typhoon Swen",
+   "weight": 0.4291
+  },
+  {
+   "source": "Regulus, the Prince of Endymion",
+   "target": "Tails of the Fairy Tails",
+   "weight": 0.483
+  },
+  {
+   "source": "Regulus, the Prince of Endymion",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.4621
+  },
+  {
+   "source": "Regulus, the Prince of Endymion",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.4066
+  },
+  {
+   "source": "Regulus, the Prince of Endymion",
+   "target": "Witchcrafter Genni",
+   "weight": 0.3897
+  },
+  {
+   "source": "Regulus, the Prince of Endymion",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.3412
+  },
+  {
+   "source": "Roar of the Blue-Eyed Dragons",
+   "target": "Sage with Eyes of Blue",
+   "weight": 0.4462
+  },
+  {
+   "source": "Roar of the Blue-Eyed Dragons",
+   "target": "True Light",
+   "weight": 0.978
+  },
+  {
+   "source": "Roar of the Blue-Eyed Dragons",
+   "target": "Wishes for Eyes of Blue",
+   "weight": 0.5028
+  },
+  {
+   "source": "Rokket Caliber",
+   "target": "Triple Borrel Launch",
+   "weight": 0.5859
+  },
+  {
+   "source": "Sage with Eyes of Blue",
+   "target": "True Light",
+   "weight": 0.4368
+  },
+  {
+   "source": "Sage with Eyes of Blue",
+   "target": "Wishes for Eyes of Blue",
+   "weight": 0.8681
+  },
+  {
+   "source": "Salamangreat Roar",
+   "target": "Salamangreat Weasel",
+   "weight": 0.9771
+  },
+  {
+   "source": "Spell Card \"Soul Exchange\"",
+   "target": "Tessera the Primal Squire",
+   "weight": 0.5106
+  },
+  {
+   "source": "Spell Card \"Soul Exchange\"",
+   "target": "The Monarchs Masterplan",
+   "weight": 0.5278
+  },
+  {
+   "source": "Spell Card \"Soul Exchange\"",
+   "target": "The Monarchs Revolt",
+   "weight": 0.5278
+  },
+  {
+   "source": "Spell Card \"Soul Exchange\"",
+   "target": "The Prime Monarch",
+   "weight": 0.4377
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul Caesar Valius",
+   "weight": 0.4507
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.9513
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.7772
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.9262
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.9397
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.7862
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.4245
+  },
+  {
+   "source": "Stake your Soul!",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.4423
+  },
+  {
+   "source": "Tails of the Fairy Tails",
+   "target": "Verre Magic - Lacrima of Light",
+   "weight": 0.2439
+  },
+  {
+   "source": "Tails of the Fairy Tails",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.4127
+  },
+  {
+   "source": "Tails of the Fairy Tails",
+   "target": "Witchcrafter Genni",
+   "weight": 0.508
+  },
+  {
+   "source": "Tails of the Fairy Tails",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.3945
+  },
+  {
+   "source": "Tessera the Primal Squire",
+   "target": "The Monarchs Masterplan",
+   "weight": 0.963
+  },
+  {
+   "source": "Tessera the Primal Squire",
+   "target": "The Monarchs Revolt",
+   "weight": 0.963
+  },
+  {
+   "source": "Tessera the Primal Squire",
+   "target": "The Prime Monarch",
+   "weight": 0.467
+  },
+  {
+   "source": "The Monarchs Masterplan",
+   "target": "The Monarchs Revolt",
+   "weight": 1.0
+  },
+  {
+   "source": "The Monarchs Masterplan",
+   "target": "The Prime Monarch",
+   "weight": 0.4286
+  },
+  {
+   "source": "The Monarchs Revolt",
+   "target": "The Prime Monarch",
+   "weight": 0.4286
+  },
+  {
+   "source": "True Light",
+   "target": "Wishes for Eyes of Blue",
+   "weight": 0.4901
+  },
+  {
+   "source": "Vanquish Soul Caesar Valius",
+   "target": "Vanquish Soul Dr. Mad Love",
+   "weight": 0.441
+  },
+  {
+   "source": "Vanquish Soul Caesar Valius",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.6083
+  },
+  {
+   "source": "Vanquish Soul Caesar Valius",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.4411
+  },
+  {
+   "source": "Vanquish Soul Caesar Valius",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.4505
+  },
+  {
+   "source": "Vanquish Soul Caesar Valius",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.511
+  },
+  {
+   "source": "Vanquish Soul Caesar Valius",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.9159
+  },
+  {
+   "source": "Vanquish Soul Caesar Valius",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.9568
+  },
+  {
+   "source": "Vanquish Soul Dr. Mad Love",
+   "target": "Vanquish Soul Heavy Borger",
+   "weight": 0.7523
+  },
+  {
+   "source": "Vanquish Soul Dr. Mad Love",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.9738
+  },
+  {
+   "source": "Vanquish Soul Dr. Mad Love",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.9865
+  },
+  {
+   "source": "Vanquish Soul Dr. Mad Love",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.7531
+  },
+  {
+   "source": "Vanquish Soul Dr. Mad Love",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.3996
+  },
+  {
+   "source": "Vanquish Soul Dr. Mad Love",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.4341
+  },
+  {
+   "source": "Vanquish Soul Heavy Borger",
+   "target": "Vanquish Soul Hollie Sue",
+   "weight": 0.7497
+  },
+  {
+   "source": "Vanquish Soul Heavy Borger",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.7596
+  },
+  {
+   "source": "Vanquish Soul Heavy Borger",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.7934
+  },
+  {
+   "source": "Vanquish Soul Heavy Borger",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.562
+  },
+  {
+   "source": "Vanquish Soul Heavy Borger",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.6053
+  },
+  {
+   "source": "Vanquish Soul Hollie Sue",
+   "target": "Vanquish Soul Jiaolong",
+   "weight": 0.9817
+  },
+  {
+   "source": "Vanquish Soul Hollie Sue",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.7422
+  },
+  {
+   "source": "Vanquish Soul Hollie Sue",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.3989
+  },
+  {
+   "source": "Vanquish Soul Hollie Sue",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.4371
+  },
+  {
+   "source": "Vanquish Soul Jiaolong",
+   "target": "Vanquish Soul Razen",
+   "weight": 0.7398
+  },
+  {
+   "source": "Vanquish Soul Jiaolong",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.4066
+  },
+  {
+   "source": "Vanquish Soul Jiaolong",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.4427
+  },
+  {
+   "source": "Vanquish Soul Razen",
+   "target": "Vanquish Soul Snow Devil",
+   "weight": 0.4729
+  },
+  {
+   "source": "Vanquish Soul Razen",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.5006
+  },
+  {
+   "source": "Vanquish Soul Snow Devil",
+   "target": "Vanquish Soul, Start!",
+   "weight": 0.9241
+  },
+  {
+   "source": "Verre Magic - Lacrima of Light",
+   "target": "Verre, the Maid of Endymion",
+   "weight": 0.4404
+  },
+  {
+   "source": "Verre Magic - Lacrima of Light",
+   "target": "Witchcrafter Genni",
+   "weight": 0.419
+  },
+  {
+   "source": "Verre Magic - Lacrima of Light",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.1814
+  },
+  {
+   "source": "Verre, the Maid of Endymion",
+   "target": "Witchcrafter Genni",
+   "weight": 0.7654
+  },
+  {
+   "source": "Verre, the Maid of Endymion",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.2572
+  },
+  {
+   "source": "Witchcrafter Genni",
+   "target": "Zoroa, the Magistus of Flame",
+   "weight": 0.3334
+  }
+ ]
+}

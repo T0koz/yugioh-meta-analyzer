@@ -1,0 +1,607 @@
+{
+ "data": [
+  {
+   "archetype": "Elfnote",
+   "slug": "elfnote",
+   "tier": "T1",
+   "meta_score": 0.14976775494896888,
+   "share": 0.20707070707070707,
+   "decks": 82,
+   "trend": "Rising",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13597785.jpg"
+  },
+  {
+   "archetype": "Angelechy",
+   "slug": "angelechy",
+   "tier": "T1",
+   "meta_score": 0.13368374339547676,
+   "share": 0.16414141414141414,
+   "decks": 65,
+   "trend": "Rising",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55393975.jpg"
+  },
+  {
+   "archetype": "Radiant Typhoon",
+   "slug": "radiant-typhoon",
+   "tier": "T3",
+   "meta_score": 0.10995097985725691,
+   "share": 0.05808080808080808,
+   "decks": 23,
+   "trend": "Rising",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/20508881.jpg"
+  },
+  {
+   "archetype": "Artmage",
+   "slug": "artmage",
+   "tier": "T3",
+   "meta_score": 0.09479940983242018,
+   "share": 0.05555555555555555,
+   "decks": 22,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/74733322.jpg"
+  },
+  {
+   "archetype": "Dark Magician Chaos Ritual",
+   "slug": "dark-magician-chaos-ritual",
+   "tier": "T3",
+   "meta_score": 0.07444286120436786,
+   "share": 0.047979797979797977,
+   "decks": 19,
+   "trend": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/46986420.jpg"
+  },
+  {
+   "archetype": "Branded",
+   "slug": "branded",
+   "tier": "T3",
+   "meta_score": 0.06427102390775408,
+   "share": 0.04040404040404041,
+   "decks": 16,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/87746184.jpg"
+  },
+  {
+   "archetype": "Blitzclique",
+   "slug": "blitzclique",
+   "tier": "Rogue",
+   "meta_score": 0.06104332283610246,
+   "share": 0.027777777777777776,
+   "decks": 11,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/58916810.jpg"
+  },
+  {
+   "archetype": "Ars Magna Chaos Ritual",
+   "slug": "ars-magna-chaos-ritual",
+   "tier": "Rogue",
+   "meta_score": 0.06093936867726089,
+   "share": 0.025252525252525252,
+   "decks": 10,
+   "trend": "Rising",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/36270527.jpg"
+  },
+  {
+   "archetype": "Sacred Beast",
+   "slug": "sacred-beast",
+   "tier": "Rogue",
+   "meta_score": 0.08058229640253803,
+   "share": 0.022727272727272728,
+   "decks": 9,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/81034083.jpg"
+  },
+  {
+   "archetype": "Maliss",
+   "slug": "maliss",
+   "tier": "Rogue",
+   "meta_score": 0.07106690545187014,
+   "share": 0.022727272727272728,
+   "decks": 9,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/69272449.jpg"
+  },
+  {
+   "archetype": "Magistus Fairy Tail",
+   "slug": "magistus-fairy-tail",
+   "tier": "Rogue",
+   "meta_score": 0.05330017908890261,
+   "share": 0.022727272727272728,
+   "decks": 9,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/19144622.jpg"
+  },
+  {
+   "archetype": "Sky Striker",
+   "slug": "sky-striker",
+   "tier": "Rogue",
+   "meta_score": 0.04077954358702777,
+   "share": 0.022727272727272728,
+   "decks": 9,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/63166095.jpg"
+  },
+  {
+   "archetype": "Invoked",
+   "slug": "invoked",
+   "tier": "Rogue",
+   "meta_score": 0.04893172289450492,
+   "share": 0.020202020202020204,
+   "decks": 8,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/86120752.jpg"
+  },
+  {
+   "archetype": "Chaos Ritual",
+   "slug": "chaos-ritual",
+   "tier": "Rogue",
+   "meta_score": 0.05273153838231634,
+   "share": 0.017676767676767676,
+   "decks": 7,
+   "trend": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+  },
+  {
+   "archetype": "Toon Tri-Brigade",
+   "slug": "toon-tri-brigade",
+   "tier": "Rogue",
+   "meta_score": 0.05922242120989179,
+   "share": 0.012626262626262626,
+   "decks": 5,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/87209160.jpg"
+  },
+  {
+   "archetype": "Destiny HERO",
+   "slug": "destiny-hero",
+   "tier": "Rogue",
+   "meta_score": 0.047065207893742085,
+   "share": 0.012626262626262626,
+   "decks": 5,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/9411399.jpg"
+  },
+  {
+   "archetype": "Dracotail",
+   "slug": "dracotail",
+   "tier": "Rogue",
+   "meta_score": 0.04626061513778074,
+   "share": 0.012626262626262626,
+   "decks": 5,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1498449.jpg"
+  },
+  {
+   "archetype": "DoomZ",
+   "slug": "doomz",
+   "tier": "Rogue",
+   "meta_score": 0.032573462708087676,
+   "share": 0.012626262626262626,
+   "decks": 5,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/28877382.jpg"
+  },
+  {
+   "archetype": "Ashtra",
+   "slug": "ashtra",
+   "tier": "Rogue",
+   "meta_score": 0.050251890762960605,
+   "share": 0.010101010101010102,
+   "decks": 4,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/38114652.jpg"
+  },
+  {
+   "archetype": "Mermail Atlantean",
+   "slug": "mermail-atlantean",
+   "tier": "Rogue",
+   "meta_score": 0.04737793696791343,
+   "share": 0.010101010101010102,
+   "decks": 4,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/21565445.jpg"
+  },
+  {
+   "archetype": "Yummy",
+   "slug": "yummy",
+   "tier": "Rogue",
+   "meta_score": 0.030653365991446857,
+   "share": 0.010101010101010102,
+   "decks": 4,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/31425736.jpg"
+  },
+  {
+   "archetype": "Dark Time Wizard",
+   "slug": "dark-time-wizard",
+   "tier": "Rogue",
+   "meta_score": 0.029799343751178282,
+   "share": 0.010101010101010102,
+   "decks": 4,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/4881365.jpg"
+  },
+  {
+   "archetype": "Power Patron",
+   "slug": "power-patron",
+   "tier": "Rogue",
+   "meta_score": 0.02605877016647014,
+   "share": 0.010101010101010102,
+   "decks": 4,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/70488851.jpg"
+  },
+  {
+   "archetype": "Umi",
+   "slug": "umi",
+   "tier": "Rogue",
+   "meta_score": 0.046524210519923545,
+   "share": 0.007575757575757576,
+   "decks": 3,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/295517.jpg"
+  },
+  {
+   "archetype": "Invoked Fairy Tail",
+   "slug": "invoked-fairy-tail",
+   "tier": "Rogue",
+   "meta_score": 0.04264014327112209,
+   "share": 0.007575757575757576,
+   "decks": 3,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/19144622.jpg"
+  },
+  {
+   "archetype": "Clown Crew",
+   "slug": "clown-crew",
+   "tier": "Rogue",
+   "meta_score": 0.04103049699311091,
+   "share": 0.007575757575757576,
+   "decks": 3,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/82159583.jpg"
+  },
+  {
+   "archetype": "Ashtra Angelechy",
+   "slug": "ashtra-angelechy",
+   "tier": "Rogue",
+   "meta_score": 0.024618298195866545,
+   "share": 0.007575757575757576,
+   "decks": 3,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55393975.jpg"
+  },
+  {
+   "archetype": "Power Patron Elfnote",
+   "slug": "power-patron-elfnote",
+   "tier": "Rogue",
+   "meta_score": 0.023262105259961773,
+   "share": 0.007575757575757576,
+   "decks": 3,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/70488851.jpg"
+  },
+  {
+   "archetype": "Phantom Knights",
+   "slug": "phantom-knights",
+   "tier": "Rogue",
+   "meta_score": 0.04737793696791343,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/62709239.jpg"
+  },
+  {
+   "archetype": "Synchrons",
+   "slug": "synchrons",
+   "tier": "Rogue",
+   "meta_score": 0.04737793696791343,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": null
+  },
+  {
+   "archetype": "Unchained",
+   "slug": "unchained",
+   "tier": "Rogue",
+   "meta_score": 0.037986858819879316,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/29479265.jpg"
+  },
+  {
+   "archetype": "Blue-Eyes",
+   "slug": "blue-eyes",
+   "tier": "Rogue",
+   "meta_score": 0.02963694829829247,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/89631139.jpg"
+  },
+  {
+   "archetype": "Earth Machine",
+   "slug": "earth-machine",
+   "tier": "Rogue",
+   "meta_score": 0.02963694829829247,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": null
+  },
+  {
+   "archetype": "Ryzeal Toon",
+   "slug": "ryzeal-toon",
+   "tier": "Rogue",
+   "meta_score": 0.02963694829829247,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8633261.jpg"
+  },
+  {
+   "archetype": "Tenpai Dragon",
+   "slug": "tenpai-dragon",
+   "tier": "Rogue",
+   "meta_score": 0.02963694829829247,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/39931513.jpg"
+  },
+  {
+   "archetype": "Lunalight",
+   "slug": "lunalight",
+   "tier": "Rogue",
+   "meta_score": 0.025125945381480302,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/35618217.jpg"
+  },
+  {
+   "archetype": "Ryzeal",
+   "slug": "ryzeal",
+   "tier": "Rogue",
+   "meta_score": 0.017495462702715934,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8633261.jpg"
+  },
+  {
+   "archetype": "D/D/D",
+   "slug": "d-d-d",
+   "tier": "Rogue",
+   "meta_score": 0.015891043154093207,
+   "share": 0.005050505050505051,
+   "decks": 2,
+   "trend": "Stable",
+   "image_url": null
+  },
+  {
+   "archetype": "Odion",
+   "slug": "odion",
+   "tier": "Rogue",
+   "meta_score": 0.050251890762960605,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": null
+  },
+  {
+   "archetype": "Gem-Knights",
+   "slug": "gem-knights",
+   "tier": "Rogue",
+   "meta_score": 0.035533452725935076,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": null
+  },
+  {
+   "archetype": "Phantom Knight Orcust",
+   "slug": "phantom-knight-orcust",
+   "tier": "Rogue",
+   "meta_score": 0.035533452725935076,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/93854893.jpg"
+  },
+  {
+   "archetype": "R.B.",
+   "slug": "r-b",
+   "tier": "Rogue",
+   "meta_score": 0.035533452725935076,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/5109321.jpg"
+  },
+  {
+   "archetype": "Orcust",
+   "slug": "orcust",
+   "tier": "Rogue",
+   "meta_score": 0.026860765467512676,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/93854893.jpg"
+  },
+  {
+   "archetype": "Adamancipator",
+   "slug": "adamancipator",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/9464441.jpg"
+  },
+  {
+   "archetype": "Angelechy Elfnote",
+   "slug": "angelechy-elfnote",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55393975.jpg"
+  },
+  {
+   "archetype": "Angelechy White Forest",
+   "slug": "angelechy-white-forest",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/61980241.jpg"
+  },
+  {
+   "archetype": "Azamina Chaos Ritual",
+   "slug": "azamina-chaos-ritual",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/46396218.jpg"
+  },
+  {
+   "archetype": "Fur Hire",
+   "slug": "fur-hire",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8728498.jpg"
+  },
+  {
+   "archetype": "Invoked Dracotail",
+   "slug": "invoked-dracotail",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1498449.jpg"
+  },
+  {
+   "archetype": "Kewl Tune",
+   "slug": "kewl-tune",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/89392810.jpg"
+  },
+  {
+   "archetype": "Memento",
+   "slug": "memento",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54550967.jpg"
+  },
+  {
+   "archetype": "Mitsurugi Yummy",
+   "slug": "mitsurugi-yummy",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/45171524.jpg"
+  },
+  {
+   "archetype": "Phantom Knight Pumpking",
+   "slug": "phantom-knight-pumpking",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/64788463.jpg"
+  },
+  {
+   "archetype": "Radiant Typhoon Tenpai",
+   "slug": "radiant-typhoon-tenpai",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/20508881.jpg"
+  },
+  {
+   "archetype": "Rokket",
+   "slug": "rokket",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/31443476.jpg"
+  },
+  {
+   "archetype": "Ryzeal Blitzclique",
+   "slug": "ryzeal-blitzclique",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/58916810.jpg"
+  },
+  {
+   "archetype": "Shaddoll",
+   "slug": "shaddoll",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/94977269.jpg"
+  },
+  {
+   "archetype": "Tearlaments",
+   "slug": "tearlaments",
+   "tier": "Rogue",
+   "meta_score": 0.017766726362967538,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/572850.jpg"
+  },
+  {
+   "archetype": "Angelechy Chaos Ritual",
+   "slug": "angelechy-chaos-ritual",
+   "tier": "Rogue",
+   "meta_score": 0.012562972690740151,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/55393975.jpg"
+  },
+  {
+   "archetype": "Mitsurugi",
+   "slug": "mitsurugi",
+   "tier": "Rogue",
+   "meta_score": 0.012562972690740151,
+   "share": 0.0025252525252525255,
+   "decks": 1,
+   "trend": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/45171524.jpg"
+  }
+ ],
+ "window_start": "2026-10",
+ "window_end": "2026-11",
+ "n_decks": 396
+}

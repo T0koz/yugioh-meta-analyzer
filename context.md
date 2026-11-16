@@ -288,6 +288,27 @@ Mesuré (build de production, mobile, `LH_THROTTLING=devtools`, 9 pages) : LCP 1
 - À faire au lot SEO : lien canonique vers le slug servi (les variantes de casse rendent la même page).
 → détail complet : `docs/journal/archetype-tok-101.md`
 
+### 🔎 SEO de partage et tests visuels (TOK-100, 2026-11-16, branche `claude/tok-100-seo-tests-409521`, non fusionnée dans `main`)
+
+Lien canonique, Open Graph, carte Twitter et image de partage sur chaque page ; `sitemap.xml` (10 pages + archétypes
+servis par l'API) et `robots.txt`. Suite visuelle : 36 captures (12 pages × 3 largeurs) en 45 s, bruit mesuré 0 pixel.
+Lighthouse SEO 100 sur 12 pages ; accueil inchangé (LCP mobile 1,80 s, JavaScript 182 ko).
+- **Toute nouvelle page passe par `pageMetadata`** (`lib/seo.ts`) : Next ne fusionne pas `openGraph` entre layout et
+  page, une page sans lui hériterait du titre et de l'adresse du layout. L'ajouter aussi à `STATIC_PATHS`
+  (`app/sitemap.ts` et `scripts/check-meta.mjs`) et à `PAGES` (`scripts/visual_tests.py`).
+- **Adresse publique** : `NEXT_PUBLIC_SITE_URL` (`frontend/.env.example`), sinon domaine Vercel, sinon
+  `http://localhost:3000`. À renseigner au déploiement (TOK-35), sinon canoniques et sitemap pointent en local.
+- **`python scripts/check.py --visuel`** (ou `.venv/bin/python scripts/visual_tests.py`) après toute retouche de
+  l'interface ; changement voulu → `--update`, puis commiter les références. Hors du `check.py` par défaut : 45 s et
+  le build télécharge les polices Google (échec réseau passager observé, alors « ignoré »).
+- **Les captures ne lisent pas la base** : fausse API rejouant `frontend/tests/visual/fixtures/`. Si la forme d'une
+  réponse d'API change, `--refresh-fixtures` (API réelle lancée), sinon la suite teste un contrat périmé.
+- **Références produites sur macOS** : sur un autre système, les régénérer localement avant de comparer.
+- **Images de partage** : aucune illustration de carte ; un chiffre seulement avec période et source. Couleurs lues
+  dans `globals.css`, polices WOFF dans `src/assets/og-fonts/` (Satori ne lit pas le WOFF2).
+- `npm run check:meta -- http://localhost:3100` vérifie les balises sur un build local (API réelle lancée).
+→ détail complet : `docs/tests-visuels.md`, `docs/journal/seo-tests-tok-100.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

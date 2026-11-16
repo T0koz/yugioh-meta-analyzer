@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Les tests visuels construisent le site contre des données figées dans un dossier à part
+  // (scripts/visual_tests.py), pour ne pas écraser le build courant.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   experimental: {
     // Transitions de vue entre la tier list et la page d'archétype (TOK-101).
     // Embellissement : sans prise en charge du navigateur, la navigation est inchangée.

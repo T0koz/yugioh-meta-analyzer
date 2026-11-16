@@ -1,0 +1,406 @@
+{
+ "data": [
+  {
+   "card_name": "Mulcharmy Fuwalos",
+   "bridge_score": 743.098,
+   "n_archetypes": 99,
+   "decks": 1818,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+  },
+  {
+   "card_name": "Droll & Lock Bird",
+   "bridge_score": 710.103,
+   "n_archetypes": 95,
+   "decks": 1762,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+  },
+  {
+   "card_name": "Ash Blossom & Joyous Spring",
+   "bridge_score": 709.509,
+   "n_archetypes": 95,
+   "decks": 1751,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+  },
+  {
+   "card_name": "Mulcharmy Purulia",
+   "bridge_score": 635.5,
+   "n_archetypes": 89,
+   "decks": 1261,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+  },
+  {
+   "card_name": "Harpie's Feather Duster",
+   "bridge_score": 563.171,
+   "n_archetypes": 81,
+   "decks": 1045,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/18144507.jpg"
+  },
+  {
+   "card_name": "Ghost Ogre & Snow Rabbit",
+   "bridge_score": 528.914,
+   "n_archetypes": 76,
+   "decks": 1052,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+  },
+  {
+   "card_name": "S:P Little Knight",
+   "bridge_score": 493.086,
+   "n_archetypes": 73,
+   "decks": 857,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/29301450.jpg"
+  },
+  {
+   "card_name": "Solemn Judgment",
+   "bridge_score": 468.672,
+   "n_archetypes": 69,
+   "decks": 890,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/41420027.jpg"
+  },
+  {
+   "card_name": "Nibiru, the Primal Being",
+   "bridge_score": 458.875,
+   "n_archetypes": 71,
+   "decks": 640,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+  },
+  {
+   "card_name": "Lightning Storm",
+   "bridge_score": 452.906,
+   "n_archetypes": 69,
+   "decks": 708,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/14532163.jpg"
+  },
+  {
+   "card_name": "Pot of Sloth",
+   "bridge_score": 409.51,
+   "n_archetypes": 64,
+   "decks": 600,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg"
+  },
+  {
+   "card_name": "Ghost Belle & Haunted Mansion",
+   "bridge_score": 400.701,
+   "n_archetypes": 60,
+   "decks": 794,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/73642296.jpg"
+  },
+  {
+   "card_name": "Forbidden Droplet",
+   "bridge_score": 391.209,
+   "n_archetypes": 65,
+   "decks": 410,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/24299458.jpg"
+  },
+  {
+   "card_name": "Infinite Impermanence",
+   "bridge_score": 385.347,
+   "n_archetypes": 61,
+   "decks": 553,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/10045474.jpg"
+  },
+  {
+   "card_name": "Evenly Matched",
+   "bridge_score": 377.146,
+   "n_archetypes": 63,
+   "decks": 397,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/15693423.jpg"
+  },
+  {
+   "card_name": "Solemn Accusation",
+   "bridge_score": 366.544,
+   "n_archetypes": 59,
+   "decks": 498,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/78114463.jpg"
+  },
+  {
+   "card_name": "The Fallen & The Virtuous",
+   "bridge_score": 354.019,
+   "n_archetypes": 53,
+   "decks": 795,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+  },
+  {
+   "card_name": "Ecclesia and the Dark Dragon",
+   "bridge_score": 331.994,
+   "n_archetypes": 50,
+   "decks": 764,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+  },
+  {
+   "card_name": "Super Polymerization",
+   "bridge_score": 326.385,
+   "n_archetypes": 52,
+   "decks": 531,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+  },
+  {
+   "card_name": "Triple Tactics Thrust",
+   "bridge_score": 322.498,
+   "n_archetypes": 56,
+   "decks": 316,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/35269904.jpg"
+  },
+  {
+   "card_name": "Bystial Magnamhut",
+   "bridge_score": 298.023,
+   "n_archetypes": 45,
+   "decks": 751,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/33854624.jpg"
+  },
+  {
+   "card_name": "Lava Golem",
+   "bridge_score": 277.771,
+   "n_archetypes": 48,
+   "decks": 325,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/102380.jpg"
+  },
+  {
+   "card_name": "Garura, Wings of Resonant Life",
+   "bridge_score": 271.905,
+   "n_archetypes": 49,
+   "decks": 256,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+  },
+  {
+   "card_name": "Forbidden Crown",
+   "bridge_score": 263.478,
+   "n_archetypes": 45,
+   "decks": 348,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/98829635.jpg"
+  },
+  {
+   "card_name": "Mudragon of the Swamp",
+   "bridge_score": 261.445,
+   "n_archetypes": 46,
+   "decks": 293,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54757758.jpg"
+  },
+  {
+   "card_name": "Super Starslayer TY-PHON - Sky Crisis",
+   "bridge_score": 236.115,
+   "n_archetypes": 41,
+   "decks": 316,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/93039339.jpg"
+  },
+  {
+   "card_name": "Dominus Impulse",
+   "bridge_score": 234.439,
+   "n_archetypes": 39,
+   "decks": 407,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/40366667.jpg"
+  },
+  {
+   "card_name": "Effect Veiler",
+   "bridge_score": 232.305,
+   "n_archetypes": 37,
+   "decks": 532,
+   "top_archetype": "Kewl Tune",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/97268402.jpg"
+  },
+  {
+   "card_name": "Solemn Warning",
+   "bridge_score": 231.053,
+   "n_archetypes": 42,
+   "decks": 244,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/84749824.jpg"
+  },
+  {
+   "card_name": "Pot of Prosperity",
+   "bridge_score": 222.818,
+   "n_archetypes": 38,
+   "decks": 351,
+   "top_archetype": "Kewl Tune",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/84211599.jpg"
+  },
+  {
+   "card_name": "Illusion Gate",
+   "bridge_score": 220.05,
+   "n_archetypes": 40,
+   "decks": 244,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/33017964.jpg"
+  },
+  {
+   "card_name": "Sea Monster of Theseus",
+   "bridge_score": 218.042,
+   "n_archetypes": 40,
+   "decks": 232,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/96334243.jpg"
+  },
+  {
+   "card_name": "Typhoon",
+   "bridge_score": 206.045,
+   "n_archetypes": 39,
+   "decks": 196,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/14883228.jpg"
+  },
+  {
+   "card_name": "Bystial Druiswurm",
+   "bridge_score": 201.141,
+   "n_archetypes": 36,
+   "decks": 266,
+   "top_archetype": null,
+   "image_url": null
+  },
+  {
+   "card_name": "Different Dimension Ground",
+   "bridge_score": 200.195,
+   "n_archetypes": 41,
+   "decks": 131,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/31849106.jpg"
+  },
+  {
+   "card_name": "I:P Masquerena",
+   "bridge_score": 194.496,
+   "n_archetypes": 36,
+   "decks": 221,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/65741786.jpg"
+  },
+  {
+   "card_name": "Dominus Spark",
+   "bridge_score": 189.413,
+   "n_archetypes": 33,
+   "decks": 310,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/6325660.jpg"
+  },
+  {
+   "card_name": "The Dragon that Devours the Dogma",
+   "bridge_score": 188.549,
+   "n_archetypes": 31,
+   "decks": 437,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+  },
+  {
+   "card_name": "Chaos Angel",
+   "bridge_score": 186.425,
+   "n_archetypes": 31,
+   "decks": 408,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+  },
+  {
+   "card_name": "Santa Claws",
+   "bridge_score": 180.383,
+   "n_archetypes": 36,
+   "decks": 149,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/46565218.jpg"
+  },
+  {
+   "card_name": "The Winged Dragon of Ra - Sphere Mode",
+   "bridge_score": 174.817,
+   "n_archetypes": 34,
+   "decks": 170,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/10000080.jpg"
+  },
+  {
+   "card_name": "Dharc the Dark Charmer, Gloomy",
+   "bridge_score": 171.805,
+   "n_archetypes": 30,
+   "decks": 306,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8264361.jpg"
+  },
+  {
+   "card_name": "D.D. Crow",
+   "bridge_score": 163.779,
+   "n_archetypes": 31,
+   "decks": 196,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/24508238.jpg"
+  },
+  {
+   "card_name": "Mistaken Arrest",
+   "bridge_score": 162.215,
+   "n_archetypes": 30,
+   "decks": 222,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/4227096.jpg"
+  },
+  {
+   "card_name": "Artifact Lancea",
+   "bridge_score": 156.707,
+   "n_archetypes": 35,
+   "decks": 87,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/34267821.jpg"
+  },
+  {
+   "card_name": "Hey, Space Trunade!",
+   "bridge_score": 146.256,
+   "n_archetypes": 30,
+   "decks": 130,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+  },
+  {
+   "card_name": "Fydraulis Harmonia",
+   "bridge_score": 144.578,
+   "n_archetypes": 23,
+   "decks": 536,
+   "top_archetype": "Kewl Tune",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/70088809.jpg"
+  },
+  {
+   "card_name": "Ragged Records of Rites",
+   "bridge_score": 140.691,
+   "n_archetypes": 25,
+   "decks": 277,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+  },
+  {
+   "card_name": "Golden Cloud Beast - Malong",
+   "bridge_score": 137.837,
+   "n_archetypes": 22,
+   "decks": 525,
+   "top_archetype": "Kewl Tune",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/93125329.jpg"
+  },
+  {
+   "card_name": "Dark Ruler No More",
+   "bridge_score": 130.494,
+   "n_archetypes": 29,
+   "decks": 89,
+   "top_archetype": null,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54693926.jpg"
+  }
+ ],
+ "as_of": "2026-11-14",
+ "n_decks_window": 1883
+}

@@ -26,6 +26,23 @@ Ordre obligatoire : `build_serving_db.py` échoue (« Table absente ») si `buil
 À relancer après chaque nouvelle banlist (`fetch_banlist_history.py`) et chaque `build_ban_radar.py`.
 Pas encore dans `refresh_all.py` (hors périmètre du lot).
 
+## Mesures front (build de production, mobile, `LH_THROTTLING=devtools`, API sur une `serving.db` de test)
+
+| Page | Perf. | Access. | SEO | LCP | CLS |
+|---|---|---|---|---|---|
+| `/ban` (référence, même passage) | 97 | 100 | 92 (100 aux 4 passages précédents) | 2 144 ms | 0 |
+| `/ban?tab=historique` (2 passages) | 94 / 96 | 100 | 100 | 2 166 / 2 131 ms | 0 |
+| `/ban?tab=historique&liste=ocg-2026-07-01` | 98 | 100 | 100 | 2 023 ms | 0 |
+| `/decks` (page statique, contrôle) | 99 | 100 | 100 | 1 765 ms | 0 |
+
+Machine chargée (charge moyenne 7 à 8, le lot 11 tournait en parallèle). **Le critère LCP ≤ 2,0 s n'est pas atteint
+en absolu** ; la page est au niveau des onglets existants du Ban Center (route dynamique, 2,06 à 2,46 s selon le
+passage). JavaScript transféré : 194 ko, identique à `/ban`.
+- Les 450 graduations des cartes touchées sont un seul `<path>` SVG par ligne : page de 444 à 392 Ko.
+- Pas de `CardChip` dans le détail par liste : 68 aperçus au survol (composants client) faisaient passer la liste
+  par défaut de 2,07 s à 2,34 s. La vignette reste dans chaque ligne. Page finale : 380 Ko non compressés.
+- À 375 px, le rail du Ban Center (quatre onglets) passe sur deux lignes.
+
 ## Vérification par `data-scientist-ygo` (lecture seule)
 
 - 20 listes retenues, 0 écart sur `n_cards`, `n_decks`, `n_hits`, `n_hits_ranked`, `median_rank`, `random_rank`,

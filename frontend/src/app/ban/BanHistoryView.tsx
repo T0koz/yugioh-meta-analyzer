@@ -1,7 +1,6 @@
 import { api } from "@/lib/api";
 import { fmtDate, fmtMonthShort, fmtNum, fmtRank } from "@/lib/format";
 import { CardArt } from "@/components/card-art";
-import { CardChip } from "@/components/card-chip";
 import { PillLink } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
 import { DataFooter, PageHero } from "@/components/ds/page";
@@ -329,9 +328,9 @@ function CardRow({ card, n, eager }: { card: BanHistoryCard; n: number; eager: b
     <li className="grid grid-cols-[34px_minmax(0,1fr)_auto] items-center gap-x-3 border-t border-line px-3 py-2.5 min-[760px]:px-4">
       <CardArt src={card.image_url} name={card.card_name} eager={eager} />
       <span className="min-w-0">
-        <span className="block truncate font-medium tracking-[-0.01em]">
-          <CardChip name={card.card_name} subtitle={origin ?? undefined} variant="plain" />
-        </span>
+        {/* Nom en texte simple : la vignette est à côté, et 68 aperçus au survol (composants client)
+            retardaient l'affichage de la liste par défaut d'environ 0,25 s sur mobile. */}
+        <span className="block truncate font-medium tracking-[-0.01em]">{card.card_name}</span>
         <span className={`mt-1 block ${LABEL}`}>
           {card.rank === null ? "hors classement (moins de 5 decks)" : `${fmtRank(card.rank)} sur ${fmtNum(n)}`}
           {origin && ` · ${origin}`}

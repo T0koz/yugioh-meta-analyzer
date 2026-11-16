@@ -17,7 +17,8 @@ Pourquoi les captures sont reproductibles :
   Le build va dans `frontend/.next-visual` (variable NEXT_DIST_DIR), sans toucher à `.next`.
 - **Mouvement arrêté.** `prefers-reduced-motion: reduce` (le site s'y plie : pas de braises, pas de
   récit au défilement, pas d'apparition différée), plus animations et transitions CSS neutralisées.
-- **Images de cartes remplacées** par un aplat : elles viennent de YGOPRODeck (réseau externe, TOK-92).
+- **Images de cartes remplacées** par un aplat (`/_next/image`, `/card-images/…` ou adresse externe) : le
+  dossier d'images n'est pas versionné (TOK-92, TOK-35).
 - **Graphe de synergies masqué** : sa mise en page (vis-network) part d'un tirage aléatoire.
 - **Polices chargées** avant la capture (`document.fonts.ready`), fuseau et langue fixés.
 
@@ -249,10 +250,17 @@ def capture_all(base: str, targets: list[tuple[str, str]]) -> dict[str, bytes]:
                 timezone_id="Europe/Paris",
             )
             # Aucune requête ne sort de la machine : images de cartes → aplat, le reste est coupé.
+            # Depuis TOK-35 les cartes ne passent plus par /_next/image : elles sont demandées telles
+            # quelles à NEXT_PUBLIC_CARD_IMAGES_URL (/card-images par défaut, même origine ; ou une
+            # adresse externe, couverte par la seconde condition). Même aplat dans les trois cas.
             def route(r):
                 url = r.request.url
                 try:
-                    if "/_next/image" in url or (not url.startswith(base) and r.request.resource_type == "image"):
+                    if (
+                        "/_next/image" in url
+                        or url.startswith(base + "/card-images/")
+                        or (not url.startswith(base) and r.request.resource_type == "image")
+                    ):
                         r.fulfill(status=200, content_type="image/png", body=image)
                     elif url.startswith(base) or url.startswith("data:"):
                         r.continue_()

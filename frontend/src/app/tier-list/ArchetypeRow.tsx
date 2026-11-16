@@ -1,9 +1,8 @@
 "use client";
 
 import { useHoverPreview } from "@/components/hover-preview-context";
-import Image from "next/image";
 import Link from "next/link";
-import { CardArt } from "@/components/card-art";
+import { CardArt, CardImage } from "@/components/card-art";
 import { artCropUrl } from "@/lib/card-images";
 import { Meter } from "@/components/ds/page";
 import { TierTag, TrendLabel } from "@/components/ds/tags";
@@ -50,7 +49,7 @@ export function ArchetypeRow({
           aria-hidden
           className="pointer-events-none absolute inset-y-0 left-0 -z-10 hidden w-[52%] [mask-image:linear-gradient(90deg,transparent,rgb(0_0_0/0.22)_30%,rgb(0_0_0/0.45)_78%,transparent)] min-[760px]:block"
         >
-          <Image
+          <CardImage
             src={artCropUrl(entry.image_url)}
             alt=""
             fill

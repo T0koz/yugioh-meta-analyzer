@@ -107,7 +107,7 @@ export function BanSimulatorView({
 
           <StatBand
             stats={[
-              { value: fmtNum(result.bridge_score), label: "Bridge score" },
+              { value: fmtNum(result.bridge_score), label: "Score de pont" },
               {
                 value: fmtPct(fragmentation * 100, 0),
                 label: community_id >= 0 ? `Fragmentation · communauté ${community_id}` : "Fragmentation · communauté inconnue",

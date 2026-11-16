@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { fmtMonthYear, fmtNum } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
@@ -10,6 +11,11 @@ import { Page, PageHero, StatBand } from "@/components/ds/page";
 import { BanStatus, Tag } from "@/components/ds/tags";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { BuyLabel } from "@/types";
+
+export const metadata: Metadata = {
+  title: "Signaux boutique",
+  description: "Les cartes des archétypes qui montent en OCG, à surveiller avant leur arrivée en TCG.",
+};
 
 // Fort = étiquette pleine (l'accent signale ce qui compte), le reste en contour.
 const LABEL_TONE: Record<BuyLabel, "strong" | "outline" | "neutral"> = {
@@ -56,7 +62,7 @@ export default async function BoutiquePage() {
                 <TableHead>Archétype</TableHead>
                 <TableHead className="text-right">
                   Score
-                  <InfoTooltip text="alert_score = meta_score OCG × log(1 + vues/semaine moyennes des cartes core). Signal OCG → TCG réel mais modéré : r ≈ 0,53 à 4 mois (IC 95 % 0,43 à 0,59), utilisable de 2 à 6 mois. Le signal de juin 2026 a perdu : ses cartes ont baissé de 35 % contre 1 % pour le marché." />
+                  <InfoTooltip text="alert_score = meta_score OCG × log(1 + vues/semaine moyennes des cartes clés). Signal OCG → TCG réel mais modéré : r ≈ 0,53 à 4 mois (IC 95 % 0,43 à 0,59), utilisable de 2 à 6 mois. Le signal de juin 2026 a perdu : ses cartes ont baissé de 35 % contre 1 % pour le marché." />
                 </TableHead>
                 <TableHead className="text-right">Prix CM</TableHead>
                 <TableHead>Banlist TCG</TableHead>

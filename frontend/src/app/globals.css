@@ -70,7 +70,7 @@
   --text: #e8edf5;
   --soft: #b4bfcf;       /* paragraphes */
   --muted-text: #8591a6; /* secondaire, labels (shadcn réserve --muted aux fonds) */
-  --faint: #566175;      /* rangs, placeholders */
+  --faint: #788499;      /* rangs, placeholders : 4,5:1 au moins sur --ink à --ink-4 (WCAG AA) */
 
   /* accent Ember */
   --signal: #ff5a3c;

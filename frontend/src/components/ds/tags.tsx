@@ -28,19 +28,32 @@ export function TierTag({ tier }: { tier: Tier }) {
 }
 
 const TREND = {
-  Rising: { arrow: "▲", className: "text-good" },
-  Stable: { arrow: "→", className: "text-muted-text" },
+  Rising: { arrow: "▲", label: "En hausse", className: "text-good" },
+  Stable: { arrow: "→", label: "Stable", className: "text-muted-text" },
   // Pas de rouge pour une baisse : le rouge est réservé à l'accent.
-  Declining: { arrow: "▼", className: "text-muted-text" },
-} satisfies Record<Trend, { arrow: string; className: string }>;
+  Declining: { arrow: "▼", label: "En baisse", className: "text-muted-text" },
+} satisfies Record<Trend, { arrow: string; label: string; className: string }>;
 
 export function TrendLabel({ trend }: { trend: Trend }) {
-  const { arrow, className } = TREND[trend];
+  const { arrow, label, className } = TREND[trend];
   return (
     <span className={`font-mono text-[12px] font-medium whitespace-nowrap ${className}`}>
-      {arrow} {trend}
+      {arrow} {label}
     </span>
   );
+}
+
+// L'API renvoie les statuts Konami en anglais ; l'interface les affiche en français.
+const BAN_STATUS_FR: Record<string, string> = {
+  Unlimited: "Illimitée",
+  "Semi-Limited": "Semi-limitée",
+  Limited: "Limitée",
+  Forbidden: "Interdite",
+  Banned: "Interdite",
+};
+
+export function banStatusLabel(status: string): string {
+  return BAN_STATUS_FR[status] ?? status;
 }
 
 /** Statut banlist : restrictions en --warn (seul usage du jaune), le reste neutre. */
@@ -52,7 +65,7 @@ export function BanStatus({ status }: { status: string }) {
         restricted ? "border-warn/50 text-warn" : "border-line-2 text-soft"
       }`}
     >
-      {status}
+      {banStatusLabel(status)}
     </span>
   );
 }

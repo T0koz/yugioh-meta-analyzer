@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -19,6 +20,30 @@ const TABS: { id: Tab; label: string }[] = [
 
 function parseTab(raw: string | string[] | undefined): Tab {
   return TABS.some((t) => t.id === raw) ? (raw as Tab) : "radar";
+}
+
+const TAB_META: Record<Tab, { title: string; description: string }> = {
+  radar: {
+    title: "Ban Radar",
+    description: "Les cartes Yu-Gi-Oh! les plus exposées à la prochaine banlist TCG, notées sur six critères.",
+  },
+  impact: {
+    title: "Cartes à impact",
+    description: "Les cartes dont l’interdiction toucherait le plus d’archétypes et de decks Yu-Gi-Oh!.",
+  },
+  simulateur: {
+    title: "Simulateur de ban",
+    description: "Retire une carte de la méta Yu-Gi-Oh! et regarde quels archétypes sont touchés.",
+  },
+};
+
+// Un titre par onglet : les trois vues partagent la même route.
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}): Promise<Metadata> {
+  return TAB_META[parseTab((await searchParams).tab)];
 }
 
 // Même grammaire que la nav : texte doux, onglet actif en clair sur --ink-4.
@@ -48,7 +73,6 @@ export default async function BanPage({
 }) {
   const params = await searchParams;
   const tab = parseTab(params.tab);
-  const kind = parseKind(params.kind);
   const cardParam = typeof params.card === "string" ? params.card : undefined;
 
   // Arrivée directe sur l'onglet simulateur via ?card= (recherche globale ou
@@ -65,8 +89,8 @@ export default async function BanPage({
     <HoverPreviewProvider>
       <HoverPreviewPanel />
       <Page>
-        {tab === "radar" && <BanRadarView kind={kind} tabs={tabs} />}
-        {tab === "impact" && <CardImpactView kind={kind} tabs={tabs} />}
+        {tab === "radar" && <BanRadarView view={parseKind(params.kind, "radar")} tabs={tabs} />}
+        {tab === "impact" && <CardImpactView view={parseKind(params.kind, "impact")} tabs={tabs} />}
         {tab === "simulateur" && (
           <BanSimulatorView
             key={cardParam ?? ""}

@@ -4,6 +4,7 @@ import { fmtMonthYear, fmtNum, fmtPct } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { Em } from "@/components/ds/em";
 import { Eyebrow, Page } from "@/components/ds/page";
+import { banStatusLabel } from "@/components/ds/tags";
 import type { PredictionEntry } from "@/types";
 
 // Home en bento (docs/design-system.md §4, maquette B) : une tuile par usage,
@@ -67,7 +68,7 @@ function GraphSketch() {
 export default async function Home() {
   const [boutique, radar, predictions] = await Promise.all([
     api.boutiqueSignals(),
-    api.banRadar({ limit: 3 }),
+    api.banRadar({ limit: 3, kind: "archetype" }),
     api.predictions(),
   ]);
   const topBuy = boutique.data[0];
@@ -125,7 +126,7 @@ export default async function Home() {
                 {[
                   `Cardmarket ${fmtNum(topBuy.cm_price, 2)} €`,
                   topBuy.tcg_entry_estimated && `Entrée TCG ${fmtMonthYear(topBuy.tcg_entry_estimated)}`,
-                  topBuy.ban_tcg && `${topBuy.ban_tcg} en TCG`,
+                  topBuy.ban_tcg && `${banStatusLabel(topBuy.ban_tcg)} en TCG`,
                 ]
                   .filter(Boolean)
                   .map((kv) => (
@@ -158,7 +159,7 @@ export default async function Home() {
 
         {rise && (
           <Link href="/predictions" className={`${TILE} border-transparent bg-signal text-on-signal min-[900px]:col-span-3`}>
-            <TileTag letter="C" className="text-on-signal/70">Prédictions</TileTag>
+            <TileTag letter="C" className="text-on-signal">Prédictions</TileTag>
             <div>
               <h3 className={H3}>
                 {rise.archetype}
@@ -167,7 +168,7 @@ export default async function Home() {
                   {fmtNum(rise.current * 100, 1)} → {fmtNum(rise.predicted * 100, 1)}
                 </span>
               </h3>
-              <p className="mt-2 text-[14px] text-on-signal/70">Score méta actuel, puis prévu le mois prochain (×100).</p>
+              <p className="mt-2 text-[14px] text-on-signal">Score méta actuel, puis prévu le mois prochain (×100).</p>
             </div>
             <PredictionSpark current={rise.current} predicted={rise.predicted} />
           </Link>

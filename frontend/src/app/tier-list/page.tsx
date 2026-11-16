@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
@@ -7,6 +8,11 @@ import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
 import { Page, PageHero, StatBand } from "@/components/ds/page";
 import { TierList } from "./TierList";
+
+export const metadata: Metadata = {
+  title: "Tier list TCG",
+  description: "Les archétypes Yu-Gi-Oh! qui dominent les tournois TCG, classés par part de méta et par performance.",
+};
 
 export default async function TierListPage() {
   const { data, generated_at } = await api.tierList();

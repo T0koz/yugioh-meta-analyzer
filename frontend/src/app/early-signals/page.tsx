@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { fmtNum } from "@/lib/format";
 import { CardChip } from "@/components/card-chip";
@@ -6,6 +7,11 @@ import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
 import { Meter, Page, PageHero } from "@/components/ds/page";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+
+export const metadata: Metadata = {
+  title: "Signaux précoces",
+  description: "Les nouvelles cartes Yu-Gi-Oh! qui entrent dans la méta, repérées par leurs vues et leurs co-occurrences.",
+};
 
 // Colonnes : rang · carte · score (barre + valeur) · vues par semaine.
 const GRID =
@@ -19,7 +25,7 @@ export default async function EarlySignalsPage() {
       <HoverPreviewPanel />
       <Page>
         <PageHero
-          eyebrow="Boutique · Early signals"
+          eyebrow="Boutique · Signaux précoces"
           title={
             <>
               Les cartes qui montent <Em>avant</Em> la méta.

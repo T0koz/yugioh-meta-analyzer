@@ -2,35 +2,53 @@ import Link from "next/link";
 import { Toolbar, pillClass } from "@/components/ds/page";
 import type { BanRadarKind } from "@/types";
 
+/** Vue du filtre : un `kind` de l'API, ou `all` (aucun filtre). */
+export type KindView = BanRadarKind | "all";
+
 // Partagé entre BanRadarView et CardImpactView : les deux notent les cartes
 // sur les mêmes critères et proposent le même filtre archétype/générique.
-export const KIND_FILTERS: { kind?: BanRadarKind; label: string; hint: string }[] = [
-  { label: "Tout", hint: "Toutes les cartes notées" },
-  { kind: "archetype", label: "Pièces d'archétype", hint: "Cartes rattachées à un deck précis" },
-  { kind: "generic", label: "Staples génériques", hint: "Cartes jouées un peu partout" },
-];
+const KIND_FILTERS: Record<KindView, { label: string; hint: string }> = {
+  archetype: { label: "Pièces d'archétype", hint: "Cartes rattachées à un deck précis" },
+  generic: { label: "Staples génériques", hint: "Cartes jouées un peu partout" },
+  all: { label: "Tout", hint: "Toutes les cartes notées" },
+};
 
-export function parseKind(raw: string | string[] | undefined): BanRadarKind | undefined {
-  return KIND_FILTERS.some((f) => f.kind === raw) ? (raw as BanRadarKind) : undefined;
+/**
+ * Vue par défaut de chaque onglet, placée en premier dans la barre.
+ * Radar : les pièces d'archétype (décision 4 de l'audit front). Konami frappe
+ * les pièces de moteur, pas les staples jouées partout ; ouvrir sur « Tout »
+ * mettait Ash Blossom à 100/100 en tête de page.
+ * Impact : tout, puisque la mesure compte justement les archétypes touchés.
+ */
+export const KIND_ORDER = {
+  radar: ["archetype", "generic", "all"],
+  impact: ["all", "archetype", "generic"],
+} as const satisfies Record<string, readonly KindView[]>;
+
+export type KindTab = keyof typeof KIND_ORDER;
+
+export function parseKind(raw: string | string[] | undefined, tab: KindTab): KindView {
+  return typeof raw === "string" && raw in KIND_FILTERS ? (raw as KindView) : KIND_ORDER[tab][0];
 }
 
-export function KindFilterTabs({
-  basePath,
-  active,
-  count,
-}: {
-  basePath: string;
-  active?: BanRadarKind;
-  count?: string;
-}) {
+/** Paramètre `kind` attendu par l'API : absent pour la vue « Tout ». */
+export function apiKind(view: KindView): BanRadarKind | undefined {
+  return view === "all" ? undefined : view;
+}
+
+export function KindFilterTabs({ tab, active, count }: { tab: KindTab; active: KindView; count?: string }) {
+  const basePath = `/ban?tab=${tab}`;
+  const [defaultView] = KIND_ORDER[tab];
   return (
     <Toolbar count={count}>
-      {KIND_FILTERS.map(({ kind, label, hint }) => {
-        const selected = kind === active;
+      {KIND_ORDER[tab].map((view) => {
+        const { label, hint } = KIND_FILTERS[view];
+        const selected = view === active;
         return (
           <Link
-            key={label}
-            href={kind ? `${basePath}&kind=${kind}` : basePath}
+            key={view}
+            // La vue par défaut garde l'URL courte : une seule adresse par contenu.
+            href={view === defaultView ? basePath : `${basePath}&kind=${view}`}
             title={hint}
             aria-current={selected ? "page" : undefined}
             className={pillClass(selected)}

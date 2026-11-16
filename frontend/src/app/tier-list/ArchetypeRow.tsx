@@ -1,6 +1,7 @@
 "use client";
 
 import { useHoverPreview } from "@/components/hover-preview-context";
+import { CardThumb } from "@/components/card-thumb";
 import { Meter } from "@/components/ds/page";
 import { TierTag, TrendLabel } from "@/components/ds/tags";
 import { fmtNum, fmtPct } from "@/lib/format";
@@ -36,18 +37,7 @@ export function ArchetypeRow({
     >
       <span className="font-mono text-[12px] text-faint tabular-nums">{String(rank).padStart(2, "0")}</span>
 
-      {entry.image_url ? (
-        // eslint-disable-next-line @next/next/no-img-element -- vignette externe (YGOPRODeck)
-        <img
-          src={entry.image_url}
-          alt=""
-          className="h-12 w-[34px] rounded-[3px] border border-line-2 object-cover"
-        />
-      ) : (
-        <span className="grid h-12 w-[34px] place-items-center rounded-[3px] border border-line-2 bg-ink-4 font-mono text-[11px] text-muted-text">
-          {entry.archetype.slice(0, 2).toUpperCase()}
-        </span>
-      )}
+      <CardThumb src={entry.image_url} name={entry.archetype} eager={rank <= 8} />
 
       <span className="min-w-0 font-medium tracking-[-0.01em] [overflow-wrap:anywhere]">
         {entry.archetype}

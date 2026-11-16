@@ -48,8 +48,12 @@ export interface PredictionsResponse {
 export interface BoutiqueSignal {
   archetype: string;
   card_name: string;
+  /** Classement dans le lot (0-100, le premier vaut toujours 100) : ordre d'affichage, PAS une force de signal. */
   buy_score: number;
-  buy_label: BuyLabel;
+  /** Libellé absolu : rang de l'archétype parmi tous les archétypes OCG. null si indisponible. */
+  signal_label: BuyLabel | null;
+  /** 1 = archétype OCG le plus fort ; null si indisponible. */
+  archetype_rank: number | null;
   cm_price: number;
   ban_tcg: string | null;
   image_url: string | null;
@@ -58,8 +62,19 @@ export interface BoutiqueSignal {
   tcg_window_end: string | null;
 }
 
+/** Règle du libellé `signal_label` (Fort = rang ≤ strong_max_rank, Modéré = rang ≤ moderate_max_rank, sinon Faible). */
+export interface SignalLabelRule {
+  population: number;
+  strong_max_rank: number;
+  moderate_max_rank: number;
+  provisional: boolean;
+  note: string;
+}
+
 export interface BoutiqueResponse {
   data: BoutiqueSignal[];
+  /** null quand aucun libellé n'est calculable. */
+  label_rule: SignalLabelRule | null;
 }
 
 export interface EarlySignal {

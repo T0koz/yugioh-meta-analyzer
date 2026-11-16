@@ -10,6 +10,7 @@ from app.schemas import (
     EarlySignalsResponse,
     SignalLabelRule,
 )
+from app.slugs import slugify
 from app.signal_label import PROVISIONAL_NOTE, label_cutoffs, signal_label
 
 router = APIRouter(tags=["boutique"])
@@ -31,9 +32,15 @@ def latest_computed_at(db: sqlite3.Connection, table: str) -> str | None:
         return None
 
 
-@router.get("/boutique/signals", response_model=BoutiqueResponse)
-def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueResponse:
-    # Pas de filtre ici : la règle « pas encore en TCG » est appliquée à la source
+def load_boutique_signals(
+    db: sqlite3.Connection, archetype: str | None = None
+) -> tuple[list[BoutiqueSignal], SignalLabelRule | None]:
+    """Signaux boutique (tous, ou ceux d'un archétype) avec leur libellé absolu.
+
+    Partagé avec la page d'archétype (routers/archetypes.py) : mêmes libellés,
+    même règle, quel que soit l'endroit où le signal est affiché.
+    """
+    # Pas de filtre « déjà en TCG » ici : la règle est appliquée à la source
     # (notebook 10, TOK-113), sur les cartes inédites et non sur le nom de
     # l'archétype. L'ancien filtre par nom (TOK-97) faisait double emploi.
     rows = db.execute(
@@ -44,10 +51,11 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
         -- Même jointure que le Ban Radar (TOK-83) : expression indexée, et `+` pour
         -- neutraliser l'affinité TEXT, sinon SQLite ignore idx_cards_name_clean.
         LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = +s.card_name
+        WHERE :archetype IS NULL OR s.archetype = :archetype
         ORDER BY s.buy_score_100 DESC
-        LIMIT ?
+        LIMIT :limit
         """,
-        (BOUTIQUE_SIGNALS_LIMIT,),
+        {"archetype": archetype, "limit": BOUTIQUE_SIGNALS_LIMIT},
     ).fetchall()
 
     # Force OCG de tous les archétypes : référence stable du libellé. Table absente
@@ -61,8 +69,8 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
         ocg = {}
     all_scores = list(ocg.values())
 
-    def label_of(archetype: str):
-        score = ocg.get(archetype)
+    def label_of(name: str):
+        score = ocg.get(name)
         return signal_label(score, all_scores) if score is not None else None
 
     data = []
@@ -71,6 +79,7 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
         data.append(
             BoutiqueSignal(
                 archetype=row["archetype"],
+                archetype_slug=slugify(row["archetype"]),
                 card_name=row["card_name"],
                 buy_score=row["buy_score_100"],
                 signal_label=lab.label if lab else None,
@@ -91,6 +100,12 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
             moderate_max_rank=moderate,
             note=PROVISIONAL_NOTE,
         )
+    return data, rule
+
+
+@router.get("/boutique/signals", response_model=BoutiqueResponse)
+def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueResponse:
+    data, rule = load_boutique_signals(db)
     computed_at = latest_computed_at(db, "boutique_buy_signals")
     return BoutiqueResponse(data=data, label_rule=rule, computed_at=computed_at)
 

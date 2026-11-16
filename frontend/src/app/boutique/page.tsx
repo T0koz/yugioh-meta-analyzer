@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
-import { fmtDate, fmtMonthRange, fmtNum } from "@/lib/format";
+import Link from "next/link";
+import { fmtDate, fmtMonthRange, fmtNum, fmtRank } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { CardArt } from "@/components/card-art";
@@ -24,10 +25,6 @@ const LABEL_TONE: Record<BuyLabel, "strong" | "outline" | "neutral"> = {
   Modéré: "outline",
   Faible: "neutral",
 };
-
-function fmtRank(rank: number): string {
-  return rank === 1 ? "1er" : `${rank}ᵉ`;
-}
 
 export default async function BoutiquePage() {
   const { data, label_rule, computed_at } = await api.boutiqueSignals();
@@ -103,7 +100,14 @@ export default async function BoutiquePage() {
                       <CardChip name={signal.card_name} subtitle={signal.archetype} variant="plain" className="font-medium tracking-[-0.01em]" />
                     </span>
                   </TableCell>
-                  <TableCell className="text-[14px] text-soft">{signal.archetype}</TableCell>
+                  <TableCell className="text-[14px] text-soft">
+                    <Link
+                      href={`/archetype/${signal.archetype_slug}`}
+                      className="underline decoration-line-2 underline-offset-4 transition-colors duration-200 hover:text-text hover:decoration-signal-hi"
+                    >
+                      {signal.archetype}
+                    </Link>
+                  </TableCell>
                   <TableCell className="text-right font-mono text-[13px] font-medium tabular-nums">
                     {fmtNum(signal.buy_score, 1)}
                   </TableCell>

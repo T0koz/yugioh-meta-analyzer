@@ -367,6 +367,35 @@
   .home-constellation:has(g[data-cluster]:hover) g[data-cluster]:not(:hover) { opacity: 0.25; }
 }
 
+/* ---------- Transitions de vue (TOK-101) ----------
+   Posées par React (<ViewTransition>, components/view-transitions.tsx) pendant une
+   navigation ; un navigateur sans l'API change de page comme avant. Deux effets
+   seulement : l'élément partagé (vignette, nom) qui va de la ligne à l'en-tête, et
+   le contenu qui glisse de 24 px selon le sens du lien. On n'anime que transform
+   et opacity, jamais au premier chargement. */
+@keyframes vt-fade {
+  from { opacity: 0; }
+}
+@keyframes vt-slide {
+  from { translate: var(--vt-offset) 0; }
+}
+::view-transition-group(.shared-morph) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease);
+}
+::view-transition-old(.slide-forward),
+::view-transition-old(.slide-back) {
+  animation: 140ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.slide-forward),
+::view-transition-new(.slide-back) {
+  animation:
+    220ms ease-out 100ms both vt-fade,
+    420ms var(--ease) both vt-slide;
+}
+::view-transition-new(.slide-forward) { --vt-offset: 24px; }
+::view-transition-new(.slide-back) { --vt-offset: -24px; }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -391,6 +420,14 @@
   *::before,
   *::after {
     transition: none !important;
+    animation: none !important;
+  }
+  /* Les pseudo-éléments de transition de vue ne sont pas couverts par `*` :
+     sans animation, l'ancienne page est remplacée d'un coup (TOK-101). */
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
     animation: none !important;
   }
 }

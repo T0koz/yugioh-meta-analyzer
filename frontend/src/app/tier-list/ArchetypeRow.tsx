@@ -2,10 +2,12 @@
 
 import { useHoverPreview } from "@/components/hover-preview-context";
 import Image from "next/image";
+import Link from "next/link";
 import { CardArt } from "@/components/card-art";
 import { artCropUrl } from "@/lib/card-images";
 import { Meter } from "@/components/ds/page";
 import { TierTag, TrendLabel } from "@/components/ds/tags";
+import { NAV_FORWARD, SharedElement, archetypeArtName, archetypeTitleName } from "@/components/view-transitions";
 import { fmtNum, fmtPct } from "@/lib/format";
 import type { TierEntry } from "@/types";
 
@@ -32,7 +34,7 @@ export function ArchetypeRow({
     <div
       onMouseEnter={() => entry.image_url && setPreview({ name: entry.archetype, imageUrl: entry.image_url })}
       onMouseLeave={() => setPreview(null)}
-      className={`${GRID} relative isolate items-center border-t border-line transition-colors duration-200 first:border-t-0 hover:bg-ink-3 ${
+      className={`${GRID} group relative isolate items-center border-t border-line transition-colors duration-200 first:border-t-0 hover:bg-ink-3 ${
         banner ? "py-2 min-[760px]:py-4" : "py-2"
       } ${
         highlighted
@@ -61,14 +63,27 @@ export function ArchetypeRow({
 
       <span className="font-mono text-[12px] text-faint tabular-nums">{String(rank).padStart(2, "0")}</span>
 
-      <CardArt src={entry.image_url} name={entry.archetype} eager={rank <= 8} />
+      {/* Vignette et nom portent le même nom de transition que sur la page de
+          l'archétype : le navigateur les anime de la ligne vers l'en-tête. */}
+      <SharedElement name={archetypeArtName(entry.slug)}>
+        <CardArt src={entry.image_url} name={entry.archetype} eager={rank <= 8} />
+      </SharedElement>
 
       <span
         className={`min-w-0 font-medium tracking-[-0.01em] [overflow-wrap:anywhere] ${
           banner ? "min-[760px]:text-[19px] min-[760px]:[text-shadow:0_1px_10px_var(--ink)]" : ""
         }`}
       >
-        {entry.archetype}
+        {/* Le lien couvre toute la ligne (::after), le survol garde l'aperçu de la carte. */}
+        <Link
+          href={`/archetype/${entry.slug}`}
+          transitionTypes={NAV_FORWARD}
+          className="outline-none transition-colors duration-200 group-hover:text-signal-hi after:absolute after:inset-0 after:content-[''] focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-signal-hi"
+        >
+          <SharedElement name={archetypeTitleName(entry.slug)}>
+            <span className="inline-block">{entry.archetype}</span>
+          </SharedElement>
+        </Link>
         <small className={`block text-[12px] font-normal tabular-nums ${banner ? "text-soft" : "text-muted-text"}`}>
           score {fmtNum(entry.meta_score * 100, 1)}
         </small>

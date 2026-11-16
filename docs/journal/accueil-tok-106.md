@@ -36,7 +36,11 @@ rendue à la demande). Pistes écartées, mesurées sans effet : différer les i
 
 ## Choix
 
-- **Hero** : éventail = illustrations des 5 archétypes les plus joués de la tier list (carte centrale : le premier).
+- **Barre de navigation** (commune au site, inchangée) : « YGO META », « Méta » (« Tier list », « Évolution »,
+« Prédictions »), « Ban Center », « Boutique » (« Signaux boutique », « Signaux précoces »), « Graphe », champ
+« Rechercher une carte… », bouton « Menu » sur mobile.
+
+**Hero** : éventail = illustrations des 5 archétypes les plus joués de la tier list (carte centrale : le premier).
   Images différées (`loading="lazy"`) : le LCP mobile est le paragraphe. Titre mot par mot derrière un masque, sans fondu.
 - **Exemple Kewl Tune** : SVG serveur dans son état final ; `ProofScroll` pose `data-live` (≥ 900 px de large, ≥ 620 px
   de haut, mouvement autorisé) et relie le tracé au défilement. Données figées dans `lib/proof-data.ts`.
@@ -72,7 +76,52 @@ méthode et limites. »
   yugiohmeta.com, relevé du 16 novembre 2026. »
 
 **Outils**
-- Sur-titre : « Outils » ; titre : « Trois outils, les mêmes decklists. »
+- Sur-titre : « Outils » ; titre : « Trois outils sur 23 948 decklists de tournoi. »
+- Boutique : « Signal boutique » ; « 3ᵉ sur 89 archétypes OCG » ; « Raise Moon » ; « Carte suivie : Pot of Desires. » ;
+  « FORT », « Cardmarket 0,10 € », « Arrivée TCG nov. 26 à mars 27 » ; pied : « Libellé : rang de l'archétype en OCG,
+  seuils provisoires, non validés hors échantillon. Fenêtre d'arrivée : intervalle à 80 %, non validé. Source :
+  decklists OCG et prix Cardmarket, au 14 novembre 2026. »
+- Radar : « Ban Radar · pièces d'archétype » ; « Risque de restriction, score sur 100. » ; par carte « 14,1 % des decks ·
+  2,99 ex. en moyenne » ; pied : « Barre : ubiquité, porteur, copies, restriction, élan, pont. Source : 1 883 decks de
+  tournoi TCG, au 14 novembre 2026. »
+- Graphe : « Graphe de synergies » ; « Cartes jouées ensemble dans les mêmes decks. » ; « 63 communautés de cartes
+  détectées. En orange, les cartes « pont », qui en relient plusieurs (centralité d'intermédiarité). » ; pied : « Schéma
+  d'illustration : positions et liens ne sont pas des données. Graphe réel : cooccurrences dans les decklists de tournoi. »
+- Bande de liens, une ligne chiffrée tirée de l'API sous chaque nom : « Tier list » (« Elfnote : 20,7 % de 396 decks
+  TCG, oct. 26 à nov. 26. ») ; « Évolution » (« Part mensuelle des archétypes TCG, mai 2023 à novembre 2026. ») ;
+  « Prédictions » (« 19 archétypes, horizon d'un mois, modèle 70 % naïf + 30 % Ridge. ») ; « Signaux précoces »
+  (« 50 cartes classées, au 14 novembre 2026. Première : Kewl Tune Crackle, score 0,79. »)
+
+**Méthode** : données, corrélation avec son intervalle dessiné, backtest du Ban Radar (4 des 20 listes, dont les
+  deux listes TCG récentes mal anticipées).
+
+## Textes de la page (à relire)
+
+Titre de l'onglet : « YGO Meta · La méta OCG précède la méta TCG de 2 à 6 mois ». Description : « Méta Yu-Gi-Oh! TCG
+et OCG mesurée sur 23 948 decklists de tournoi : corrélation OCG → TCG de 0,53, signaux boutique, risque de ban,
+méthode et limites. »
+
+**Hero**
+- Sur-titre : « Méta Yu-Gi-Oh! · données au 14 novembre 2026 »
+- Titre : « La méta OCG précède la méta TCG de 2 à 6 mois. »
+- Chapeau : « Corrélation r ≈ 0,53 (IC 95 % : 0,43 à 0,59) entre le score d'un archétype en OCG et son score en TCG
+  2 à 6 mois plus tard, sur 105 archétypes et 23 948 decklists de tournoi (yugiohmeta.com, mai 2023 à novembre 2026). »
+- Liens : « Signaux boutique », « Méthode et limites »
+- Étiquette de l'éventail : « Elfnote · 20,7 % des decks TCG · oct. 26 à nov. 26 »
+- Chiffres : « Decklists analysées », « Cartes suivies », « Corrélation OCG → TCG (r) », « Écart OCG → TCG »
+
+**Exemple**
+- Sur-titre : « Exemple · un archétype, deux formats »
+- Titre : « Kewl Tune : pic en OCG en avril 2026, en TCG 3 mois plus tard. »
+- « 1 · OCG » : « 2,2 % des decks en janvier 2026, 10,3 % en février, pic à 26,7 % en avril. »
+- « 2 · TCG » : « 0,7 % en avril 2026, 22,5 % en mai, pic à 32,1 % en juillet. »
+- « 3 · Écart » : « Courbe OCG décalée de 3 mois. Un seul archétype : sur 105 archétypes, l'écart observé va de 2 à 6 mois. »
+- Légende : « OCG (Japon, Asie) », « TCG (Europe, Amériques) » ; annotations « 26,7 % · avril », « 32,1 % · juillet », « 3 mois »
+- Pied : « Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists
+  yugiohmeta.com, relevé du 16 novembre 2026. »
+
+**Outils**
+- Sur-titre : « Outils » ; titre : « Trois outils sur 23 948 decklists de tournoi. »
 - Boutique : « Signal boutique » ; « 3ᵉ sur 89 archétypes OCG » ; « Raise Moon » ; « Carte suivie : Pot of Desires. » ;
   « FORT », « Cardmarket 0,10 € », « Arrivée TCG nov. 26 à mars 27 » ; pied : « Libellé : rang de l'archétype en OCG,
   seuils provisoires, non validés hors échantillon. Fenêtre d'arrivée : intervalle à 80 %, non validé. Source :

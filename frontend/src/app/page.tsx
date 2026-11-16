@@ -70,19 +70,24 @@ const shortDate = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 
 const ALSO = [
-  { href: "/tier-list", label: "Tier list", text: "Archétypes classés sur leur part des decks de tournoi." },
-  { href: "/evolution", label: "Évolution", text: "Part mensuelle des archétypes TCG, depuis mai 2023." },
-  { href: "/predictions", label: "Prédictions", text: "Score méta prévu à un mois, par archétype." },
-  { href: "/early-signals", label: "Signaux précoces", text: "Cartes classées par score précoce." },
+  { href: "/tier-list", label: "Tier list" },
+  { href: "/evolution", label: "Évolution" },
+  { href: "/predictions", label: "Prédictions" },
+  { href: "/early-signals", label: "Signaux précoces" },
 ];
 
 const pct = (v: number) => `${fmtNum(v, 1)} %`;
+/** « 2026-11 » → « novembre 2026 ». */
+const fmtMonthYearLong = (yearMonth: string) =>
+  new Date(`${yearMonth}-01T00:00:00`).toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 
 export default async function Home() {
-  const [boutique, radar, tierList] = await Promise.all([
+  const [boutique, radar, tierList, predictions, early] = await Promise.all([
     api.boutiqueSignals(),
     api.banRadar({ limit: 3, kind: "archetype" }),
     api.tierList(),
+    api.predictions(),
+    api.earlySignals(),
   ]);
   const topBuy = boutique.data[0];
   const rule = boutique.label_rule;
@@ -92,6 +97,14 @@ export default async function Home() {
   const lag = PROOF.tcgPeak - PROOF.ocgPeak;
   const tierWindow = fmtMonthRange(`${tierList.window_start}-01`, `${tierList.window_end}-01`);
   const { ocg, tcg, ocgPeak, tcgPeak } = PROOF;
+  const topEarly = early.data[0];
+  // Une ligne chiffrée par lien, tirée de l'API ; sans donnée, le lien reste seul.
+  const alsoText: Record<string, string | undefined> = {
+    "/tier-list": leader && `${leader.archetype} : ${pct(leader.share * 100)} de ${fmtNum(tierList.n_decks)} decks TCG, ${tierWindow}.`,
+    "/evolution": `Part mensuelle des archétypes TCG, mai 2023 à ${fmtMonthYearLong(tierList.window_end)}.`,
+    "/predictions": `${predictions.data.length} archétypes, horizon d’un mois, modèle ${predictions.model}.`,
+    "/early-signals": topEarly && `${early.data.length} cartes classées, au ${fmtDate(radar.as_of)}. Première : ${topEarly.card_name}, score ${fmtNum(topEarly.early_score, 2)}.`,
+  };
 
   return (
     <>
@@ -225,7 +238,9 @@ export default async function Home() {
           <Reveal>
             <Eyebrow>Outils</Eyebrow>
             <h2 id="h-outils" className={`mt-[18px] max-w-[18ch] ${H2}`}>
-              Trois outils, les <Em>mêmes</Em> decklists.
+              {`Trois outils sur `}
+              <Em>{fmtNum(SITE_FACTS.decklists)}</Em>
+              {` decklists de tournoi.`}
             </h2>
           </Reveal>
 
@@ -344,11 +359,7 @@ export default async function Home() {
                         →
                       </span>
                     </span>
-                    <span className="text-[14px] text-muted-text">
-                      {item.href === "/tier-list" && leader
-                        ? `${leader.archetype} : ${pct(leader.share * 100)} de ${fmtNum(tierList.n_decks)} decks TCG, ${tierWindow}.`
-                        : item.text}
-                    </span>
+                    {alsoText[item.href] && <span className="text-[14px] text-muted-text">{alsoText[item.href]}</span>}
                   </Link>
                 </li>
               ))}

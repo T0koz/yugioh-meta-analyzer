@@ -4,7 +4,7 @@ Rafraîchissement hebdomadaire des decklists (TOK-70) + journal de santé des fe
     python scripts/refresh_decks.py            # TCG, OCG, légalité, puis contrôle de fraîcheur
     python scripts/refresh_decks.py --status   # n'exécute rien : affiche les 10 derniers runs + fraîcheur
 
-Enchaîne `fetch_tournament_decks.py`, `fetch_ocg_decks.py`, `fetch_banlist_history.py`, `compute_deck_legality.py`,
+Enchaîne `fetch_new_cards.py` (cartes nouvelles, non bloquante), `fetch_tournament_decks.py`, `fetch_ocg_decks.py`, `fetch_banlist_history.py`, `compute_deck_legality.py`,
 `refresh_all.py` (tables dérivées) et `build_serving_db.py` (base de service)
 en sous-processus, **en séquence** (un seul écrivain sur `yugioh.db`). Chaque étape est
 journalisée dans `data/fetch_health.jsonl` (fichier, pas table : il reste lisible quand la
@@ -30,6 +30,10 @@ DB = ROOT / "data" / "yugioh.db"
 HEALTH = ROOT / "data" / "fetch_health.jsonl"
 FRESHNESS_MAX_DAYS = 7   # au-delà, les decks sont considérés périmés
 STEPS = [
+    # Cartes sorties depuis le dernier chargement (texte, image, caractéristiques). Ajout seul, sans
+    # réécrire les cartes existantes. Non bloquante : une panne de YGOPRODeck ne doit pas empêcher
+    # le recalcul des scores, qui ne dépend que des decks.
+    ("new_cards", "scripts/fetch_new_cards.py"),
     ("fetch_tcg", "scripts/fetch_tournament_decks.py"),
     ("fetch_ocg", "scripts/fetch_ocg_decks.py"),
     # La banlist doit être à jour AVANT la légalité : sinon les decks postérieurs à une nouvelle liste
@@ -43,6 +47,7 @@ DOWNSTREAM = [
     ("derived", "scripts/refresh_all.py"),
     ("serving", "scripts/build_serving_db.py"),
 ]
+NON_BLOCKING = {"new_cards"}  # en échec : journalisée, code de sortie non nul, mais l'aval tourne
 
 
 def log(entry: dict) -> None:
@@ -83,9 +88,9 @@ def main() -> int:
     if args.status:
         return status()
 
-    failed = 0
+    failed = blocking = 0
     for name, script in STEPS + DOWNSTREAM:
-        if name in dict(DOWNSTREAM) and failed:
+        if name in dict(DOWNSTREAM) and blocking:
             log({"step": name, "ok": False, "skipped": "étape amont en échec"})
             print(f"[{name}] sautée (étape amont en échec)")
             continue
@@ -93,6 +98,7 @@ def main() -> int:
         p = subprocess.run([sys.executable, script], cwd=ROOT, capture_output=True, text=True)
         ok = p.returncode == 0
         failed += not ok
+        blocking += (not ok) and name not in NON_BLOCKING
         # Les fetchs avalent les erreurs par deck (« ⚠ Erreur sur deck », « decklist API douteuse ») et
         # continuent : on les compte, sinon un champ d'API qui change de forme passe inaperçu.
         warns = [l.strip() for l in p.stdout.replace("\r", "\n").splitlines() if "⚠" in l]

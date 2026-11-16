@@ -371,6 +371,20 @@ Chiffres VÉRIFIÉS (commande lancée) ; voir `docs/evaluation-prediction.md`, `
 - **Test de fumée de l'API** : `backend/tests/test_endpoints.py` appelle tous les GET (découverts via OpenAPI) et `POST /simulate-ban`, exige 200. Une route à paramètre obligatoire doit être ajoutée à `EXPLICIT_GETS`, sinon le test échoue. À lancer avant chaque push, sur les deux bases : depuis `backend/`, `../.venv/bin/python -m pytest tests -q` puis avec `YGO_DB_PATH=../data/serving.db`. Dépendances : `backend/requirements-dev.txt`. Les tables étant recalculées chaque lundi, c'est le seul garde-fou contre une donnée que le schéma Pydantic refuse.
 - `data/serving.db` reconstruite (10,2 Mo). Sauvegardes locales : `data/backup_avant_nettoyage_20261116.db`, `data/backup_serving_avant_nettoyage_20261116.db`.
 
+### 🧩 Moteur de combos (TOK-84, préparation du 2026-11-16)
+
+Projet distinct, documents dans `docs/moteur-combos/` (définitions, schéma `cb_*`, 72 tests Branded
+non validés, dossier du juge). Aucun code de moteur. Deux retombées sur le pipeline de données :
+- **`scripts/fetch_new_cards.py`** : première étape (non bloquante) du job du lundi. Ajoute les cartes
+  absentes de `cards` sans réécrire les existantes (`init_db.py` écraserait `views_week` et les statuts
+  de banlist). Avant lui, une carte sortie après le dernier chargement n'avait ni texte ni image.
+- **Garde de nom** : YGOPRODeck renumérote parfois une carte (même nom, autre `id`) et l'index sur
+  `cards.name` n'est pas unique. Le script n'insère jamais un nom déjà présent (il l'affiche en ⚠).
+  Toute autre insertion dans `cards` doit faire le même contrôle, sinon les jointures par nom doublent.
+- **Noms à entité HTML** : `cards.name` a contenu `The Fallen &amp; The Virtuous`, que la jointure par
+  nom ne trouvait pas. Le script corrige ces noms ; `cards.archetype` n'est pas fiable pour les règles
+  du jeu (classement éditorial de YGOPRODeck).
+
 ### 🔜 À faire
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials

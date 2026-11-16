@@ -67,10 +67,10 @@ Champions of Swordsoul · Titaniklad the Ash Dragon.
 | Carte | Cause | Correction |
 |---|---|---|
 | `The Fallen & The Virtuous` (×3) | présente dans `cards`, mais sous le nom `The Fallen &amp; The Virtuous` (entité HTML) : la jointure par nom échouait | nom corrigé en base |
-| `Hyperinvoked Aeon`, `Mixousia the Confounder`, `The Three Champions of Swordsoul` | sorties le 2 juillet 2026, jamais chargées (`cards.json` datait de juin) | insérées avec 285 autres cartes nouvelles |
+| `Hyperinvoked Aeon`, `Mixousia the Confounder`, `The Three Champions of Swordsoul` | sorties le 2 juillet 2026, jamais chargées (`cards.json` datait de juin) | insérées avec 284 autres cartes nouvelles |
 
-`scripts/fetch_cards.py` a été relancé, puis **seules les cartes absentes ont été insérées** (288
-lignes, `cards` passe de 13 797 à 14 085). Les cartes déjà en base n'ont pas été réécrites, pour ne
+`scripts/fetch_cards.py` a été relancé, puis **seules les cartes absentes ont été insérées** (287
+lignes, `cards` passe de 13 797 à 14 084). Les cartes déjà en base n'ont pas été réécrites, pour ne
 pas changer `views_week` ni les statuts de banlist hors de la chaîne du lundi.
 
 Ce que les textes ont changé dans les tests (14 situations retouchées) :

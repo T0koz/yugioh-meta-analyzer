@@ -1,4 +1,25 @@
-# Moteur de combos — décisions à prendre (TOK-85, TOK-87)
+# Moteur de combos — décisions (TOK-85, TOK-87)
+
+> **Décisions prises le 16 novembre 2026.** Thomas a délégué ces choix à Claude (« tu peux pas
+> prendre ces décisions tout seul ? ») : les options pré-cochées ci-dessous sont **retenues**.
+> Ce sont des choix techniques, réversibles tant que le moteur n'existe pas. Thomas peut en rouvrir
+> un à tout moment ; les formulaires sont conservés pour cela.
+
+| N° | Décision retenue | Ce qui la ferait rouvrir |
+|---|---|---|
+| D1 | Deck du régional du 08/11/2026 (`6af240d2…`) | un juge estime le deck atypique |
+| D2 | Deux niveaux : pas et transitions | l'oracle ne donne pas la liste des actions légales (question ouverte n° 3) |
+| D3 | Placement par défaut, zones énumérées seulement si une carte lit la position | le juge infirme l'hypothèse (question 3 hors tests) |
+| D4 | Actions sans intérêt : légales pour le moteur, filtrables et publiées dans l'exploration | le nombre de lignes reste ingérable malgré les filtres |
+| D5 | « Non couvert » à trois niveaux | trop de résultats « incomplets » pour être utiles |
+| D6 | Cinq statuts de formalisation | — |
+| D7 | Tests en YAML, état d'arrivée en texte libre jusqu'à la tranche 0 | — |
+| D8 | ✅ Fait : cartes manquantes chargées | — |
+| D8 bis | ✅ Fait : `scripts/fetch_new_cards.py`, première étape (non bloquante) de `refresh_decks.py` ; `init_db.py` purge `card_sets` avant réinsertion | actif au prochain lundi **une fois la branche fusionnée dans `main`** (le job tourne depuis le dépôt principal) |
+| D9 | ✅ Fait : commits `6cb1e04` et `a9edc24` | — |
+
+Les décisions qui demandent de connaître le jeu ne sont **pas** ici et ne peuvent pas être prises
+par Claude : elles sont dans `points-de-regle-a-valider.md` et attendent un juge (TOK-89).
 
 > Formulaires à copier-coller. Ma recommandation est pré-cochée. Aucune de ces décisions ne demande
 > de connaître les règles du jeu : celles qui en demandent sont dans `points-de-regle-a-valider.md`.
@@ -100,7 +121,7 @@ Commentaire libre :
 
 ## D8 — Les quatre cartes sans texte : ✅ fait le 16 novembre 2026
 
-Décision de Thomas : relancer `fetch_cards.py`. Fait : 288 cartes nouvelles insérées, un nom corrigé
+Décision de Thomas : relancer `fetch_cards.py`. Fait : 287 cartes nouvelles insérées, un nom corrigé
 (`The Fallen &amp; The Virtuous`). Détail dans `jeu-de-tests-branded.md` § 1. Reste une décision :
 
 ```

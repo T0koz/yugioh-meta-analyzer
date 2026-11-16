@@ -4,6 +4,7 @@
 > table `cards` et du livret de règles cité de mémoire), ma confiance, et les tests qui en dépendent.
 > Aucun n'est validé. Réponse attendue par point : « d'accord », « faux, parce que… », « ça dépend de… ».
 > Les noms de cartes sont en anglais, comme dans les textes officiels utilisés.
+> **Version à envoyer au juge** (questionnaire à cocher, messages de prise de contact) : [`dossier-juge.md`](dossier-juge.md).
 
 ## Les points où je doute le plus (à traiter d'abord)
 

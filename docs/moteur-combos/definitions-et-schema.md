@@ -1,6 +1,6 @@
 # Moteur de combos — définitions formelles et schéma de données (TOK-85)
 
-> **Statut : proposition, à valider par Thomas.** Rédigé le 16 novembre 2026.
+> **Statut : choix techniques arbitrés le 16 novembre 2026 (D1 à D8 bis), points de règle non validés.**
 > Part des définitions du § 4 de [`decisions-2026-11-16.md`](decisions-2026-11-16.md) et les précise.
 > **Sources utilisées** : textes des cartes de la table `cards` (YGOPRODeck), règles officielles de
 > Konami citées de mémoire (livret de règles, non relu en ligne pendant cette session), decklists de

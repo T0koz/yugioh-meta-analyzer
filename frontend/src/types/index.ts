@@ -176,6 +176,58 @@ export interface BanRadarResponse {
   weights: Record<string, number>;
 }
 
+/** Carte d'une banlist rejouée (TOK-55) : du top prévu la veille, touchée, ou les deux. */
+export interface BanHistoryCard {
+  card_name: string;
+  /** Nul : carte touchée hors classement (moins de 5 decks dans la fenêtre). */
+  rank: number | null;
+  ban_risk_score: number | null;
+  /** Rang si l'on classait par part des decks seule (base « staples les plus jouées »). */
+  baseline_rank: number | null;
+  hit: boolean;
+  in_top: boolean;
+  generic: boolean;
+  top_archetype: string | null;
+  status_before: string;
+  status_after: string;
+  image_url: string | null;
+}
+
+/** Banlist rejouée la veille de son entrée en vigueur. Champs de classement nuls si écartée. */
+export interface BanHistoryList {
+  format: "TCG" | "OCG";
+  effective_date: string;
+  as_of: string;
+  retained: boolean;
+  skip_reason: "decks" | "hits" | null;
+  /** Place de la liste par rapport au calage des poids (2026-08-14) : seules les « prospective » lui sont postérieures. */
+  sample: "calage" | "validation" | "retrospective" | "prospective";
+  n_decks: number;
+  n_hits: number;
+  n_cards: number | null;
+  n_hits_ranked: number | null;
+  n_hits_missing: number | null;
+  median_rank: number | null;
+  random_rank: number | null;
+  /** 5e et 95e centiles du rang médian d'autant de cartes tirées au hasard. */
+  random_low: number | null;
+  random_high: number | null;
+  top_n_hits: number | null;
+  top10pct_hits: number | null;
+  top25pct_hits: number | null;
+  baseline_median_rank: number | null;
+  baseline_top_n_hits: number | null;
+  cards: BanHistoryCard[];
+}
+
+export interface BanHistoryResponse {
+  lists: BanHistoryList[];
+  computed_at: string;
+  top_n: number;
+  min_decks: number;
+  min_hits: number;
+}
+
 export interface CardImpactEntry {
   card_name: string;
   bridge_score: number;

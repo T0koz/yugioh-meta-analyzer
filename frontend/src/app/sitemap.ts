@@ -14,6 +14,7 @@ const STATIC_PATHS = [
   "/early-signals",
   "/graph",
   "/ban",
+  "/ban?tab=historique",
   "/ban?tab=impact",
   "/ban?tab=simulateur",
 ];

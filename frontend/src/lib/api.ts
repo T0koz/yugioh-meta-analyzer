@@ -1,5 +1,6 @@
 import type {
   ArchetypeResponse,
+  BanHistoryResponse,
   BanRadarKind,
   BanRadarResponse,
   BanSimResult,
@@ -51,6 +52,8 @@ export const api = {
     if (params?.kind) query.set("kind", params.kind);
     return apiFetch<BanRadarResponse>(`/ban-radar?${query}`);
   },
+  /** Backtest du Ban Radar liste par liste (TOK-55). */
+  banHistory: () => apiFetch<BanHistoryResponse>("/ban-radar/history"),
   cardImpact: (params?: { limit?: number; kind?: BanRadarKind }) => {
     const query = new URLSearchParams({ limit: String(params?.limit ?? 50) });
     if (params?.kind) query.set("kind", params.kind);

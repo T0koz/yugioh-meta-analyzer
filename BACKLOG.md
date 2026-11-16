@@ -164,7 +164,7 @@ Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 i
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-55 | Ban Predictor vs History — track record public | 🟡 Débloqué (10 points TCG / 10 OCG au backtest, `validate_predictions.py`) | 🟠 Medium |
+| TOK-55 | Ban Predictor vs History — track record public | 🟡 Livré le 2026-11-17 sur `claude/lot12-tok-55-ban-historique-206ce4` (non fusionnée) : onglet `/ban?tab=historique`, 20 listes, chiffres vérifiés par le data scientist (0 écart avec `--backtest`) ; reste `build_ban_history.py` sur la base de référence, les dates d'annonce, l'ajout à `refresh_all.py` — `docs/journal/ban-historique-tok-55.md` | 🟠 Medium |
 | TOK-56 | Comparateur archétypes côte à côte | 🔜 À faire | 🟠 Medium |
 | TOK-57 | Watchlist personnelle | 🔜 À faire | 🟢 Low |
 | TOK-58 | Deck Builder + meta score temps réel | 🔜 À faire | 🟠 Medium |
@@ -177,8 +177,8 @@ Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 i
 | TOK-65 | Referral boutique — commission sur carte vendue | 🔜 À faire | 🟠 Medium |
 | TOK-66 | Boutique partenaire — listing premium | 🔜 À faire | 🟢 Low |
 
-**TOK-55 débloqué** par ces deux points de mesure : reste à construire la page
-publique. `scripts/fetch_banlist_history.py` (TCG + OCG) en est le socle.
+**TOK-55** : page publique livrée (lot 12) ; en TCG, la base « staples les plus jouées » bat le score en rang médian
+sur 7 listes sur 10, c'est affiché.
 
 Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historique de decks, Social (profils créateurs, Deck Feed, rating, tournoi mensuel), Marketplace de decks guides.
 

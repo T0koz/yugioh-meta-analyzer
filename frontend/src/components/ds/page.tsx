@@ -44,8 +44,8 @@ export function PageHero({
     <header className="pt-14 pb-10">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
-          <Eyebrow>{eyebrow}</Eyebrow>
-          <h1 className={`mt-[18px] font-medium text-balance ${h1}`}>{title}</h1>
+          <Eyebrow className="enter">{eyebrow}</Eyebrow>
+          <h1 className={`enter mt-[18px] font-medium text-balance [--i:1] ${h1}`}>{title}</h1>
         </div>
         {aside && (
           <div className="font-mono text-[11px] uppercase leading-[1.8] tracking-[0.08em] text-muted-text min-[760px]:text-right">
@@ -53,7 +53,7 @@ export function PageHero({
           </div>
         )}
       </div>
-      {intro && <p className="mt-[22px] max-w-[52ch] text-soft">{intro}</p>}
+      {intro && <p className="enter mt-[22px] max-w-[52ch] text-soft [--i:2]">{intro}</p>}
       {children}
     </header>
   );
@@ -97,7 +97,7 @@ export function Toolbar({ children, count }: { children: React.ReactNode; count?
 
 /** Classes d'une pill de filtre (bouton ou lien). Active = fond texte, encre dessus. */
 export function pillClass(active: boolean) {
-  return `rounded-[4px] border px-2.5 py-1.5 font-mono text-[12px] font-medium tracking-[0.04em] transition-colors duration-200 ${
+  return `rounded-[4px] border px-2.5 py-1.5 text-[13px] font-medium transition-[color,background-color,border-color,scale] duration-200 motion-safe:active:scale-[0.97] ${
     active ? "border-text bg-text text-ink" : "border-line-2 text-soft hover:text-text"
   }`;
 }
@@ -137,7 +137,7 @@ export function Meter({ value, max, tone = "signal" }: { value: number; max: num
   const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
   return (
     <div className="h-1 overflow-hidden rounded-[2px] bg-ink-4">
-      <div className={`h-full rounded-[2px] ${tone === "signal" ? "bg-signal" : "bg-soft/60"}`} style={{ width: `${pct}%` }} />
+      <div className={`fill-in h-full rounded-[2px] ${tone === "signal" ? "bg-signal" : "bg-soft/60"}`} style={{ width: `${pct}%` }} />
     </div>
   );
 }

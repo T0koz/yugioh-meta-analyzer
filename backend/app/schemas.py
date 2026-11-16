@@ -19,7 +19,10 @@ class TierEntry(BaseModel):
 
 class TierListResponse(BaseModel):
     data: list[TierEntry]
-    generated_at: str
+    # Fenêtre de calcul : mois « AAAA-MM » du premier et du dernier mois cumulés.
+    window_start: str
+    window_end: str
+    n_decks: int
 
 
 class EvolutionPoint(BaseModel):
@@ -30,6 +33,8 @@ class EvolutionPoint(BaseModel):
 
 class EvolutionResponse(BaseModel):
     data: dict[str, list[EvolutionPoint]]
+    # Vignette de chaque archétype (absente si aucune carte connue).
+    images: dict[str, str] = {}
 
 
 class PredictionEntry(BaseModel):
@@ -37,6 +42,7 @@ class PredictionEntry(BaseModel):
     current: float
     predicted: float
     direction: Trend
+    image_url: Optional[str] = None
 
 
 class PredictionsResponse(BaseModel):
@@ -51,7 +57,11 @@ class BoutiqueSignal(BaseModel):
     buy_label: BuyLabel
     cm_price: float
     ban_tcg: Optional[str] = None
-    tcg_entry_estimated: Optional[str] = None
+    image_url: Optional[str] = None
+    # Fenêtre d'arrivée en TCG de l'archétype (intervalle à 80 %, « AAAA-MM-JJ »),
+    # NULL si la source n'en a pas calculé.
+    tcg_window_start: Optional[str] = None
+    tcg_window_end: Optional[str] = None
 
 
 class BoutiqueResponse(BaseModel):
@@ -64,6 +74,7 @@ class EarlySignal(BaseModel):
     archetype: str | None
     early_score: float
     views_week: int
+    image_url: Optional[str] = None
 
 
 class EarlySignalsResponse(BaseModel):

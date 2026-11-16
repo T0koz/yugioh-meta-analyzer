@@ -70,7 +70,7 @@
   --text: #e8edf5;
   --soft: #b4bfcf;       /* paragraphes */
   --muted-text: #8591a6; /* secondaire, labels (shadcn réserve --muted aux fonds) */
-  --faint: #566175;      /* rangs, placeholders */
+  --faint: #788499;      /* rangs, placeholders : 4,5:1 au moins sur --ink à --ink-4 (WCAG AA) */
 
   /* accent Ember */
   --signal: #ff5a3c;
@@ -95,6 +95,13 @@
   --gutter: clamp(16px, 3.2vw, 44px);
   --maxw: 1200px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* mouvement (docs/audit-front/3-proposition.md §4) */
+  --dur-1: 180ms;   /* survol, focus, pression */
+  --dur-2: 500ms;   /* apparition d'un bloc */
+  --dur-3: 1000ms;  /* remplissage d'une barre, ouverture */
+  --stagger: 70ms;  /* décalage entre éléments d'une même séquence */
+  --glow: rgba(255, 90, 60, 0.28); /* lueur d'accent, réservée à la carte vedette */
 
   /* mapping shadcn */
   --background: var(--ink);
@@ -127,6 +134,47 @@
 @utility bg-dots {
   background-image: radial-gradient(rgba(170, 195, 235, 0.16) 1px, transparent 1.2px);
   background-size: 14px 14px;
+}
+
+/* Mouvement. Les keyframes ne décrivent que l'état de départ : sans animation
+   (mouvement réduit, vieux navigateur), l'élément est simplement à sa place.
+   On n'anime que transform et opacity. */
+/* Entrée du premier écran : glissement SANS fondu. Un texte qui démarre à
+   opacité 0 n'est pas compté par le LCP tant qu'il n'est pas visible : mesuré
+   sous ralentissement réel, le fondu coûtait jusqu'à 0,8 s de LCP mobile. */
+@keyframes rise-in {
+  from { transform: translateY(12px); }
+}
+/* Sous le premier écran (Reveal), le fondu ne touche pas le LCP. */
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(12px); }
+}
+@keyframes fill-in {
+  from { transform: scaleX(0); }
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Entrée d'un élément ; `--i` (0, 1, 2…) le décale dans une séquence. */
+@utility enter {
+  animation: rise-in var(--dur-2) var(--ease) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger));
+}
+/* Barre qui se remplit depuis la gauche. */
+@utility fill-in {
+  transform-origin: left;
+  animation: fill-in var(--dur-3) var(--ease) both;
+}
+@utility cursor-blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+/* États posés par le composant Reveal, jamais par le HTML serveur. */
+@utility reveal-pending {
+  opacity: 0;
+}
+@utility reveal-in {
+  animation: fade-rise var(--dur-2) var(--ease) both;
 }
 
 @layer base {

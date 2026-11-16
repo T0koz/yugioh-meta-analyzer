@@ -42,7 +42,7 @@ Thème **sombre uniquement** (pas de mode clair). Définir sur `:root` (pas de c
   --text: #e8edf5;
   --soft: #b4bfcf;       /* paragraphes */
   --muted-text: #8591a6;      /* secondaire, labels */
-  --faint: #566175;      /* rangs, placeholders */
+  --faint: #788499;      /* rangs, placeholders */
   /* NB : dans design-reference.html ce gris s'appelle --muted ; ici --muted-text car shadcn réserve --muted aux fonds */
 
   /* accent Ember */
@@ -68,6 +68,13 @@ Thème **sombre uniquement** (pas de mode clair). Définir sur `:root` (pas de c
   --gutter: clamp(16px, 3.2vw, 44px);
   --maxw: 1200px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* mouvement (TOK-98) */
+  --dur-1: 180ms;   /* survol, focus, pression */
+  --dur-2: 500ms;   /* apparition d'un bloc */
+  --dur-3: 1000ms;  /* remplissage d'une barre, ouverture */
+  --stagger: 70ms;  /* décalage dans une séquence */
+  --glow: rgba(255, 90, 60, 0.28); /* lueur d'accent, carte vedette uniquement */
 
   /* mapping shadcn (pour que table, badge, input, select… héritent du thème) */
   --background: var(--ink);

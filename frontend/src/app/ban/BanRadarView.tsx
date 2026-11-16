@@ -1,11 +1,13 @@
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum, fmtPct } from "@/lib/format";
+import { SITE_FACTS } from "@/lib/site-facts";
 import { CardChip } from "@/components/card-chip";
+import { CardArt } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
-import { Explainer, PageHero } from "@/components/ds/page";
+import { Callout, Explainer, PageHero } from "@/components/ds/page";
 import { BanStatus } from "@/components/ds/tags";
-import type { BanRadarCriteria, BanRadarEntry, BanRadarKind, RiskLabel } from "@/types";
-import { KindFilterTabs } from "./kind-filter";
+import type { BanRadarCriteria, BanRadarEntry, RiskLabel } from "@/types";
+import { KindFilterTabs, apiKind, type KindView } from "./kind-filter";
 
 // Ordre et libellés de la barre de décomposition, alignés sur WEIGHTS côté API.
 // Une seule teinte : l'opacité décroît avec le poids du critère (design system §4).
@@ -13,7 +15,7 @@ const CRITERIA: { key: keyof BanRadarCriteria; label: string; opacity: number; h
   { key: "ubiquity", label: "Ubiquité", opacity: 0.9, help: "Part des decks du format qui jouent la carte." },
   { key: "carrier", label: "Porteur", opacity: 0.75, help: "La carte est indispensable à un archétype qui pèse dans la méta." },
   { key: "copies", label: "Copies", opacity: 0.6, help: "Nombre moyen d'exemplaires joués : une carte jouée à 3 peut être limitée, une carte déjà à 1 beaucoup moins." },
-  { key: "restriction", label: "Restriction", opacity: 0.45, help: "La carte est déjà Limited ou Semi-Limited : Konami y revient souvent." },
+  { key: "restriction", label: "Restriction", opacity: 0.45, help: "La carte est déjà limitée ou semi-limitée : Konami y revient souvent." },
   { key: "momentum", label: "Élan", opacity: 0.3, help: "Usage des 3 derniers mois comparé aux 3 précédents." },
   { key: "bridge", label: "Pont", opacity: 0.18, help: "Centralité de type pont : la carte relie des paquets de cartes autrement séparés." },
 ];
@@ -27,9 +29,19 @@ const RISK_TONE: Record<RiskLabel, string> = {
 };
 
 // Dernière colonne de largeur fixe : avec `auto`, la longueur du statut
-// (UNLIMITED / SEMI-LIMITED) ferait varier celle des barres d'une ligne à l'autre.
+// (ILLIMITÉE / SEMI-LIMITÉE) ferait varier celle des barres d'une ligne à l'autre.
 export const ROW_GRID =
-  "grid grid-cols-[84px_34px_minmax(0,1fr)] items-center gap-x-4 gap-y-3 border-t border-line px-1 py-5 min-[760px]:grid-cols-[110px_40px_minmax(0,1fr)_140px] min-[760px]:gap-x-[22px]";
+  "grid grid-cols-[84px_44px_minmax(0,1fr)] items-center gap-x-4 gap-y-3 border-t border-line px-1 py-5 min-[760px]:grid-cols-[110px_44px_minmax(0,1fr)_140px] min-[760px]:gap-x-[22px]";
+
+/** Deuxième colonne des lignes du Ban Center : vignette de la carte, rang dessous. */
+export function RankedThumb({ src, name, rank }: { src: string | null; name: string; rank: number }) {
+  return (
+    <div className="grid justify-items-center gap-1.5">
+      <CardArt src={src} name={name} size="sm" eager={rank <= 6} />
+      <span className="font-mono text-[11px] text-faint tabular-nums">#{rank}</span>
+    </div>
+  );
+}
 
 export function BigScore({ value, label, tone }: { value: string; label: string; tone: string }) {
   return (
@@ -81,12 +93,12 @@ function RadarRow({ entry, rank }: { entry: BanRadarEntry; rank: number }) {
   return (
     <div className={ROW_GRID}>
       <BigScore value={fmtNum(score, Number.isInteger(score) ? 0 : 1)} label={entry.risk_label} tone={RISK_TONE[entry.risk_label]} />
-      <span className="font-mono text-[12px] text-faint">#{rank}</span>
+      <RankedThumb src={entry.image_url} name={entry.card_name} rank={rank} />
       <div className="min-w-0">
-        <h3 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
+        <h2 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
           <CardChip name={entry.card_name} subtitle={origin} variant="plain" />
-        </h3>
-        <p className="mt-1 font-mono text-[12px] text-muted-text">
+        </h2>
+        <p className="mt-1 text-[13px] text-muted-text">
           {[
             origin,
             `${fmtPct(entry.deck_share)} des decks`,
@@ -104,8 +116,8 @@ function RadarRow({ entry, rank }: { entry: BanRadarEntry; rank: number }) {
   );
 }
 
-export async function BanRadarView({ kind, tabs }: { kind?: BanRadarKind; tabs: React.ReactNode }) {
-  const { data, as_of, n_decks_window } = await api.banRadar({ limit: 50, kind });
+export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React.ReactNode }) {
+  const { data, as_of, n_decks_window } = await api.banRadar({ limit: 50, kind: apiKind(view) });
 
   return (
     <>
@@ -153,9 +165,9 @@ export async function BanRadarView({ kind, tabs }: { kind?: BanRadarKind; tabs: 
         </ul>
         <p>Résultats mitigés selon les listes : c’est encourageant, ce n’est pas une validation.</p>
         <p>
-          Les <strong className="font-medium text-text">staples génériques</strong> trustent le haut du classement parce
+          Les <strong className="font-medium text-text">staples génériques</strong> trustent le haut du classement complet parce
           qu’elles sont jouées partout à 3 exemplaires, mais Konami frappe surtout les pièces de moteur des decks qui
-          gagnent. Le filtre « Pièces d’archétype » isole ces dernières.
+          gagnent. La page s’ouvre donc sur les « Pièces d’archétype » ; les staples ont leur propre vue.
         </p>
         <p>La barre sous chaque carte décompose le score : un segment par critère, en points sur 100.</p>
         <dl className="grid gap-1 font-mono text-[12px]">
@@ -171,7 +183,17 @@ export async function BanRadarView({ kind, tabs }: { kind?: BanRadarKind; tabs: 
         </dl>
       </Explainer>
 
-      <KindFilterTabs basePath="/ban?tab=radar" active={kind} count={`Top ${data.length}`} />
+      <KindFilterTabs tab="radar" active={view} count={`Top ${data.length}`} />
+
+      {view !== "archetype" && (
+        <div className="mb-4 max-w-[72ch]">
+          <Callout title="Un score élevé ne suffit pas pour une staple">
+            <p>
+              {`Sur les ${SITE_FACTS.banBacktestLists} dernières banlists TCG rejouées, ${SITE_FACTS.banTop10HitsGeneric} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre ${SITE_FACTS.banTop10HitsArchetype} sur 100 pour les pièces d’archétype. Ash Blossom, première à chaque fois, n’a jamais été touchée.`}
+            </p>
+          </Callout>
+        </div>
+      )}
 
       <div className="border-b border-line">
         {data.map((entry, index) => (

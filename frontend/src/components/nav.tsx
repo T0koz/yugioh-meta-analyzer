@@ -19,7 +19,7 @@ const NAV_ENTRIES: NavEntry[] = [
     kind: "group",
     label: "Méta",
     items: [
-      { href: "/tier-list", label: "Tier List" },
+      { href: "/tier-list", label: "Tier list" },
       { href: "/evolution", label: "Évolution" },
       { href: "/predictions", label: "Prédictions" },
     ],
@@ -29,8 +29,8 @@ const NAV_ENTRIES: NavEntry[] = [
     kind: "group",
     label: "Boutique",
     items: [
-      { href: "/boutique", label: "Signaux Boutique" },
-      { href: "/early-signals", label: "Early Signals" },
+      { href: "/boutique", label: "Signaux boutique" },
+      { href: "/early-signals", label: "Signaux précoces" },
     ],
   },
   { kind: "link", href: "/graph", label: "Graphe" },

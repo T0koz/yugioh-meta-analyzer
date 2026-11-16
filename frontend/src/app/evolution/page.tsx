@@ -1,10 +1,16 @@
+import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { Em } from "@/components/ds/em";
 import { Page, PageHero } from "@/components/ds/page";
 import { EvolutionChart } from "./EvolutionChart";
 
+export const metadata: Metadata = {
+  title: "Évolution de la méta",
+  description: "Score méta mensuel de chaque archétype Yu-Gi-Oh! : qui monte, qui s’efface, mois après mois.",
+};
+
 export default async function EvolutionPage() {
-  const { data } = await api.evolution();
+  const { data, images } = await api.evolution();
 
   return (
     <Page>
@@ -17,7 +23,7 @@ export default async function EvolutionPage() {
         }
         intro="Score méta mensuel par archétype (×100). Compare jusqu'à quatre archétypes : le premier choisi passe en accent."
       />
-      <EvolutionChart data={data} />
+      <EvolutionChart data={data} images={images} />
     </Page>
   );
 }

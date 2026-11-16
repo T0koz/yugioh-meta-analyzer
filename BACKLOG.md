@@ -134,9 +134,9 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
 | TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | ✅ Done (2026-11-16) — branche fusionnée (`/ban-radar` 7 s → 0,05 s), `archetype` nullable, test de fumée `backend/tests` | 🔴 Urgent |
-| TOK-96 | Jour 1 : gains rapides sans décision de design (débloqué : TOK-95 fait) | 🔜 À faire | 🔴 High |
-| TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | 🔜 À faire | 🔴 High |
-| TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🔜 À faire | 🔴 High |
+| TOK-96 | Jour 1 : gains rapides sans décision de design | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation et de fusion | 🔴 High |
+| TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation | 🔴 High |
+| TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation | 🔴 High |
 | TOK-106 | Nouvelle page d'accueil d'après le prototype (bloqué par TOK-95 et TOK-97) | 🔜 Backlog | 🔴 High |
 | TOK-99 | Dataviz maison en SVG (D3) + palette de données | 🔜 Backlog | 🟠 Medium |
 | TOK-100 | Qualité : SEO de partage + tests visuels Playwright | 🔜 Backlog | 🟠 Medium |
@@ -147,6 +147,34 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 
 TOK-83 et la partie front de TOK-82 sont dans `main` depuis la fusion de `claude/front-vitrine-06112d` (TOK-95, 2026-11-16).
+
+**TOK-96 — état (2026-11-16)** : écrans de chargement, d'erreur et 404 aux couleurs du site ; `/ban-simulator`
+redirigé vers `/ban?tab=simulateur` ; axes de `/evolution` ajustés ; `--faint` relevé (0 échec de contraste sur
+toutes les pages) ; vignettes de cartes dans le Ban Center ; 10 titres distincts en français ; libellés traduits ;
+Ban Radar ouvert sur « Pièces d'archétype » (décision 4). **Écart au critère** : 28 vignettes sur 50 dans le
+radar (et non 50), parce que 22 cartes récentes manquent dans la table `cards` — relancer `fetch_cards.py` puis
+`build_serving_db.py` (à faire par le gardien des données, hors de ce chantier).
+
+**TOK-97 — état (2026-11-16)**, analyse de l'agent `data-scientist-ygo` puis correctifs dans l'API, sans écrire en base :
+- **Tier list recalculée depuis `meta_scores`** (couvre le besoin de TOK-91 côté affichage) : mois récents cumulés
+  jusqu'à 300 decks, tiers sur la part de decks, tendance par test de deux proportions. `meta_tier_list` et
+  `archetype_trend` ne sont plus lues par l'API.
+- **Signaux boutique** : archétypes déjà en TCG écartés (7 sur 10) ; colonne « Entrée TCG » supprimée, c'était
+  « date du calcul + 4 mois » pour toutes les lignes. **Il reste 41 signaux, aucun « Fort »** : à arbitrer avant TOK-106.
+- **Ban Radar** : aucun poids modifié ; encart chiffré sur les vues « Staples » et « Tout » (6 places sur 100 contre 19).
+- **Écart OCG → TCG** : « 2 à 6 mois » partout.
+- Suites hors chantier : `log_predictions.py` journalise la fausse date comme `target_date` ; le notebook 10 ne
+  filtre pas les archétypes déjà en TCG ; `/meta/evolution` choisit son top 15 sur un mois à petits effectifs.
+
+**TOK-98 — état (2026-11-16)** : `CardArt` sur `next/image` (0 image surdimensionnée, 0 requête du navigateur vers
+YGOPRODeck) ; une image de carte au premier écran de 8 pages sur 9 (le graphe est l'exception) ; bandeaux d'archétype
+sur les lignes T0 à T3 ; tokens de mouvement, ouverture de page et `Reveal` en CSS seul (0 animation en mouvement
+réduit) ; mono sous 40 % des caractères sur les 9 pages (11 à 37 %) ; barre de la tier list = part de méta ; plus de
+colonne de barres orange dans les tableaux ; Lighthouse installé, référence dans `docs/audit-front/lighthouse-2026-11-16.md`
+(desktop 100 partout ; mobile 98 sauf `/evolution` 90 et `/graph` 73 ; LCP mobile réel ≈ 2,0 s, à l'objectif de TOK-106 — les 3,3 s d'abord mesurés venaient de la simulation de Lighthouse).
+
+**Après fusion de TOK-113 dans la branche (2026-11-16)** : la page boutique affiche les 12 signaux du signal v3 et la
+fenêtre d'arrivée en TCG ; le filtre par nom de TOK-97 est retiré de l'API (règle appliquée à la source).
 
 ---
 

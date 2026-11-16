@@ -14,7 +14,10 @@ export interface TierEntry {
 
 export interface TierListResponse {
   data: TierEntry[];
-  generated_at: string;
+  /** Fenêtre de calcul : premier et dernier mois cumulés (« AAAA-MM »). */
+  window_start: string;
+  window_end: string;
+  n_decks: number;
 }
 
 export interface EvolutionPoint {
@@ -25,6 +28,8 @@ export interface EvolutionPoint {
 
 export interface EvolutionResponse {
   data: Record<string, EvolutionPoint[]>;
+  /** Vignette par archétype ; absente si aucune carte connue. */
+  images: Record<string, string>;
 }
 
 export interface PredictionEntry {
@@ -32,6 +37,7 @@ export interface PredictionEntry {
   current: number;
   predicted: number;
   direction: Trend;
+  image_url: string | null;
 }
 
 export interface PredictionsResponse {
@@ -46,7 +52,10 @@ export interface BoutiqueSignal {
   buy_label: BuyLabel;
   cm_price: number;
   ban_tcg: string | null;
-  tcg_entry_estimated: string | null;
+  image_url: string | null;
+  /** Fenêtre d'arrivée en TCG de l'archétype, intervalle à 80 % (« AAAA-MM-JJ »). */
+  tcg_window_start: string | null;
+  tcg_window_end: string | null;
 }
 
 export interface BoutiqueResponse {
@@ -58,6 +67,7 @@ export interface EarlySignal {
   archetype: string | null;
   early_score: number;
   views_week: number;
+  image_url: string | null;
 }
 
 export interface EarlySignalsResponse {

@@ -2,6 +2,7 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
+import { ArtDot } from "@/components/card-art";
 import { Toolbar, pillClass } from "@/components/ds/page";
 import { fmtMonthShort } from "@/lib/format";
 import type { EvolutionResponse } from "@/types";
@@ -13,7 +14,7 @@ const MAX_SERIES = SERIES_COLORS.length;
 
 const AXIS_TICK = { fill: "var(--muted-text)", fontSize: 11, fontFamily: "var(--font-jetbrains-mono)" };
 
-export function EvolutionChart({ data }: { data: EvolutionResponse["data"] }) {
+export function EvolutionChart({ data, images }: Pick<EvolutionResponse, "data" | "images">) {
   const archetypes = Object.keys(data);
   // Ordre de sélection = ordre des couleurs : la première série choisie porte l'accent.
   const [selected, setSelected] = useState<string[]>(archetypes.slice(0, 3));
@@ -37,8 +38,13 @@ export function EvolutionChart({ data }: { data: EvolutionResponse["data"] }) {
     return row;
   });
 
+  // L'axe du temps commence au premier mois où une série affichée a une valeur :
+  // sinon les courbes sont tassées à droite d'un graphique vide.
+  const firstIndex = chartData.findIndex((row) => selected.some((arch) => row[arch] !== null));
+  const visibleData = firstIndex > 0 ? chartData.slice(firstIndex) : chartData;
+
   const main = selected[0];
-  const mainLastIndex = main ? chartData.findLastIndex((row) => row[main] !== null) : -1;
+  const mainLastIndex = main ? visibleData.findLastIndex((row) => row[main] !== null) : -1;
 
   return (
     <>
@@ -56,6 +62,7 @@ export function EvolutionChart({ data }: { data: EvolutionResponse["data"] }) {
               {slot >= 0 && (
                 <span aria-hidden className="h-2 w-2 rounded-full" style={{ backgroundColor: SERIES_COLORS[slot] }} />
               )}
+              {images[arch] && <ArtDot src={images[arch]} />}
               {arch}
             </button>
           );
@@ -64,7 +71,7 @@ export function EvolutionChart({ data }: { data: EvolutionResponse["data"] }) {
 
       <div className="rounded-[8px] border border-line-2 bg-ink-2 p-4 min-[760px]:p-6">
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={chartData} margin={{ top: 8, right: 28, bottom: 0, left: -12 }}>
+          <LineChart data={visibleData} margin={{ top: 8, right: 28, bottom: 0, left: -12 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" vertical={false} />
             <XAxis
               dataKey="month"
@@ -73,7 +80,9 @@ export function EvolutionChart({ data }: { data: EvolutionResponse["data"] }) {
               tick={AXIS_TICK}
               tickLine={false}
             />
-            <YAxis domain={[0, 100]} stroke="var(--line)" tick={AXIS_TICK} tickLine={false} />
+            {/* Le score méta dépasse rarement 20 : l'axe part de zéro (pour ne pas
+                exagérer les écarts) et s'arrête au maximum des séries affichées. */}
+            <YAxis domain={[0, "auto"]} allowDecimals={false} stroke="var(--line)" tick={AXIS_TICK} tickLine={false} />
             <Tooltip
               labelFormatter={(m) => fmtMonthShort(String(m))}
               contentStyle={{

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { fmtNum } from "@/lib/format";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -5,6 +6,11 @@ import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
 import { Page, PageHero } from "@/components/ds/page";
 import { GraphView } from "./GraphView";
+
+export const metadata: Metadata = {
+  title: "Graphe de synergies",
+  description: "Les cartes Yu-Gi-Oh! qui se jouent ensemble : le graphe des co-occurrences dans les decks de tournoi.",
+};
 
 const MIN_JACCARD = 0.15;
 

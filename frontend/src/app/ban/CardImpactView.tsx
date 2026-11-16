@@ -4,9 +4,9 @@ import { fmtDate, fmtNum } from "@/lib/format";
 import { CardChip } from "@/components/card-chip";
 import { Em } from "@/components/ds/em";
 import { Explainer, Meter, PageHero } from "@/components/ds/page";
-import type { BanRadarKind, CardImpactEntry } from "@/types";
-import { KindFilterTabs } from "./kind-filter";
-import { BigScore, ROW_GRID } from "./BanRadarView";
+import type { CardImpactEntry } from "@/types";
+import { KindFilterTabs, apiKind, type KindView } from "./kind-filter";
+import { BigScore, RankedThumb, ROW_GRID } from "./BanRadarView";
 
 function ImpactRow({ entry, rank, max }: { entry: CardImpactEntry; rank: number; max: number }) {
   // top_archetype est nul quand la carte est jouée un peu partout sans deck
@@ -16,12 +16,12 @@ function ImpactRow({ entry, rank, max }: { entry: CardImpactEntry; rank: number;
   return (
     <div className={ROW_GRID}>
       <BigScore value={fmtNum(entry.bridge_score)} label="Impact" tone="text-muted-text" />
-      <span className="font-mono text-[12px] text-faint">#{rank}</span>
+      <RankedThumb src={entry.image_url} name={entry.card_name} rank={rank} />
       <div className="min-w-0">
-        <h3 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
+        <h2 className="text-[20px] leading-tight font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">
           <CardChip name={entry.card_name} subtitle={origin} variant="plain" />
-        </h3>
-        <p className="mt-1 font-mono text-[12px] text-muted-text">
+        </h2>
+        <p className="mt-1 text-[13px] text-muted-text">
           {[origin, `${fmtNum(entry.n_archetypes)} archétypes`, `${fmtNum(entry.decks)} decks`].join(" · ")}
         </p>
         <div className="mt-3">
@@ -30,7 +30,7 @@ function ImpactRow({ entry, rank, max }: { entry: CardImpactEntry; rank: number;
       </div>
       <Link
         href={`/ban?tab=simulateur&card=${encodeURIComponent(entry.card_name)}`}
-        className="col-start-3 w-fit rounded-[4px] border border-line-2 px-3 py-1.5 font-mono text-[12px] text-soft transition-colors duration-200 hover:text-text min-[760px]:col-start-auto min-[760px]:justify-self-end"
+        className="col-start-3 w-fit rounded-[4px] border border-line-2 px-3 py-1.5 text-[13px] text-soft transition-colors duration-200 hover:text-text min-[760px]:col-start-auto min-[760px]:justify-self-end"
       >
         Simuler le ban →
       </Link>
@@ -38,8 +38,8 @@ function ImpactRow({ entry, rank, max }: { entry: CardImpactEntry; rank: number;
   );
 }
 
-export async function CardImpactView({ kind, tabs }: { kind?: BanRadarKind; tabs: React.ReactNode }) {
-  const { data, as_of, n_decks_window } = await api.cardImpact({ limit: 50, kind });
+export async function CardImpactView({ view, tabs }: { view: KindView; tabs: React.ReactNode }) {
+  const { data, as_of, n_decks_window } = await api.cardImpact({ limit: 50, kind: apiKind(view) });
   const max = Math.max(...data.map((d) => d.bridge_score), 0);
 
   return (
@@ -73,7 +73,7 @@ export async function CardImpactView({ kind, tabs }: { kind?: BanRadarKind; tabs
           cette carte demain, combien d’archétypes et de decks sont concernés.
         </p>
         <p>
-          Bridge score = nombre d’archétypes qui jouent la carte × log(1 + nombre de decks). Une carte adoptée par
+          Score de pont = nombre d’archétypes qui jouent la carte × log(1 + nombre de decks). Une carte adoptée par
           beaucoup d’archétypes, en volume, est une pièce de connexion : la retirer touche plusieurs decks à la fois.
         </p>
         <p>
@@ -83,7 +83,7 @@ export async function CardImpactView({ kind, tabs }: { kind?: BanRadarKind; tabs
         </p>
       </Explainer>
 
-      <KindFilterTabs basePath="/ban?tab=impact" active={kind} count={`Top ${data.length}`} />
+      <KindFilterTabs tab="impact" active={view} count={`Top ${data.length}`} />
 
       <div className="border-b border-line">
         {data.map((entry, index) => (

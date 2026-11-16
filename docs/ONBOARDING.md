@@ -127,14 +127,12 @@ Classés par impact. Les trois premiers touchent à la **validité** de ce qu'on
 
 ### Installation
 
-Python 3.13. Il n'y a pas de `requirements.txt` à la racine (seulement `backend/`) : la liste
-est dans le README.
+Python 3.13. `requirements.txt` (racine) fige les versions du venv de Thomas : mêmes
+versions, mêmes chiffres.
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install pandas numpy jupyter ipykernel networkx pyvis scikit-learn streamlit plotly \
-            statsmodels youtube-transcript-api requests scipy
-pip install -r backend/requirements-dev.txt     # API + pytest pour le test de fumée
+python3.13 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt                 # scripts, notebooks, API, tests
 git config core.hooksPath .githooks             # optionnel : vérifications avant chaque push
 ```
 
@@ -248,7 +246,9 @@ Trois filets supplémentaires, sans action de ta part :
 - Après chaque fonctionnalité : `context.md` (pièges, résultats chiffrés) et `BACKLOG.md`
   (statut du ticket). Ce sont les deux fichiers les plus édités : `git pull --rebase` avant
   d'y toucher, et ajoute ta section plutôt que de réécrire celle de l'autre.
-- Les tickets `TOK-xx` vivent dans Linear (équipe Tokoz) ; `BACKLOG.md` en est le miroir.
+- Les tickets `TOK-xx` vivent dans Linear (équipe Tokoz, Thomas t'y invite) ; `BACKLOG.md` en
+  est le miroir. Avec Claude Code, connecte Linear dans les réglages de l'app pour qu'il lise
+  les tickets.
 - Changement du **Ban Radar** : backtest obligatoire (§7), et l'agent `data-scientist-ygo` si tu
   utilises Claude Code. Script qui **écrit en base** ou nouvel **endpoint** : l'agent
   `gardien-donnees`.

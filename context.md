@@ -394,6 +394,10 @@ Règles complètes : `docs/ONBOARDING.md` §8 (humains) et `CLAUDE.md` (agents).
   `prediction_log.jsonl` n'est commité que par Thomas.
 - `data/raw/cards.json` (32 Mo) est suivi par Git depuis le premier commit malgré `.gitignore` (données
   publiques, sans risque ; `git rm --cached` à décider).
+- **Installation** : `requirements.txt` racine, versions figées sur le venv de Thomas (résolution vérifiée avec `uv pip compile`).
+  `backend/requirements.txt` reste la liste minimale du déploiement. `.claude/launch.json` retrouve le venv via
+  `git rev-parse --git-common-dir` (marche depuis un worktree et sur un autre poste).
+- La collaboratrice utilise **Claude Code** : `CLAUDE.md` s'applique à elle ; accès Linear à lui ouvrir.
 - Notes : `docs/collaboration/base-hebergee.md` (pas de base hébergée tant que le pipeline a un seul écrivain :
   Turso gratuit : ~7 M des 10 M lignes écrites/mois partent dans le fetch complet du lundi, Postgres = 1-2 semaines de migration) et
   `docs/collaboration/avis-stack.md` (la stack tient ; ce qui gêne : installation, tests, jobs sur le Mac,

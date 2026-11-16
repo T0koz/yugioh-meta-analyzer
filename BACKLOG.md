@@ -158,9 +158,9 @@ Livrables : `docs/collaboration/`, `scripts/check.py`, `.githooks/pre-push`, `.g
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-108 | L'inviter sur GitHub (pseudo à fournir) et mettre à jour TOK-78 | 🔜 Attend son pseudo GitHub ; invitation faite par Thomas | 🔴 High |
+| TOK-108 | L'inviter sur GitHub (pseudo à fournir) et dans Linear (équipe Tokoz), mettre à jour TOK-78 | 🔜 Attend son pseudo GitHub ; invitations faites par Thomas. Protection de `main` à poser (interdire force-push et suppression, sans revue) | 🔴 High |
 | TOK-109 | Lui fournir une copie de la base (court terme, accès privé) | 🟡 Méthode prête (`scripts/export_db_snapshot.py`, Drive nominatif, `docs/collaboration/transmission-base.md`) ; envoi par Thomas | 🔴 High |
-| TOK-112 | Règles de travail à deux (`CLAUDE.md`, vérifications avant push, `ONBOARDING.md`) | 🟡 `scripts/check.py` + hook + CI ; `CLAUDE.md` et `ONBOARDING.md` §8 réécrits, à valider | 🟠 Medium |
+| TOK-112 | Règles de travail à deux (`CLAUDE.md`, vérifications avant push, `ONBOARDING.md`) | ✅ `scripts/check.py` + hook optionnel + CI non bloquante ; `CLAUDE.md` et `ONBOARDING.md` §8 réécrits et validés ; `requirements.txt` racine figé, `launch.json` sans chemin absolu | 🟠 Medium |
 | TOK-110 | Investiguer une base de données hébergée (note de comparaison, pas de migration) | ✅ Note `docs/collaboration/base-hebergee.md` (reco : copie de référence partagée, pas de base hébergée tant que le pipeline est mono-écrivain) | 🟠 Medium |
 | TOK-111 | Avis sur la stack pour travailler à deux (note, pas de changement) | ✅ Note `docs/collaboration/avis-stack.md` (la stack tient ; priorité : dépendances figées, chemins relatifs, notebooks → scripts) | 🟠 Medium |
 

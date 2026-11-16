@@ -21,8 +21,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # 3. Install dependencies
-pip install pandas numpy jupyter ipykernel networkx pyvis scikit-learn \
-            streamlit plotly statsmodels youtube-transcript-api requests scipy
+pip install -r requirements.txt   # versions figées (scripts, notebooks, API, tests)
 ```
 
 ---

@@ -309,6 +309,21 @@ Lighthouse SEO 100 sur 12 pages ; accueil inchangé (LCP mobile 1,80 s, JavaScri
 - `npm run check:meta -- http://localhost:3100` vérifie les balises sur un build local (API réelle lancée).
 → détail complet : `docs/tests-visuels.md`, `docs/journal/seo-tests-tok-100.md`
 
+### 🔘 Composants d'interaction (lot 8, 2026-11-17, branche `claude/lot08-boutons-ef9f72`, non fusionnée dans `main`)
+
+Boutons, pills, onglets et bascules ont une seule source : `components/ds/control.tsx` (`Button`, `ButtonLink`, `Pill`,
+`PillLink`, `TabRail`, `TabLink`, `controlClass`) + le bloc `.ctl` de `globals.css`. CSS seul. Mesuré : JavaScript
+transféré inchangé (`/evolution` 191,4 ko avant et après, même script de mesure), CSS +0,7 ko, CLS 0, 0 animation en
+mouvement réduit, pire contraste 4,52:1 (désactivé).
+- **Tout nouveau bouton, filtre ou onglet passe par ce composant.** Sur la page : utilitaires de mise en page seulement.
+- **Listes d'ombres à nombre de couches constant** (2 internes + 3 portées) entre états, sinon la transition saute.
+- **Le bloc est dans `@layer components`** : hors couche, il l'emporterait sur les utilitaires Tailwind (`w-full`…).
+- **Largeur de la nav à 768 px** : quatre onglets + la recherche tiennent avec 10 px de retrait par onglet, pas 12.
+- **Un build avec `NEXT_DIST_DIR=<autre dossier>`** réécrit `frontend/tsconfig.json` et son dossier n'est pas ignoré
+  par Git (seuls `.next` et `.next-visual` le sont) : ne pas faire `git add -A` après, et restaurer `tsconfig.json`.
+- Toute retouche d'un contrôle change les 36 captures (la nav est sur chaque page) : `--update` après relecture.
+→ détail complet : `docs/design-system.md` §4 « Composants d'interaction »
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

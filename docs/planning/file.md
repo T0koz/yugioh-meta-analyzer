@@ -3,7 +3,11 @@
 Prompt de reprise (identique à chaque fenêtre) : « Lis docs/planning/file.md et reprends la file. »
 
 ## Règles
-- Tu es l'orchestrateur : tu coordonnes, tu ne codes pas. Une seule session de travail à la fois, une session neuve
+- **Parallélisme (règle de Thomas, 17/11)** : un lot à la fois. Exception unique : si la session en cours est
+  bloquée par une attente longue et passive (téléchargement, build ou calcul long, attente d'une validation de
+  Thomas), tu peux lancer **une** deuxième session sur un lot qui ne touche pas les mêmes fichiers. **Jamais plus
+  de deux sessions.** Dès que l'attente se termine, tu ne relances rien en parallèle. Note le motif dans `etat.md`.
+- Tu es l'orchestrateur : tu coordonnes, tu ne codes pas. Une seule session de travail à la fois (sauf l'exception ci-dessus), une session neuve
   par lot, chacune avec le brief indiqué + `docs/planning/2026-11-17/regles.md`.
 - Lis d'abord `docs/planning/etat.md` : reprends au premier lot non terminé. Mets `etat.md` à jour **après chaque
   étape** (lot démarré, lot fini, arrêt), et fais commiter souvent sur la branche d'intégration : un arrêt brutal

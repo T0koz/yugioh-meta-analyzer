@@ -1,0 +1,47 @@
+# Vérifications automatiques à chaque push sur main (et sur les pull requests).
+#
+# Gratuit : GitHub Actions est illimité pour un dépôt public. Aucun secret utilisé :
+# la CI n'a pas accès à la base (elle n'est pas dans Git), elle vérifie donc ce qui
+# se vérifie sans données. Les vérifications avec base restent locales :
+#     python scripts/check.py      (ou automatiquement via le hook .githooks/pre-push)
+#
+# Pas de revue sur main : cette CI ne bloque rien, elle prévient par e-mail après coup.
+name: Vérifications
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  depot:
+    name: Secrets, fichiers interdits, WEIGHTS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/check.py --ci
+      - name: Syntaxe Python (scripts et backend)
+        run: python -m compileall -q scripts backend app.py
+
+  front:
+    name: Front (tsc, eslint)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx eslint src

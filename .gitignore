@@ -39,6 +39,12 @@ logs/
 data/fetch_health.jsonl
 data/backup_*.db
 
+# Identifiants (base hébergée, API…) : jamais commités, le dépôt est public.
+# Un modèle sans valeurs peut être partagé sous le nom .env.example.
+.env
+.env.*
+!.env.example
+
 # Fichiers personnels de Thomas : jamais commités (dépôt public)
 HANDOFF.md
 docs/hebergement-multi-tcg.html

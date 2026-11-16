@@ -4,15 +4,21 @@
     {
       "name": "frontend",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": true,
       "cwd": "frontend"
     },
     {
       "name": "backend",
-      "runtimeExecutable": "/Users/thomascozian/code/yugioh-meta-analyzer/.venv/bin/uvicorn",
-      "runtimeArgs": ["app.main:app", "--reload", "--port", "8000"],
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "exec \"$(git rev-parse --path-format=absolute --git-common-dir)/../.venv/bin/uvicorn\" app.main:app --reload --port 8000"
+      ],
       "port": 8000,
       "cwd": "backend"
     }

@@ -77,8 +77,7 @@ cd yugioh-meta-analyzer
 python3 -m venv .venv
 source .venv/bin/activate
 
-pip install pandas numpy jupyter ipykernel networkx pyvis scikit-learn \
-            streamlit plotly statsmodels youtube-transcript-api requests
+pip install -r requirements.txt   # versions figées (scripts, notebooks, API, tests)
 ```
 
 ## Reconstruire la base de données

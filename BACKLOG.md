@@ -112,7 +112,7 @@ traitement conseillé : TOK-70 → TOK-72 → TOK-69 → TOK-74 / TOK-73.
 | TOK-75 | Script de validation du `prediction_log` (débloque TOK-55) | ✅ Done — `scripts/validate_predictions.py` | 🟠 Medium |
 | TOK-76 | Risque : dépendance à l'API non officielle yugiohmeta | 🟡 Monitoring fait (`data/fetch_health.jsonl`) ; risque structurel reste | 🟠 Medium |
 | TOK-77 | Mesurer la pollution Genesys dans le méta TCG | ✅ Done — `docs/tok-77-genesys.md` (27-44 % des decks TCG depuis juillet) | 🟠 Medium |
-| TOK-78 | Onboarding d'une data scientist (`docs/ONBOARDING.md` fait, accès à décider) | 🟡 Partiel | 🟠 Medium |
+| TOK-78 | Onboarding d'une data scientist (`docs/ONBOARDING.md` fait ; accès tranché : dépôt public, écriture directe, base par Drive — voir TOK-107) | 🟡 Reste l'invitation (TOK-108) et l'envoi de la base (TOK-109) | 🟠 Medium |
 | TOK-79 | Agent `coordinateur` (Rapport + Dispatch) + point hebdo `yugioh-point-hebdo` | ✅ Done | 🟠 Medium |
 | TOK-83 | Perf : `GET /ban-radar` 10-20 s (jointure `REPLACE` sans index) | ✅ Done — index d'expression `idx_cards_name_clean` + `= +col` dans les routeurs (~30 ms) ; `serving.db` reconstruite | 🟠 Medium |
 | TOK-91 | Tier list maison : recalculer depuis nos données (`meta_tier_list` figée au 17 juin, endpoint yugiohmeta 404) | 🔜 À faire | 🔴 High |
@@ -183,16 +183,15 @@ fenêtre d'arrivée en TCG ; le filtre par nom de TOK-97 est retiré de l'API (r
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à
 `main` sans revue, dépôt qui reste public, base hébergée à terme (copie au départ), avis sur la stack.
 Vigilance : jamais d'identifiants commités (dépôt public), base hébergée privée, `CLAUDE.md` à adapter.
+Livrables : `docs/collaboration/`, `scripts/check.py`, `.githooks/pre-push`, `.github/workflows/verifications.yml`.
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-108 | L'inviter sur GitHub (pseudo à fournir) et mettre à jour TOK-78 | 🔜 À faire | 🔴 High |
-| TOK-109 | Lui fournir une copie de la base (court terme, accès privé) | 🔜 À faire | 🔴 High |
-| TOK-112 | Règles de travail à deux (`CLAUDE.md`, vérifications avant push, `ONBOARDING.md`) | 🔜 À faire | 🟠 Medium |
-| TOK-110 | Investiguer une base de données hébergée (note de comparaison, pas de migration) | 🔜 Backlog | 🟠 Medium |
-| TOK-111 | Avis sur la stack pour travailler à deux (note, pas de changement) | 🔜 Backlog | 🟠 Medium |
-
----
+| TOK-108 | L'inviter sur GitHub (pseudo à fournir) et dans Linear (équipe Tokoz), mettre à jour TOK-78 | 🔜 Attend son pseudo GitHub ; invitations faites par Thomas. Protection de `main` à poser (interdire force-push et suppression, sans revue) | 🔴 High |
+| TOK-109 | Lui fournir une copie de la base (court terme, accès privé) | 🟡 Méthode prête (`scripts/export_db_snapshot.py`, Drive nominatif, `docs/collaboration/transmission-base.md`) ; envoi par Thomas | 🔴 High |
+| TOK-112 | Règles de travail à deux (`CLAUDE.md`, vérifications avant push, `ONBOARDING.md`) | ✅ `scripts/check.py` + hook optionnel + CI non bloquante ; `CLAUDE.md` et `ONBOARDING.md` §8 réécrits et validés ; `requirements.txt` racine figé, `launch.json` sans chemin absolu | 🟠 Medium |
+| TOK-110 | Investiguer une base de données hébergée (note de comparaison, pas de migration) | ✅ Note `docs/collaboration/base-hebergee.md` (reco : copie de référence partagée, pas de base hébergée tant que le pipeline est mono-écrivain) | 🟠 Medium |
+| TOK-111 | Avis sur la stack pour travailler à deux (note, pas de changement) | ✅ Note `docs/collaboration/avis-stack.md` (la stack tient ; priorité : dépendances figées, chemins relatifs, notebooks → scripts) | 🟠 Medium |
 
 ## TOK-84 — Moteur de combos, pilote Branded (réunion du 2026-11-16)
 

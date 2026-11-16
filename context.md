@@ -297,6 +297,73 @@ seule, **Railway n'est peut-être plus nécessaire** — l'API pourrait tourner 
 fonctions serverless à côté du front, base embarquée. Ça supprimerait la moitié
 de TOK-35.
 
+### 📒 Journal des prédictions (2026-11-01)
+
+`scripts/log_predictions.py` archive l'état courant de `meta_predictions`, `boutique_alerts`,
+`boutique_buy_signals`, `early_card_signals` et `ban_radar` dans la table `prediction_log`
+(append-only : triggers SQLite contre UPDATE/DELETE) **et** dans `data/prediction_log.jsonl`
+(versionné par git). Ces cinq tables sont écrasées à chaque recalcul : sans journal, on ne peut
+pas prouver « annoncé le X, réalisé le Y ».
+
+- **À lancer après chaque recalcul d'une source** (notebook 05, notebook 10, notebook 11,
+  `build_ban_radar.py`), puis **committer `data/prediction_log.jsonl`** : le commit (et le push) date
+  la prédiction par un tiers. `--dry-run` simule, `--status` résume.
+- Idempotent (clé : kind, sujet, date de calcul, version du modèle). Si la table est vide, elle
+  est reconstruite depuis le fichier jsonl.
+- **`provenance`** : `live` si journalisé au plus 1 jour après le calcul, `backfill` sinon. Le premier
+  lot (2 008 lignes, calculées entre juin et août 2026) est `backfill` : il ne prouve rien d'indépendant.
+  Seules les lignes `live` commitées sont une preuve.
+- Bump `META_MODEL` / `BOUTIQUE_MODEL` / `EARLY_MODEL` dans le script quand un modèle change ; la
+  version du Ban Radar est l'empreinte de `WEIGHTS` lue dans `build_ban_radar.py`.
+- Le script ouvre la base avec `timeout=60` : un processus qui garde `yugioh.db` ouverte (backend,
+  notebook, agent) bloque l'écriture (`database is locked`).
+- La table n'est pas dans `SERVED_TABLES` (aucun endpoint ne la lit encore) : l'ajouter le jour où
+  la page TOK-55 « Ban Predictor vs History » la servira.
+- Il n'existe pas encore de script de **validation** (comparer chaque prédiction à la réalité
+  après `target_date`) : prochaine étape.
+
+### ⚖️ Légalité des decks à la date du tournoi (2026-11-01)
+
+**Problème :** `tournament_decks.illegal` (drapeau de l'API yugiohmeta) est évalué contre une banlist
+**postérieure** au tournoi. Avant le 2 février 2026 (TCG) et avril 2026 (OCG), 90 à 100 % des decks
+sont jugés illégaux ; le filtre `illegal = 0` des notebooks 02, 03, 04, 09, 10, 12 et de
+`build_ban_radar.py` jette donc l'essentiel de l'historique (4 757 decks « légaux » sur 21 206), et en
+priorité les decks qui jouaient des cartes touchées ensuite (biais de survivant). C'est ce qui rend
+`meta_scores` si maigre (moins de 40 decks par mois avant 2026).
+
+**Correctif (étape 1, faite) :** `scripts/compute_deck_legality.py` reconstruit la table `deck_legality`
+(banlist en vigueur à la date `created` du tournoi, infractions comptées main + extra + side). Résultat :
+20 220 decks légaux (TCG 9 282, OCG 10 938), 598 illégaux, 388 non évaluables (format Genesys, légalité
+par points). Accord avec l'API de 99,6 % depuis juin 2026, période où la liste est stable.
+
+- `illegal` n'est **pas** modifié : tant qu'on ne rebranche pas les notebooks, rien ne change.
+- `days_to_boundary` : distance au changement de liste le plus proche. Autour d'un changement
+  (≈ 14 jours) la date réelle d'entrée en vigueur est ambiguë (accord 84-92 % en fév.-mai 2026).
+- **À vérifier :** `Stake Your Soul!` et `Vanquish Soul Razen` (Semi-Limited dans la liste de
+  février 2026) concentrent les désaccords avec l'API : banlist scrapée ou API en cause ?
+- **À vérifier :** l'API juge « légaux » des decks Genesys (≈ 11 % du TCG depuis février) : le
+  méta TCG actuel en est probablement pollué.
+- **Étape 2 (non faite) :** rebrancher les consommateurs sur `deck_legality` (`legal = 1`, et
+  `days_to_boundary > 14` si on veut éviter les fenêtres ambiguës), recalculer `meta_scores`, les
+  prédictions, les signaux boutique, puis relancer `build_ban_radar.py --backtest` (obligatoire,
+  c'est un changement de données du scoring). Les chiffres de vitrine (r = 0,771…) changeront.
+
+### 🧹 Nettoyage du backlog fiabilité (2026-11-16, branche `chore/nettoyage-backlog`)
+
+Chiffres VÉRIFIÉS (commande lancée) ; voir `docs/evaluation-prediction.md`, `docs/tok-74-kewl-tune.md`, `docs/tok-77-genesys.md`.
+
+- **Données rafraîchies** : 23 948 decks (TCG 11 618, OCG 12 330) jusqu'au 2026-11-14 ; `deck_legality` : 22 422 légaux, 915 Genesys non évaluables. Banlists à jour : TCG 2026-10-19, OCG 2026-10-01.
+  `scripts/refresh_decks.py` (job launchd `com.tokoz.yugioh-refresh-decks`, lundi 8h30) enchaîne fetch TCG, OCG, légalité et journalise dans `data/fetch_health.jsonl` (`--status`).
+- **Chaîne de recalcul** : `python scripts/refresh_all.py` (02 → 04 → banlist_features → 05 → 10 → buy_signals → 11 → ban_radar → card_impact → log_predictions → check), notebooks exécutés par nbconvert (copies dans `logs/executed/`). Tous les consommateurs lisent `deck_legality.legal = 1`.
+- **Pièges trouvés** : `REFERENCE_DATE` figée au 2026-06-14 dans les notebooks 02 et 04 (corrigé : dernier deck chargé) ; `banlist_features` et `boutique_buy_signals` n'avaient plus de producteur (scripts `build_banlist_features.py`, `build_buy_signals.py`, rétro-ingéniérés) ; le notebook 11 ne s'exécutait pas (f-string) ; nb 11 garde des fenêtres codées en dur (`2025-12-01`, `2026-01-01`) à rendre relatives ; **`meta_scores` mélange TCG et OCG** (54 % OCG) ; nb 04 groupe par `uploaded`, `deck_legality` par `created`.
+- **Défaut hérité conservé** dans `build_buy_signals.py` : `price_opp` ∈ [0,1] vs `alert_norm` ∈ [0,100] → le prix pèse ≤ 0,3 point sur 100 ; le buy score = l'alerte OCG. Décision produit.
+- **Backtest Ban Radar (données légales, 2026-11-16)** : TCG 2026-05-18 rang médian 84/889 (avant 127/923), OCG 2026-07-01 19/1236 (avant 31/1089). Dix listes TCG et dix OCG passent désormais le seuil de 600 decks (au lieu de 2). ⚠ Les deux listes TCG les plus récentes sont mauvaises : 2026-09-21 rang 206/981 (hasard ≈ 490), 2026-10-19 rang 308/905 (hasard ≈ 452). Aucun poids modifié.
+- **TOK-73** : gain du modèle prédictif ≈ 4 % de MAE sur la variation (ρ delta ≈ 0,35, égal à une régression à une variable). Signal OCG→TCG **réel mais** r ≈ 0,53 à 4 mois (IC95 [0,43 ; 0,59], 105 archétypes), plateau 2-6 mois, et r = 0,771/n = 43 non reproductible (cible mixte TCG+OCG).
+- **TOK-74** : Kewl Tune pesait déjà 22-32 % du TCG légal de mai à juillet, 8,9 % en septembre, 0,4 % en octobre (Rotary Forbidden TCG 2026-09-21). Cartes du signal du 17 juin : −34,8 % (34 cartes ≥ 1 €) vs marché −0,8 %.
+- **TOK-77** : Genesys = 27-44 % des decks TCG depuis juillet ; l'ancien filtre `illegal = 0` ne laissait presque que du Genesys.
+- **TOK-75** : `python scripts/validate_predictions.py` (table `prediction_validation`) ; aucune prévision `live` n'est échue avant décembre 2026.
+- `data/serving.db` reconstruite (10,2 Mo). Sauvegardes locales : `data/backup_avant_nettoyage_20261116.db`, `data/backup_serving_avant_nettoyage_20261116.db`.
+
 ### 🔜 À faire
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials
@@ -351,4 +418,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-10-31 (refonte design Ember)*
+*Dernière mise à jour : 2026-11-16 (nettoyage backlog fiabilité)*

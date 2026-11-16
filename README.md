@@ -71,7 +71,7 @@ yugioh-meta-analyzer/
 ## Installation
 
 ```bash
-git clone https://github.com/thomascozian/yugioh-meta-analyzer.git
+git clone https://github.com/T0koz/yugioh-meta-analyzer.git
 cd yugioh-meta-analyzer
 
 python3 -m venv .venv

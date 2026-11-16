@@ -75,7 +75,7 @@ Suivi détaillé sur [Linear](https://linear.app/tokoz).
 | TOK-31 | Backend FastAPI — endpoints /meta, /boutique, /graph, /cards | ✅ Done | 🔴 High |
 | TOK-32 | Front Next.js — toutes les pages | ✅ Done | 🔴 High |
 | TOK-33 | Front — graphe synergies interactif (vis-network branché API) | ✅ Done | 🟠 Medium |
-| TOK-34 | Front — simulateur de ban (branché API) | 🟡 Partiel | 🟠 Medium |
+| TOK-34 | Front — simulateur de ban (branché API) | ✅ Done | 🟠 Medium |
 | TOK-35 | Déploiement (Vercel front + back) | 🟡 Base de service prête | 🔴 High |
 
 **TOK-35 — état :** `scripts/build_serving_db.py` produit `data/serving.db`
@@ -92,6 +92,31 @@ sans doute tourner en serverless à côté du front, ce qui rendrait Railway inu
 - `/early-signals` — Liste dense : score + vues/semaine
 - `/graph` — vis-network interactif, accent sur l'archétype filtré
 - `/ban` — Ban Center : onglets Radar (score + barre empilée des critères), Cartes à impact, Simulateur
+
+---
+
+## Fiabilité des données & validité statistique — point du 2026-11-16
+
+Issu du point projet du 2026-11-16 (voir `docs/ONBOARDING.md` §4-5 pour le détail). Ordre de
+traitement conseillé : TOK-70 → TOK-72 → TOK-69 → TOK-74 / TOK-73.
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-68 | Fix doublons `deck_cards` + purge de la base | ✅ Done | 🔴 High |
+| TOK-70 | Rafraîchir les decklists de tournoi (figées au 9 août) | ✅ Done (2026-11-16) — `refresh_decks.py` + job launchd lundi 8h30 | 🔴 High |
+| TOK-69 | Pipeline de rafraîchissement des tables dérivées (`meta_scores` gelé en 2026-06) | ✅ Done — `scripts/refresh_all.py` | 🔴 High |
+| TOK-71 | Snapshot quotidien des prix fiable (launchd, `scripts/launchd/`) | ✅ Done | 🔴 High |
+| TOK-72 | Légalité des decks à la date du tournoi — étape 2 (rebrancher les consommateurs) | ✅ Done — recalcul + backtest faits | 🔴 High |
+| TOK-73 | Évaluer honnêtement la prédiction + robustesse du signal OCG→TCG | ✅ Done — `docs/evaluation-prediction.md` | 🔴 High |
+| TOK-74 | Vérifier l'entrée de Kewl Tune en TCG (prévue octobre 2026) | ✅ Done — verdict défavorable, `docs/tok-74-kewl-tune.md` | 🔴 High |
+| TOK-75 | Script de validation du `prediction_log` (débloque TOK-55) | ✅ Done — `scripts/validate_predictions.py` | 🟠 Medium |
+| TOK-76 | Risque : dépendance à l'API non officielle yugiohmeta | 🟡 Monitoring fait (`data/fetch_health.jsonl`) ; risque structurel reste | 🟠 Medium |
+| TOK-77 | Mesurer la pollution Genesys dans le méta TCG | ✅ Done — `docs/tok-77-genesys.md` (27-44 % des decks TCG depuis juillet) | 🟠 Medium |
+| TOK-78 | Onboarding d'une data scientist (`docs/ONBOARDING.md` fait, accès à décider) | 🟡 Partiel | 🟠 Medium |
+| TOK-79 | Agent `coordinateur` (Rapport + Dispatch) + point hebdo `yugioh-point-hebdo` | ✅ Done | 🟠 Medium |
+
+⚠ **Intitulé trompeur dans Linear** : TOK-25 s'appelle « Modèle séquentiel ARIMA ou LSTM ». Le modèle
+réellement retenu est **70 % naïf + 30 % Ridge** (l'AR(1) a été testé puis écarté, notebook 05).
 
 ---
 
@@ -129,8 +154,8 @@ Issu de `_bmad-output/brainstorming/brainstorming-session-2026-08-05-1.md` (28 i
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
 | TOK-53 | Ban Radar — score de risque de ban (scoring multi-critères) | ✅ Done | 🟠 Medium |
-| TOK-54 | Top cartes à fort impact si bannies (bridge score classé) | 🔜 À faire | 🟠 Medium |
-| TOK-55 | Ban Predictor vs History — track record public | 🟡 Débloqué | 🟠 Medium |
+| TOK-54 | Top cartes à fort impact si bannies (bridge score classé) | ✅ Done | 🟠 Medium |
+| TOK-55 | Ban Predictor vs History — track record public | 🟡 Débloqué (10 points TCG / 10 OCG au backtest, `validate_predictions.py`) | 🟠 Medium |
 | TOK-56 | Comparateur archétypes côte à côte | 🔜 À faire | 🟠 Medium |
 | TOK-57 | Watchlist personnelle | 🔜 À faire | 🟢 Low |
 | TOK-58 | Deck Builder + meta score temps réel | 🔜 À faire | 🟠 Medium |
@@ -167,4 +192,8 @@ Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historiq
 
 ---
 
-*Dernière mise à jour : 2026-10-31*
+**Nouveaux tickets suggérés (non créés dans le code, voir Linear) :** séparer TCG et OCG dans `meta_scores`
+(le méta « TCG » est mixte à 54 % OCG) ; afficher un méta Genesys ; corriger l'échelle de `price_opp`
+dans `build_buy_signals.py` ; mettre à jour `site-facts.ts` (r, n, lag).
+
+*Dernière mise à jour : 2026-11-16*

@@ -134,24 +134,24 @@ export async function BanRadarView({ kind, tabs }: { kind?: BanRadarKind; tabs: 
           classe les cartes par ressemblance au profil de celles que Konami a historiquement touchées. Il ne dit pas
           « X % de chances d’être bannie ».
         </p>
-        <p>Rejoué la veille des banlists passées, sur les listes pour lesquelles la base contient assez de decks :</p>
+        <p>Rejoué la veille des banlists passées (listes dont la fenêtre compte au moins 600 decks : dix en TCG, dix en OCG) :</p>
         <ul className="grid gap-1.5">
           <li>
-            <strong className="font-medium text-text">TCG, 18 mai 2026</strong> : 8 des 11 cartes touchées dans le quart
-            supérieur, rang médian 127 sur 923 cartes notées.
+            <strong className="font-medium text-text">TCG, 18 mai 2026</strong> : rang médian 84 sur 889 cartes notées
+            pour les cartes réellement touchées (le hasard donnerait environ 445).
           </li>
           <li>
-            <strong className="font-medium text-text">OCG, 1er juillet 2026</strong> : 7 des 11 dans le quart supérieur,
-            rang médian 31 sur 1 089. Le score n’a jamais été calibré sur l’OCG : c’est un test hors
-            distribution, et il y réussit mieux qu’en TCG.
+            <strong className="font-medium text-text">OCG, 1er juillet 2026</strong> : rang médian 19 sur 1 236. Le
+            score n’a jamais été calibré sur l’OCG : c’est un test hors distribution, et il y réussit mieux qu’en TCG.
           </li>
           <li>
-            <strong className="font-medium text-text">OCG, 1er avril 2026</strong> : au niveau du hasard (rang médian
-            285 sur 556). Cette fenêtre ne compte que 416 decks, contre 1 200 à 1 700 pour les deux autres : en dessous
-            d’environ 600 decks, le classement ne vaut rien.
+            <strong className="font-medium text-text">TCG, 21 septembre et 19 octobre 2026</strong> : les deux listes
+            les plus récentes sont mauvaises (rang médian 206 sur 981, puis 308 sur 905, proche du hasard). Le haut du
+            classement tient, mais la liste d’octobre touche 43 cartes dont beaucoup de marginales, et le méta
+            Genesys, exclu des données, échappe au score.
           </li>
         </ul>
-        <p>Deux mesures concluantes sur trois, 22 cartes en tout. C’est encourageant, ce n’est pas encore une validation.</p>
+        <p>Résultats mitigés selon les listes : c’est encourageant, ce n’est pas une validation.</p>
         <p>
           Les <strong className="font-medium text-text">staples génériques</strong> trustent le haut du classement parce
           qu’elles sont jouées partout à 3 exemplaires, mais Konami frappe surtout les pièces de moteur des decks qui

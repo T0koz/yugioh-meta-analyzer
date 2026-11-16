@@ -31,3 +31,11 @@
 - Travaille dans un worktree neuf `.claude/worktrees/<ticket>`, branche `claude/<ticket>`.
 - À la fin : fusionne ta branche dans `claude/front-nuit-17-11` (`--no-ff`), lance `python scripts/check.py`,
   ajoute une ligne à `docs/planning/2026-11-17/compte-rendu.md`, puis supprime ton worktree. Ni `main`, ni push.
+
+## Ton des textes (consigne de Thomas, 2026-11-16 au soir, pendant le lot 02)
+Consigne de ton pour tous les textes (accueil compris) : sobre, factuel, orienté statistique.
+Aucune formule publicitaire, aucun appel à l'action (« avant tout le monde », « agir », « voir la preuve »),
+pas de vouvoiement commercial ni de point d'exclamation. Chaque phrase porte une mesure, une période
+et une source, ou elle disparaît. Les explications passent d'abord par le graphique (annotations,
+légendes, intervalles), le texte est réduit au minimum. Reprends le prototype pour sa structure et son
+design, pas pour ses textes. Liste tous les textes de l'accueil dans le compte rendu.

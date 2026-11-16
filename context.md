@@ -324,6 +324,24 @@ mouvement réduit, pire contraste 4,52:1 (désactivé).
 - Toute retouche d'un contrôle change les 36 captures (la nav est sur chaque page) : `--update` après relecture.
 → détail complet : `docs/design-system.md` §4 « Composants d'interaction »
 
+### 🃏 Decks : index et fiche de composition (TOK-114, lot 9, 2026-11-16, branche `claude/lot09-tok-114-decks-99ff00`, non fusionnée dans `main`)
+
+`/decks` et `/decks/{slug}` : par archétype et par zone, part des listes qui jouent chaque carte (« 94 %, 15 sur 16 »)
+et exemplaires médians ; 5 listes récentes avec leur résultat. `scripts/build_archetype_profiles.py` → 3 tables servies
+(`archetype_card_profile`, `archetype_recent_decks`, `archetype_recent_deck_cards`) → `GET /decks`, `GET /decks/{slug}`.
+Mesuré : LCP mobile 1,75 à 1,87 s, Accessibilité 100, `serving.db` 10,7 → 11,6 Mo.
+- **Seuils à un seul endroit**, `backend/app/deck_profile.py` : de base ≥ 80 % des listes, d'appoint ≥ 20 %, fiche à
+  partir de 8 listes (en dessous, la page ne montre que les listes). Le script compte, il ne pose aucun seuil.
+- **Même fenêtre et même population que la tier list** (`MIN_WINDOW_DECKS` importé) : le test de fumée vérifie que les
+  effectifs de `/decks` et de `/meta/tier-list` sont égaux. Le script tourne donc après le notebook 04.
+- **Un pourcentage ne s'affiche jamais sans son effectif** (« k sur n »). Pas d'intervalle : trop large à 8 listes.
+- **Pas de colonne masquée dans un tableau `table-fixed`** (les cellules se décalent) ; **pas d'illustration `eager`
+  dans une tuile** (elle devient l'élément LCP sur mobile) ; **une capture de plus de 16 383 px casse `--update`**
+  (limite WebP) : garder les longues listes repliées.
+- **Toute nouvelle route a son `opengraph-image.tsx`** : celle de la racine ne descend pas.
+- Dans un worktree : `build_archetype_profiles.py --db <dépôt principal>/data/yugioh.db`.
+→ détail complet : `docs/journal/decks-tok-114.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

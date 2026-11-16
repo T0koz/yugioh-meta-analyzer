@@ -149,7 +149,8 @@ def get_evolution(db: sqlite3.Connection = Depends(get_db)) -> EvolutionResponse
         data[row["archetype"]].append(
             EvolutionPoint(month=row["month"], meta_score=row["meta_score"], share=row["share"])
         )
-    return EvolutionResponse(data=data)
+    images = {a: url for a in top_archetypes if (url := get_archetype_image(db, a))}
+    return EvolutionResponse(data=data, images=images)
 
 
 @router.get("/predictions", response_model=PredictionsResponse)
@@ -171,6 +172,7 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
             current=row["meta_score_current"],
             predicted=row["pred_meta_score"],
             direction=map_pred_direction(row["pred_direction"]),
+            image_url=get_archetype_image(db, row["archetype"]),
         )
         for row in rows
     ]

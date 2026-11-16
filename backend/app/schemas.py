@@ -33,6 +33,8 @@ class EvolutionPoint(BaseModel):
 
 class EvolutionResponse(BaseModel):
     data: dict[str, list[EvolutionPoint]]
+    # Vignette de chaque archétype (absente si aucune carte connue).
+    images: dict[str, str] = {}
 
 
 class PredictionEntry(BaseModel):
@@ -40,6 +42,7 @@ class PredictionEntry(BaseModel):
     current: float
     predicted: float
     direction: Trend
+    image_url: Optional[str] = None
 
 
 class PredictionsResponse(BaseModel):
@@ -54,6 +57,7 @@ class BoutiqueSignal(BaseModel):
     buy_label: BuyLabel
     cm_price: float
     ban_tcg: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class BoutiqueResponse(BaseModel):
@@ -66,6 +70,7 @@ class EarlySignal(BaseModel):
     archetype: str | None
     early_score: float
     views_week: int
+    image_url: Optional[str] = None
 
 
 class EarlySignalsResponse(BaseModel):

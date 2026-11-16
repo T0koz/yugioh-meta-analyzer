@@ -28,8 +28,12 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
             GROUP BY archetype
             HAVING SUM(deck_count) >= :min_decks
         )
-        SELECT s.archetype, s.card_name, s.buy_score_100, s.buy_label, s.cm_price, s.ban_tcg
+        SELECT s.archetype, s.card_name, s.buy_score_100, s.buy_label, s.cm_price, s.ban_tcg,
+               c.image_url_small
         FROM boutique_buy_signals s
+        -- Même jointure que le Ban Radar (TOK-83) : expression indexée, et `+` pour
+        -- neutraliser l'affinité TEXT, sinon SQLite ignore idx_cards_name_clean.
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = +s.card_name
         WHERE NOT EXISTS (SELECT 1 FROM tcg_present p WHERE p.archetype = s.archetype)
         ORDER BY s.buy_score_100 DESC
         LIMIT :limit
@@ -45,6 +49,7 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
             buy_label=row["buy_label"],
             cm_price=row["cm_price"],
             ban_tcg=row["ban_tcg"],
+            image_url=row["image_url_small"],
         )
         for row in rows
     ]
@@ -55,9 +60,12 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
 def get_early_signals(db: sqlite3.Connection = Depends(get_db)) -> EarlySignalsResponse:
     rows = db.execute(
         """
-        SELECT card_name, archetype, early_score, views_week
-        FROM early_card_signals
-        ORDER BY early_score DESC
+        SELECT s.card_name, s.archetype, s.early_score, s.views_week, c.image_url_small
+        FROM early_card_signals s
+        -- Même jointure que le Ban Radar (TOK-83) : expression indexée, et `+` pour
+        -- neutraliser l'affinité TEXT, sinon SQLite ignore idx_cards_name_clean.
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = +s.card_name
+        ORDER BY s.early_score DESC
         LIMIT ?
         """,
         (EARLY_SIGNALS_LIMIT,),
@@ -69,6 +77,7 @@ def get_early_signals(db: sqlite3.Connection = Depends(get_db)) -> EarlySignalsR
             archetype=row["archetype"],
             early_score=row["early_score"],
             views_week=row["views_week"],
+            image_url=row["image_url_small"],
         )
         for row in rows
     ]

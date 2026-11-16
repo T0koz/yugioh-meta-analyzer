@@ -352,6 +352,10 @@ Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context
 - **Un hook ne se déclenche qu'après fusion** de la branche dans celle de travail ; les worktrees déjà ouverts le lisent depuis leur propre copie de `.claude/`.
 - **`npm run lighthouse` n'est pas pré-autorisé** (il lance un serveur). Détail : `docs/planning/2026-11-17/decisions-prises.md`, essai : `docs/planning/2026-11-17/essai-fin-de-journee-16-11.md`.
 
+### 🗣 Charte « ton et explication » (lot 15 étape 1, 2026-11-17, branche `claude/lot15-charte-23027e`, non fusionnée)
+
+`docs/charte-ton-et-explication.md` : ton, ordre d'explication (encodage → annotation → incertitude → légende → pied → Méthode repliée), règles d'incertitude appuyées sur 8 listes / 600 decks / k sur n, 10 avant / après, inventaire (6 `InfoTooltip`, 8 formules ou notations). **En attente du formulaire de Thomas** (8 questions) avant l'étape 2 ; aucun code touché.
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

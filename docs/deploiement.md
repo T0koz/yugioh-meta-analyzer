@@ -1,19 +1,21 @@
 # Déploiement sur Vercel — guide pas à pas (TOK-35, option A)
 
-Préparé le 2026-11-17 (lot 14), **rien n'est déployé, rien n'est relié**. Décision d'hébergement : Vercel plan gratuit (Hobby)
+Préparé le 2026-11-17 (lot 14), code de déploiement le 2026-11-17 (lot 14 bis) ; **rien n'est déployé, rien n'est relié**. Décision d'hébergement : Vercel plan gratuit (Hobby)
 seul, un projet pour le site et l'API (`docs/decisions/0032-*.md`), projet `gang-5d00/yugi-gang`.
 Toutes les commandes `vercel …` sont à lancer **par Thomas**, depuis son terminal ; aucune n'a été exécutée par l'agent.
 
-## 0. À lire d'abord : trois points qui bloquent le premier déploiement
+## 0. À lire d'abord : état des trois points bloquants
 
-| # | Constat | Conséquence | Qui |
-|---|---|---|---|
-| 1 | **Le build du front appelle l'API** (pages pré-générées : `/decks/[archetype]`, tier list, etc. ; constaté : sans API sur le port visé, `npm run build` échoue). Or une liaison de service (`BACKEND_URL`) « ne se résout pas pendant les builds » (doc Services, *Bindings*). | Sur Vercel, le build du site ne peut pas interroger l'API du même déploiement : **le build échouera tel quel**. | Un lot de code (§ 8.1) |
-| 2 | `lib/api.ts` (côté serveur) et `card-chip.tsx` (côté navigateur) lisent **la même** `NEXT_PUBLIC_API_URL`. Côté serveur il faut une adresse absolue, côté navigateur `/api/v1` suffit. | Impossible de servir les deux avec une seule valeur, surtout derrière la protection Vercel (§ 5). | Même lot (§ 8.1) |
-| 3 | Les images de cartes (1,17 Go) ne tiennent ni dans le déploiement ni dans Vercel Blob gratuit (§ 6). | Il faut un stockage à part (recommandé : Cloudflare R2). | Thomas (§ 6) + formulaire § 9 |
+Décisions de Thomas du 17/11 (formulaire § 9) : images sur **Cloudflare R2**, site **public mais non diffusé** (aucune protection
+Vercel, production indexable), **construction sur sa machine puis envoi** (voie 2).
 
-Ce qui est prêt : `vercel.json`, `.vercelignore`, `.env.example`, base embarquée en lecture seule, ce guide. Les points 1 et 2 relèvent
-du front (`lib/api.ts`, pages), que ce lot n'avait pas le droit de toucher : la modification exacte est décrite au § 8.1.
+| # | Constat | État au 17/11 (lot 14 bis) |
+|---|---|---|
+| 1 | **Le build du front appelle l'API** (pages pré-générées), et la liaison `BACKEND_URL` « ne se résout pas pendant les builds » (doc *Service bindings*). Un build lancé par Vercel échouerait. | **Contourné par la voie 2** : le site est construit sur la machine de Thomas contre l'API locale (`API_URL`), puis le résultat est envoyé (`vercel deploy --prebuilt`). Script : `scripts/deploy_prebuilt.py` (§ 7). |
+| 2 | Le serveur et le navigateur lisaient la même `NEXT_PUBLIC_API_URL`. | **Réglé** : `lib/api.ts` (`apiBaseUrl()`) lit côté serveur `API_URL`, puis `BACKEND_URL` + `/api/v1`, puis `NEXT_PUBLIC_API_URL` ; côté navigateur `NEXT_PUBLIC_API_URL` (`/api/v1` en ligne). Sans variable, rien ne change en local (`http://localhost:8000/api/v1`). |
+| 3 | Les images de cartes (1,17 Go) ne tiennent ni dans le déploiement ni dans Vercel Blob gratuit. | **À faire par Thomas** : envoi vers R2 (§ 6). Côté code, les images de cartes ne passent plus par `/_next/image` (quota gratuit épargné, § 6). |
+
+Reste à Thomas, dans l'ordre : § 2 (relier le projet depuis la racine), § 6 (R2), § 4 (variables), § 7 (prévisualisation, puis production).
 
 ## 1. Ce qui a été préparé (fichiers)
 
@@ -24,6 +26,11 @@ du front (`lib/api.ts`, pages), que ce lot n'avait pas le droit de toucher : la 
 | `.env.example`, `frontend/.env.example` | Variables documentées, **aucune valeur secrète**. |
 | `.gitignore` (+ `backend/data/`) | La copie de la base embarquée ne peut pas être commitée. |
 | `backend/app/db.py` | Ouverture de la base en **lecture seule** (`mode=ro`) ; sur Vercel (variable système `VERCEL`), l'API lit seule `backend/data/serving.db`. Sans effet en local. |
+
+| `frontend/src/lib/api.ts`, `card-chip.tsx` *(lot 14 bis)* | Adresse de l'API séparée serveur / navigateur (§ 0, point 2). |
+| `frontend/src/components/card-art.tsx`, `safe-image.tsx` *(lot 14 bis)* | Images de cartes en `unoptimized` (`CardImage`, `SafeImage`) : demandées telles quelles à `NEXT_PUBLIC_CARD_IMAGES_URL`. |
+| `scripts/deploy_prebuilt.py` *(lot 14 bis)* | Voie 2 : vérifie les prérequis, prépare la base embarquée, **affiche** les commandes Vercel ; ne les lance qu'avec `--execute`. |
+| `.gitignore` (+ `.vercel/`) *(lot 14 bis)* | `vercel pull` écrit les variables du projet dans `.vercel/` à la racine : jamais commité. |
 
 Lancement local intact : `uvicorn` (port 8114 essayé), `npm run build` (le build réussit quand l'API tourne), 44 tests de l'API verts sur `serving.db`,
 sur `yugioh.db` et en simulant Vercel (`VERCEL=1` + base embarquée).
@@ -68,10 +75,11 @@ mkdir -p backend/data && cp data/serving.db backend/data/serving.db
 
 | Variable | Environnement | Valeur | Rôle |
 |---|---|---|---|
-| `NEXT_PUBLIC_API_URL` | Production, Preview | `/api/v1` | Adresse de l'API vue du **navigateur** (même domaine). Valable côté serveur seulement après le lot du § 8.1. |
-| `NEXT_PUBLIC_SITE_URL` | Production | `https://<domaine de production>` (sans barre finale) | Liens canoniques, Open Graph, sitemap (lot 5). Preview : ne rien mettre. |
+| `NEXT_PUBLIC_API_URL` | Production, Preview | `/api/v1` | Adresse de l'API vue du **navigateur** (même domaine). Le serveur ne l'utilise que si `API_URL` et `BACKEND_URL` manquent. |
+| `API_URL` | — | **ne jamais la créer sur Vercel** | Adresse absolue de l'API pour le **build local** (`http://localhost:8000/api/v1`), passée par le script. Sur Vercel, elle prendrait le pas sur `BACKEND_URL` et pointerait vers une machine absente. |
+| `NEXT_PUBLIC_SITE_URL` | Production | `https://<domaine de production>` (sans barre finale) | Liens canoniques, Open Graph, sitemap (lot 5). Preview : ne rien mettre. **Obligatoire avec la voie 2** : avec `--prebuilt`, la variable système `VERCEL_PROJECT_PRODUCTION_URL` manque au build (doc `vercel deploy`), les liens canoniques retomberaient sur `http://localhost:3000`. Le script le vérifie avant un `--execute prod`. |
 | `NEXT_PUBLIC_CARD_IMAGES_URL` | Production, Preview | adresse du stockage des images (§ 6) | Sans elle, le site cherche `/card-images/…`, qui n'existe pas en ligne. |
-| `BACKEND_URL` | — | **ne pas la créer** | Injectée par Vercel (liaison de service) dans le site. |
+| `BACKEND_URL` | — | **ne pas la créer** | Injectée par Vercel (liaison de service) dans le site, **à l'exécution seulement** : sert au rafraîchissement des pages (toutes les 5 min, `revalidate: 300`). |
 | `YGO_DB_PATH` | — | **inutile** | L'API lit seule `backend/data/serving.db` sur Vercel. |
 
 ```bash
@@ -84,17 +92,25 @@ vercel env ls
 ```
 (`vercel env add` ouvre une saisie interactive : la valeur n'apparaît pas dans l'historique de commandes.)
 
-## 5. Non-diffusion : ce que la protection couvre vraiment
+## 5. Site public mais non diffusé (choix du 17/11)
 
-- **Lot 5** : `noindex` + `robots.txt` fermé **seulement en prévisualisation** (`VERCEL_ENV=preview`, `lib/site.ts`). **La production, elle, est indexable.**
-- **Protection Vercel gratuite** (doc *Deployment Protection*, relue le 2026-11-17) :
-  - *Vercel Authentication* (réservée aux comptes Vercel autorisés de l'équipe) : **gratuite, tous plans**. *Standard Protection* protège tout **sauf** les domaines de production ; **« All Deployments »** protège aussi la production et l'adresse `*.vercel.app`, **tous plans**.
-  - *Password Protection* : **payant, indisponible sur Hobby**. Liste d'IP : Enterprise.
-- **Recommandation : « All Deployments » + Vercel Authentication.** Le site n'est alors visible que de Thomas et des membres de l'équipe `gang-5d00` connectés. Ni moteur de recherche, ni robots.txt n'y accèdent (tout est derrière la connexion).
-  Pour montrer une page à quelqu'un sans compte : lien partageable temporaire (Settings → Deployment Protection → Shareable Links, à relire dans la doc avant usage).
-- Réglage : **Settings → Deployment Protection → Vercel Authentication : Enabled, scope « All Deployments »**.
-- Attention : un appel du site vers sa **propre adresse publique** est bloqué par cette protection ; c'est la raison de la liaison privée `BACKEND_URL` (qui, elle, saute la protection, doc *Bindings*) et du point 2 du § 0.
-- Quand le site sera ouvert au public : passer en *Standard Protection* (ou aucune) et vérifier que `NEXT_PUBLIC_SITE_URL` est renseignée.
+**Choix de Thomas : aucune protection Vercel.** Le site est en ligne, ouvert à qui connaît l'adresse, et l'adresse n'est publiée nulle part.
+
+Ce que cela implique :
+- **Tout le monde peut l'ouvrir** avec l'adresse : pas de connexion, pas de mot de passe. « Non diffusé » n'est pas « privé ».
+- **L'adresse se découvre sans qu'on la donne** : les certificats HTTPS sont inscrits dans des journaux publics (*Certificate Transparency*) que des robots lisent, un lien collé dans une messagerie peut être visité par son aperçu, une capture peut circuler.
+- **La production est indexable** : lot 5, `noindex` et `robots.txt` fermé **seulement** quand `VERCEL_ENV=preview` (`lib/site.ts`). Avec la voie 2, cette valeur est figée **au build** : le script passe `VERCEL_ENV=preview` aux prévisualisations et `VERCEL_ENV=production` à la production (les variables système manquent au build avec `--prebuilt`, doc `vercel deploy`).
+- L'API est publique aussi (`/api/v1/…`), en lecture seule ; elle ne sert que des agrégats déjà affichés par le site.
+- Coût : aucun. Un passage de robots consomme des invocations de fonctions (quota Hobby : 1 M par mois, § 10), les pages étant surtout statiques.
+
+**Recommandation (non appliquée, elle contredit le choix « production indexable ») : garder `noindex` en production tant que le site n'est pas ouvert.**
+Un moteur qui indexe maintenant garde des pages provisoires (textes non relus, seuils « provisoires ») dans ses résultats pendant des semaines.
+Mise en œuvre si Thomas la retient (formulaire § 9, point D) : une variable de build, par exemple `SITE_INDEXABLE=0`, lue par `INDEXABLE` dans
+`lib/site.ts` (quelques lignes, pas de changement de page), retirée à l'ouverture du site.
+
+Pour fermer le site plus tard (doc *Deployment Protection*) : *Vercel Authentication*, portée « All Deployments », est **gratuite sur tous les plans** ;
+*Password Protection* est payante. Réglage : Settings → Deployment Protection. La liaison `BACKEND_URL` n'est pas concernée (les appels entre services
+sautent la protection, doc *Service bindings*).
 
 ## 6. Images de cartes (TOK-92)
 
@@ -108,85 +124,180 @@ vercel env ls
 | **Cloudflare R2** | **Recommandé** | Gratuit : **10 Go** de stockage, **1 M d'opérations d'écriture** (Class A), **10 M de lecture** par mois, **sortie gratuite** (doc Cloudflare R2 *Pricing*, relue le 2026-11-17). Largement suffisant (1,17 Go, 42 136 envois). |
 
 Réserves sur R2 (non établies par la documentation lue) : la page de tarifs ne dit pas si une **carte bancaire est exigée à l'ouverture du compte** (à regarder avant de s'inscrire ; cela peut contredire la règle « rien qui engage de l'argent ») ;
-l'adresse publique gratuite `r2.dev` est, à ma connaissance, limitée en débit et prévue pour les essais, une adresse sur un **domaine à soi** est la voie normale. À vérifier avec la doc R2 *Public buckets*.
+l'adresse publique gratuite `r2.dev` est « limitée en débit », réservée au développement et sans cache Cloudflare (doc R2 *Public buckets*, relue le 17/11) ; une adresse sur un **domaine à soi**, géré par Cloudflare, est la voie normale pour un site ouvert.
 Si ces conditions ne conviennent pas : tout hébergeur d'objets compatible S3 donnant ≥ 2 Go gratuits convient ; seule la variable change.
 
-### Étapes pour Thomas (ne rien faire avant d'avoir coché le formulaire § 9)
-1. Créer le compte et un *bucket* (nom suggéré : `yugi-gang-cards`), en lecture publique.
-2. Envoyer le dossier `data/card-images/` (sans `_failures.jsonl` ni `_missing.json`) : `rclone` ou l'outil `wrangler r2 object put`, ou le tableau de bord (glisser-déposer : lent à 42 000 fichiers, préférer `rclone sync`). Garder la structure `art/`, `card-sm/`, `card-lg/` et `missing.webp` à la racine si présent.
-3. Ajouter l'en-tête de cache `Cache-Control: public, max-age=31536000, immutable` (une illustration de carte ne change pas ; `scripts/download_card_images.py` ajoute seulement les nouvelles).
-4. `vercel env add NEXT_PUBLIC_CARD_IMAGES_URL production` (et `preview`) avec l'adresse de base, **sans barre finale**, puis redéployer.
-5. Contrôler : `https://<base>/art/<id>.webp` s'ouvre ; le site ne fait aucune requête vers `images.ygoprodeck.com`.
-6. Chaque lundi : `python scripts/download_card_images.py` (incrémental) puis renvoyer seulement les nouveaux fichiers (`rclone copy`).
+### Étapes R2 pour Thomas (décision du 17/11 ; aucune n'a été faite par l'agent)
+1. **Compte** : Thomas a créé le compte Cloudflare. Dans le tableau de bord : **R2 Object Storage** → activer R2 (l'offre gratuite s'affiche ;
+   lire l'écran avant de valider, c'est là qu'une carte bancaire peut être demandée).
+2. **Bucket** : R2 → *Create bucket*, nom suggéré `yugi-gang-cards`, emplacement automatique. Un bucket n'est **jamais public par défaut** (doc *Public buckets*).
+3. **Adresse publique** (doc *Public buckets*) :
+   - **pour l'essai** : bucket → *Settings* → *Public Development URL* → *Enable* (taper `allow`). Adresse en `https://pub-….r2.dev`.
+     La doc la dit « limitée en débit » et réservée au développement, **sans cache Cloudflare** : suffisante pour la prévisualisation.
+   - **pour un site ouvert** : *Custom Domains* → un sous-domaine (ex. `cards.<domaine>`) ; le domaine doit être géré par Cloudflare
+     dans le **même compte**. Cette adresse profite du cache Cloudflare. À faire quand un domaine sera choisi.
+4. **Clé d'accès pour l'envoi** (doc *R2 API tokens*) : R2 → *Overview* → *Manage API Tokens* → *Create* ; permission **Object Read & Write**,
+   limitée au bucket `yugi-gang-cards`. Copier l'*Access Key ID* et le *Secret Access Key* (affiché **une seule fois**) dans un gestionnaire
+   de mots de passe, jamais dans le dépôt.
+5. **Outil d'envoi** : `rclone` ≥ 1.59 (doc R2 *rclone* : « Cloudflare R2 » comme fournisseur). `brew install rclone`, puis `rclone config` :
+   nouveau remote `r2`, type *Amazon S3 compliant*, fournisseur *Cloudflare R2*, les deux clés, point d'accès
+   `https://<id du compte>.r2.cloudflarestorage.com`. Ajouter `no_check_bucket = true` si la clé est limitée au bucket (même doc).
+   La configuration va dans `~/.config/rclone/rclone.conf`, hors du dépôt.
+6. **Envoi** (1,17 Go, 42 136 fichiers ; structure `art/`, `card-sm/`, `card-lg/` conservée), avec l'en-tête de cache posé sur chaque fichier
+   (`--header-upload`, doc rclone) ; d'abord à blanc (`--dry-run`), puis pour de vrai :
+   ```bash
+   cd ~/code/yugioh-meta-analyzer
+   rclone copy data/card-images r2:yugi-gang-cards --exclude "_*" \
+     --header-upload "Cache-Control: public, max-age=31536000, immutable" --transfers 16 --dry-run
+   rclone copy data/card-images r2:yugi-gang-cards --exclude "_*" \
+     --header-upload "Cache-Control: public, max-age=31536000, immutable" --transfers 16 --progress
+   ```
+   `--exclude "_*"` laisse de côté `_failures.jsonl` et `_missing.json`. `copy` n'efface jamais rien côté R2 (contrairement à `sync`).
+   Le cache d'un an est sûr : une illustration de carte ne change pas, et `download_card_images.py` n'ajoute que des fichiers nouveaux.
+7. **Contrôle** : `curl -I https://<adresse publique>/art/<id>.webp` répond `200`, `content-type: image/webp` et l'en-tête `cache-control` ci-dessus.
+8. **Variable** : `vercel env add NEXT_PUBLIC_CARD_IMAGES_URL production` (et `preview`), valeur = adresse publique **sans barre finale**, puis
+   reconstruire (variable figée au build). Contrôle en ligne : les images de cartes viennent de cette adresse, aucune de `images.ygoprodeck.com`
+   ni de `/_next/image`.
+9. **Chaque lundi** : `python scripts/download_card_images.py` (incrémental), puis la même commande `rclone copy` (seuls les fichiers nouveaux partent).
 
-### Optimisation d'images de `next/image` (plan gratuit)
-Quotas Hobby par mois : **5 000 transformations**, 300 000 lectures du cache, 100 000 écritures. Au-delà : les **nouvelles** images ne s'optimisent plus et renvoient une erreur **402** (le texte `alt` s'affiche), les déjà optimisées continuent ; **aucune facturation** (doc *Image optimization limits and pricing*, 2026-11-12).
-Une liste de décks ou une tier list affiche des centaines de cartes ; avec 3 tailles × plusieurs largeurs, **5 000 transformations s'épuisent vite** (un seul visiteur curieux suffit sur 14 000 cartes).
-**Recommandation : désactiver l'optimisation pour les images de cartes** (`unoptimized`), puisqu'elles sont déjà en WebP aux bonnes tailles. L'adresse du stockage les sert directement, sans quota Vercel. Ce changement touche `CardArt` / `next.config.ts` (hors de ce lot) :
-décrit au § 8.2.
+### Optimisation d'images de `next/image` (plan gratuit) — réglé au lot 14 bis
+Quotas Hobby par mois : **5 000 transformations**, 300 000 lectures du cache, 100 000 écritures ; au-delà, les nouvelles images renvoient une
+erreur **402** (doc *Image optimization limits and pricing*). Les images de cartes sont donc en **`unoptimized`** : `CardArt`, `CardArtFill`,
+`ArtDot` (via `SafeImage` / `CardImage`) et les bandeaux d'archétype (`CardImage`). Elles sont déjà en WebP aux tailles d'affichage et partent
+directement de `NEXT_PUBLIC_CARD_IMAGES_URL`. Mesuré le 17/11 (build de production, 10 pages × 2 largeurs, Playwright) : **0 requête vers
+`/_next/image`**, 657 images de cartes servies directement (toutes en 200), 0 vers YGOPRODeck. Les 45 captures des tests visuels sont identiques.
 
-## 7. Premier déploiement, puis production, puis mise à jour du lundi
+## 7. Voie 2 : construire sur la machine de Thomas, puis envoyer
 
-Prérequis : §§ 2, 3, 4 faits, **lot de code du § 8.1 fait**. `vercel --version` donne la version installée (la doc exige la CLI ≥ 48.1.8 pour FastAPI).
+Prérequis : § 2 fait (projet relié **depuis la racine**), § 4 (variables), § 6 pour les images. CLI Vercel ≥ 48.1.8 (65.16.0 installée le 17/11).
 
-**Prévisualisation d'abord** (jamais la production en premier : *le premier déploiement d'un nouveau projet est toujours un déploiement de production*, doc `vercel deploy` ; `yugi-gang` n'en a pas encore, donc ce premier essai l'est peut-être. Avec la protection « All Deployments » du § 5 active **avant**, il reste invisible).
+### 7.1 Ce que fait le script
+`python scripts/deploy_prebuilt.py` **ne lance aucune commande Vercel** par défaut. Il vérifie `vercel.json`, la CLI, le lien du projet à la racine
+et que `.vercel/` est ignoré par Git ; vérifie `data/serving.db` (toutes les tables de `SERVED_TABLES`, plus récente que `yugioh.db`) ; la copie dans
+`backend/data/serving.db` après avoir vérifié que Git ignore ce chemin ; vérifie que l'API locale répond ; puis **affiche** les commandes.
+`--execute preview` ou `--execute prod` les lance, seulement si tout est vert. Sortie réelle du 17/11, dans un worktree non relié :
+```
+1. Configuration Vercel
+  ✓ vercel.json (mode Services) à la racine
+  ✓ CLI Vercel 65.16.0
+  ✗ projet non relié depuis la racine
+      → cd <dépôt> && vercel link --project yugi-gang --scope gang-5d00 (guide §2)
+  ✓ .vercel/ ignoré par Git (vercel pull y écrit des variables)
+2. Base de service
+  ✓ …/data/serving.db (11.7 Mo, construite le 2026-11-17 00:55)
+  ✓ toutes les tables de SERVED_TABLES sont présentes
+  ✓ serving.db plus récente que yugioh.db
+3. Copie embarquée dans l'API
+  ✓ backend/data/serving.db ignoré par Git
+  ✓ backend/data/serving.db copiée depuis …/data/serving.db
+4. API locale (interrogée par le build du site)
+  ✓ http://localhost:8115/api/v1/meta/tier-list → 200
+5. Commandes (depuis la racine du dépôt)
+  # Prévisualisation (toujours d'abord)
+  vercel pull --yes --environment=preview
+  env API_URL=http://localhost:8115/api/v1 VERCEL_ENV=preview vercel build
+  vercel deploy --prebuilt --archive=tgz
+  # Production
+  vercel pull --yes --environment=production
+  env API_URL=http://localhost:8115/api/v1 VERCEL_ENV=production vercel build --prod
+  vercel deploy --prebuilt --archive=tgz --prod
+✗ 1 vérification(s) en échec : corriger avant de déployer.
+Aucune commande Vercel lancée (mode par défaut).
+```
+(Port 8115 : celui de l'essai ; par défaut le script vise `http://localhost:8000/api/v1`, ou `--api-url`.)
+
+### 7.2 Premier déploiement (prévisualisation)
 ```bash
 cd ~/code/yugioh-meta-analyzer && git checkout main && git pull --rebase
 python scripts/check.py
-mkdir -p backend/data && cp data/serving.db backend/data/serving.db
-vercel deploy                      # prévisualisation ; affiche une adresse *.vercel.app
-vercel curl /api/v1/meta/tier-list --deployment <adresse>     # l'API répond (curl gère la protection)
+# terminal 2 : l'API sur la base qui part en ligne
+cd backend && YGO_DB_PATH=../data/serving.db ../.venv/bin/uvicorn app.main:app --port 8000
+# terminal 1
+python scripts/deploy_prebuilt.py                     # tout doit être ✓
+python scripts/deploy_prebuilt.py --execute preview
 ```
-Vérifier : la page d'accueil, `/tier-list`, `/decks`, `/ban`, une image de carte ; dans le tableau de bord, *Runtime Logs* sans erreur « unable to open database ».
-Si le build échoue sur « Failed to collect page data » : c'est le point 1 du § 0.
+- `vercel pull` télécharge les réglages et variables du projet dans `.vercel/` (ignoré par Git) ; `vercel build` construit les deux services dans
+  `.vercel/output/` ; `vercel deploy --prebuilt --archive=tgz` envoie ce résultat (une archive plutôt que des milliers de fichiers, doc `vercel deploy`).
+- **Le premier déploiement d'un projet est toujours un déploiement de production**, même sans `--prod` (doc `vercel deploy`). Il est construit avec
+  `VERCEL_ENV=preview`, donc en `noindex` : sans danger, mais à remplacer ensuite par un vrai `--execute prod`.
+- Vérifier : la page d'accueil, `/tier-list`, `/decks`, `/ban`, une image de carte ; `vercel curl /api/v1/meta/tier-list --deployment <adresse>` ;
+  dans le tableau de bord, *Runtime Logs* sans « unable to open database », et `vercel inspect <adresse>` montre `backend/data/serving.db` dans la fonction.
+- Si le build dit « Failed to collect page data » : l'API locale ne répond pas, ou `vercel build` n'a pas transmis `API_URL` à Next (§ 8, point non vérifié).
 
-**Production** (après avoir regardé la prévisualisation) :
+### 7.3 Production
 ```bash
-vercel deploy --prod
+vercel env ls        # NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_API_URL, NEXT_PUBLIC_CARD_IMAGES_URL présentes en Production
+python scripts/deploy_prebuilt.py --execute prod
 ```
-Le dépôt GitHub n'étant pas connecté, « production depuis `main` » signifie : se placer sur `main` à jour, lancer `check.py`, puis `vercel deploy --prod` depuis cette copie.
+Le dépôt GitHub n'étant pas connecté, « production depuis `main` » signifie : `main` à jour, `check.py` vert, puis le script depuis cette copie.
 
-**Mise à jour du lundi** (après `scripts/refresh_all.py`, qui recalcule les tables et reconstruit `data/serving.db`) :
+### 7.4 Mise à jour du lundi
+Après `scripts/refresh_all.py` (recalcul des tables, reconstruction de `data/serving.db`, images nouvelles) :
 ```bash
-python scripts/build_serving_db.py --check
-cp data/serving.db backend/data/serving.db
-python scripts/download_card_images.py      # incrémental ; renvoyer les nouveaux fichiers (§ 6, étape 6)
-vercel deploy --prod
+cd backend && YGO_DB_PATH=../data/serving.db ../.venv/bin/uvicorn app.main:app --port 8000   # terminal 2
+rclone copy data/card-images r2:yugi-gang-cards --exclude "_*" \
+  --header-upload "Cache-Control: public, max-age=31536000, immutable" --transfers 16   # § 6, étape 9
+python scripts/deploy_prebuilt.py --execute preview    # coup d'œil à l'adresse affichée
+python scripts/deploy_prebuilt.py --execute prod
 ```
-**Retour arrière** : `vercel rollback` (sans argument : revient au déploiement de production **précédent**). Sur Hobby, on ne peut revenir **qu'au déploiement de production immédiatement précédent** (doc *Rolling back*) ; pour un plus ancien : le redéployer (`vercel redeploy <url>`) ou passer en Pro. Contrôle : `vercel rollback status`.
+Les pages et la base partent ensemble : le site construit et l'API déployée montrent la même semaine de données. Les pages se rafraîchissent
+ensuite au plus toutes les 5 minutes depuis l'API en ligne (même base), donc sans écart.
 
-## 8. Changements à planifier dans un lot suivant (non faits ici)
+### 7.5 Retour arrière
+`vercel rollback` (sans argument : revient au déploiement de production **précédent**). Sur Hobby, on ne peut revenir **qu'au déploiement de production
+immédiatement précédent** (doc *Rolling back*) ; pour un plus ancien : `vercel redeploy <url>` (un déploiement `--prebuilt` est redéployé à partir de
+sa sortie, sans reconstruction, doc `vercel deploy`) ou `vercel promote <url>`. Contrôle : `vercel rollback status`. La base voyage avec chaque
+déploiement : revenir en arrière ramène aussi les données de la semaine d'avant.
 
-### 8.1 Rendre le build indépendant de l'API et séparer les deux adresses (bloquant)
-- `frontend/src/lib/api.ts` (serveur) : lire, dans l'ordre, `API_URL` (build local ou adresse choisie), puis `BACKEND_URL` + `/api/v1` (Vercel, à l'exécution), puis `NEXT_PUBLIC_API_URL`. `card-chip.tsx` (navigateur) garde `NEXT_PUBLIC_API_URL=/api/v1`.
-- Le build ne pouvant pas joindre l'API sur Vercel, deux voies à départager au premier essai :
-  1. **Pages dynamiques ou à génération à la demande** (pas de `generateStaticParams` ni de fetch au build), l'API étant interrogée à l'exécution par `BACKEND_URL` ; c'est la voie propre, mais elle change des pages (lots 11 et 12 y travaillent) ;
-  2. **Build local puis envoi du résultat** : API locale lancée sur `data/serving.db`, `API_URL=http://localhost:8000/api/v1 vercel build`, puis `vercel deploy --prebuilt` ; les données du site sont alors figées au build (cohérent avec une mise à jour hebdomadaire). **Non vérifié** que `vercel build` gère les Services (à essayer en prévisualisation).
-- À vérifier aussi à l'essai : le service FastAPI reçoit le chemin d'origine (`/api/v1/…`), conformément à la doc *Services routing* ; les routes existent déjà sous `/api/v1`, aucune réécriture de chemin n'est donc prévue.
+## 8. Compatibilité de `vercel build` + `--prebuilt` avec les Services
 
-### 8.2 Images de cartes sans optimisation
-Dans `CardArt` (ou globalement `images: { unoptimized: true }` dans `next.config.ts`) : ne pas passer les images de cartes par `/_next/image` (§ 6). `lib/card-images.ts` n'a **pas** à changer.
+**Ce que dit la documentation (lue le 17/11)** :
+- *Build Output API → Services* : un déploiement à plusieurs services est décrit dans `.vercel/output/config.json` (tableau `services`), chaque service
+  étant émis sous `.vercel/output/services/<nom>/` comme un arbre de sortie complet (fonctions, fichiers statiques).
+- *`vercel build`* : la commande écrit dans `.vercel/output` selon la Build Output API, et sa section *Schedule configuration* traite des fonctions
+  « dans un service » (`.vercel/output/services/worker/functions/index.func`) : `vercel build` produit donc bien la sortie par services.
+- *`vercel deploy`* : `--prebuilt` envoie le contenu de `.vercel/output` produit par `vercel build`.
+- Contraintes d'un service (*Build Output API → Services*) : pas de middleware, pas de runtime Edge. Le site n'a ni `middleware.ts` ni `proxy.ts`.
 
-### 8.3 Autres suites
-`context.md` : « adresse du stockage définitif » (TOK-35 / TOK-92) se règle avec `NEXT_PUBLIC_CARD_IMAGES_URL` ; `scripts/check.py` ne connaît pas Vercel (un contrôle « `vercel.json` valide » pourrait s'ajouter).
+**Verdict : compatible selon la documentation, mais aucune page ne décrit explicitement un `--prebuilt` en mode Services (bêta).** C'est très probable,
+pas démontré ; le premier `--execute preview` le tranchera.
 
-## 9. Formulaire à copier-coller (décisions de Thomas)
+**Points à observer au premier essai** :
+- `vercel build` doit transmettre `API_URL` (passée dans l'environnement) au build de Next. Sinon, voie de contournement : créer
+  `frontend/.env.production.local` (ignoré par Git) contenant `API_URL=http://localhost:8000/api/v1` le temps du build, puis le supprimer.
+  **Jamais** `API_URL` dans les variables du projet Vercel (§ 4).
+- Le service Python construit en local : la CLI installe les dépendances de `backend/requirements.txt` sur la machine de Thomas ; une erreur de
+  version de Python s'afficherait à ce moment.
+- `includeFiles: data/serving.db` : vérifier avec `vercel inspect` que la base est dans la fonction.
 
-**A. Stockage définitif des images de cartes**
-- [x] Cloudflare R2 (10 Go gratuits, 1 M d'écritures, sortie gratuite) — *recommandé*, sous réserve du point carte bancaire à vérifier
-- [ ] Autre hébergeur d'objets gratuit (précise lequel) : …
-- [ ] Ne pas héberger : laisser les images cassées en ligne pour l'instant
-- Commentaire libre : …
+**Voie de repli si `--prebuilt` échoue avec les Services** (voie 1) : laisser Vercel construire (`vercel deploy` sans `--prebuilt`), en rendant le
+build indépendant de l'API. Les pages qui interrogent l'API au build (`generateStaticParams` de `/archetype/[slug]` et `/decks/[archetype]`, pages
+statiques à `revalidate: 300`) deviennent générées à la demande : `generateStaticParams` renvoie une liste vide et les pages sont rendues à la
+première visite via `BACKEND_URL`, puis mises en cache. Lot de code à part, à faire après les lots qui touchent ces pages.
+Repli intermédiaire, sans code : deux projets Vercel (API seule, puis site avec `API_URL` = adresse publique de l'API au build), au prix d'une
+seconde adresse et de la fin du domaine unique.
 
-**B. Protection de l'adresse**
-- [x] « All Deployments » + Vercel Authentication (visible seulement par les comptes de l'équipe) — *recommandé*
-- [ ] Standard Protection (production publique, indexable) — à ne prendre qu'à l'ouverture du site
-- [ ] Aucune protection
-- Commentaire libre : …
+## 9. Formulaire (réponses de Thomas du 17/11)
 
-**C. Voie du build (§ 8.1)**
-- [x] Voie 2 d'abord (build local + `--prebuilt`), à tenter en prévisualisation ; voie 1 si elle ne fonctionne pas — *recommandé : change le moins de code, données figées chaque lundi*
-- [ ] Voie 1 directement (pages dynamiques)
+**A. Stockage définitif des images de cartes** — répondu le 17/11
+- [x] Cloudflare R2 (10 Go gratuits, 1 M d'écritures, sortie gratuite) — compte créé par Thomas
+- [ ] Autre hébergeur d'objets gratuit
+- [ ] Ne pas héberger
+- Commentaire libre : étapes au § 6.
+
+**B. Protection de l'adresse** — répondu le 17/11
+- [ ] « All Deployments » + Vercel Authentication (visible seulement par les comptes de l'équipe)
+- [x] Aucune protection : site public mais non diffusé, production indexable
+- Commentaire libre : conséquences et recommandation `noindex` au § 5.
+
+**C. Voie du build** — répondu le 17/11
+- [x] Voie 2 : construction sur la machine de Thomas puis envoi (`vercel build` + `vercel deploy --prebuilt`)
+- [ ] Voie 1 : pages générées à la demande, build par Vercel
+- Commentaire libre : script `scripts/deploy_prebuilt.py` (§ 7) ; repli au § 8.
+
+**D. `noindex` en production tant que le site n'est pas ouvert** — question nouvelle (lot 14 bis), à cocher
+- [x] Oui : variable de build `SITE_INDEXABLE=0` lue par `lib/site.ts`, retirée à l'ouverture — *recommandé (§ 5)*
+- [ ] Non : production indexable dès maintenant (choix du 17/11 inchangé)
 - Commentaire libre : …
 
 ## 10. Rappels
@@ -196,10 +307,11 @@ Dans `CardArt` (ou globalement `images: { unoptimized: true }` dans `next.config
 - Jamais de `.env`, de base ou de jeton dans Git (dépôt public) ; `frontend/.env.local` (jeton OIDC de la CLI) reste ignoré.
 
 ## Points non vérifiés (à lever au premier essai)
-- Comportement exact de la CLI vis-à-vis de `.gitignore` quand un `.vercelignore` existe (la page de documentation consultée a répondu 404) ; garde-fou : la vérification de `vercel inspect` du § 3.
-- Prise en charge de `vercel build` + `--prebuilt` avec les Services ; poids des fichiers de la fonction (`includeFiles` dans un service Python).
-- Conditions d'ouverture d'un compte Cloudflare R2 (carte bancaire) et limites de `r2.dev`.
-- Comportement des Services (bêta) en prévisualisation avec la protection activée.
+- `vercel build` + `--prebuilt` avec les Services (bêta) : cohérent avec la documentation, non décrit explicitement (§ 8).
+- Transmission de `API_URL` par `vercel build` au build de Next (§ 8, contournement prévu).
+- Poids et contenu de la fonction Python (`includeFiles` dans un service) : `vercel inspect`.
+- Comportement de la CLI vis-à-vis de `.gitignore` quand un `.vercelignore` existe (sans objet avec `--prebuilt` : seule `.vercel/output` part).
+- Écran d'activation de R2 (carte bancaire demandée ou non) : à lire par Thomas avant de valider.
 
 ## Sources (lues le 2026-11-17)
 - FastAPI sur Vercel : https://vercel.com/docs/frameworks/backend/fastapi
@@ -212,3 +324,5 @@ Dans `CardArt` (ou globalement `images: { unoptimized: true }` dans `next.config
 - Deployment Protection : https://vercel.com/docs/deployment-protection
 - `vercel deploy` : https://vercel.com/docs/cli/deploy ; retour arrière : https://vercel.com/docs/deployments/rollback-production-deployment
 - Cloudflare R2 : https://developers.cloudflare.com/r2/pricing/
+- *(lot 14 bis)* `vercel build` : https://vercel.com/docs/cli/build ; Build Output API, services : https://vercel.com/docs/build-output-api/services
+- *(lot 14 bis)* R2, accès public (`r2.dev`, domaine personnalisé) : https://developers.cloudflare.com/r2/buckets/public-buckets/ ; clés d'API : https://developers.cloudflare.com/r2/api/tokens/ ; rclone : https://developers.cloudflare.com/r2/examples/rclone/ ; options rclone (`--header-upload`, `--dry-run`, `--transfers`) : https://rclone.org/docs/

@@ -374,9 +374,22 @@ Option A configurée sans rien déployer : `vercel.json` (racine, **Vercel Servi
 Guide pas à pas et formulaire de décisions : `docs/deploiement.md`.
 - **Le projet doit être relié depuis la racine**, Root Directory vide, preset « Services » (le lien actuel part de `frontend/`).
 - **Base embarquée** : `cp data/serving.db backend/data/serving.db` (ignoré par Git) avant `vercel deploy` ; sur Vercel (`VERCEL` défini) `db.py` la lit seule, et ouvre toujours en `mode=ro`. Pas de Git connecté : tout déploiement part de la machine de Thomas.
-- **Bloquant** : le build du front interroge l'API (pages pré-générées), et la liaison `BACKEND_URL` ne se résout pas au build ; `lib/api.ts` et `card-chip.tsx` partagent `NEXT_PUBLIC_API_URL`. Lot de code à prévoir (§ 8.1 du guide).
-- **Images** : ni Vercel Blob (1 Go et 2 000 opérations gratuits pour 1,17 Go et 42 136 fichiers) ni le déploiement (100 Mo) ne conviennent ; recommandé : Cloudflare R2 (10 Go, 1 M d'écritures gratuits, sortie gratuite). `next/image` : 5 000 transformations par mois en Hobby → images de cartes en `unoptimized` (lot suivant).
-- **Protection** : la production est indexable ; « All Deployments » + Vercel Authentication est gratuit (tous plans), Password Protection est payant. Retour arrière sur Hobby : seulement le déploiement de production précédent.
+- **Images** : ni Vercel Blob (1 Go et 2 000 opérations gratuits pour 1,17 Go et 42 136 fichiers) ni le déploiement (100 Mo) ne conviennent ; Cloudflare R2 retenu (10 Go, 1 M d'écritures gratuits, sortie gratuite).
+- Retour arrière sur Hobby : seulement le déploiement de production précédent.
+
+**Lot 14 bis (2026-11-17, branche `claude/lot14bis-code-deploiement-3f856b`)** — choix de Thomas : R2, site public non diffusé (aucune protection), voie 2.
+- **Adresse de l'API** (`apiBaseUrl()`, `lib/api.ts`) : serveur `API_URL` → `BACKEND_URL` + `/api/v1` → `NEXT_PUBLIC_API_URL` → `localhost:8000` ;
+  navigateur `NEXT_PUBLIC_API_URL` (`/api/v1` en ligne). `API_URL` ne va **jamais** dans les variables Vercel (elle masquerait `BACKEND_URL`).
+  Une `NEXT_PUBLIC_API_URL` relative côté serveur lève une erreur explicite.
+- **Voie 2** : `python scripts/deploy_prebuilt.py` vérifie (base, copie ignorée par Git, API locale, lien à la racine) et **affiche** `vercel pull` /
+  `vercel build` / `vercel deploy --prebuilt --archive=tgz` ; `--execute preview|prod` les lance (Thomas seul). `--prebuilt` + Services : cohérent avec
+  la doc (Build Output API par services), pas décrit explicitement ; repli au § 8 du guide.
+- **Piège `--prebuilt`** : les variables système manquent au build. `VERCEL_ENV` est passée par le script (noindex des aperçus) ;
+  `NEXT_PUBLIC_SITE_URL` est obligatoire en Production, sinon canoniques en `localhost:3000` (le script refuse sans elle).
+- **Images de cartes en `unoptimized`** (`CardImage`, `SafeImage`) : 0 requête `/_next/image` mesurée (657 images, 10 pages × 2 largeurs).
+  Tout nouvel affichage d'image de carte passe par `CardArt`/`CardImage`, jamais `next/image` directement.
+  `visual_tests.py` remplace aussi `/card-images/…` par l'aplat : 45 captures identiques.
+- `.vercel/` ignoré à la racine (`vercel pull` y écrit des variables).
 
 ### 🛒 Boutique par archétype et courbes de prix (TOK-103, lot 11, 2026-11-17, branche `claude/lot11-tok-103-boutique-e98c5d`, non fusionnée)
 

@@ -190,6 +190,32 @@ def check_api(c: Checks, api_url: str) -> None:
            "construit et l'API déployée ne montrent pas les mêmes données")
 
 
+REQUIRED_VARS = {
+    "preview": ["NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_CARD_IMAGES_URL"],
+    # Avec --prebuilt, VERCEL_PROJECT_PRODUCTION_URL manque au build : sans NEXT_PUBLIC_SITE_URL,
+    # les liens canoniques et le sitemap pointeraient vers http://localhost:3000 (lib/site.ts).
+    "prod": ["NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_CARD_IMAGES_URL", "NEXT_PUBLIC_SITE_URL"],
+}
+
+
+def check_pulled_env(target: str) -> list[str]:
+    """Problèmes dans les variables téléchargées par `vercel pull` (noms seulement, aucune valeur affichée)."""
+    env_file = ROOT / ".vercel" / f".env.{'production' if target == 'prod' else 'preview'}.local"
+    if not env_file.exists():
+        return [f"{env_file.relative_to(ROOT)} absent après vercel pull"]
+    values: dict[str, str] = {}
+    for line in env_file.read_text().splitlines():
+        if "=" in line and not line.lstrip().startswith("#"):
+            key, _, value = line.partition("=")
+            values[key.strip()] = value.strip().strip('"')
+    problems = [f"{k} manquante dans les variables du projet ({target})" for k in REQUIRED_VARS[target] if not values.get(k)]
+    if values.get("NEXT_PUBLIC_API_URL", "/api/v1") != "/api/v1":
+        problems.append("NEXT_PUBLIC_API_URL devrait valoir /api/v1 en ligne")
+    if "API_URL" in values:
+        problems.append("API_URL ne doit pas exister sur Vercel (elle masquerait BACKEND_URL à l'exécution)")
+    return problems
+
+
 def commands(target: str, api_url: str) -> list[list[str]]:
     env = "production" if target == "prod" else "preview"
     prod = ["--prod"] if target == "prod" else []
@@ -238,11 +264,18 @@ def main() -> int:
         print("--execute refusé : des vérifications échouent.")
         return 1
     print(f"\n▶ Exécution ({args.execute})")
-    for cmd in commands(args.execute, api_url):
+    for i, cmd in enumerate(commands(args.execute, api_url)):
         print("$ " + shlex.join(cmd), flush=True)
         if subprocess.run(cmd, cwd=ROOT).returncode != 0:
             print("✗ Commande en échec : arrêt.")
             return 1
+        if i == 0:  # après vercel pull, avant le build
+            problems = check_pulled_env(args.execute)
+            for problem in problems:
+                print(f"  ✗ {problem}")
+            if problems:
+                print("✗ Variables du projet incomplètes (docs/deploiement.md §4) : arrêt avant le build.")
+                return 1
     return 0
 
 

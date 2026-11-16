@@ -12,7 +12,7 @@ Tickets terminés (✅ Done) et leurs « état » détaillés : [`docs/journal/b
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-35 | Déploiement (Vercel front + back) | 🟡 Préparé le 2026-11-17 (lot 14, branche `claude/lot14-tok-35-deploiement-2c1401`) : `vercel.json` (Services), `.vercelignore`, base embarquée en lecture seule, guide `docs/deploiement.md`. Rien déployé. Bloqué par un lot de code (build du front dépendant de l'API) et le choix du stockage des images | 🔴 High |
+| TOK-35 | Déploiement (Vercel front + back) | 🟡 Préparé le 2026-11-17 (lot 14, branche `claude/lot14-tok-35-deploiement-2c1401`) : `vercel.json` (Services), `.vercelignore`, base embarquée en lecture seule, guide `docs/deploiement.md`. Code de déploiement le 2026-11-17 (lot 14 bis, branche `claude/lot14bis-code-deploiement-3f856b`) : adresses d'API serveur / navigateur séparées, images de cartes sans `/_next/image`, script voie 2 `scripts/deploy_prebuilt.py`. Rien déployé. Reste à Thomas : relier le projet depuis la racine, envoyer les images sur R2, variables, premier `--execute preview` (`docs/deploiement.md` §0) | 🔴 High |
 
 **TOK-35 — état :** `scripts/build_serving_db.py` produit `data/serving.db`
 (9,4 Mo contre 236 Mo), le backend la lit via `YGO_DB_PATH`. Plus besoin de

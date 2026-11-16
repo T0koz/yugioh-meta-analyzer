@@ -14,7 +14,7 @@
     },
     {
       "name": "backend",
-      "runtimeExecutable": "sh",
+      "runtimeExecutable": "/bin/sh",
       "runtimeArgs": [
         "-c",
         "exec \"$(git rev-parse --path-format=absolute --git-common-dir)/../.venv/bin/uvicorn\" app.main:app --reload --port 8000"

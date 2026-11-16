@@ -115,7 +115,7 @@ traitement conseillé : TOK-70 → TOK-72 → TOK-69 → TOK-74 / TOK-73.
 | TOK-78 | Onboarding d'une data scientist (`docs/ONBOARDING.md` fait ; accès tranché : dépôt public, écriture directe, base par Drive — voir TOK-107) | 🟡 Reste l'invitation (TOK-108) et l'envoi de la base (TOK-109) | 🟠 Medium |
 | TOK-79 | Agent `coordinateur` (Rapport + Dispatch) + point hebdo `yugioh-point-hebdo` | ✅ Done | 🟠 Medium |
 | TOK-83 | Perf : `GET /ban-radar` 10-20 s (jointure `REPLACE` sans index) | ✅ Done — index d'expression `idx_cards_name_clean` + `= +col` dans les routeurs (~30 ms) ; `serving.db` reconstruite | 🟠 Medium |
-| TOK-91 | Tier list maison : recalculer depuis nos données (`meta_tier_list` figée au 17 juin, endpoint yugiohmeta 404) | 🔜 À faire | 🔴 High |
+| TOK-91 | Tier list maison : recalculer depuis nos données (`meta_tier_list` figée au 17 juin, endpoint yugiohmeta 404) | ✅ Done via TOK-97 — calculée à la volée depuis `meta_scores` (`backend/app/tiering.py`) | 🔴 High |
 | TOK-92 | Ré-héberger les images de cartes avant le déploiement (hotlink YGOPRODeck interdit) | 🔜 À faire | 🟠 Medium |
 | TOK-93 | Contrôle de fraîcheur des tables servies dans le job du lundi | 🔜 À faire | 🟠 Medium |
 | TOK-113 | Signal boutique v3 : archétypes pas encore en TCG (règle par cartes), fenêtre de sortie à 80 % au lieu de la fausse date | ✅ Done (2026-11-16) — fusionné dans `main`, base recalculée (3 archétypes, 12 signaux : Fort 3, Modéré 5, Faible 4) | 🔴 High |
@@ -134,10 +134,10 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
 | TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | ✅ Done (2026-11-16) — branche fusionnée (`/ban-radar` 7 s → 0,05 s), `archetype` nullable, test de fumée `backend/tests` | 🔴 Urgent |
-| TOK-96 | Jour 1 : gains rapides sans décision de design | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation et de fusion | 🔴 High |
-| TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation | 🔴 High |
-| TOK-98 | Semaine 1 : cartes, mouvement, typographie | 🟡 Livré sur `claude/refonte-front-cbe8af` (2026-11-16), en attente de validation | 🔴 High |
-| TOK-106 | Nouvelle page d'accueil d'après le prototype (bloqué par TOK-95 et TOK-97) | 🔜 Backlog | 🔴 High |
+| TOK-96 | Jour 1 : gains rapides sans décision de design | ✅ Done (2026-11-16) — fusionné dans `main` et poussé | 🔴 High |
+| TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | ✅ Done (2026-11-16) — fusionné et poussé ; suite à la source : TOK-113 | 🔴 High |
+| TOK-98 | Semaine 1 : cartes, mouvement, typographie | ✅ Done (2026-11-16) — fusionné et poussé (LCP ≈ 2,0 s) | 🔴 High |
+| TOK-106 | Nouvelle page d'accueil d'après le prototype (débloqué : TOK-95 et TOK-97 faits) | 🔜 **Prochaine étape**, en session neuve | 🔴 High |
 | TOK-99 | Dataviz maison en SVG (D3) + palette de données | 🔜 Backlog | 🟠 Medium |
 | TOK-100 | Qualité : SEO de partage + tests visuels Playwright | 🔜 Backlog | 🟠 Medium |
 | TOK-101 | Page d'archétype + transitions de vue | 🔜 Backlog | 🟠 Medium |
@@ -312,4 +312,8 @@ Idée non créée : afficher un méta Genesys (décision produit).
 Suites de TOK-113 sans ticket : rafraîchir `cards` dans la chaîne (`views_week` figé au 13 juin) ; seuil absolu pour
 les libellés Fort / Modéré / Faible ; servir et afficher la fenêtre de sortie TCG côté front.
 
-*Dernière mise à jour : 2026-11-16*
+**Fin de journée du 2026-11-16 :** TOK-95 à 98, TOK-107 (sauf invitation et envoi de la base), TOK-113 et la préparation
+du moteur de combos (TOK-85, 87) sont dans `main`, poussés. Reste à Thomas : pseudo GitHub (TOK-108), envoi de la base
+(TOK-109), protection de `main`, contact d'un juge (TOK-89). Prochaine étape technique : TOK-106.
+
+*Dernière mise à jour : 2026-11-16 (fin de journée)*

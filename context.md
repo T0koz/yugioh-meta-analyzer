@@ -497,8 +497,8 @@ Limites connues, à ne pas présenter comme résolues :
   `format=tcg`. Les cartes inédites n'ont donc pas de vues : la moyenne se fait sur les seules cartes connues.
 - Une générique peut sortir sous deux archétypes (Pot of Desires). « Harpie/Amazoness » est un nom hybride : son
   arrivée en TCG sous un autre nom serait manquée par le validateur.
-- Le front de `main` lit encore `tcg_entry_estimated` (colonne à « — ») ; la fenêtre est servie et affichée sur
-  `claude/refonte-front-cbe8af` (pas encore dans `main`).
+- La fenêtre est servie par `GET /boutique/signals` et affichée sur la page boutique et l'accueil (dans `main` depuis
+  la fusion de la refonte front, 2026-11-16).
 - La base réelle est en schéma v3 depuis le 2026-11-16 et la branche est fusionnée dans `main` le même jour. Une
   branche antérieure à cette fusion qui lit `tcg_entry_estimated` répond 500 sur `/boutique/signals`.
   Sauvegardes : `data/backup_avant_boutique_v3_20261116.db`, `data/backup_serving_avant_boutique_v3_20261116.db`.
@@ -549,7 +549,28 @@ non validés, dossier du juge). Aucun code de moteur. Deux retombées sur le pip
   nom ne trouvait pas. Le script corrige ces noms ; `cards.archetype` n'est pas fiable pour les règles
   du jeu (classement éditorial de YGOPRODeck).
 
+### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
+
+Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree
+`.claude/worktrees/…`, puis tout a été fusionné dans `main` (merges `--no-ff`) et poussé.
+- **Un worktree n'a pas de base** (`data/*.db` non suivie) ni `node_modules` : lancer le backend avec
+  `YGO_DB_PATH=<dépôt principal>/data/serving.db`, lire `yugioh.db` en lecture seule (`file:…?mode=ro`).
+  `scripts/check.py` sait retrouver le venv et la base du dépôt principal.
+- **Conflits garantis dans `context.md`** : chaque session ajoute sa section au même endroit. Résolution : garder les deux.
+  Règle qui a marché : une session = une section de `BACKLOG.md` et de `context.md`.
+- **Une base partagée change sous les branches** : la fusion de TOK-113 (schéma v3) a cassé `/boutique/signals` sur la
+  branche front tant qu'elle lisait `tcg_entry_estimated`. Fusionner `main` dans la branche avant de la livrer.
+- **Coût** : quatre sessions + sous-agents consomment vite. Une seule session vraiment active à la fois, une session neuve
+  par ticket, ne pas laisser une session en lancer une autre sans accord de Thomas.
+- Avant chaque push : `python scripts/check.py` (remplace la liste manuelle tsc / eslint / pytest / `--check`).
+
 ### 🔜 À faire
+
+- **TOK-106** : nouvelle page d'accueil d'après le prototype (`docs/audit-front/prototype/`), prochaine étape du front, en session neuve
+- **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)
+- **Suites de TOK-113** : rafraîchir `cards` dans la chaîne (`views_week` figé au 13 juin), seuil absolu pour Fort / Modéré / Faible
+- **TOK-92** : images de cartes à ré-héberger avant le déploiement ; des cartes récentes n'ont toujours pas d'image (`fetch_new_cards.py` tourne désormais le lundi)
+- **Vérifier** au prochain `fetch_cards.py` que le nom corrigé par la session combos n'est pas écrasé
 
 - **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials
 - **TOK-52** : Mode Joueur / Mode Boutique (toggle UX) — nécessite de trancher ce que chaque mode change concrètement (pas fait en autonome pour cette raison)
@@ -603,4 +624,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-11-16 (TOK-113 : signal boutique v3)*
+*Dernière mise à jour : 2026-11-16 (fin de journée : refonte front, collaboration, combos et TOK-113 fusionnés dans `main`)*

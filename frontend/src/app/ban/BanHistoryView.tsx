@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { fmtDate, fmtMonthShort, fmtNum } from "@/lib/format";
+import { fmtDate, fmtMonthShort, fmtNum, fmtRank } from "@/lib/format";
 import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { PillLink } from "@/components/ds/control";
@@ -74,15 +74,22 @@ function Track({ list, annotate }: { list: Retained; annotate: boolean }) {
           hasard
         </span>
       )}
-      {/* Une graduation par carte touchée classée. */}
-      {hits.map((card) => (
-        <span
-          key={card.card_name}
-          aria-hidden
-          className="absolute top-1/2 h-3 w-px -translate-y-1/2 bg-soft/70"
-          style={{ left: pos(card.rank, n) }}
+      {/* Une graduation par carte touchée classée : un seul tracé par ligne (450 éléments en moins dans la page). */}
+      <svg
+        aria-hidden
+        viewBox="0 0 100 10"
+        preserveAspectRatio="none"
+        className="absolute inset-x-0 top-1/2 h-3 w-full -translate-y-1/2 overflow-visible"
+      >
+        <path
+          d={hits.map((card) => `M${(((card.rank - 0.5) / n) * 100).toFixed(2)} 0V10`).join("")}
+          stroke="var(--soft)"
+          strokeOpacity="0.7"
+          strokeWidth="1"
+          vectorEffect="non-scaling-stroke"
+          fill="none"
         />
-      ))}
+      </svg>
       <span
         aria-hidden
         className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cat-2 bg-ink"
@@ -326,7 +333,7 @@ function CardRow({ card, n, eager }: { card: BanHistoryCard; n: number; eager: b
           <CardChip name={card.card_name} subtitle={origin ?? undefined} variant="plain" />
         </span>
         <span className={`mt-1 block ${LABEL}`}>
-          {card.rank === null ? "hors classement (moins de 5 decks)" : `${fmtNum(card.rank)}ᵉ sur ${fmtNum(n)}`}
+          {card.rank === null ? "hors classement (moins de 5 decks)" : `${fmtRank(card.rank)} sur ${fmtNum(n)}`}
           {origin && ` · ${origin}`}
         </span>
       </span>

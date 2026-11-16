@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import Link from "next/link";
 import { fmtDate, fmtMonthRange, fmtNum, fmtRank } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { CardArt } from "@/components/card-art";
@@ -14,10 +15,19 @@ import { BanStatus, Tag } from "@/components/ds/tags";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { BuyLabel } from "@/types";
 
-export const metadata: Metadata = {
-  title: "Signaux boutique",
-  description: "Les cartes des archétypes qui montent en OCG, à surveiller avant leur arrivée en TCG.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { data, label_rule, computed_at } = await api.boutiqueSignals();
+  const archetypes = new Set(data.map((s) => s.archetype)).size;
+  const computed = computed_at ? `, calcul du ${fmtDate(computed_at)}` : "";
+  const rule = label_rule
+    ? ` Libellé : rang parmi ${label_rule.population} archétypes OCG${label_rule.provisional ? ", seuils provisoires, non validés hors échantillon" : ""}.`
+    : "";
+  return pageMetadata({
+    title: "Signaux boutique",
+    description: `${data.length} cartes de ${archetypes} archétypes joués en OCG et pas encore sortis en TCG${computed}.${rule}`,
+    path: "/boutique",
+  });
+}
 
 // Fort = étiquette pleine (l'accent signale ce qui compte), le reste en contour.
 const LABEL_TONE: Record<BuyLabel, "strong" | "outline" | "neutral"> = {

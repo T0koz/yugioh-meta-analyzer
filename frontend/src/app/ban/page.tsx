@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { fmtDate, fmtNum } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Page } from "@/components/ds/page";
@@ -22,28 +25,35 @@ function parseTab(raw: string | string[] | undefined): Tab {
   return TABS.some((t) => t.id === raw) ? (raw as Tab) : "radar";
 }
 
-const TAB_META: Record<Tab, { title: string; description: string }> = {
-  radar: {
-    title: "Ban Radar",
-    description: "Les cartes Yu-Gi-Oh! les plus exposées à la prochaine banlist TCG, notées sur six critères.",
-  },
-  impact: {
-    title: "Cartes à impact",
-    description: "Les cartes dont l’interdiction toucherait le plus d’archétypes et de decks Yu-Gi-Oh!.",
-  },
-  simulateur: {
-    title: "Simulateur de ban",
-    description: "Retire une carte de la méta Yu-Gi-Oh! et regarde quels archétypes sont touchés.",
-  },
-};
-
-// Un titre par onglet : les trois vues partagent la même route.
+// Un titre, une description et une adresse canonique par onglet : les trois vues
+// partagent la même route, mais pas le même contenu.
 export async function generateMetadata({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }): Promise<Metadata> {
-  return TAB_META[parseTab((await searchParams).tab)];
+  const tab = parseTab((await searchParams).tab);
+  if (tab === "simulateur") {
+    return pageMetadata({
+      title: "Simulateur de ban",
+      description: `Archétypes et decks de tournoi Yu-Gi-Oh! TCG reliés à une carte dans le graphe de co-occurrences, et cohésion du graphe sans elle. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
+      path: "/ban?tab=simulateur",
+    });
+  }
+  if (tab === "impact") {
+    const { as_of, n_decks_window } = await api.cardImpact();
+    return pageMetadata({
+      title: "Cartes à impact",
+      description: `Cartes Yu-Gi-Oh! TCG classées par nombre d’archétypes et de decks qui les jouent, sur ${fmtNum(n_decks_window)} decks de tournoi, relevé du ${fmtDate(as_of)}. Source : ${DECK_SOURCE}.`,
+      path: "/ban?tab=impact",
+    });
+  }
+  const { as_of, n_decks_window } = await api.banRadar();
+  return pageMetadata({
+    title: "Ban Radar",
+    description: `Cartes Yu-Gi-Oh! TCG notées de 0 à 100 sur six critères de risque de restriction, sur ${fmtNum(n_decks_window)} decks de tournoi, relevé du ${fmtDate(as_of)}. Source : ${DECK_SOURCE}.`,
+    path: "/ban",
+  });
 }
 
 // Même grammaire que la nav : texte doux, onglet actif en clair sur --ink-4.

@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { fmtNum } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
 import { DataFooter, Page, PageHero } from "@/components/ds/page";
 import { GraphView } from "./GraphView";
 
-export const metadata: Metadata = {
-  title: "Graphe de synergies",
-  description: "Les cartes Yu-Gi-Oh! qui se jouent ensemble : le graphe des co-occurrences dans les decks de tournoi.",
-};
-
 const MIN_JACCARD = 0.15;
+
+export const metadata: Metadata = pageMetadata({
+  title: "Graphe de synergies",
+  description: `Graphe de co-occurrence des cartes Yu-Gi-Oh! : un lien relie deux cartes jouées dans les mêmes decks de tournoi, indice de Jaccard ≥ ${fmtNum(MIN_JACCARD, 2)}. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
+  path: "/graph",
+});
 
 export default async function GraphPage() {
   const data = await api.graphSynergies({ limit: 200, minJaccard: MIN_JACCARD });

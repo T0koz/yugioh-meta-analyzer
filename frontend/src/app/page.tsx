@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 import { CRITERIA } from "@/lib/ban-criteria";
 import { fmtDate, fmtMonthRange, fmtNum } from "@/lib/format";
 import { PROOF } from "@/lib/proof-data";
+import { pageMetadata } from "@/lib/seo";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { CardArt, CardArtFill } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
@@ -20,11 +21,13 @@ import type { BuyLabel } from "@/types";
 // hero, preuve au défilement, outils, méthode, pied de page. Tout le contenu est
 // rendu côté serveur ; les effets (components/home/effects.tsx) s'y ajoutent.
 
-export const metadata: Metadata = {
-  title: { absolute: "YGO Meta · La méta OCG précède la méta TCG de 2 à 6 mois" },
+export const metadata: Metadata = pageMetadata({
+  title: "Accueil",
+  absoluteTitle: "YGO Meta · La méta OCG précède la méta TCG de 2 à 6 mois",
   description:
     "Méta Yu-Gi-Oh! TCG et OCG mesurée sur 23 948 decklists de tournoi : corrélation OCG → TCG de 0,53, signaux boutique, risque de ban, méthode et limites.",
-};
+  path: "/",
+});
 
 const WRAP = "mx-auto w-full max-w-[var(--maxw)] px-[var(--gutter)]";
 const H2 = "text-[clamp(30px,4.2vw,56px)] leading-[1.02] font-medium tracking-[-0.04em] text-balance";

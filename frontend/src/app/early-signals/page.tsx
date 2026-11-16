@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -9,10 +11,15 @@ import { Em } from "@/components/ds/em";
 import { DataFooter, Meter, Page, PageHero } from "@/components/ds/page";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 
-export const metadata: Metadata = {
-  title: "Signaux précoces",
-  description: "Les nouvelles cartes Yu-Gi-Oh! qui entrent dans la méta, repérées par leurs vues et leurs co-occurrences.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { data, computed_at } = await api.earlySignals();
+  const computed = computed_at ? `, calcul du ${fmtDate(computed_at)}` : "";
+  return pageMetadata({
+    title: "Signaux précoces",
+    description: `${data.length} cartes Yu-Gi-Oh! récentes notées de 0 à 100 : vues hebdomadaires, co-occurrences en decks de tournoi, tier de l’archétype${computed}. Sources : YGOPRODeck, ${DECK_SOURCE}.`,
+    path: "/early-signals",
+  });
+}
 
 // Colonnes : rang · vignette · carte · score (barre + valeur) · vues par semaine.
 const GRID =

@@ -39,6 +39,14 @@ export function fmtMonthYear(label: string): string {
   return date.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
 }
 
+/** Fenêtre entre deux dates ISO → « nov. 26 à mars 27 » ; nul si une borne manque. */
+export function fmtMonthRange(startIso: string | null, endIso: string | null): string | null {
+  if (!startIso || !endIso) return null;
+  const start = fmtMonthShort(startIso.slice(0, 7));
+  const end = fmtMonthShort(endIso.slice(0, 7));
+  return start === end ? start : `${start} à ${end}`;
+}
+
 /** « 2026-01 » → « janv. 26 » (axes de graphique). Valeur non reconnue : renvoyée telle quelle. */
 export function fmtMonthShort(yearMonth: string): string {
   const date = new Date(`${yearMonth}-01T00:00:00`);

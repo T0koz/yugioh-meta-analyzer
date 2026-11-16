@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { fmtNum, fmtPct } from "@/lib/format";
+import { fmtMonthRange, fmtNum, fmtPct } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { Em } from "@/components/ds/em";
 import { CardArt } from "@/components/card-art";
@@ -74,6 +74,7 @@ export default async function Home() {
     api.predictions(),
   ]);
   const topBuy = boutique.data[0];
+  const tcgWindow = topBuy ? fmtMonthRange(topBuy.tcg_window_start, topBuy.tcg_window_end) : null;
   const topRisk = radar.data[0];
   const rise = biggestRise(predictions.data);
 
@@ -133,10 +134,11 @@ export default async function Home() {
               <h2 className={H3}>
                 {topBuy.card_name}, <em className="font-serif font-normal italic tracking-[-0.01em] text-signal-deep">{topBuy.archetype}</em>.
               </h2>
-              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">Archétype actif en OCG, pas encore vu en tournoi TCG.</p>
+              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">Archétype joué en OCG, cartes clés pas encore sorties en TCG.</p>
               <div className="flex flex-wrap gap-1.5">
                 {[
                   `Cardmarket ${fmtNum(topBuy.cm_price, 2)} €`,
+                  tcgWindow && `Arrivée TCG ${tcgWindow}`,
                   topBuy.ban_tcg && `${banStatusLabel(topBuy.ban_tcg)} en TCG`,
                 ]
                   .filter(Boolean)

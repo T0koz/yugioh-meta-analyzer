@@ -58,6 +58,10 @@ class BoutiqueSignal(BaseModel):
     cm_price: float
     ban_tcg: Optional[str] = None
     image_url: Optional[str] = None
+    # Fenêtre d'arrivée en TCG de l'archétype (intervalle à 80 %, « AAAA-MM-JJ »),
+    # NULL si la source n'en a pas calculé.
+    tcg_window_start: Optional[str] = None
+    tcg_window_end: Optional[str] = None
 
 
 class BoutiqueResponse(BaseModel):

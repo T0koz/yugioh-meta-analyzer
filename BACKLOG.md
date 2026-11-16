@@ -173,6 +173,9 @@ réduit) ; mono sous 40 % des caractères sur les 9 pages (11 à 37 %) ; barre d
 colonne de barres orange dans les tableaux ; Lighthouse installé, référence dans `docs/audit-front/lighthouse-2026-11-16.md`
 (desktop 100 partout ; mobile 98 sauf `/evolution` 90 et `/graph` 73 ; LCP mobile réel ≈ 2,0 s, à l'objectif de TOK-106 — les 3,3 s d'abord mesurés venaient de la simulation de Lighthouse).
 
+**Après fusion de TOK-113 dans la branche (2026-11-16)** : la page boutique affiche les 12 signaux du signal v3 et la
+fenêtre d'arrivée en TCG ; le filtre par nom de TOK-97 est retiré de l'API (règle appliquée à la source).
+
 ---
 
 ## TOK-107 — Collaboration et stack (2026-11-16)

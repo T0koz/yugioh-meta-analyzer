@@ -415,8 +415,8 @@ chiffres, avant la nouvelle page d'accueil) → TOK-98 (semaine 1). Une étape n
 - **`tcg_entry_estimated` n'est pas une estimation** : le notebook 10 y écrit `date.today() + 4 mois`, identique pour
   toutes les lignes. Le champ n'est plus servi ni affiché. ⚠ `scripts/log_predictions.py` le journalise encore comme
   `target_date` : à neutraliser avant l'échéance de mars 2027.
-- **Signaux boutique filtrés dans l'API** : un archétype qui cumule ≥ 5 decks TCG sur 12 mois de `meta_scores`
-  (`TCG_PRESENCE_MIN_DECKS`) est écarté. 7 archétypes sur 10 sortent (Elfnote, Kewl Tune, Branded, Sky Striker…),
+- **Signaux boutique filtrés dans l'API** *(remplacé le jour même par TOK-113, filtre retiré : voir plus bas)* : un
+  archétype qui cumule ≥ 5 decks TCG sur 12 mois de `meta_scores` (`TCG_PRESENCE_MIN_DECKS`) était écarté. 7 archétypes sur 10 sortent (Elfnote, Kewl Tune, Branded, Sky Striker…),
   il reste Toon, Witchcrafter, Raise Moon : 41 lignes, **aucun signal « Fort »**, des staples à quelques centimes.
   Le score mesurait « fort en OCG », pas « fort en OCG et absent du TCG » : le vrai correctif est dans le notebook 10.
 - **Ban Radar** : poids inchangés. `SITE_FACTS.banTop10Hits*` porte le constat affiché sur les vues Staples et Tout :
@@ -453,6 +453,11 @@ chiffres, avant la nouvelle page d'accueil) → TOK-98 (semaine 1). Une étape n
   visible ; le fondu d'entrée coûtait jusqu'à 0,8 s. L'utilitaire `enter` glisse sans fondu (`rise-in`) ; le fondu
   (`fade-rise`) est réservé à `Reveal`, sous le premier écran.
 
+**Après fusion de TOK-113 (2026-11-16)** : `GET /boutique/signals` n'a plus de filtre (la règle « pas encore en TCG »
+est appliquée à la source, sur les cartes) et sert `tcg_window_start` / `tcg_window_end`. La page boutique et la tuile
+de l'accueil affichent la fenêtre (« nov. 26 à mars 27 », `fmtMonthRange`) avec son avertissement : intervalle à 80 %,
+non validé hors échantillon. Une branche qui lit encore `tcg_entry_estimated` répond 500 sur la base en schéma v3.
+
 ### 🛒 Signal boutique v3 (TOK-113, 2026-11-16)
 
 Correctif **à la source** des deux défauts trouvés par TOK-97. Chaîne : notebook 10 → `boutique_alerts`,
@@ -483,7 +488,7 @@ Correctif **à la source** des deux défauts trouvés par TOK-97. Chaîne : note
   restent (ajout seul) et `validate_predictions.py` les évalue **à part**, statut `évaluée_horizon_fixe`. Une ligne v3
   est jugée sur `arrived` : ≥ 5 decks TCG dont le nom contient l'archétype avant la fin de la fenêtre.
 - `app.py` (Streamlit) affiche la fenêtre. `backend/app/routers/boutique.py` est repris tel quel de
-  `claude/refonte-front-cbe8af` (fusion sans conflit) ; son filtre par nom fait désormais double emploi.
+  `claude/refonte-front-cbe8af` ; son filtre par nom, qui faisait double emploi, a été retiré sur cette branche.
 
 Limites connues, à ne pas présenter comme résolues :
 - **Fort / Modéré / Faible sont relatifs au premier du lot** (`alert_norm` et `buy_score_100` divisés par le maximum) :
@@ -492,7 +497,8 @@ Limites connues, à ne pas présenter comme résolues :
   `format=tcg`. Les cartes inédites n'ont donc pas de vues : la moyenne se fait sur les seules cartes connues.
 - Une générique peut sortir sous deux archétypes (Pot of Desires). « Harpie/Amazoness » est un nom hybride : son
   arrivée en TCG sous un autre nom serait manquée par le validateur.
-- Le front de `main` lit encore `tcg_entry_estimated` (colonne à « — ») ; la fenêtre n'est servie par aucun endpoint.
+- Le front de `main` lit encore `tcg_entry_estimated` (colonne à « — ») ; la fenêtre est servie et affichée sur
+  `claude/refonte-front-cbe8af` (pas encore dans `main`).
 - La base réelle est en schéma v3 depuis le 2026-11-16 et la branche est fusionnée dans `main` le même jour. Une
   branche antérieure à cette fusion qui lit `tcg_entry_estimated` répond 500 sur `/boutique/signals`.
   Sauvegardes : `data/backup_avant_boutique_v3_20261116.db`, `data/backup_serving_avant_boutique_v3_20261116.db`.

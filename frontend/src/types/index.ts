@@ -53,6 +53,9 @@ export interface BoutiqueSignal {
   cm_price: number;
   ban_tcg: string | null;
   image_url: string | null;
+  /** Fenêtre d'arrivée en TCG de l'archétype, intervalle à 80 % (« AAAA-MM-JJ »). */
+  tcg_window_start: string | null;
+  tcg_window_end: string | null;
 }
 
 export interface BoutiqueResponse {

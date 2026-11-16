@@ -18,6 +18,19 @@ BOUTIQUE_SIGNALS_LIMIT = 100
 EARLY_SIGNALS_LIMIT = 50
 
 
+def latest_computed_at(db: sqlite3.Connection, table: str) -> str | None:
+    """Date du dernier calcul d'une table (pied de données du front, TOK-99).
+
+    `table` est une constante du code, jamais une saisie. Une base sans colonne
+    `computed_at` (ancienne copie, base de test) donne None : la page affiche alors
+    « date de calcul inconnue » au lieu de casser.
+    """
+    try:
+        return db.execute(f"SELECT MAX(computed_at) FROM {table}").fetchone()[0]
+    except sqlite3.OperationalError:
+        return None
+
+
 @router.get("/boutique/signals", response_model=BoutiqueResponse)
 def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueResponse:
     # Pas de filtre ici : la règle « pas encore en TCG » est appliquée à la source
@@ -78,7 +91,8 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
             moderate_max_rank=moderate,
             note=PROVISIONAL_NOTE,
         )
-    return BoutiqueResponse(data=data, label_rule=rule)
+    computed_at = latest_computed_at(db, "boutique_buy_signals")
+    return BoutiqueResponse(data=data, label_rule=rule, computed_at=computed_at)
 
 
 @router.get("/early-signals", response_model=EarlySignalsResponse)
@@ -106,4 +120,5 @@ def get_early_signals(db: sqlite3.Connection = Depends(get_db)) -> EarlySignalsR
         )
         for row in rows
     ]
-    return EarlySignalsResponse(data=data)
+    computed_at = latest_computed_at(db, "early_card_signals")
+    return EarlySignalsResponse(data=data, computed_at=computed_at)

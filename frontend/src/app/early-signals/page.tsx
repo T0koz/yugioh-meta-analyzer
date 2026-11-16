@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
-import { fmtNum } from "@/lib/format";
+import { fmtDate, fmtNum } from "@/lib/format";
 import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
-import { Meter, Page, PageHero } from "@/components/ds/page";
+import { DataFooter, Meter, Page, PageHero } from "@/components/ds/page";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ const GRID =
   "grid grid-cols-[22px_34px_minmax(0,1fr)_72px] items-center gap-3 px-3 min-[760px]:grid-cols-[28px_34px_minmax(0,1.4fr)_minmax(120px,1fr)_110px] min-[760px]:gap-4 min-[760px]:px-4";
 
 export default async function EarlySignalsPage() {
-  const { data } = await api.earlySignals();
+  const { data, computed_at } = await api.earlySignals();
 
   return (
     <HoverPreviewProvider>
@@ -75,6 +75,11 @@ export default async function EarlySignalsPage() {
             </div>
           ))}
         </div>
+        <DataFooter
+          source="vues par semaine (YGOPRODeck), co-occurrences dans les decklists de tournoi (yugiohmeta.com)"
+          date={computed_at ? `calcul du ${fmtDate(computed_at)}` : "date de calcul inconnue"}
+          sample={`${fmtNum(data.length)} cartes`}
+        />
       </Page>
     </HoverPreviewProvider>
   );

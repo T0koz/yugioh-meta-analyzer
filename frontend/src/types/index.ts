@@ -30,6 +30,8 @@ export interface EvolutionResponse {
   data: Record<string, EvolutionPoint[]>;
   /** Vignette par archétype ; absente si aucune carte connue. */
   images: Record<string, string>;
+  /** Decks de tournoi comptés chaque mois (« AAAA-MM » → n). */
+  decks_by_month: Record<string, number>;
 }
 
 export interface PredictionEntry {
@@ -43,6 +45,9 @@ export interface PredictionEntry {
 export interface PredictionsResponse {
   data: PredictionEntry[];
   model: string;
+  /** Mois observé (« AAAA-MM ») : la prévision porte sur le mois suivant. */
+  data_month: string | null;
+  computed_at: string | null;
 }
 
 export interface BoutiqueSignal {
@@ -75,6 +80,7 @@ export interface BoutiqueResponse {
   data: BoutiqueSignal[];
   /** null quand aucun libellé n'est calculable. */
   label_rule: SignalLabelRule | null;
+  computed_at: string | null;
 }
 
 export interface EarlySignal {
@@ -87,6 +93,7 @@ export interface EarlySignal {
 
 export interface EarlySignalsResponse {
   data: EarlySignal[];
+  computed_at: string | null;
 }
 
 export interface BanSimResult {

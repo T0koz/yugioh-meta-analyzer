@@ -4,7 +4,7 @@ import { SITE_FACTS } from "@/lib/site-facts";
 import { CardChip } from "@/components/card-chip";
 import { CardArt } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
-import { Callout, Explainer, PageHero } from "@/components/ds/page";
+import { Callout, DataFooter, Explainer, PageHero } from "@/components/ds/page";
 import { BanStatus } from "@/components/ds/tags";
 import type { BanRadarCriteria, BanRadarEntry, RiskLabel } from "@/types";
 import { CRITERIA } from "@/lib/ban-criteria";
@@ -45,14 +45,14 @@ export function BigScore({ value, label, tone }: { value: string; label: string;
 function CriteriaStack({ criteria, score }: { criteria: BanRadarCriteria; score: number }) {
   return (
     <div className="mt-3 flex h-2 gap-0.5 overflow-hidden rounded-[2px] bg-ink-4">
-      {CRITERIA.map(({ key, label, opacity }) => {
+      {CRITERIA.map(({ key, label, color }) => {
         const contribution = criteria[key];
         if (contribution <= 0) return null;
         return (
           <i
             key={key}
-            className="block h-full bg-signal"
-            style={{ width: `${contribution}%`, opacity }}
+            className="block h-full"
+            style={{ width: `${contribution}%`, backgroundColor: color }}
             title={`${label} : ${fmtNum(contribution, 1)} pts sur ${fmtNum(score, 1)}`}
           />
         );
@@ -66,7 +66,7 @@ function CriteriaLegend() {
     <div className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 font-mono text-[10.5px] tracking-[0.06em] text-muted-text uppercase">
       {CRITERIA.map((c) => (
         <span key={c.key} className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-[7px] w-[7px] rounded-[1px] bg-signal" style={{ opacity: c.opacity }} />
+          <span className="inline-block h-[7px] w-[7px] rounded-[1px]" style={{ backgroundColor: c.color }} />
           {c.label}
         </span>
       ))}
@@ -164,7 +164,7 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
           {CRITERIA.map((c) => (
             <div key={c.key} className="flex gap-2">
               <dt className="flex shrink-0 items-center gap-1.5 text-text uppercase">
-                <span className="inline-block h-[7px] w-[7px] rounded-[1px] bg-signal" style={{ opacity: c.opacity }} />
+                <span className="inline-block h-[7px] w-[7px] rounded-[1px]" style={{ backgroundColor: c.color }} />
                 {c.label}
               </dt>
               <dd className="font-sans text-[13px]">{c.help}</dd>
@@ -190,6 +190,11 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
           <RadarRow key={entry.card_name} entry={entry} rank={index + 1} />
         ))}
       </div>
+      <DataFooter
+        source="decklists de tournoi TCG (yugiohmeta.com), banlists (Yugipedia)"
+        date={`au ${fmtDate(as_of)}, 6 mois glissants`}
+        sample={`${fmtNum(n_decks_window)} decks, ${fmtNum(data.length)} cartes affichées`}
+      />
     </>
   );
 }

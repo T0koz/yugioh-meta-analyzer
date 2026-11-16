@@ -141,3 +141,29 @@ export function Meter({ value, max, tone = "signal" }: { value: number; max: num
     </div>
   );
 }
+
+/**
+ * Pied de données : source, date et échantillon sous chaque graphique ou tableau
+ * (TOK-99). `date` est obligatoire : une visualisation sans date ne se publie pas.
+ */
+export function DataFooter({
+  source,
+  date,
+  sample,
+  children,
+}: {
+  source: string;
+  /** Déjà rédigée : « au 14 novembre 2026 », « août 25 à nov. 26 »… */
+  date: string;
+  sample?: string;
+  /** Note de lecture facultative (légende, limite connue). */
+  children?: React.ReactNode;
+}) {
+  return (
+    <p className="mt-3 font-mono text-[12px] leading-[1.7] text-muted-text">
+      Source : {source} · {date}
+      {sample && ` · ${sample}`}
+      {children && <> · {children}</>}
+    </p>
+  );
+}

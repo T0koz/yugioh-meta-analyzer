@@ -247,6 +247,23 @@ JavaScript transféré 180 ko, CLS 0.
   dans `lib/ban-criteria.ts` (partagé avec l'accueil). `LH_PAGES=/,/boutique` limite `npm run lighthouse` à quelques pages.
 → détail complet : `docs/journal/accueil-tok-106.md`
 
+### 📈 Dataviz maison et palette de données (TOK-99, 2026-11-17, branche `claude/tok-99-dataviz-923148`, non fusionnée dans `main`)
+
+recharts supprimé. `/evolution` (courbes, client) et `/predictions` (haltères, serveur) sont des SVG calculés avec D3 ;
+palette catégorielle `--cat-1` à `--cat-6` (aussi sur la barre des critères du Ban Radar) ; `DataFooter` (source, date,
+échantillon) sous chaque graphique et tableau. Mesuré : `/evolution` 190,6 ko de JavaScript (avant 274,1), Access. 100,
+LCP mobile 1,76 s.
+- **`d3-scale` reste côté serveur** : dans un composant client il ajoute ≈ 12 ko transférés et fait dépasser 200 ko.
+  Côté client : `d3-array` (`nice`, `ticks`) + `d3-shape`, échelle linéaire écrite à la main. Jamais le paquet `d3` entier.
+- **Texte de graphique ≥ 12 px** : à 11 px, l'audit « font-size » de Lighthouse fait tomber les bonnes pratiques à 96.
+- **`npm run contrast`** (dans `frontend/`) après toute retouche d'un token de couleur : échoue sous 4,5:1.
+- Les `--cat-*` disent qui (série, critère), jamais un état ; `--ocg` reste réservé à l'OCG et ne se mélange pas à eux.
+  Toutes les paires de teintes ne sont pas séparables en vision daltonienne : toujours une étiquette ou une légende.
+- **Tout nouveau graphique ou tableau** : `DataFooter` (date obligatoire) + alternative tabulaire en `<details>`.
+- Champs ajoutés à l'API (rien de retiré) : `decks_by_month`, `data_month`, `computed_at`. La base servie n'a pas de date
+  pour le graphe de co-occurrences : le pied du graphe et du simulateur l'écrit.
+→ détail complet : `docs/journal/dataviz-tok-99.md`
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

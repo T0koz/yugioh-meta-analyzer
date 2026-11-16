@@ -150,7 +150,11 @@ def get_evolution(db: sqlite3.Connection = Depends(get_db)) -> EvolutionResponse
             EvolutionPoint(month=row["month"], meta_score=row["meta_score"], share=row["share"])
         )
     images = {a: url for a in top_archetypes if (url := get_archetype_image(db, a))}
-    return EvolutionResponse(data=data, images=images)
+    decks_by_month = {
+        row["month"]: row["n"]
+        for row in db.execute("SELECT month, MAX(total_decks) AS n FROM meta_scores GROUP BY month")
+    }
+    return EvolutionResponse(data=data, images=images, decks_by_month=decks_by_month)
 
 
 @router.get("/predictions", response_model=PredictionsResponse)
@@ -176,4 +180,12 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
         )
         for row in rows
     ]
-    return PredictionsResponse(data=data, model="70 % naïf + 30 % Ridge")
+    try:
+        computed_at = db.execute(
+            "SELECT MAX(computed_at) FROM meta_predictions WHERE data_month = ?", (latest_month,)
+        ).fetchone()[0]
+    except sqlite3.OperationalError:  # base sans colonne computed_at : le front écrit « date inconnue »
+        computed_at = None
+    return PredictionsResponse(
+        data=data, model="70 % naïf + 30 % Ridge", data_month=latest_month, computed_at=computed_at
+    )

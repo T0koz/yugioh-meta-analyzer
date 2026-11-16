@@ -1,9 +1,10 @@
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum, fmtPct } from "@/lib/format";
+import { SITE_FACTS } from "@/lib/site-facts";
 import { CardChip } from "@/components/card-chip";
 import { CardThumb } from "@/components/card-thumb";
 import { Em } from "@/components/ds/em";
-import { Explainer, PageHero } from "@/components/ds/page";
+import { Callout, Explainer, PageHero } from "@/components/ds/page";
 import { BanStatus } from "@/components/ds/tags";
 import type { BanRadarCriteria, BanRadarEntry, RiskLabel } from "@/types";
 import { KindFilterTabs, apiKind, type KindView } from "./kind-filter";
@@ -183,6 +184,16 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
       </Explainer>
 
       <KindFilterTabs tab="radar" active={view} count={`Top ${data.length}`} />
+
+      {view !== "archetype" && (
+        <div className="mb-4 max-w-[72ch]">
+          <Callout title="Un score élevé ne suffit pas pour une staple">
+            <p>
+              {`Sur les ${SITE_FACTS.banBacktestLists} dernières banlists TCG rejouées, ${SITE_FACTS.banTop10HitsGeneric} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre ${SITE_FACTS.banTop10HitsArchetype} sur 100 pour les pièces d’archétype. Ash Blossom, première à chaque fois, n’a jamais été touchée.`}
+            </p>
+          </Callout>
+        </div>
+      )}
 
       <div className="border-b border-line">
         {data.map((entry, index) => (

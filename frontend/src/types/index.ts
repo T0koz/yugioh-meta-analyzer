@@ -14,7 +14,10 @@ export interface TierEntry {
 
 export interface TierListResponse {
   data: TierEntry[];
-  generated_at: string;
+  /** Fenêtre de calcul : premier et dernier mois cumulés (« AAAA-MM »). */
+  window_start: string;
+  window_end: string;
+  n_decks: number;
 }
 
 export interface EvolutionPoint {
@@ -46,7 +49,6 @@ export interface BoutiqueSignal {
   buy_label: BuyLabel;
   cm_price: number;
   ban_tcg: string | null;
-  tcg_entry_estimated: string | null;
 }
 
 export interface BoutiqueResponse {

@@ -15,4 +15,10 @@ export const SITE_FACTS = {
   ocgTcgLagRange: "2 à 6 mois",
   // Non recalculé depuis le rafraîchissement : ne pas afficher de date de fraîcheur.
   graphCommunities: 63,
+  // Ban Radar rejoué la veille des 10 banlists TCG du backtest (2024-04-15 au
+  // 2026-10-19) : places du top 10 suivies d'une restriction, sur 10 × 10 places.
+  // Ce sont des places, pas des cartes distinctes. À recalculer à chaque banlist.
+  banBacktestLists: 10,
+  banTop10HitsGeneric: 6,
+  banTop10HitsArchetype: 19,
 };

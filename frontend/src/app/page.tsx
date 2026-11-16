@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { fmtMonthYear, fmtNum, fmtPct } from "@/lib/format";
+import { fmtNum, fmtPct } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { Em } from "@/components/ds/em";
 import { Eyebrow, Page } from "@/components/ds/page";
@@ -121,11 +121,10 @@ export default async function Home() {
               <h3 className={H3}>
                 {topBuy.card_name}, <em className="font-serif font-normal italic tracking-[-0.01em] text-signal-deep">{topBuy.archetype}</em>.
               </h3>
-              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">À surveiller avant l’arrivée de l’archétype en TCG.</p>
+              <p className="mt-2 mb-3.5 text-[14px] text-paper-muted">Archétype actif en OCG, pas encore vu en tournoi TCG.</p>
               <div className="flex flex-wrap gap-1.5">
                 {[
                   `Cardmarket ${fmtNum(topBuy.cm_price, 2)} €`,
-                  topBuy.tcg_entry_estimated && `Entrée TCG ${fmtMonthYear(topBuy.tcg_entry_estimated)}`,
                   topBuy.ban_tcg && `${banStatusLabel(topBuy.ban_tcg)} en TCG`,
                 ]
                   .filter(Boolean)

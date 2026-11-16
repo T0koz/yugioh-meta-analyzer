@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
-import { fmtMonthYear, fmtNum } from "@/lib/format";
+import { fmtNum } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { CardChip } from "@/components/card-chip";
@@ -40,7 +40,7 @@ export default async function BoutiquePage() {
               Les cartes à surveiller <Em>avant</Em> le TCG.
             </>
           }
-          intro={`Archétypes qui montent en OCG, souvent ${SITE_FACTS.ocgTcgLagRange} avant leur arrivée en TCG. Signal modéré, à croiser avec la banlist TCG et le prix : ce n’est pas une garantie.`}
+          intro={`Archétypes qui montent en OCG et qu’on ne voit pas encore dans les tournois TCG. Le TCG suit souvent l’OCG ${SITE_FACTS.ocgTcgLagRange} plus tard : signal modéré, à croiser avec la banlist et le prix, sans date d’arrivée garantie.`}
         >
           <StatBand
             stats={[
@@ -62,11 +62,10 @@ export default async function BoutiquePage() {
                 <TableHead>Archétype</TableHead>
                 <TableHead className="text-right">
                   Score
-                  <InfoTooltip text="alert_score = meta_score OCG × log(1 + vues/semaine moyennes des cartes clés). Signal OCG → TCG réel mais modéré : r ≈ 0,53 à 4 mois (IC 95 % 0,43 à 0,59), utilisable de 2 à 6 mois. Le signal de juin 2026 a perdu : ses cartes ont baissé de 35 % contre 1 % pour le marché." />
+                  <InfoTooltip text="alert_score = meta_score OCG × log(1 + vues/semaine moyennes des cartes clés). Les archétypes qui comptent déjà 5 decks TCG ou plus sur 12 mois sont écartés. Signal OCG → TCG réel mais modéré : r ≈ 0,53 (IC 95 % 0,43 à 0,59), à peu près constant de 2 à 6 mois d’écart. Le signal de juin 2026 a perdu : ses cartes ont baissé de 35 % contre 1 % pour le marché." />
                 </TableHead>
                 <TableHead className="text-right">Prix CM</TableHead>
                 <TableHead>Banlist TCG</TableHead>
-                <TableHead className="text-right">Entrée TCG est.</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -87,9 +86,6 @@ export default async function BoutiquePage() {
                   </TableCell>
                   <TableCell>
                     {signal.ban_tcg ? <BanStatus status={signal.ban_tcg} /> : <span className="font-mono text-[12px] text-faint">—</span>}
-                  </TableCell>
-                  <TableCell className="text-right font-mono text-[12px] text-muted-text">
-                    {signal.tcg_entry_estimated ? fmtMonthYear(signal.tcg_entry_estimated) : "—"}
                   </TableCell>
                 </TableRow>
               ))}

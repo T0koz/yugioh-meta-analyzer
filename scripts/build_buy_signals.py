@@ -17,6 +17,17 @@ l'archétype. On garde les poids 70/30 réellement appliqués par la v1 mais le 
 0-100 (PRICE_SCALE). Conséquence : à archétype égal, une carte bon marché passe devant une carte
 chère. Non validé sur ventes : même caveat que TOK-74.
 
+Signal v3 (2026-11-16) : `boutique_alerts` ne contient plus que les archétypes forts en OCG et pas
+encore sortis en TCG (notebook 10). La fausse date `tcg_entry_estimated` (date du jour + 4 mois,
+identique partout) est remplacée par la fenêtre `tcg_window_start` / `tcg_window_end` de l'archétype
+(intervalle à 80 %). `ban_tcg` vient de la banlist TCG en vigueur (`banlist_history`) et non de
+`cards.ban_tcg`, figé au dernier `fetch_cards.py` (4 cartes interdites étaient encore proposées).
+Seules les cartes déjà cotées sur Cardmarket ressortent : on surveille les cartes disponibles que le
+futur deck jouera, pas les cartes inédites.
+⚠ `alert_norm` et `buy_score_100` sont relatifs au maximum du lot : il y a toujours une carte à 100,
+même quand le signal est faible dans l'absolu. Les libellés Fort / Modéré / Faible classent les
+cartes entre elles, ils ne mesurent pas une force de signal.
+
     python scripts/build_buy_signals.py [--dry-run]
 """
 import argparse
@@ -31,18 +42,21 @@ DB = Path(__file__).resolve().parents[1] / "data" / "yugioh.db"
 
 
 def build(con) -> pd.DataFrame:
-    alerts = pd.read_sql("SELECT archetype, alert_score, tcg_entry_estimated FROM boutique_alerts", con)
+    alerts = pd.read_sql("SELECT archetype, alert_score, tcg_window_start, tcg_window_end FROM boutique_alerts", con)
     cards = pd.read_sql("SELECT archetype, card_name, card_alert_score FROM boutique_card_alerts", con)
-    # ban_tcg : le notebook 10 ne l'écrit plus (l'ancienne colonne avait été ajoutée à la main).
-    ban = pd.read_sql("SELECT name, ban_tcg FROM cards", con)
-    ban["card_name"] = ban.name.str.replace("<", "").str.replace(">", "")
-    cards = cards.merge(ban[["card_name", "ban_tcg"]].drop_duplicates("card_name"), on="card_name", how="left")
+    # ban_tcg : statut dans la banlist TCG en vigueur (NULL = non limitée).
+    ban = pd.read_sql(
+        "SELECT card_name, status AS ban_tcg FROM banlist_history WHERE format = 'TCG' "
+        "AND effective_date = (SELECT MAX(effective_date) FROM banlist_history WHERE format = 'TCG')", con)
+    cards = cards.merge(ban.drop_duplicates("card_name"), on="card_name", how="left")
     cards = cards[cards.ban_tcg != "Forbidden"]   # signal d'achat : on exclut les cartes bannies en TCG
     last = pd.read_sql("SELECT MAX(snapshot_date) d FROM card_price_history", con).d[0]
     px = pd.read_sql("SELECT card_name, cardmarket_price AS cm_price, tcgplayer_price AS tcp_price FROM card_price_history WHERE snapshot_date=?",
                      con, params=(last,))
     d = cards.merge(alerts, on="archetype").merge(px, on="card_name")
     d = d[d.cm_price.notna() & (d.cm_price > 0)].copy()
+    if d.empty:   # aucun archétype retenu, ou aucune carte cotée : table vide, mêmes colonnes
+        return pd.DataFrame(columns=COLS)
     d["archetype_alert"] = d.alert_score
     d["alert_norm"] = (d.alert_score / alerts.alert_score.max() * 100).round(2)
     d["price_opp"] = 1 - d.cm_price.rank(method="min") / len(d)
@@ -50,9 +64,11 @@ def build(con) -> pd.DataFrame:
     d["buy_score_100"] = (d.buy_score / d.buy_score.max() * 100).round(1)
     d["buy_label"] = pd.cut(d.buy_score_100, [-1, 49.999, 79.999, 1000], labels=["Faible", "Modéré", "Fort"]).astype(str)
     d["computed_at"] = date.today().isoformat()
-    cols = ["archetype", "card_name", "archetype_alert", "card_alert_score", "cm_price", "tcp_price", "alert_norm",
-            "price_opp", "buy_score", "buy_score_100", "buy_label", "tcg_entry_estimated", "computed_at", "ban_tcg"]
-    return d[cols].sort_values("buy_score_100", ascending=False).reset_index(drop=True)
+    return d[COLS].sort_values("buy_score_100", ascending=False).reset_index(drop=True)
+
+
+COLS = ["archetype", "card_name", "archetype_alert", "card_alert_score", "cm_price", "tcp_price", "alert_norm",
+        "price_opp", "buy_score", "buy_score_100", "buy_label", "tcg_window_start", "tcg_window_end", "computed_at", "ban_tcg"]
 
 
 def main():

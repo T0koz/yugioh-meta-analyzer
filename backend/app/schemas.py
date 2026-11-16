@@ -96,6 +96,41 @@ class BoutiqueResponse(BaseModel):
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
 
 
+class PricePoint(BaseModel):
+    date: str  # « AAAA-MM-JJ », date du relevé
+    price: float  # prix moyen Cardmarket, en euros
+
+
+class PriceGap(BaseModel):
+    # Dernier relevé avant le trou, premier relevé après, et l'écart en jours.
+    start: str
+    end: str
+    days: int
+
+
+class CardPriceHistory(BaseModel):
+    card_name: str
+    # Relevés tels quels, dans l'ordre des dates : ni lissage ni interpolation.
+    points: list[PricePoint]
+    # Écarts de plus de `max_step_days` entre deux relevés : ne pas les relier.
+    gaps: list[PriceGap]
+    # Moins de `min_points` relevés : aucune ligne, points seulement.
+    sparse: bool
+
+
+class PriceHistoryResponse(BaseModel):
+    cards: list[CardPriceHistory]
+    # Premier et dernier relevé, toutes cartes confondues (axe commun des courbes).
+    period_start: Optional[str] = None
+    period_end: Optional[str] = None
+    # Nombre de dates de relevé distinctes dans la table.
+    snapshot_count: int
+    max_step_days: int
+    min_points: int
+    source: str
+    computed_at: Optional[str] = None
+
+
 class EarlySignal(BaseModel):
     card_name: str
     # NULL pour les cartes sans archétype dans YGOPRODeck (ex. Fydraulis Harmonia)

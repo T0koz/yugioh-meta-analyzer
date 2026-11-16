@@ -36,6 +36,8 @@ SERVED_TABLES = [
     "archetype_trend",
     "ban_radar",
     "boutique_buy_signals",
+    # TOK-103 : relevés de prix des cartes du signal boutique (scripts/build_boutique_price_history.py).
+    "boutique_price_history",
     "card_cooccurrence",
     "card_graph_metrics",
     "card_impact",

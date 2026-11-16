@@ -4,6 +4,7 @@ import type {
   BanRadarResponse,
   BanSimResult,
   BoutiqueResponse,
+  PriceHistoryResponse,
   CardImpactResponse,
   DeckIndexResponse,
   DeckResponse,
@@ -43,6 +44,7 @@ export const api = {
   evolution: () => apiFetch<EvolutionResponse>("/meta/evolution"),
   predictions: () => apiFetch<PredictionsResponse>("/meta/predictions"),
   boutiqueSignals: () => apiFetch<BoutiqueResponse>("/boutique/signals"),
+  boutiquePrices: () => apiFetch<PriceHistoryResponse>("/boutique/prices"),
   earlySignals: () => apiFetch<EarlySignalsResponse>("/early-signals"),
   banRadar: (params?: { limit?: number; kind?: BanRadarKind }) => {
     const query = new URLSearchParams({ limit: String(params?.limit ?? 50) });

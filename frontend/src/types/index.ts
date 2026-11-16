@@ -89,6 +89,38 @@ export interface BoutiqueResponse {
   computed_at: string | null;
 }
 
+/** Relevé de prix Cardmarket d'une carte (TOK-103). */
+export interface PricePoint {
+  date: string;
+  price: number;
+}
+
+/** Période sans relevé : dernier relevé avant, premier après, écart en jours. Ne pas relier. */
+export interface PriceGap {
+  start: string;
+  end: string;
+  days: number;
+}
+
+export interface CardPriceHistory {
+  card_name: string;
+  points: PricePoint[];
+  gaps: PriceGap[];
+  /** Moins de `min_points` relevés : points seulement, aucune ligne. */
+  sparse: boolean;
+}
+
+export interface PriceHistoryResponse {
+  cards: CardPriceHistory[];
+  period_start: string | null;
+  period_end: string | null;
+  snapshot_count: number;
+  max_step_days: number;
+  min_points: number;
+  source: string;
+  computed_at: string | null;
+}
+
 export interface EarlySignal {
   card_name: string;
   archetype: string | null;

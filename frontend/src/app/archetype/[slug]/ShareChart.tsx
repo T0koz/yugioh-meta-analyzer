@@ -165,7 +165,7 @@ export function ShareChart({
         {labelled.map((p) => (
           <ChartAnnotation key={p.month} x={p.x} y={p.y} decorative below={p === last && peak !== last && crowded}>
             {fmtPct(p.share * 100)} · {fmtMonthShort(p.month)}
-            {p === last && `, en cours, n = ${fmtNum(p.total_decks)}`}
+            {p === last && `, en cours, ${fmtNum(p.total_decks)} decks`}
           </ChartAnnotation>
         ))}
       </div>

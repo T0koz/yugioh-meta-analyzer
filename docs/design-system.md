@@ -268,7 +268,11 @@ Home : hero = « Le TCG suit l'OCG, `<Em>quatre mois</Em>` plus tard. » (chiffr
 - Les poids des critères restent **dupliqués** entre `scripts/build_ban_radar.py` (`WEIGHTS`) et `backend/app/routers/ban_radar.py` : ne pas les toucher dans un travail de design.
 
 ### Encart d'info / tooltip
-Surface `--ink-3`, bordure `--line-2`, rayon 4, padding 14×16. Titre mono 11 px MAJUSCULES `--signal`, texte 14 px `--soft`. `InfoTooltip` : même surface, 12 px.
+Surface `--ink-3`, bordure `--line-2`, rayon 4, padding 14×16. Titre mono 11 px MAJUSCULES `--signal`, texte 14 px `--soft`.
+`InfoTooltip` (lot 15) : `<InfoTooltip term="Tier" text="…" />`, une seule phrase de définition en langage simple (jamais de formule, de
+nom de variable, de série de seuils ni de résultat). Bouton de 24 px (rond visible de 16 px), texte relié par `aria-describedby` et
+`role="tooltip"` ; s'ouvre au survol, au focus clavier et au toucher (le bouton bascule), se ferme par Échap ou un toucher ailleurs ;
+bulle vers le bas, 13 px.
 
 ### Tableau (`boutique`, etc.)
 `Table` shadcn restylé : pas de fond de ligne, filets `--line`, en-têtes mono 11 px MAJUSCULES `--muted-text`, nombres en mono `tabular-nums` alignés à droite, survol de ligne `--ink-3`. Badges de signal : `Fort` = étiquette T1 (plein accent) ; `Moyen`/`Faible` = contour. Statut banlist TCG = statut jaune `--warn`.
@@ -306,6 +310,28 @@ Six teintes catégorielles, dans cet ordre, jamais recyclées (une 7e série se 
 
 ### Pied de données (`DataFooter`, `components/ds/page.tsx`)
 Sous **chaque** graphique et tableau : `Source : … · date · échantillon · note de lecture`, en mono 12 px `--muted-text`. La date est une propriété obligatoire du composant. Quand la base servie n'enregistre pas la date d'un calcul, le pied le dit (« date de calcul non enregistrée ») plutôt que d'en afficher une autre.
+Depuis le lot 15, `uncertainty` est aussi **obligatoire** : seconde ligne « Incertitude : … » qui dit ce que montre l'incertitude dessinée
+(« bande : intervalle à 95 % ») ou pourquoi il n'y en a pas (« aucun intervalle : le score classe les cartes »). Un pied sans elle ne
+compile pas.
+
+### Explication graphique (lot 15, `components/ds/explain.tsx`)
+Briques de la charte `docs/charte-ton-et-explication.md` (§2 : encodage → annotation → incertitude → légende → infobulle → pied →
+Méthode). Toutes rendues côté serveur, importables depuis un composant client.
+- **`SampleBadge`** `k`, `n`, `unit?` : « 15 sur 16 listes », mono 12 px dans un filet `--line`. Tout pourcentage a son effectif.
+- **`ChartLegend`** `items` (`swatch` : `line`, `dashed`, `band`, `bar`, `dot`, `ring`, `span`, `zone`) : légende en ligne au-dessus du
+  graphique, une entrée par marque, sans phrase ; `as="figcaption"` en tête d'une `<figure>`.
+- **`ChartAnnotation`** `x`, `y` (en % du cadre), `below?` : libellé 12 px accroché à un point, au plus deux par graphique.
+- **Incertitude** : `bandPath(points)` (chemin fermé `lo`/`hi` déjà projetés) remplie de la couleur de la série à `BAND_OPACITY`
+  (0,16) ; `IntervalBar` (HTML) : segment `[lo, hi]` sur une échelle commune aux lignes, point plein à la valeur observée.
+- **Données atténuées** : `isWeakMonth(n)` (moins de 100 decks, `WEAK_MONTH_DECKS` dans `lib/wilson.ts`) et le mois en cours ;
+  segment `WEAK_STROKE` (pointillé 3/4, opacité 0,55), point `WEAK_FILL_OPACITY`. Un segment est atténué si l'un de ses deux mois
+  l'est ; un mois atténué ne fixe pas l'échelle (à 1 deck, une part peut valoir 100 %), il est posé au bord du cadre.
+- **`MethodNote`** `anchor` : `<details>` « Méthode » en bas de bloc, 1 à 3 lignes sans formule, lien vers `/methode#anchor`.
+  Ancres en service : `tier-list`, `evolution`, `part-mensuelle`, `predictions`, `ban-radar`, `ban-historique`, `signaux-precoces`,
+  `graphe` (et `decks`, `boutique`, `sources`, `seuils` sur la page).
+- **Intervalle de Wilson** : `lib/wilson.ts`, seul endroit du calcul, testé par `npm run test:stats` (lancé par `check.py`).
+  Utilisé par `/evolution`, la page d'archétype et la tier list. Aucune autre statistique n'est calculée dans le front.
+- **Formules** : aucune sur le site, ni dans `/methode` (charte §2). Elles restent dans le code et la documentation du dépôt.
 
 ## 5. Mise en page
 

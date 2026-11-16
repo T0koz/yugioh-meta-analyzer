@@ -310,7 +310,7 @@ export default async function MethodePage() {
             { term: "Mois atténués", text: `Moins de ${WEAK_MONTH_DECKS} decks dans le mois, ou mois en cours de relevé : point et segment en pointillé, plus pâles.` },
             {
               term: "Limites",
-              text: "La bande suppose des decks indépendants ; plusieurs listes d’un même joueur ou d’un même tournoi la rendent trop étroite.",
+              text: "Intervalle minimal : il suppose des decks indépendants, plusieurs listes d’un même joueur ou d’un même tournoi le rendent trop étroit. Deux bandes qui se chevauchent ou non ne valent pas un test d’écart entre deux mois.",
             },
           ]}
         />

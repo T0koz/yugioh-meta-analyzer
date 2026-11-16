@@ -105,7 +105,7 @@ export default async function Home() {
   const alsoText: Record<string, string | undefined> = {
     "/tier-list": leader && `${leader.archetype} : ${pct(leader.share * 100)} de ${fmtNum(tierList.n_decks)} decks TCG, ${tierWindow}.`,
     "/evolution": `Part mensuelle des archétypes TCG, mai 2023 à ${fmtMonthYearLong(tierList.window_end)}.`,
-    "/predictions": `${predictions.data.length} archétypes, horizon d’un mois, modèle ${predictions.model}.`,
+    "/predictions": `${predictions.data.length} archétypes, horizon d’un mois, sans intervalle par archétype.`,
     "/early-signals": topEarly && `${early.data.length} cartes classées, au ${fmtDate(radar.as_of)}. Première : ${topEarly.card_name}, score ${fmtNum(topEarly.early_score, 2)}.`,
   };
 

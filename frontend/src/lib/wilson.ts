@@ -12,7 +12,9 @@
 //
 // Hypothèse : les decks d'un mois sont traités comme des tirages indépendants. Un
 // même joueur ou un même tournoi qui fournit plusieurs listes rend l'intervalle
-// trop étroit ; la bande est donc une borne basse de l'incertitude réelle.
+// trop étroit : c'est un intervalle minimal, l'incertitude réelle est plus large.
+// Intervalles ponctuels (un par mois et par série) : deux bandes qui se
+// chevauchent ou non ne valent pas un test d'écart entre deux mois.
 
 /** Quantile de la loi normale pour un niveau de confiance de 95 %. */
 export const Z95 = 1.959964;

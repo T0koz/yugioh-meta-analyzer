@@ -356,6 +356,19 @@ Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context
 
 `docs/charte-ton-et-explication.md` : ton, ordre d'explication (encodage → annotation → incertitude → légende → pied → Méthode repliée), règles d'incertitude appuyées sur 8 listes / 600 decks / k sur n, 10 avant / après, inventaire (6 `InfoTooltip`, 8 formules ou notations). **Validée par Thomas le 17/11** : infobulles gardées pour une définition simple, aucune formule sur le site (`/methode` sans formule), mois < 100 decks atténués, intervalles dessinés, couches après maquette. Étape 2 après les lots 11 et 12.
 
+
+**Étape 2 (2026-11-17, branche `claude/lot15-explication-graphique-d831c8`, non fusionnée)** : composants `components/ds/explain.tsx`
+(effectif, légende, annotation, barre d'intervalle, bande, mois atténués, couche « Méthode »), `DataFooter` avec `uncertainty`
+obligatoire, `InfoTooltip` au toucher et au clavier (une phrase de définition), page `/methode` sans formule, bande de Wilson à 95 %
+sur `/evolution` (qui trace maintenant la part des decks), la page d'archétype et la tier list. Accessibilité 100 sur 9 pages,
+`/evolution` 192 → 190 ko de JavaScript, 0 formule dans le HTML rendu de 16 pages.
+- **Wilson dans un seul module** (`lib/wilson.ts`, `npm run test:stats`, lancé par `check.py`). Intervalle minimal : decks supposés
+  indépendants. Validé par le data scientist ; **à relire par la collaboratrice avant mise en ligne**.
+- **Un mois de moins de 100 decks ne fixe pas l'échelle** (à 1 deck, une part vaut 100 %) ; le dernier mois relevé est « en cours »
+  par convention (pas de date système, captures déterministes).
+- `GET /meta/evolution` sert `decks` (k) en plus ; une réponse figée sans lui se rabat sur `share × n`.
+- `next build` refuse un `node_modules` en lien symbolique hors du projet : `cp -cR` pour construire un autre commit.
+→ détail complet : `docs/journal/explication-graphique-lot15.md`
 ### 🖼 Images de cartes hébergées (TOK-92, lot 10, 2026-11-17, branche `claude/lot10-tok-92-images-5c0cd5`, non fusionnée)
 
 0 requête vers `images.ygoprodeck.com` (navigateur et serveur, mesuré sur build de production, 10 pages × 2 largeurs).

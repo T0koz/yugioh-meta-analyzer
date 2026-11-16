@@ -91,6 +91,9 @@ Suites sans ticket : option de chemin pour `build_serving_db.py` (worktrees) ; t
 ## Lot 15 — Charte « ton et explication » (file du 2026-11-17)
 
 🟡 Étape 1 livrée le 2026-11-17 sur `claude/lot15-charte-23027e` : `docs/charte-ton-et-explication.md`, formulaire à valider par Thomas avant l'étape 2 (composants, `/methode`).
+🟡 Étape 2 livrée le 2026-11-17 sur `claude/lot15-explication-graphique-d831c8` (non fusionnée) : composants d'explication,
+infobulles au toucher et au clavier, `/methode` sans formule, bandes de Wilson (Évolution, archétype, tier list), incertitude dite
+sous chaque graphique ; reste la relecture du calcul de Wilson par la collaboratrice avant mise en ligne — `docs/journal/explication-graphique-lot15.md`.
 
 ---
 

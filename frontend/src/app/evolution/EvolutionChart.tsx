@@ -314,7 +314,7 @@ export function EvolutionChart({ data, images, decks_by_month }: EvolutionRespon
               >
                 {compact
                   ? fmtNum(decks_by_month[months[lastIndex]] ?? 0)
-                  : `en cours, n = ${fmtNum(decks_by_month[months[lastIndex]] ?? 0)}`}
+                  : `en cours, ${fmtNum(decks_by_month[months[lastIndex]] ?? 0)} decks`}
               </text>
             )}
 

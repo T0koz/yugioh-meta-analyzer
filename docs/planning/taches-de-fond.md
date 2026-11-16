@@ -26,3 +26,14 @@ où la nuit précédente s'est arrêtée (noter dans `etat.md`, section « Tâch
    code testé. Si un test révèle un bug, le marquer `xfail` avec une note et le signaler au compte rendu.
 
 `python scripts/check.py` doit passer après chaque tâche qui modifie un fichier.
+5. **Confrontation avec une tier list d'experts** (lecture seule, rapport seul, sous-agent `data-scientist-ygo`) :
+   source = vidéo Tsugi YGO « Les Meilleurs Deck pour le YCS Paris » (live du 2026-09-15, chapitres seulement :
+   Sky Striker, Elfnotes, PP Artmage, PP Pure, RDA, Blitz, Dracotail, Predaplant, Invoked, Sacred Beast, Clown,
+   Malice, Yummy, Train/Machina, Blue-Eyes, Killer Tune, Lunalight, Fairy Tail, Spellcaster Pile, Rollad,
+   Angelity, Primite, Mitsu, Doom Z, HERO, Branded).
+   a. **Angelechy** : passé de ~2,5 % (hybride avec Elfnote, sept. 2026) à 17,1 % des decks TCG en oct. 2026.
+      Notre signal précoce, nos prédictions méta ou le journal `prediction_log.jsonl` l'avaient-ils repéré avant
+      octobre ? À quelle date, avec quel score ? Sinon, pourquoi (données OCG, seuils, nom d'archétype) ?
+   b. **YCS Paris** : le tournoi est-il dans `tournament_decks` ? Si oui, comparer son top (archétypes) à la liste
+      de la vidéo et à notre tier list du moment. Signaler les archétypes de la vidéo absents de nos données ou
+      classés sous un autre nom (variantes PP, hybrides).

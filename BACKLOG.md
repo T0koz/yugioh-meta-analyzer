@@ -137,7 +137,7 @@ prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decis
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
 | TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🟡 Rédigé et arbitré (2026-11-16), reste la relecture par un juge — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
-| TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🔜 Backlog | 🟠 Medium |
+| TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🟡 Installation arrêtée le 2026-11-17 (cœur hors organisation officielle, `premake5` et Lua absents) ; décision de Thomas requise — `docs/moteur-combos/reponses-oracle.md` | 🟠 Medium |
 | TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🟡 Rédigé (2026-11-16), 72 situations **non validées** — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
 | TOK-90 | Tranche 0 : un combo Branded de bout en bout (bloqué par TOK-85 et TOK-87) | 🔜 Backlog | 🟠 Medium |
 | TOK-89 | Trouver un juge humain qui connaît le jeu | 🟡 Dossier prêt à envoyer (`docs/moteur-combos/dossier-juge.md` : questionnaire de 34 points, 2 messages de contact) ; **reste à Thomas de contacter quelqu'un** | 🔴 High |

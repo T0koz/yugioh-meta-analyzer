@@ -368,6 +368,8 @@ sur `/evolution` (qui trace maintenant la part des decks), la page d'archétype 
   par convention (pas de date système, captures déterministes).
 - `GET /meta/evolution` sert `decks` (k) en plus ; une réponse figée sans lui se rabat sur `share × n`.
 - `next build` refuse un `node_modules` en lien symbolique hors du projet : `cp -cR` pour construire un autre commit.
+- **Verdict du Ban Radar non écrit** (consigne de Thomas, 17/11) : onglet Historique et sections Ban Radar de `/methode` sans
+  phrase de conclusion sur la qualité du score ; emplacement « lecture en attente du diagnostic TOK-115 » (lot 15a).
 → détail complet : `docs/journal/explication-graphique-lot15.md`
 ### 🖼 Images de cartes hébergées (TOK-92, lot 10, 2026-11-17, branche `claude/lot10-tok-92-images-5c0cd5`, non fusionnée)
 

@@ -21,7 +21,7 @@ import type { BanHistoryList } from "@/types";
 export const metadata: Metadata = pageMetadata({
   title: "Méthode",
   description:
-    "Sources, dates de collecte, seuils et résultats des validations de chaque outil, échecs compris : listes TCG de septembre et octobre 2026, signal boutique de juin 2026. Aucune formule.",
+    "Sources, dates de collecte, seuils et résultats des validations de chaque outil, échecs compris. Aucune formule.",
   path: "/methode",
 });
 
@@ -107,10 +107,6 @@ function SimpleTable({ caption, head, rows }: { caption: string; head: string[];
   );
 }
 
-/** Septembre et octobre 2026 en TCG : les deux échecs nommés par la charte. */
-const isRecentFailure = (l: BanHistoryList) =>
-  l.format === "TCG" && (l.effective_date.startsWith("2026-09") || l.effective_date.startsWith("2026-10"));
-
 function BanTable({ lists }: { lists: BanHistoryList[] }) {
   return (
     <div className="overflow-x-auto rounded-[6px] border border-line">
@@ -130,12 +126,10 @@ function BanTable({ lists }: { lists: BanHistoryList[] }) {
         <TableBody>
           {lists.map((l) => {
             const ranked = l.retained && l.median_rank != null && l.n_cards != null;
-            const beat = ranked && l.random_low != null && l.median_rank! < l.random_low;
             return (
               <TableRow key={`${l.format}-${l.effective_date}`}>
                 <TableCell className="text-[14px] whitespace-nowrap text-soft">
                   {l.format} · {fmtDate(l.effective_date)}
-                  {isRecentFailure(l) && ranked && <span className="ml-2 font-mono text-[12px] text-warn">échec</span>}
                 </TableCell>
                 <TableCell className={NUM}>{fmtNum(l.n_decks)}</TableCell>
                 <TableCell className={NUM}>
@@ -151,7 +145,7 @@ function BanTable({ lists }: { lists: BanHistoryList[] }) {
                       hi={l.random_high}
                       min={1}
                       max={l.n_cards!}
-                      color={beat ? "var(--cat-1)" : "var(--soft)"}
+                      color="var(--soft)"
                       label={`Rang médian ${fmtNum(l.median_rank!)} ; hasard de ${fmtNum(l.random_low)} à ${fmtNum(l.random_high)} sur ${fmtNum(l.n_cards!)}`}
                     />
                   ) : (
@@ -183,10 +177,6 @@ export default async function MethodePage() {
   const firstFull = months.find(([, n]) => n >= WEAK_MONTH_DECKS)?.[0];
   const rule = boutique.label_rule;
   const retained = banHistory.lists.filter((l) => l.retained);
-  const tcgBaselineWins = retained.filter(
-    (l) => l.format === "TCG" && l.baseline_median_rank != null && l.median_rank != null && l.baseline_median_rank < l.median_rank
-  ).length;
-  const tcgRetained = retained.filter((l) => l.format === "TCG").length;
   const [ciLow, ciHigh] = SITE_FACTS.ocgTcgCorrelationCi;
 
   return (
@@ -372,7 +362,7 @@ export default async function MethodePage() {
         <Facts
           items={[
             { term: "Ce que mesure", text: "La ressemblance de chaque carte avec le profil des cartes déjà touchées par Konami, sur six critères." },
-            { term: "Critère décisif", text: "Le nombre moyen d’exemplaires joués : 2,5 chez les cartes touchées contre 1,1 chez les autres (mesure d’août 2026)." },
+            { term: "Critères", text: "Part des decks, archétype porteur, exemplaires joués, restriction en cours, élan sur 3 mois, position de pont." },
             { term: "Fenêtre", text: "Les 6 derniers mois de decks de tournoi TCG." },
             { term: "Limites", text: "Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe." },
           ]}
@@ -385,10 +375,7 @@ export default async function MethodePage() {
             { term: "Protocole", text: "Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures." },
             { term: "Hasard", text: "Rangs médians qu’on obtiendrait en tirant au sort autant de cartes : 90 % des tirages tombent dans la bande." },
             { term: "Base de comparaison", text: "Classer simplement les cartes par part des decks (« staples les plus jouées »)." },
-            {
-              term: "Résultat défavorable",
-              text: `En TCG, cette base bat le score en rang médian sur ${fmtNum(tcgBaselineWins)} listes sur ${fmtNum(tcgRetained)}. Les listes de septembre et octobre 2026 sont proches du hasard.`,
-            },
+            { term: "Lecture", text: "En attente du diagnostic du Ban Radar TCG (TOK-115)." },
           ]}
         />
         <Validation title="Rang médian des cartes touchées, liste par liste">
@@ -397,7 +384,7 @@ export default async function MethodePage() {
             source="decks de tournoi (yugiohmeta.com), banlists (Yugipedia)"
             date={`calcul du ${fmtDate(banHistory.computed_at)}`}
             sample={`${fmtNum(retained.length)} listes retenues sur ${fmtNum(banHistory.lists.length)}`}
-            uncertainty="barre pâle : 90 % des rangs médians d’un tirage au hasard ; point en couleur : rang médian meilleur que le hasard ; rang 1 à gauche"
+            uncertainty="barre pâle : 90 % des rangs médians d’un tirage au hasard ; point : rang médian des cartes touchées ; rang 1 à gauche"
           >
             seules les listes postérieures au 14 août 2026 sont indépendantes du réglage du score ;{" "}
             <Link href="/ban?tab=historique" className="underline decoration-line-2 underline-offset-4 hover:text-text">

@@ -15,6 +15,8 @@
 | 14 bis | Code de déploiement (guide §8.1-8.2) | 🏗️ démarré le 17/11, en parallèle du lot 12 — **hors règle** (pas d'attente passive : lancé juste avant la précision de Thomas) ; **Thomas : « laisse-le finir »** (17/11) | Opus 5.5 (demandé) | session « Lot 14 bis — code de déploiement » ; aucun déploiement |
 | 15 | Charte + explication graphique | ⏸ étape 1 fusionnée et **validée par Thomas le 17/11** (`4c4d86e`, réponses dans `decisions-prises.md`) ; étape 2 (composants, `/methode` sans formule) après les lots 11 et 12 | Opus 5.5 | 6 infobulles et 8 formules relevées (annexe A), 10 exemples avant/après ; étape 2 (composants, `/methode`) après validation et après les lots 11 et 12 ; la session reste ouverte pour l'étape 2 |
 | 16 | Réécriture des textes | à faire | | |
+| 17 | TOK-86 banc d'oracle | à faire | | |
+| 18 | Fondations du moteur | à faire (attend la validation de D1-D7 par Thomas) | | |
 
 Dernière mise à jour : 2026-11-17, lots 11 et 14 fusionnés ; lot 12 en cours. Seul l’orchestrateur écrit le tableau des lots.
 

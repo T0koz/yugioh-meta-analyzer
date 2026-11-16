@@ -46,6 +46,8 @@ Prompt de reprise (identique à chaque fenêtre) : « Lis docs/planning/file.md 
 | 14 | TOK-35 préparation du déploiement | `sprint-3/11-deploiement.md` | Sonnet |
 | 15 | Charte ton et explication + système d'explication graphique (arrêt pour validation de la charte) | `sprint-3/12-explication-graphique.md` | Fable |
 | 16 | Réécriture des textes du site (arrêt pour validation du tableau) | `sprint-3/13-reecriture-textes.md` | Fable |
+| 17 | TOK-86 banc d'oracle Project Ignis (agent séparé) | `combos/tok-86-banc-oracle.md` | Sonnet |
+| 18 | Fondations du moteur de combos (arrêt si D1-D7 non validées par Thomas) | `combos/fondations-moteur.md` | Opus |
 
 Les tests visuels du lot 5 sont à mettre à jour après les lots 9, 11 et 12 (nouvelles pages).
 

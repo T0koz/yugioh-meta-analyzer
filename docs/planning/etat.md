@@ -14,13 +14,14 @@
 | 14 | TOK-35 | ✅ fusionné (`d18beb5`) | Sonnet 5.5 | `vercel.json`, `.vercelignore`, `.env.example`, guide `docs/deploiement.md` ; l'API ouvre la base en lecture seule et lit `backend/data/serving.db` sur Vercel (ignoré par Git) ; aucun déploiement. **Trois blocages avant le premier déploiement** (guide §0) : le build du front appelle l'API (lot de code à prévoir, §8.1) ; images 1,17 Go trop grosses pour Vercel Blob gratuit (recommandé : Cloudflare R2) ; protection à choisir. Formulaire pour Thomas au §9. `check.py` vert après fusion (44 tests sur chaque base) |
 | 14 bis | Code de déploiement (guide §8.1-8.2) | ✅ fusionné (`f014fef`, `04ef485`, `419fa17`) — parallèle hors règle, laissé finir par Thomas | Opus 5.5 | `lib/api.ts` : `API_URL` → `BACKEND_URL`+`/api/v1` → `NEXT_PUBLIC_API_URL` (serveur), `/api/v1` côté navigateur ; images de cartes hors `/_next/image` ; `scripts/deploy_prebuilt.py` (vérifie, affiche les commandes, n'exécute rien sans `--execute`, vérifié) ; guide complété avec les réponses de Thomas (R2, public non diffusé, voie 2) ; **étape pour Thomas : relier le projet Vercel depuis la racine du dépôt** (guide §2) ; `check.py --visuel` vert après fusion (46 tests, 48 captures) |
 | 15a | TOK-115 diagnostic Ban Radar TCG | ✅ fusionné (`8eeb433`) — en parallèle de l'étape 2 du lot 15 (demande explicite de Thomas) | Opus 5.5 | `scripts/diagnose_ban_radar.py` (graine fixée, reproductible) + `docs/journal/ban-radar-tcg-diagnostic.md` ; aucun `WEIGHTS` modifié, base en lecture seule. Cause : poids effectifs ≠ poids écrits (part des decks 30 % écrits → 17 % effectifs ; exemplaires et tendance 40 % et 24 %), or 47 % des cartes touchées en TCG sont jouées à moins de 1,5 exemplaire. Régression logistique validée dans le temps : meilleure que les poids actuels en TCG (7 listes sur 7) mais ne bat pas les staples en rang médian → règle d'adoption non remplie. **Formulaire de 5 questions à valider par Thomas** (fin du journal), dont le verdict de l'onglet Historique ; `check.py` vert après fusion |
+| 15a bis | Relecture du diagnostic TOK-115 par `data-scientist-ygo` | 🏗️ démarré le 17/11 (demande de Thomas) | Sonnet 5.5 (demandé) + sous-agent `data-scientist-ygo` | session « Lot 15a bis — relecture data scientist » ; rapport seul, aucun `WEIGHTS` changé |
 | 15 | Charte + explication graphique | 🏗️ étape 1 validée par Thomas (`4c4d86e`) ; **étape 2 démarrée le 17/11, seule** | Opus 5.5 | 6 infobulles et 8 formules relevées (annexe A), 10 exemples avant/après ; étape 2 (composants, `/methode`) après validation et après les lots 11 et 12 ; la session reste ouverte pour l'étape 2 |
 | 16 | Réécriture des textes | à faire | | |
 | 17 | TOK-86 banc d'oracle | à faire | | |
 | 18 | Fondations du moteur | à faire (attend la validation de D1-D7 par Thomas) | | |
 | 19 | Audit de rigueur statistique (rapport seul) | à faire | | |
 
-Dernière mise à jour : 2026-11-17, lot 15a fusionné (formulaire à valider) ; étape 2 du lot 15 en attente d'une réponse de Thomas dans sa session. Seul l’orchestrateur écrit le tableau des lots.
+Dernière mise à jour : 2026-11-17, relecture du diagnostic TOK-115 en cours ; étape 2 du lot 15 en attente d'une réponse de Thomas dans sa session. Seul l’orchestrateur écrit le tableau des lots.
 
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |
@@ -38,6 +39,7 @@ Dernière mise à jour : 2026-11-17, lot 15a fusionné (formulaire à valider) ;
 | 10 + 13, puis 10 + 15 (étape 1) | Téléchargement des images du lot 10 (attente passive ≈ 30 min) | oui (attente passive) ; 10 + 13 + 15 n'ont jamais tourné à trois |
 | 11 + 12 + 14 | Consigne de Thomas « avancer sur ce qui n'interagit pas » | non : trois sessions, sans attente passive (antérieur à la précision) |
 | 12 + 14 bis | Lot 11 fini, lot 14 bis sans fichier commun | non : pas d'attente passive ; Thomas a décidé de le laisser finir |
+| 15 (étape 2) + 15a bis | Demande explicite de Thomas (« go session avec le data scientist ») ; l'étape 2 attend une réponse de Thomas (attente passive) ; fichiers distincts | oui (deux sessions) |
 | 15 (étape 2) + 15a | Demande explicite de Thomas (17/11) : lancer 15a dès qu'un créneau se libère, deux sessions maximum ; l'étape 2 n'écrit pas le verdict de l'historique | oui (autorisation explicite, deux sessions) |
 
 Règle appliquée à partir du 17/11 (précision de Thomas) : un lot à la fois ; une deuxième session seulement pendant une attente longue et passive de la première, sur d'autres fichiers ; jamais plus de deux.

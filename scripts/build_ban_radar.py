@@ -79,7 +79,7 @@ def load_usage(conn: sqlite3.Connection, as_of: str, fmt: str) -> pd.DataFrame:
                strftime('%Y-%m', td.created) AS month
         FROM deck_cards dc
         JOIN tournament_decks td ON td.id = dc.deck_id
-        WHERE td.ocg = :ocg AND td.illegal = 0
+        WHERE td.ocg = :ocg AND td.id IN (SELECT deck_id FROM deck_legality WHERE legal = 1)
           AND td.created <= :as_of
           AND td.created >= date(:as_of, '-{WINDOW_MONTHS} months')
         """,

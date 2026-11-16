@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+function cardImagesPatterns(): URL[] {
+  const base = process.env.NEXT_PUBLIC_CARD_IMAGES_URL;
+  if (!base || !/^https?:\/\//.test(base)) return [];
+  return [new URL(`${base.replace(/\/+$/, "")}/**`)];
+}
+
 const nextConfig: NextConfig = {
   // Les tests visuels construisent le site contre des données figées dans un dossier à part
   // (scripts/visual_tests.py), pour ne pas écraser le build courant.
@@ -10,10 +16,10 @@ const nextConfig: NextConfig = {
     viewTransition: true,
   },
   images: {
-    // Les images de cartes viennent encore de YGOPRODeck : next/image les
-    // redimensionne et les met en cache côté serveur, le navigateur ne charge
-    // plus un fichier de 268 px pour une vignette de 34 px. Hébergement propre : TOK-92.
-    remotePatterns: [new URL("https://images.ygoprodeck.com/images/**")],
+    // Les images de cartes viennent de notre hébergement (TOK-92, lib/card-images.ts) : en local, la
+    // route /card-images ; au déploiement, l'adresse NEXT_PUBLIC_CARD_IMAGES_URL, autorisée ici si elle
+    // est absolue. Plus aucun accès à images.ygoprodeck.com.
+    remotePatterns: cardImagesPatterns(),
     // Une illustration de carte ne change pas : cache d'un mois plutôt que 4 h.
     minimumCacheTTL: 2_678_400,
   },

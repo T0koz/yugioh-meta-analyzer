@@ -49,3 +49,6 @@ data/backup_*.db
 HANDOFF.md
 docs/hebergement-multi-tcg.html
 data/early_signal_*.html
+
+# Images de cartes téléchargées (TOK-92) : jamais dans Git
+data/card-images/

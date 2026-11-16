@@ -209,7 +209,7 @@ export function GraphView({ data }: { data: GraphResponse }) {
         className="h-[min(600px,70vh)] w-full rounded-[4px] bg-ink"
       />
       <p className="mt-3 text-[13px] text-muted-text">
-        {data.nodes.length} cartes · {data.edges.length} liens (Jaccard ≥ seuil) · survol pour voir la carte
+        {data.nodes.length} cartes · {data.edges.length} liens · survol : aperçu de la carte
       </p>
     </div>
   );

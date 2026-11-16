@@ -11,6 +11,7 @@ import { ButtonLink, controlClass } from "@/components/ds/control";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { DataFooter, Eyebrow, Page, StatBand } from "@/components/ds/page";
+import { MethodNote } from "@/components/ds/explain";
 import { BanStatus, Tag, TierTag, TrendLabel } from "@/components/ds/tags";
 import { Reveal } from "@/components/reveal";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -195,20 +196,24 @@ export default async function ArchetypePage({ params }: Params) {
               source={TCG_SOURCE}
               date={period ?? "fenêtre inconnue"}
               sample={window ? `${fmtNum(window.n_decks)} decks` : undefined}
+              uncertainty={
+                tcg
+                  ? `part calculée sur ${fmtNum(tcg.decks)} decks ; la tendance n’est affichée que si l’écart avec la fenêtre précédente dépasse le bruit d’échantillonnage`
+                  : "aucun deck TCG dans la fenêtre, pas de part calculée"
+              }
             >
-              {tcg && (
-                <>
-                  tiers : T0 dès 40 % des decks, T1 15 %, T2 7 %, T3 3 % ; tendance : test de deux proportions à 5 %
-                  contre la fenêtre précédente
-                </>
-              )}
-              {tcg && ocg && " · "}
               {ocg && (
                 <>
                   OCG : {fmtNum(ocg.decks)} decks, {ocg.computed_at ? `calcul du ${fmtDate(ocg.computed_at)}` : "date de calcul inconnue"}
                 </>
               )}
             </DataFooter>
+            {tcg && (
+              <MethodNote anchor="tier-list">
+                <p>Tier : T0 à partir de 40 % des decks de la fenêtre, T1 à partir de 15 %, T2 à partir de 7 %, T3 à partir de 3 %.</p>
+                <p>Tendance : comparaison avec la fenêtre précédente, affichée seulement si l’écart dépasse le bruit d’échantillonnage.</p>
+              </MethodNote>
+            )}
           </header>
 
           {history.length > 0 && (
@@ -223,9 +228,12 @@ export default async function ArchetypePage({ params }: Params) {
                 source={TCG_SOURCE}
                 date={fmtMonthRange(history[0].month, history[history.length - 1].month) ?? ""}
                 sample={`${fmtNum(history.reduce((sum, h) => sum + h.decks, 0))} decks ${a.archetype} sur ${fmtNum(history.reduce((sum, h) => sum + h.total_decks, 0))}`}
-              >
-                le dernier mois est en cours
-              </DataFooter>
+                uncertainty="bande : intervalle à 95 % de chaque part mensuelle ; pointillé : mois de moins de 100 decks et mois en cours"
+              />
+              <MethodNote anchor="part-mensuelle">
+                <p>Part du mois : decks de l’archétype divisés par tous les decks de tournoi TCG relevés ce mois-là.</p>
+                <p>L’intervalle suppose des decks indépendants ; plusieurs listes d’un même joueur ou d’un même tournoi le rendent trop étroit.</p>
+              </MethodNote>
               <details className="group mt-5">
                 <summary className={controlClass({ size: "sm" })}>
                   Tableau des valeurs
@@ -301,6 +309,7 @@ export default async function ArchetypePage({ params }: Params) {
                   source={TCG_SOURCE}
                   date={`au ${fmtDate(keyCards.as_of)}`}
                   sample={`${fmtNum(keyCards.n_decks_window)} decks`}
+                  uncertainty="comptes exacts sur la fenêtre, pas d’intervalle : la liste ordonne les cartes, elle n’estime rien"
                 >
                   deck d’attache : au moins la moitié des decks qui jouent la carte sont de cet archétype ; statut :
                   banlist TCG en vigueur
@@ -349,8 +358,8 @@ export default async function ArchetypePage({ params }: Params) {
                     <dd className="text-[22px] leading-none font-medium tracking-[-0.02em]">
                       {fmtMonthRange(boutique.tcg_window_start, boutique.tcg_window_end) ?? "—"}
                       <span className="mt-2 block font-mono text-[12px] leading-[1.6] font-normal tracking-normal text-muted-text">
-                        premier deck OCG + 75 à 202 jours, délai mesuré sur 1 897 cartes sorties de 2022 à 2025 ; non
-                        vérifié sur des cas nouveaux
+                        75 à 202 jours après le premier deck OCG, délai mesuré sur 1 897 cartes sorties de 2022 à 2025 ;
+                        non vérifié sur des cas nouveaux
                       </span>
                     </dd>
                   </div>
@@ -403,8 +412,9 @@ export default async function ArchetypePage({ params }: Params) {
                   source="decklists OCG (yugiohmeta.com), vues et prix Cardmarket (YGOPRODeck)"
                   date={boutique.computed_at ? `calcul du ${fmtDate(boutique.computed_at)}` : "date de calcul inconnue"}
                   sample={`${fmtNum(boutique.signals.length)} cartes`}
+                  uncertainty="arrivée en TCG : intervalle à 80 % ; rang et libellé sans intervalle, seuils provisoires"
                 >
-                  ordre dans le lot : 100 = première carte de tous les signaux affichés, ce n’est pas une force de
+                  ordre dans le lot : la première carte de tous les signaux affichés vaut 100, ce n’est pas une force de
                   signal ·{" "}
                   <Link href="/boutique" className="underline decoration-line-2 underline-offset-4 hover:text-text">
                     tous les signaux

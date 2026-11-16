@@ -144,20 +144,29 @@ export function DataFooter({
   source,
   date,
   sample,
+  uncertainty,
   children,
 }: {
   source: string;
   /** Déjà rédigée : « au 14 novembre 2026 », « août 25 à nov. 26 »… */
   date: string;
   sample?: string;
+  /**
+   * Obligatoire (lot 15, charte §3) : ce que montre l'incertitude dessinée
+   * (« bande : intervalle à 95 % ») ou pourquoi il n'y en a pas.
+   */
+  uncertainty: React.ReactNode;
   /** Note de lecture facultative (légende, limite connue). */
   children?: React.ReactNode;
 }) {
   return (
-    <p className="mt-3 font-mono text-[12px] leading-[1.7] text-muted-text">
-      Source : {source} · {date}
-      {sample && ` · ${sample}`}
-      {children && <> · {children}</>}
-    </p>
+    <div className="mt-3 grid gap-0.5 font-mono text-[12px] leading-[1.7] text-muted-text">
+      <p>
+        Source : {source} · {date}
+        {sample && ` · ${sample}`}
+        {children && <> · {children}</>}
+      </p>
+      <p>Incertitude : {uncertainty}</p>
+    </div>
   );
 }

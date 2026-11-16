@@ -182,6 +182,7 @@ function ArchetypeSection({
         source={`${response.source} ; signal : ${SIGNAL_SOURCE}`}
         date={start && end ? `relevés du ${fmtDate(start)} au ${fmtDate(end)}` : "aucun relevé de prix servi"}
         sample={`${fmtNum(group.signals.length)} carte${group.signals.length > 1 ? "s" : ""}`}
+        uncertainty="aucun intervalle : chaque point est un prix relevé ; l’écart entre deux relevés n’est pas connu"
       >
         bandes grises : plus de {response.max_step_days} jours sans relevé, rien n’y est tracé
       </DataFooter>
@@ -232,6 +233,7 @@ export default async function BoutiquePage() {
           source={SIGNAL_SOURCE}
           date={computed_at ? `calcul du ${fmtDate(computed_at)}` : "date de calcul inconnue"}
           sample={label_rule ? `${fmtNum(groups.length)} archétypes sur ${label_rule.population} suivis en OCG` : `${fmtNum(groups.length)} archétypes`}
+          uncertainty="arrivée en TCG : segment : intervalle à 80 % ; rang OCG sans intervalle, seuils de libellé provisoires"
         >
           fenêtre d’arrivée : délai mesuré sur 1 897 cartes, 2022 à 2025, non vérifié sur des cas nouveaux
         </DataFooter>
@@ -249,6 +251,7 @@ export default async function BoutiquePage() {
               source={prices.source}
               date={`du ${fmtDate(prices.period_start)} au ${fmtDate(prices.period_end)}`}
               sample={`${fmtNum(snapshotDates.length)} dates`}
+              uncertainty="aucune : dates de relevé, sans mesure"
             >
               relevés pris à la main avant novembre 2026
             </DataFooter>

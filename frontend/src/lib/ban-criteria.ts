@@ -9,5 +9,5 @@ export const CRITERIA: { key: keyof BanRadarCriteria; label: string; color: stri
   { key: "copies", label: "Copies", color: "var(--cat-3)", help: "Nombre moyen d'exemplaires joués : une carte jouée à 3 peut être limitée, une carte déjà à 1 beaucoup moins." },
   { key: "restriction", label: "Restriction", color: "var(--cat-4)", help: "La carte est déjà limitée ou semi-limitée : Konami y revient souvent." },
   { key: "momentum", label: "Élan", color: "var(--cat-5)", help: "Usage des 3 derniers mois comparé aux 3 précédents." },
-  { key: "bridge", label: "Pont", color: "var(--cat-6)", help: "Centralité de type pont : la carte relie des paquets de cartes autrement séparés." },
+  { key: "bridge", label: "Pont", color: "var(--cat-6)", help: "La carte relie des groupes de cartes qui, sans elle, se jouent rarement ensemble." },
 ];

@@ -75,8 +75,9 @@ export async function CardImpactView({ view, tabs }: { view: KindView; tabs: Rea
           cette carte demain, combien d’archétypes et de decks sont concernés.
         </p>
         <p>
-          Score de pont = nombre d’archétypes qui jouent la carte × log(1 + nombre de decks). Une carte adoptée par
-          beaucoup d’archétypes, en volume, est une pièce de connexion : la retirer touche plusieurs decks à la fois.
+          Le score de pont grandit avec le nombre d’archétypes qui jouent la carte et, plus lentement, avec le nombre
+          de decks. Une carte adoptée par beaucoup d’archétypes, en volume, est une pièce de connexion : la retirer
+          touche plusieurs decks à la fois.
         </p>
         <p>
           Les <strong className="font-medium text-text">staples génériques</strong> trustent le haut du classement parce
@@ -96,6 +97,7 @@ export async function CardImpactView({ view, tabs }: { view: KindView; tabs: Rea
         source="decklists de tournoi TCG, yugiohmeta.com"
         date={`au ${fmtDate(as_of)}, 6 mois glissants`}
         sample={`${fmtNum(n_decks_window)} decks, ${fmtNum(data.length)} cartes affichées`}
+        uncertainty="aucun intervalle : le score ordonne les cartes à partir de comptes exacts sur la fenêtre"
       />
     </>
   );

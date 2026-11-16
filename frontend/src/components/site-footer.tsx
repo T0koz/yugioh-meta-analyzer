@@ -24,6 +24,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/boutique", label: "Signaux boutique" },
       { href: "/early-signals", label: "Signaux précoces" },
       { href: "/graph", label: "Graphe de synergies" },
+      { href: "/methode", label: "Méthode" },
     ],
   },
 ];

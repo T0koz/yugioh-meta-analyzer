@@ -28,6 +28,8 @@ export interface EvolutionPoint {
   month: string;
   meta_score: number;
   share: number;
+  /** Decks de l'archétype dans le mois (k ; n est dans `decks_by_month`). Absent des instantanés d'avant le lot 15. */
+  decks?: number;
 }
 
 export interface EvolutionResponse {

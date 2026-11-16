@@ -26,6 +26,7 @@ const STATIC_PATHS = [
   "/ban?tab=historique",
   "/ban?tab=impact",
   "/ban?tab=simulateur",
+  "/methode",
 ];
 const TITLE_MAX = 70; // au-delà, les moteurs tronquent
 const DESCRIPTION_RANGE = [50, 200];

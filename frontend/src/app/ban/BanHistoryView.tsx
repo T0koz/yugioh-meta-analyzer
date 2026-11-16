@@ -380,6 +380,7 @@ function ListDetail({ list, topN }: { list: Retained; topN: number }) {
         source={SOURCE}
         date={`classement reconstitué au ${fmtDate(list.as_of)}, decks des 6 mois précédents`}
         sample={`${fmtNum(list.n_decks)} decks, ${fmtNum(list.n_cards)} cartes classées, ${fmtNum(list.n_hits_ranked)} touchées classées sur ${fmtNum(list.n_hits)}`}
+        uncertainty="aucun intervalle : les deux colonnes listent des cartes, elles ne mesurent rien ; le rang de chaque carte est celui du classement reconstitué"
       />
     </section>
   );
@@ -497,6 +498,7 @@ export async function BanHistoryView({ selected, tabs }: { selected: string | un
         source={SOURCE}
         date={`calcul du ${fmtDate(computed_at)}, listes du ${fmtDate(firstDate)} au ${fmtDate(lastDate)}`}
         sample={`${fmtNum(retained.length)} listes retenues ; le seuil de ${fmtNum(min_decks)} decks et ${fmtNum(min_hits)} cartes touchées en écarte ${fmtNum(lists.length - retained.length)}`}
+        uncertainty="chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort ; lecture en attente du diagnostic TOK-115"
       />
 
       {(["TCG", "OCG"] as const).map((format) => (
@@ -513,6 +515,7 @@ export async function BanHistoryView({ selected, tabs }: { selected: string | un
         source={SOURCE}
         date={`classements reconstitués la veille de chaque liste, calcul du ${fmtDate(computed_at)}`}
         sample={`${fmtNum(retained.length)} listes, 700 à 1 250 cartes classées par liste`}
+        uncertainty="bande grise : rangs médians que donneraient 90 % des tirages au sort"
       >
         position de gauche à droite : du premier au dernier du classement
       </DataFooter>

@@ -188,7 +188,7 @@ function ZoneSection({
           </table>
         </div>
       )}
-      <DataFooter source={SOURCE} date={footDate} sample={`${fmtNum(deck.decks)} listes ${deck.archetype}`}>
+      <DataFooter source={SOURCE} date={footDate} sample={`${fmtNum(deck.decks)} listes ${deck.archetype}`} uncertainty={"pas d’intervalle : à 8 listes il serait trop large pour être lu ; chaque pourcentage est donné avec son effectif"}>
         part : listes qui jouent la carte sur {fmtNum(deck.decks)} ; exemplaires : médiane parmi ces listes
       </DataFooter>
 
@@ -341,7 +341,16 @@ export default async function DeckPage({ params }: Params) {
             </div>
 
             <StatBand stats={stats} />
-            <DataFooter source={SOURCE} date={footDate} sample={`${fmtNum(d.window.n_decks)} decks`}>
+            <DataFooter
+              source={SOURCE}
+              date={footDate}
+              sample={`${fmtNum(d.window.n_decks)} decks`}
+              uncertainty={
+                d.has_profile
+                  ? "pas d’intervalle : à 8 listes il serait trop large pour être lu ; chaque pourcentage est donné avec son effectif"
+                  : "sous 8 listes, aucune part n’est calculée : seules les listes sont montrées"
+              }
+            >
               {d.has_profile ? (
                 <>
                   de base : dans au moins {basePct} des listes ; d’appoint : de {pct(d.rule.flex_min_share)} à moins de{" "}
@@ -374,6 +383,7 @@ export default async function DeckPage({ params }: Params) {
                   source={SOURCE}
                   date={first.date === last.date ? `tournoi du ${fmtDate(first.date)}` : `tournois du ${fmtDate(last.date)} au ${fmtDate(first.date)}`}
                   sample={`${fmtNum(d.recent_decks.length)} ${d.recent_decks.length > 1 ? "listes les plus récentes" : "liste"} sur ${fmtNum(d.decks)}`}
+                  uncertainty="aucune : listes et résultats relevés tels quels"
                 >
                   résultat : place finale du joueur dans le tournoi ; ordre : date du tournoi, puis meilleur résultat
                 </DataFooter>

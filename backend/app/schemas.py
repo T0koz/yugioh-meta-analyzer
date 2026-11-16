@@ -32,6 +32,9 @@ class EvolutionPoint(BaseModel):
     month: str
     meta_score: float
     share: float
+    # Decks de l'archétype dans le mois (k de la part k / n) : sert à la bande de
+    # Wilson du front (lot 15). n est dans `decks_by_month`.
+    decks: int = 0
 
 
 class EvolutionResponse(BaseModel):

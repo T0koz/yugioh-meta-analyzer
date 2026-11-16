@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { MethodNote } from "@/components/ds/explain";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { Em } from "@/components/ds/em";
@@ -45,9 +46,9 @@ export default async function TierListPage() {
             }
             intro={
               <>
-                Classement calculé sur nos decklists de tournoi TCG. Tier selon la part de méta, tendance par rapport
-                à la période précédente.
-                <InfoTooltip text="Tiers : T0 à partir de 40 % des decks, T1 15 %, T2 7 %, T3 3 %, Rogue en dessous ou sous 5 decks. Tendance : en hausse ou en baisse seulement si la part a bougé au-delà du bruit d’échantillonnage (test de deux proportions à 5 %) ; sur une soixantaine d’archétypes, deux ou trois signaux peuvent être dus au hasard. La barre montre la part de méta, relative à la plus forte. Score = racine de (part × placement moyen normalisé)." />
+                Classement calculé sur nos decklists de tournoi TCG. Tier
+                <InfoTooltip term="Tier" text="Niveau de l’archétype selon la part des decks de tournoi qui le jouent." />{" "}
+                selon la part de méta, tendance par rapport à la période précédente.
               </>
             }
           >
@@ -61,12 +62,17 @@ export default async function TierListPage() {
             />
           </PageHero>
 
-          <TierList data={data} />
+          <TierList data={data} nDecks={n_decks} />
           <DataFooter
             source="decklists de tournoi TCG, yugiohmeta.com"
             date={period}
             sample={`${fmtNum(n_decks)} decks, ${fmtNum(data.length)} archétypes`}
+            uncertainty="barre : intervalle à 95 % de la part, point : part observée ; tendance affichée seulement si l’écart dépasse le bruit d’échantillonnage"
           />
+          <MethodNote anchor="tier-list">
+            <p>Tier : T0 à partir de 40 % des decks de la fenêtre, T1 à partir de 15 %, T2 à partir de 7 %, T3 à partir de 3 % ; Rogue en dessous ou sous 5 decks.</p>
+            <p>Sur une soixantaine d’archétypes comparés, deux ou trois tendances peuvent être dues au hasard.</p>
+          </MethodNote>
         </Page>
       </PageTransition>
     </HoverPreviewProvider>

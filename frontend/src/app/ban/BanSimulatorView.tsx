@@ -50,7 +50,7 @@ export function BanSimulatorView({
             Et si Konami la <Em>bannissait</Em> ?
           </>
         }
-        intro="Retire une carte du graphe de synergies et regarde ce qui casse : archétypes touchés, centralité, perte de cohésion."
+        intro="Effet du retrait d’une carte sur le graphe de co-occurrences : archétypes touchés, position de pont, perte de cohésion."
       >
         {tabs}
       </PageHero>
@@ -77,8 +77,8 @@ export function BanSimulatorView({
       {notFound && (
         <Callout title="Carte introuvable">
           <p>
-            Cette carte n’est pas dans la base. Essaie « Ash Blossom &amp; Joyous Spring » ou « Nibiru, the Primal
-            Being ».
+            Carte absente de la table des cartes. Exemples présents : « Ash Blossom &amp; Joyous Spring », « Nibiru,
+            the Primal Being ».
           </p>
         </Callout>
       )}
@@ -128,6 +128,7 @@ export function BanSimulatorView({
           <DataFooter
             source="graphe de co-occurrences des decklists de tournoi, yugiohmeta.com"
             date="date de calcul non enregistrée dans la base servie"
+            uncertainty="aucun intervalle : la simulation recalcule le graphe sans la carte, elle ne prévoit pas ce que joueraient les joueurs"
           />
         </section>
       )}

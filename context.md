@@ -468,6 +468,10 @@ Méthode déjà conformes. Rien n’est appliqué avant la validation de Thomas.
   échappe à l’extracteur. Un faux positif se déclare dans `ALLOW`, jamais en affaiblissant une règle.
 - « Yu-Gi-Oh! » est exclu de la règle du point d’exclamation (nom de marque).
 
+### 🧪 Audit de rigueur statistique (lot 19, 2026-11-17, branche `claude/lot19-audit-rigueur-e3bee6`, non fusionnée)
+
+Aucun score ne remplit « estimé, validé hors échantillon, comparé au naïf, incertitude affichée » ; pires écarts : signaux précoces (carte interdite en tête, banlist figée au 13 juin), fenêtre d'arrivée « 80 % » couvrant 62-67 % en 2024-2025, score boutique ≈ part OCG (ρ 0,94) → `docs/journal/audit-rigueur-statistique.md`.
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

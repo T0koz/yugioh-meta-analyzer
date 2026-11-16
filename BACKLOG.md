@@ -116,6 +116,12 @@ validation par Thomas, puis application et passage du script en bloquant (`--str
 
 ---
 
+## Lot 19 — Audit de rigueur statistique (2026-11-17)
+
+🟡 Rapport livré sur `claude/lot19-audit-rigueur-e3bee6` (non fusionnée) : 13 scores audités, aucun ne remplit les 4 critères ; 14 tickets proposés (A1-A8 en S, B1-B5, C1), formulaire à valider par Thomas — `docs/journal/audit-rigueur-statistique.md`.
+
+---
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à

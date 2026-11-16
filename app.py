@@ -442,7 +442,8 @@ elif page == "🛒 Signal boutique":
                 "archetype": True,
                 "card_alert_score": ":.3f",
                 "cm_price": ":.2f",
-                "tcg_entry_estimated": True,
+                "tcg_window_start": True,
+                "tcg_window_end": True,
                 "ban_tcg": True,
             },
             labels={"buy_score_100": "Buy Score /100", "carte_label": "Carte", "cm_price": "Prix CM (€)"},
@@ -464,7 +465,7 @@ elif page == "🛒 Signal boutique":
             color_discrete_map=LABEL_COLORS,
             size="buy_score_100",
             text="card_name",
-            hover_data={"archetype": True, "buy_score_100": True, "tcg_entry_estimated": True, "ban_tcg": True},
+            hover_data={"archetype": True, "buy_score_100": True, "tcg_window_end": True, "ban_tcg": True},
             labels={"cm_price": "Prix Cardmarket (€)", "card_alert_score": "Signal OCG"},
             title="Idéal = en haut à gauche (fort signal, prix bas)",
             log_x=True,
@@ -501,14 +502,14 @@ elif page == "🛒 Signal boutique":
         # ── Table complète ──
         st.subheader("Tableau complet")
         cols = ["buy_label", "card_name", "archetype", "cm_price", "tcp_price",
-                "card_alert_score", "buy_score_100", "tcg_entry_estimated"]
+                "card_alert_score", "buy_score_100", "tcg_window_start", "tcg_window_end"]
         if "ban_tcg" in view_top.columns:
             cols.insert(2, "ban_tcg")
         disp = view_top[cols].copy()
         rename = {"buy_label": "Signal", "card_name": "Carte", "ban_tcg": "Banlist TCG",
                   "archetype": "Archetype", "cm_price": "CM (€)", "tcp_price": "TCP ($)",
                   "card_alert_score": "Alert Score", "buy_score_100": "Buy /100",
-                  "tcg_entry_estimated": "Entrée TCG estimée"}
+                  "tcg_window_start": "Sortie TCG au plus tôt (80 %)", "tcg_window_end": "Sortie TCG au plus tard (80 %)"}
         disp.rename(columns=rename, inplace=True)
         for c in ["CM (€)", "TCP ($)", "Alert Score"]:
             if c in disp.columns:

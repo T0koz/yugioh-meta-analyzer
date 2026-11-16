@@ -21,8 +21,13 @@ Familles :
                    les échelles de `meta_scores` et `meta_scores_regional` diffèrent.
   ban_risk_<fmt>   cible = prochaine banlist du format après made_at ; réalité = cartes dont le
                    statut gagne en sévérité. Rang médian des cartes touchées / univers noté.
-  boutique_signal  cible = mois d'entrée TCG estimé ; réalité = part TCG de l'archétype ce mois-là
-                   vs le mois de calcul.
+  boutique_signal  v3 (`unreleased-cards-v3`) : cible = mois de fin de la fenêtre de sortie TCG de
+                   l'archétype ; réalité = l'archétype est-il arrivé (≥ 5 decks TCG, toute légalité, dont
+                   le nom contient celui de l'archétype, entre made_at et la fin de la cible), et part TCG
+                   au mois cible. Limite : un archétype qui arrive sous un nom hybride différent est manqué.
+                   v1/v2 (`alert-views-*`) : la cible était « date du calcul + 4 mois », la même pour tout
+                   le lot, et 7 archétypes sur 10 étaient déjà en TCG. Ces lignes restent dans le journal
+                   (ajout seul) et sont évaluées À PART, statut `évaluée_horizon_fixe`, jamais mêlées aux v3.
   boutique_buy     idem + variation Cardmarket de la carte (made_at → fin du mois cible) vs la médiane
                    du marché (cartes ≥ 1 € au départ).
   early_card       pas de cible datée : descriptif seulement (part de decks TCG légaux jouant la carte
@@ -43,6 +48,9 @@ from build_ban_radar import banlist_events  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data" / "yugioh.db"
+# Versions du signal boutique dont la cible n'était pas une estimation (constante « calcul + 4 mois »).
+FIXED_HORIZON_MODELS = {"alert-views-v1", "alert-views-v2"}
+ARRIVAL_MIN_DECKS = 5
 TODAY = date.today()
 CUR_MONTH = TODAY.strftime("%Y-%m")
 
@@ -103,14 +111,24 @@ def validate_boutique(con, log) -> list[dict]:
     reg = pd.read_sql("SELECT month, archetype, share FROM meta_scores_regional WHERE region='TCG'", con).set_index(["month", "archetype"]).share
     rows = []
     px = pd.read_sql("SELECT card_name, snapshot_date, cardmarket_price p FROM card_price_history", con)
+    tcg = pd.read_sql("SELECT archetype, substr(created, 1, 10) d FROM tournament_decks "
+                      "WHERE ocg = 0 AND archetype IS NOT NULL", con)
     for r in log.itertuples():
         arch = r.subject.split(" | ")[0]
-        base = {"kind": r.kind, "subject": r.subject, "made_at": r.made_at, "target": r.target_date, "provenance": r.provenance}
-        if not r.target_date or not month_done(r.target_date):
+        fixed = r.model_version in FIXED_HORIZON_MODELS
+        base = {"kind": r.kind, "subject": r.subject, "made_at": r.made_at, "target": r.target_date,
+                "provenance": r.provenance, "model_version": r.model_version}
+        if not r.target_date:
+            rows.append({**base, "status": "sans_échéance"}); continue
+        if not month_done(r.target_date):
             rows.append({**base, "status": "non_échue"}); continue
         s0 = reg.get((r.made_at[:7], arch), 0.0); s1 = reg.get((r.target_date, arch), 0.0)
-        row = {**base, "status": "évaluée", "tcg_share_at_made": s0, "tcg_share_at_target": s1,
-               "share_up": int(s1 > s0)}
+        row = {**base, "status": "évaluée_horizon_fixe" if fixed else "évaluée",
+               "tcg_share_at_made": s0, "tcg_share_at_target": s1, "share_up": int(s1 > s0)}
+        if not fixed:
+            n = int((tcg.archetype.str.contains(arch, regex=False)
+                     & (tcg.d >= r.made_at[:10]) & (tcg.d <= f"{r.target_date}-31")).sum())
+            row["tcg_decks_in_window"] = n; row["arrived"] = int(n >= ARRIVAL_MIN_DECKS)
         if r.kind == "boutique_buy":
             card = r.subject.split(" | ")[1]
             end = f"{r.target_date}-31"
@@ -148,9 +166,12 @@ def summarize(v: pd.DataFrame) -> None:
         for r in g[g.status == "évaluée"].itertuples():
             print(f"{r.kind} {r.made_at} → liste {r.target}: {r.n_hits_in_universe}/{r.n_hits} cartes touchées notées, "
                   f"rang médian {r.median_rank:.0f}/{r.n} (hasard {r.random_rank:.0f}), top-10% {r.top10}, top-25% {r.top25}")
-    b = v[(v.kind.str.startswith("boutique")) & (v.status == "évaluée")]
-    for kind, g in b.groupby("kind"):
-        print(f"{kind}: {len(g)} évaluées ; part TCG en hausse pour {g.share_up.mean():.0%}", end="")
+    b = v[(v.kind.str.startswith("boutique")) & (v.status.isin(["évaluée", "évaluée_horizon_fixe"]))]
+    for (kind, status), g in b.groupby(["kind", "status"]):
+        tag = " [v1/v2, horizon fixe +4 mois : pas une estimation]" if status == "évaluée_horizon_fixe" else ""
+        print(f"{kind}{tag}: {len(g)} évaluées ; part TCG en hausse pour {g.share_up.mean():.0%}", end="")
+        if "arrived" in g and g.arrived.notna().any():
+            print(f" ; arrivés en TCG dans la fenêtre {g.arrived.mean():.0%}", end="")
         if "price_change" in g and g.price_change.notna().any():
             print(f" ; variation de prix médiane {g.price_change.median():+.1%} (n={g.price_change.notna().sum()})", end="")
         print()

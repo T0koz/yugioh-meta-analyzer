@@ -192,8 +192,8 @@ Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historiq
 
 ---
 
-**Nouveaux tickets suggérés (non créés dans le code, voir Linear) :** séparer TCG et OCG dans `meta_scores`
-(le méta « TCG » est mixte à 54 % OCG) ; afficher un méta Genesys ; corriger l'échelle de `price_opp`
-dans `build_buy_signals.py` ; mettre à jour `site-facts.ts` (r, n, lag).
+**Tickets créés le 2026-11-16 :** TOK-80 (séparer TCG et OCG dans `meta_scores`, méta mixte à 54 % OCG) ; TOK-81
+(échelle de `price_opp` dans `build_buy_signals.py`) ; TOK-82 (chiffres de vitrine `site-facts.ts` + fenêtres du notebook 11).
+Idée non créée : afficher un méta Genesys (décision produit).
 
 *Dernière mise à jour : 2026-11-16*

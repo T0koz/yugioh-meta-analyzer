@@ -41,6 +41,7 @@ SERVED_TABLES = [
     "meta_predictions",
     "meta_scores",
     "meta_tier_list",
+    "ocg_archetype_scores",
 ]
 
 TABLE_REFERENCE = re.compile(r"\b(?:FROM|JOIN)\s+([a-z_][a-z0-9_]*)", re.IGNORECASE)

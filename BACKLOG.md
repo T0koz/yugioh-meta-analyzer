@@ -153,8 +153,10 @@ Idées "Later" (non converties) : Dark/Light mode, Meta Snapshot hebdo, Historiq
 ---
 
 Idée non créée : afficher un méta Genesys (décision produit).
-Suites de TOK-113 sans ticket : rafraîchir `cards` dans la chaîne (`views_week` figé au 13 juin) ; seuil absolu pour
-les libellés Fort / Modéré / Faible ; servir et afficher la fenêtre de sortie TCG côté front.
+Suites de TOK-113 sans ticket : rafraîchir `cards` dans la chaîne (`views_week` figé au 13 juin).
+✅ Fait le 2026-11-17 (branche `claude/seuil-boutique-b07cfa`, non fusionnée) : libellé Fort / Modéré / Faible **absolu**
+(rang de l'archétype parmi les 89 archétypes OCG, seuils provisoires non validés) servi par `GET /boutique/signals`
+(`signal_label`, `archetype_rank`, `label_rule`) — `docs/journal/seuils-signal-boutique.md`. La fenêtre de sortie TCG est déjà servie et affichée.
 
 **Fin de journée du 2026-11-16 :** TOK-95 à 98, TOK-107 (sauf invitation et envoi de la base), TOK-113 et la préparation
 du moteur de combos (TOK-85, 87) sont dans `main`, poussés. Reste à Thomas : pseudo GitHub (TOK-108), envoi de la base

@@ -53,8 +53,14 @@ class PredictionsResponse(BaseModel):
 class BoutiqueSignal(BaseModel):
     archetype: str
     card_name: str
+    # Classement dans le lot (0-100, le premier vaut toujours 100) : ce n'est PAS une force
+    # de signal, seulement l'ordre d'affichage (archétype + prix de la carte).
     buy_score: float
-    buy_label: BuyLabel
+    # Libellé ABSOLU, rang de l'archétype parmi tous les archétypes OCG (TOK-113, suite) :
+    # Fort = 10 % du haut, Modéré = 25 %, Faible = le reste. NULL si la table
+    # `ocg_archetype_scores` est absente de la base servie ou ne contient pas l'archétype.
+    signal_label: Optional[BuyLabel] = None
+    archetype_rank: Optional[int] = None  # 1 = archétype OCG le plus fort
     cm_price: float
     ban_tcg: Optional[str] = None
     image_url: Optional[str] = None
@@ -64,8 +70,20 @@ class BoutiqueSignal(BaseModel):
     tcg_window_end: Optional[str] = None
 
 
+class SignalLabelRule(BaseModel):
+    """Règle du libellé, pour que le front l'affiche sans la recopier."""
+
+    population: int  # nombre d'archétypes OCG classés
+    strong_max_rank: int  # rang maximal (inclus) du libellé Fort
+    moderate_max_rank: int  # rang maximal (inclus) du libellé Modéré
+    provisional: bool = True
+    note: str
+
+
 class BoutiqueResponse(BaseModel):
     data: list[BoutiqueSignal]
+    # NULL quand les libellés sont indisponibles (aucun signal_label dans `data`).
+    label_rule: Optional[SignalLabelRule] = None
 
 
 class EarlySignal(BaseModel):

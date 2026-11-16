@@ -214,6 +214,15 @@ Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal 
   par ticket, ne pas laisser une session en lancer une autre sans accord de Thomas.
 - Avant chaque push : `python scripts/check.py` (remplace la liste manuelle tsc / eslint / pytest / `--check`).
 
+### 🏷 Seuil absolu des libellés boutique (suite de TOK-113, 2026-11-17)
+
+`buy_label` (relatif au premier du lot) n'est plus servi. `GET /boutique/signals` renvoie `signal_label` (Fort / Modéré / Faible / null),
+`archetype_rank` et `label_rule` : rang de l'archétype parmi les ~89 archétypes de `ocg_archetype_scores` (Fort ≤ 10 %, Modéré ≤ 25 %),
+calculé à la volée (`backend/app/signal_label.py`), « seuils provisoires, non validés hors échantillon ». Les données ne permettent pas
+de valider un seuil (une seule série datée, rien d'échu avant mars 2027) ; un rang est stable dans le temps, un seuil en points non.
+`ocg_archetype_scores` est dans `SERVED_TABLES` : sans reconstruction de `serving.db`, l'API sert les signaux sans libellé.
+→ détail complet : `docs/journal/seuils-signal-boutique.md`
+
 ### 🔜 À faire
 
 - **TOK-106** : nouvelle page d'accueil d'après le prototype (`docs/audit-front/prototype/`), prochaine étape du front, en session neuve

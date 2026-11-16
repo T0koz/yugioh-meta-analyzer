@@ -3,7 +3,14 @@ import sqlite3
 from fastapi import APIRouter, Depends
 
 from app.db import get_db
-from app.schemas import BoutiqueResponse, BoutiqueSignal, EarlySignal, EarlySignalsResponse
+from app.schemas import (
+    BoutiqueResponse,
+    BoutiqueSignal,
+    EarlySignal,
+    EarlySignalsResponse,
+    SignalLabelRule,
+)
+from app.signal_label import PROVISIONAL_NOTE, label_cutoffs, signal_label
 
 router = APIRouter(tags=["boutique"])
 
@@ -18,7 +25,7 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
     # l'archétype. L'ancien filtre par nom (TOK-97) faisait double emploi.
     rows = db.execute(
         """
-        SELECT s.archetype, s.card_name, s.buy_score_100, s.buy_label, s.cm_price, s.ban_tcg,
+        SELECT s.archetype, s.card_name, s.buy_score_100, s.cm_price, s.ban_tcg,
                s.tcg_window_start, s.tcg_window_end, c.image_url_small
         FROM boutique_buy_signals s
         -- Même jointure que le Ban Radar (TOK-83) : expression indexée, et `+` pour
@@ -30,21 +37,48 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
         (BOUTIQUE_SIGNALS_LIMIT,),
     ).fetchall()
 
-    data = [
-        BoutiqueSignal(
-            archetype=row["archetype"],
-            card_name=row["card_name"],
-            buy_score=row["buy_score_100"],
-            buy_label=row["buy_label"],
-            cm_price=row["cm_price"],
-            ban_tcg=row["ban_tcg"],
-            image_url=row["image_url_small"],
-            tcg_window_start=row["tcg_window_start"],
-            tcg_window_end=row["tcg_window_end"],
+    # Force OCG de tous les archétypes : référence stable du libellé. Table absente
+    # (base de service construite avant ce changement) : on rend les signaux sans libellé.
+    try:
+        ocg = {
+            r["archetype"]: r["ocg_score"]
+            for r in db.execute("SELECT archetype, ocg_score FROM ocg_archetype_scores")
+        }
+    except sqlite3.OperationalError:
+        ocg = {}
+    all_scores = list(ocg.values())
+
+    def label_of(archetype: str):
+        score = ocg.get(archetype)
+        return signal_label(score, all_scores) if score is not None else None
+
+    data = []
+    for row in rows:
+        lab = label_of(row["archetype"])
+        data.append(
+            BoutiqueSignal(
+                archetype=row["archetype"],
+                card_name=row["card_name"],
+                buy_score=row["buy_score_100"],
+                signal_label=lab.label if lab else None,
+                archetype_rank=lab.rank if lab else None,
+                cm_price=row["cm_price"],
+                ban_tcg=row["ban_tcg"],
+                image_url=row["image_url_small"],
+                tcg_window_start=row["tcg_window_start"],
+                tcg_window_end=row["tcg_window_end"],
+            )
         )
-        for row in rows
-    ]
-    return BoutiqueResponse(data=data)
+    rule = None
+    if all_scores and any(d.signal_label for d in data):
+        strong, moderate = label_cutoffs(len(all_scores))
+        rule = SignalLabelRule(
+            population=len(all_scores),
+            strong_max_rank=strong,
+            moderate_max_rank=moderate,
+            note=PROVISIONAL_NOTE,
+        )
+    return BoutiqueResponse(data=data, label_rule=rule)
 
 
 @router.get("/early-signals", response_model=EarlySignalsResponse)

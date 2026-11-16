@@ -354,7 +354,7 @@ Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context
 
 ### 🗣 Charte « ton et explication » (lot 15 étape 1, 2026-11-17, branche `claude/lot15-charte-23027e`, non fusionnée)
 
-`docs/charte-ton-et-explication.md` : ton, ordre d'explication (encodage → annotation → incertitude → légende → pied → Méthode repliée), règles d'incertitude appuyées sur 8 listes / 600 decks / k sur n, 10 avant / après, inventaire (6 `InfoTooltip`, 8 formules ou notations). **En attente du formulaire de Thomas** (8 questions) avant l'étape 2 ; aucun code touché.
+`docs/charte-ton-et-explication.md` : ton, ordre d'explication (encodage → annotation → incertitude → légende → pied → Méthode repliée), règles d'incertitude appuyées sur 8 listes / 600 decks / k sur n, 10 avant / après, inventaire (6 `InfoTooltip`, 8 formules ou notations). **Validée par Thomas le 17/11** : infobulles gardées pour une définition simple, aucune formule sur le site (`/methode` sans formule), mois < 100 decks atténués, intervalles dessinés, couches après maquette. Étape 2 après les lots 11 et 12.
 
 ### 🔜 À faire
 

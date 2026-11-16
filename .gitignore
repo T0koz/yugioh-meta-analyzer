@@ -38,3 +38,8 @@ _bmad/*
 logs/
 data/fetch_health.jsonl
 data/backup_*.db
+
+# Fichiers personnels de Thomas : jamais commités (dépôt public)
+HANDOFF.md
+docs/hebergement-multi-tcg.html
+data/early_signal_*.html

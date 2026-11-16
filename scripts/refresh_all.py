@@ -40,6 +40,10 @@ STEPS = [
     ("05_meta_prediction", NB("05_meta_prediction")),
     ("10_boutique_alert_score", NB("10_boutique_alert_score")),
     ("buy_signals", SC("scripts/build_buy_signals.py")),
+    # TOK-103 : relevé de prix du jour (idempotent, ignoré s'il existe déjà), puis extrait des cartes du signal.
+    # Avant, le relevé n'était pris qu'au lancement de Streamlit (run.sh) : d'où les trous de 2026.
+    ("snapshot_prices", SC("scripts/snapshot_prices.py")),
+    ("boutique_prices", SC("scripts/build_boutique_price_history.py")),
     ("11_early_card_signal", NB("11_early_card_signal")),
     ("ban_radar", SC("scripts/build_ban_radar.py")),
     ("card_impact", SC("scripts/build_card_impact.py")),

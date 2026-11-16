@@ -8,8 +8,13 @@ from app.schemas import (
     BoutiqueSignal,
     EarlySignal,
     EarlySignalsResponse,
+    CardPriceHistory,
+    PriceGap,
+    PriceHistoryResponse,
+    PricePoint,
     SignalLabelRule,
 )
+from app.price_history import MAX_STEP_DAYS, MIN_POINTS, SOURCE, find_gaps, is_sparse
 from app.slugs import slugify
 from app.signal_label import PROVISIONAL_NOTE, label_cutoffs, signal_label
 
@@ -108,6 +113,55 @@ def get_boutique_signals(db: sqlite3.Connection = Depends(get_db)) -> BoutiqueRe
     data, rule = load_boutique_signals(db)
     computed_at = latest_computed_at(db, "boutique_buy_signals")
     return BoutiqueResponse(data=data, label_rule=rule, computed_at=computed_at)
+
+
+@router.get("/boutique/prices", response_model=PriceHistoryResponse)
+def get_boutique_prices(db: sqlite3.Connection = Depends(get_db)) -> PriceHistoryResponse:
+    """Relevés de prix Cardmarket des cartes du signal boutique (TOK-103).
+
+    Table absente (base construite avant TOK-103) : réponse vide, la page
+    affiche les signaux sans courbe au lieu de casser.
+    """
+    try:
+        rows = db.execute(
+            """
+            SELECT card_name, snapshot_date, cardmarket_price
+            FROM boutique_price_history
+            ORDER BY card_name, snapshot_date
+            """
+        ).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+
+    by_card: dict[str, list[PricePoint]] = {}
+    for row in rows:
+        by_card.setdefault(row["card_name"], []).append(
+            PricePoint(date=row["snapshot_date"], price=row["cardmarket_price"])
+        )
+
+    cards = []
+    for name, points in by_card.items():
+        gaps = find_gaps([p.date for p in points])
+        cards.append(
+            CardPriceHistory(
+                card_name=name,
+                points=points,
+                gaps=[PriceGap(start=s, end=e, days=d) for s, e, d in gaps],
+                sparse=is_sparse(len(points)),
+            )
+        )
+
+    dates = sorted({row["snapshot_date"] for row in rows})
+    return PriceHistoryResponse(
+        cards=cards,
+        period_start=dates[0] if dates else None,
+        period_end=dates[-1] if dates else None,
+        snapshot_count=len(dates),
+        max_step_days=MAX_STEP_DAYS,
+        min_points=MIN_POINTS,
+        source=SOURCE,
+        computed_at=latest_computed_at(db, "boutique_price_history") if rows else None,
+    )
 
 
 @router.get("/early-signals", response_model=EarlySignalsResponse)

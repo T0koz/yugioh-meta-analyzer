@@ -31,7 +31,7 @@ import requests
 
 DB = Path(__file__).resolve().parents[1] / "data" / "yugioh.db"
 API = "https://yugipedia.com/api.php"
-HEADERS = {"User-Agent": "yugioh-meta-analyzer (contact: thomascozianpro@gmail.com)"}
+HEADERS = {"User-Agent": "yugioh-meta-analyzer (personal research project)"}
 
 CATEGORIES = {
     "TCG": "Category:TCG Advanced Format Forbidden & Limited Lists",

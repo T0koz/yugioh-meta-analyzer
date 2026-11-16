@@ -1,32 +1,15 @@
 import { api } from "@/lib/api";
+import { fmtNum } from "@/lib/format";
 import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
+import { Em } from "@/components/ds/em";
+import { Meter, Page, PageHero } from "@/components/ds/page";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 
-function ScoreRing({ value }: { value: number }) {
-  const pct = Math.round(value * 100);
-  const radius = 22;
-  const circ = 2 * Math.PI * radius;
-  const dash = (pct / 100) * circ;
-  const color = pct >= 80 ? "#22c55e" : pct >= 60 ? "#eab308" : "#64748b";
-
-  return (
-    <div className="relative w-14 h-14 flex items-center justify-center">
-      <svg width="56" height="56" className="-rotate-90">
-        <circle cx="28" cy="28" r={radius} fill="none" stroke="#1e293b" strokeWidth="4" />
-        <circle
-          cx="28" cy="28" r={radius} fill="none"
-          stroke={color} strokeWidth="4"
-          strokeDasharray={`${dash} ${circ}`}
-          strokeLinecap="round"
-        />
-      </svg>
-      <span className="absolute text-xs font-bold tabular-nums" style={{ color }}>
-        {pct}
-      </span>
-    </div>
-  );
-}
+// Colonnes : rang · carte · score (barre + valeur) · vues par semaine.
+const GRID =
+  "grid grid-cols-[22px_minmax(0,1fr)_72px] items-center gap-3 px-3 min-[760px]:grid-cols-[28px_minmax(0,1.4fr)_minmax(120px,1fr)_110px] min-[760px]:gap-4 min-[760px]:px-4";
 
 export default async function EarlySignalsPage() {
   const { data } = await api.earlySignals();
@@ -34,37 +17,56 @@ export default async function EarlySignalsPage() {
   return (
     <HoverPreviewProvider>
       <HoverPreviewPanel />
-      <main className="max-w-4xl mx-auto px-6 py-10 w-full">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Early Signals</h1>
-        <p className="text-slate-400 mt-1 text-sm">
-          Nouvelles cartes entrant dans la méta · Score basé sur views, co-occurrence et tier
-        </p>
-      </div>
+      <Page>
+        <PageHero
+          eyebrow="Boutique · Early signals"
+          title={
+            <>
+              Les cartes qui montent <Em>avant</Em> la méta.
+            </>
+          }
+          intro={
+            <>
+              Nouvelles cartes qui entrent dans la méta, repérées par leurs vues, leurs co-occurrences et le tier de
+              leur archétype.
+              <InfoTooltip text="Score 0-100 combinant les vues par semaine, la co-occurrence avec les decks de la méta et le tier de l'archétype. Un tiers du score reprend l'alert_score des Signaux Boutique." />
+            </>
+          }
+        />
 
-      <div className="grid gap-4">
-        {data.map((signal) => (
-          <div
-            key={signal.card_name}
-            className="flex items-center gap-5 rounded-lg border border-slate-800 bg-slate-900 px-5 py-4"
-          >
-            <ScoreRing value={signal.early_score} />
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-base">
-                <CardChip name={signal.card_name} subtitle={signal.archetype} />
-              </p>
-              <p className="text-slate-400 text-sm mt-1">{signal.archetype}</p>
-            </div>
-            <div className="text-right shrink-0">
-              <p className="text-sm text-slate-400">Views / semaine</p>
-              <p className="font-bold tabular-nums text-indigo-400">
-                {signal.views_week.toLocaleString("fr-FR")}
-              </p>
-            </div>
+        <div className="overflow-hidden rounded-[6px] border border-line">
+          <div className={`${GRID} py-2.5 font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase`}>
+            <span>#</span>
+            <span>Carte</span>
+            <span className="hidden min-[760px]:block">Score</span>
+            <span className="text-right">Vues / sem.</span>
           </div>
-        ))}
-      </div>
-      </main>
+          {data.map((signal, i) => (
+            <div
+              key={signal.card_name}
+              className={`${GRID} border-t border-line py-3 transition-colors duration-200 hover:bg-ink-3`}
+            >
+              <span className="font-mono text-[12px] text-faint tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+              <span className="min-w-0">
+                <CardChip name={signal.card_name} subtitle={signal.archetype} />
+                <small className="mt-1 block font-mono text-[11px] text-muted-text">
+                  {signal.archetype}
+                  <span className="min-[760px]:hidden"> · score {fmtNum(signal.early_score * 100)}</span>
+                </small>
+              </span>
+              <span className="hidden items-center gap-3 min-[760px]:flex">
+                <span className="flex-1">
+                  <Meter value={signal.early_score} max={1} />
+                </span>
+                <span className="w-7 text-right font-mono text-[13px] font-medium tabular-nums">
+                  {fmtNum(signal.early_score * 100)}
+                </span>
+              </span>
+              <span className="text-right font-mono text-[13px] tabular-nums text-soft">{fmtNum(signal.views_week)}</span>
+            </div>
+          ))}
+        </div>
+      </Page>
     </HoverPreviewProvider>
   );
 }

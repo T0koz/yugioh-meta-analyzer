@@ -42,7 +42,10 @@ def get_ban_radar(
         """
         SELECT r.*, c.image_url_small
         FROM ban_radar r
-        LEFT JOIN cards c ON c.name = r.card_name
+        -- cards.name porte parfois la notation <C>/<P>/<Q> (ex: "Maliss <P>
+        -- March Hare") que ban_radar.card_name, dérivé de deck_cards, n'a
+        -- jamais — sans le strip, la jointure échoue et l'image manque.
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = r.card_name
         WHERE r.ban_risk_score >= :min_score
           AND (:status IS NULL OR r.current_status = :status)
           -- top_archetype est nul pour les staples sans deck d'attache

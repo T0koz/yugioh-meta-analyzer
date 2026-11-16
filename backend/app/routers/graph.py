@@ -19,9 +19,14 @@ def get_synergies(
 ) -> GraphResponse:
     node_rows = db.execute(
         """
-        SELECT g.card_name, g.degree_weighted, c.archetype
+        SELECT g.card_name, g.degree_weighted, c.archetype, c.image_url_small
         FROM card_graph_metrics g
-        LEFT JOIN cards c ON c.name = g.card_name
+        -- cards.name porte parfois la notation <C>/<P>/<Q> (ex: "Maliss <P>
+        -- March Hare", officiel YGOPRODeck) que deck_cards n'a jamais (source
+        -- yugiohmeta.com : "Maliss P March Hare") — sans le strip, la jointure
+        -- échoue pour ces cartes, elles perdent leur archétype et deviennent
+        -- invisibles dans le filtre.
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = g.card_name
         ORDER BY g.degree_weighted DESC
         LIMIT ?
         """,
@@ -30,7 +35,12 @@ def get_synergies(
 
     node_names = [row["card_name"] for row in node_rows]
     nodes = [
-        GraphNode(id=row["card_name"], group=row["archetype"], size=row["degree_weighted"])
+        GraphNode(
+            id=row["card_name"],
+            group=row["archetype"],
+            size=row["degree_weighted"],
+            image_url=row["image_url_small"],
+        )
         for row in node_rows
     ]
 

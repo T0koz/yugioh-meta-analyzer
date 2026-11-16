@@ -7,16 +7,12 @@ export function HoverPreviewPanel() {
   if (!preview) return null;
 
   return (
-    <div className="hidden xl:block fixed left-6 top-32 w-56 z-30">
+    <div className="pointer-events-none fixed top-32 left-6 z-30 hidden w-56 rounded-[8px] border border-line-2 bg-ink-3 p-3 xl:block">
       {/* eslint-disable-next-line @next/next/no-img-element -- preview externe (YGOPRODeck) */}
-      <img
-        src={preview.imageUrl}
-        alt={preview.name}
-        className="w-full rounded-lg shadow-2xl border border-slate-700"
-      />
-      <p className="mt-3 text-sm font-medium text-slate-200 text-center">{preview.name}</p>
+      <img src={preview.imageUrl} alt={preview.name} className="w-full rounded-[4px]" />
+      <p className="mt-3 text-center text-[14px] font-medium text-text">{preview.name}</p>
       {preview.subtitle && (
-        <p className="text-xs text-slate-500 text-center mt-0.5">{preview.subtitle}</p>
+        <p className="mt-0.5 text-center font-mono text-[11px] text-muted-text">{preview.subtitle}</p>
       )}
     </div>
   );

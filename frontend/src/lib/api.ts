@@ -3,6 +3,7 @@ import type {
   BanRadarResponse,
   BanSimResult,
   BoutiqueResponse,
+  CardImpactResponse,
   EarlySignalsResponse,
   EvolutionResponse,
   GraphResponse,
@@ -29,6 +30,11 @@ export const api = {
     const query = new URLSearchParams({ limit: String(params?.limit ?? 50) });
     if (params?.kind) query.set("kind", params.kind);
     return apiFetch<BanRadarResponse>(`/ban-radar?${query}`);
+  },
+  cardImpact: (params?: { limit?: number; kind?: BanRadarKind }) => {
+    const query = new URLSearchParams({ limit: String(params?.limit ?? 50) });
+    if (params?.kind) query.set("kind", params.kind);
+    return apiFetch<CardImpactResponse>(`/card-impact?${query}`);
   },
   graphSynergies: (params?: { limit?: number; minJaccard?: number }) => {
     const query = new URLSearchParams();

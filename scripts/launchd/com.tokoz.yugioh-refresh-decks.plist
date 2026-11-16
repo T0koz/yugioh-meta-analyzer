@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.tokoz.yugioh-refresh-decks</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/thomascozian/code/yugioh-meta-analyzer/.venv/bin/python</string>
+        <string>scripts/refresh_decks.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/thomascozian/code/yugioh-meta-analyzer</string>
+
+    <!-- Chaque lundi à 8h30 (Weekday 1 = lundi). Si le Mac dort, launchd rattrape au réveil.
+         Les scripts sont idempotents. Durée typique : ~20 min (TCG + OCG).
+         Un échec est journalisé dans data/fetch_health.jsonl (voir `refresh_decks.py --status`). -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>8</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/thomascozian/Library/Logs/yugioh-refresh-decks.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/thomascozian/Library/Logs/yugioh-refresh-decks.log</string>
+</dict>
+</plist>

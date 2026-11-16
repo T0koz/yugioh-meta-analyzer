@@ -13,7 +13,7 @@
 
 ```bash
 # 1. Clone
-git clone https://github.com/thomascozian/yugioh-meta-analyzer.git
+git clone https://github.com/T0koz/yugioh-meta-analyzer.git
 cd yugioh-meta-analyzer
 
 # 2. Create virtual environment

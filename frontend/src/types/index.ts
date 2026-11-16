@@ -106,10 +106,26 @@ export interface BanRadarResponse {
   weights: Record<string, number>;
 }
 
+export interface CardImpactEntry {
+  card_name: string;
+  bridge_score: number;
+  n_archetypes: number;
+  decks: number;
+  top_archetype: string | null;
+  image_url: string | null;
+}
+
+export interface CardImpactResponse {
+  data: CardImpactEntry[];
+  as_of: string;
+  n_decks_window: number;
+}
+
 export interface GraphNode {
   id: string;
   group: string | null;
   size: number;
+  image_url: string | null;
 }
 
 export interface GraphEdge {

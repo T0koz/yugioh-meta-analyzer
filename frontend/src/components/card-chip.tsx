@@ -8,10 +8,13 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v
 export function CardChip({
   name,
   subtitle,
+  variant = "chip",
   className = "",
 }: {
   name: string;
   subtitle?: string;
+  /** `plain` : nom en texte courant (titre de ligne), même survol que la pastille. */
+  variant?: "chip" | "plain";
   className?: string;
 }) {
   const { setPreview } = useHoverPreview();
@@ -46,7 +49,11 @@ export function CardChip({
     <span
       onMouseEnter={() => void handleEnter()}
       onMouseLeave={handleLeave}
-      className={`px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-300 cursor-default hover:border-indigo-500 hover:text-slate-100 transition-colors ${className}`}
+      className={`cursor-default transition-colors duration-200 ${
+        variant === "chip"
+          ? "inline-flex rounded-[4px] border border-line bg-ink-4 px-2 py-0.5 font-mono text-[12px] text-soft hover:border-line-2 hover:text-text"
+          : "hover:text-signal-hi"
+      } ${className}`}
     >
       {name}
     </span>

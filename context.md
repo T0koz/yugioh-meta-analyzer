@@ -57,13 +57,19 @@ Next.js 16 + TS + Tailwind + shadcn + recharts + vis-network ; design system Emb
 pondérés, avec décomposition par critère renvoyée au front (barre colorée).
 
 Deux pièges à ne pas refaire si le scoring est retouché :
-- **L'omniprésence seule ne prédit rien.** Konami ne frappe pas les staples les
-  plus jouées mais les pièces de moteur des decks qui gagnent. La v1, bâtie sur
-  ubiquité + nombre d'archétypes, plaçait les cartes réellement touchées au rang
-  médian 302/681 — le hasard. Le nombre d'archétypes qui jouent une carte ne
-  discrimine pas du tout (médiane 4 chez les touchées comme chez les autres).
+- **L'omniprésence prédit une partie des bans, mais pas la tête de liste** (révisé le 2026-11-17, validé par
+  Thomas ; remplace « l'omniprésence seule ne prédit rien »). L'ancien constat venait de la v1 (rang médian 302/681,
+  le hasard), calculée sur des données biaisées par le drapeau `illegal`. Sur données légales (backtest rangé liste par
+  liste, lot 12, `docs/journal/ban-historique-tok-55.md`), une base « staples les plus jouées » (même univers classé
+  par la seule part des decks) fait **mieux que le score en rang médian sur 7 listes TCG sur 10** ; le score reste
+  devant en OCG (8 sur 10) et **en tête de classement** : top 25 de la veille touché 29 fois sur 250 contre 16 pour les
+  staples en TCG, 41 contre 18 en OCG. Lecture : le score sert à désigner les premières cartes visées, pas à classer
+  l'ensemble mieux que la popularité. Toute retouche du scoring se compare aux deux bases (hasard et staples), pas au
+  hasard seul. Le nombre d'archétypes qui jouent une carte ne discrimine toujours pas (médiane 4 chez les touchées
+  comme chez les autres, constat v1 non recalculé).
 - **Le critère décisif est le nombre moyen d'exemplaires joués** (2.50 chez les
-  touchées vs 1.10). Le retirer fait tomber le rappel top-10% de 5/10 à 1/10.
+  touchées vs 1.10). Le retirer fait tomber le rappel top-10% de 5/10 à 1/10 (chiffres de la v1, non recalculés
+  sur données légales : à vérifier au prochain changement de scoring).
 
 Toute modification du scoring doit être repassée au backtest :
 `python scripts/build_ban_radar.py --backtest`. Les listes ne sont plus codées en
@@ -413,8 +419,8 @@ affichées. `scripts/build_ban_history.py` → `ban_backtest_lists`, `ban_backte
 - **Mêmes chiffres que `--backtest`** : le script passe par `build_ban_radar.backtest_lists`, la boucle de `backtest()`.
   Toute modification du backtest passe par cette fonction, jamais par une copie.
 - **⚠ La base staples bat le score en rang médian sur 7 listes TCG sur 10** (le score reste devant en OCG, 8 sur 10, et
-  en tête de classement : top 25 touché 29 contre 16 en TCG, 41 contre 18 en OCG). Le piège « l'omniprésence seule ne
-  prédit rien » (section Ban Radar ci-dessus) vient de la v1 sur données biaisées : à réviser après validation de Thomas.
+  en tête de classement : top 25 touché 29 contre 16 en TCG, 41 contre 18 en OCG). Le piège de la section Ban Radar a été
+  révisé en conséquence le 2026-11-17 (validé par Thomas).
 - **Veille de l'entrée en vigueur, pas de l'annonce** : les decks joués entre les deux sont dans la fenêtre (jusqu'à 10 %).
   Ne jamais écrire « avant l'annonce ». Seules 3 listes sont postérieures au calage des poids (2026-08-14).
 → détail complet (sorties brutes, vérification du data scientist) : `docs/journal/ban-historique-tok-55.md`

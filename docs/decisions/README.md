@@ -90,3 +90,4 @@ Ce que ça change, ce qu'il faudra revoir et quand.
 | 0049 | 2026-11-16 | [Lot 1 et orchestrateur : décisions mineures de la file du soir](0049-lot-1-et-orchestrateur-decisions-mineures-de-la-file-du.md) | à valider par Thomas |
 | 0050 | 2026-11-16 | [Lots 2 et 3 : choix de contenu, de palette et de forme des graphiques](0050-lots-2-et-3-choix-de-contenu-de-palette-et-de-forme-des.md) | à valider par Thomas |
 | 0051 | 2026-11-16 | [Lots 4 et 5 : périmètre des pages, du SEO et des captures](0051-lots-4-et-5-perimetre-des-pages-du-seo-et-des-captures.md) | à valider par Thomas |
+| 0052 | 2026-11-17 | [Ban Radar : l'omniprésence prédit une partie des bans, le score sert à la tête de liste](0052-ban-radar-l-omniprésence-predit-une-partie-des-bans.md) | acceptée |

@@ -7,9 +7,14 @@ const sans = Inter_Tight({ variable: "--font-inter-tight", subsets: ["latin"], w
 const serif = Instrument_Serif({ variable: "--font-instrument-serif", subsets: ["latin"], weight: "400", style: "italic" });
 const mono = JetBrains_Mono({ variable: "--font-jetbrains-mono", subsets: ["latin"], weight: ["400", "500"] });
 
+// `template` s'applique aux pages enfants : chacune n'exporte que son titre court.
 export const metadata: Metadata = {
-  title: "Yu-Gi-Oh! Meta Analyzer",
-  description: "Tournament meta analysis — tier list, predictions, boutique signals",
+  title: {
+    default: "YGO Meta · Analyse de la méta Yu-Gi-Oh!",
+    template: "%s · YGO Meta",
+  },
+  description:
+    "Analyse de la méta Yu-Gi-Oh! TCG et OCG à partir des decklists de tournoi : tier list, prédictions, risque de ban et signaux pour les boutiques.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -58,3 +58,22 @@ export function fmtMonthShort(yearMonth: string): string {
 export function fmtRank(rank: number): string {
   return rank === 1 ? "1er" : `${rank}ᵉ`;
 }
+
+/** Fenêtre de mois « AAAA-MM » → « oct. 26 à nov. 26 » (un seul mois : « nov. 26 »). */
+export function fmtWindow(window: { start: string; end: string }): string {
+  return window.start === window.end
+    ? fmtMonthShort(window.end)
+    : `${fmtMonthShort(window.start)} à ${fmtMonthShort(window.end)}`;
+}
+
+/** Résultat de tournoi : 1 → « Vainqueur », 2 → « Finaliste », 3,5 → « Top 4 », 8 → « Top 8 ». */
+export function fmtPlacement(placement: number): string {
+  if (placement <= 1) return "Vainqueur";
+  if (placement <= 2) return "Finaliste";
+  return `Top ${Math.ceil(placement)}`;
+}
+
+/** Médiane d'exemplaires : « 3 », ou « 2,5 » quand elle tombe entre deux valeurs. */
+export function fmtCopies(copies: number): string {
+  return fmtNum(copies, Number.isInteger(copies) ? 0 : 1);
+}

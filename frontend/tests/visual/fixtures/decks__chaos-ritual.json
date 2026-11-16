@@ -1,0 +1,1413 @@
+{
+ "archetype": "Chaos Ritual",
+ "slug": "chaos-ritual",
+ "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg",
+ "tier": "Rogue",
+ "decks": 7,
+ "share": 0.017676767676767676,
+ "has_profile": false,
+ "window": {
+  "start": "2026-10",
+  "end": "2026-11",
+  "n_decks": 396
+ },
+ "rule": {
+  "base_min_share": 0.8,
+  "flex_min_share": 0.2,
+  "min_decks": 8
+ },
+ "computed_at": "2026-11-16",
+ "zones": [],
+ "recent_decks": [
+  {
+   "deck_id": "6af48053cde72cc6c7c59701",
+   "author": "Natan Muñoz",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 8.0,
+   "date": "2026-11-07",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 45,
+     "cards": [
+      {
+       "card_name": "Black Chaos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98684220.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "Ragged Records of Rites",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+      },
+      {
+       "card_name": "Skull Archfiend of Chaos",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24088928.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Griffoh",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg"
+      },
+      {
+       "card_name": "Light and Darkness Ritual",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33599853.jpg"
+      },
+      {
+       "card_name": "Magician of Dark Chaos - Black Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44001993.jpg"
+      },
+      {
+       "card_name": "Mind Shuffle",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24749710.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Black Luster Soldier - Soldier of Light and Darkness",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70405001.jpg"
+      },
+      {
+       "card_name": "Celtic Mystic",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/50073633.jpg"
+      },
+      {
+       "card_name": "Spell Shattering Sword",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/77456448.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Branded in High Spirits",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Aluber the Jester of Despia",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/62962630.jpg"
+      },
+      {
+       "card_name": "Branded Fusion",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+      },
+      {
+       "card_name": "Branded Opening",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/36637374.jpg"
+      },
+      {
+       "card_name": "Dogmatika Fleurdelis, the Knighted",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/69680031.jpg"
+      },
+      {
+       "card_name": "Guiding Quem, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/45883110.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Chaos Angel",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Garura, Wings of Resonant Life",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+      },
+      {
+       "card_name": "Mixousia the Confounder",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+      },
+      {
+       "card_name": "Albion the Sanctifire Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/38811586.jpg"
+      },
+      {
+       "card_name": "Hyperinvoked Aeon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33166263.jpg"
+      },
+      {
+       "card_name": "Lubellion the Searing Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70534340.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Solemn Judgment",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41420027.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      },
+      {
+       "card_name": "Solemn Accusation",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78114463.jpg"
+      },
+      {
+       "card_name": "Typhoon",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14883228.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Meowls",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/87126721.jpg"
+      },
+      {
+       "card_name": "Illusion Gate",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33017964.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6ae74f9e725451a63da37527",
+   "author": "Josh Kelly",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 3.5,
+   "date": "2026-10-31",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 60,
+     "cards": [
+      {
+       "card_name": "Black Chaos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98684220.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "Ragged Records of Rites",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+      },
+      {
+       "card_name": "Skull Archfiend of Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24088928.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Griffoh",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg"
+      },
+      {
+       "card_name": "Light and Darkness Ritual",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33599853.jpg"
+      },
+      {
+       "card_name": "Magician of Dark Chaos - Black Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44001993.jpg"
+      },
+      {
+       "card_name": "Mind Shuffle",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24749710.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Dark Magical Curtain",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41350417.jpg"
+      },
+      {
+       "card_name": "Pot of Sloth",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg"
+      },
+      {
+       "card_name": "The Great Gallant Bandit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24203749.jpg"
+      },
+      {
+       "card_name": "Ars Magna the Finite and the Infinite",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/36270527.jpg"
+      },
+      {
+       "card_name": "Hey, Space Trunade!",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+      },
+      {
+       "card_name": "Kuriboh - Multiply!",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14965712.jpg"
+      },
+      {
+       "card_name": "Pendulum Treasure",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/26237713.jpg"
+      },
+      {
+       "card_name": "Vidolium the Unstable Power Patron of Unity",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70488851.jpg"
+      },
+      {
+       "card_name": "Ars Magna \"Citrinitas\"",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/37279096.jpg"
+      },
+      {
+       "card_name": "Medius the Pure",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97556336.jpg"
+      },
+      {
+       "card_name": "Nervedo the Shadebeast Power Patron",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/17473466.jpg"
+      },
+      {
+       "card_name": "Ars Magna the Corruption and the Purification",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/62368221.jpg"
+      },
+      {
+       "card_name": "Ars Magna the Division and the Union",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/99753860.jpg"
+      },
+      {
+       "card_name": "Artmage Vandalism -Assault-",
+       "amount": 1,
+       "image_url": null
+      },
+      {
+       "card_name": "Junoldo the Shadespirit Power Patron",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/10266279.jpg"
+      },
+      {
+       "card_name": "Jupredo the Shademachine Power Patron",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/43871165.jpg"
+      },
+      {
+       "card_name": "Plundered Power Patron Plane - Vidolia",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51669847.jpg"
+      },
+      {
+       "card_name": "Prohibited Power Patron Portal - Terminus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/25661743.jpg"
+      },
+      {
+       "card_name": "Theorealize",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48739627.jpg"
+      },
+      {
+       "card_name": "Theorealize Liberation",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27285068.jpg"
+      },
+      {
+       "card_name": "Theorealized Medius",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/90875418.jpg"
+      },
+      {
+       "card_name": "Witch of the Black Forest",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78010363.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Dark Magician of Destruction",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59400890.jpg"
+      },
+      {
+       "card_name": "Dharc the Dark Charmer, Gloomy",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/8264361.jpg"
+      },
+      {
+       "card_name": "I:P Masquerena",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/65741786.jpg"
+      },
+      {
+       "card_name": "S:P Little Knight",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29301450.jpg"
+      },
+      {
+       "card_name": "A Bao A Qu, the Lightless Shadow",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4731783.jpg"
+      },
+      {
+       "card_name": "Mediclius the Extraordinary Power Patron",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4063756.jpg"
+      },
+      {
+       "card_name": "Relinquished Anima",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94259633.jpg"
+      },
+      {
+       "card_name": "Artemis, the Magistus Moon Maiden",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/34755994.jpg"
+      },
+      {
+       "card_name": "Artmage Diactorus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27184601.jpg"
+      },
+      {
+       "card_name": "Artmage Non-Finito",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74631897.jpg"
+      },
+      {
+       "card_name": "Junora the Power Patron of Tuning",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/5914858.jpg"
+      },
+      {
+       "card_name": "Knightmare Unicorn",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/38342335.jpg"
+      },
+      {
+       "card_name": "Nerva the Power Patron of Creation",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/53589300.jpg"
+      },
+      {
+       "card_name": "Number 38: Hope Harbinger Dragon Titanic Galaxy",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/63767246.jpg"
+      },
+      {
+       "card_name": "Purification Power Patron",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/31822037.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      },
+      {
+       "card_name": "Typhoon",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14883228.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Meowls",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/87126721.jpg"
+      },
+      {
+       "card_name": "Ars Magna \"Philosophorum\"",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/90728287.jpg"
+      },
+      {
+       "card_name": "Artmage Impasto -Recapture-",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44654994.jpg"
+      },
+      {
+       "card_name": "Black Luster Soldier - Soldier of Light and Darkness",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70405001.jpg"
+      },
+      {
+       "card_name": "Spell Shattering Sword",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/77456448.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6ae9d0e69e8b7a3a8e447a2a",
+   "author": "Alexis Lugeux",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 8.0,
+   "date": "2026-10-31",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 40,
+     "cards": [
+      {
+       "card_name": "Black Chaos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98684220.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "Ragged Records of Rites",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+      },
+      {
+       "card_name": "Skull Archfiend of Chaos",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24088928.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Griffoh",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg"
+      },
+      {
+       "card_name": "Light and Darkness Ritual",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33599853.jpg"
+      },
+      {
+       "card_name": "Magician of Dark Chaos - Black Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44001993.jpg"
+      },
+      {
+       "card_name": "Mind Shuffle",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24749710.jpg"
+      },
+      {
+       "card_name": "Black Luster Soldier - Soldier of Light and Darkness",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70405001.jpg"
+      },
+      {
+       "card_name": "Celtic Mystic",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/50073633.jpg"
+      },
+      {
+       "card_name": "Spell Shattering Sword",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/77456448.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Branded in High Spirits",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Fydraulis Harmonia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70088809.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Pot of Sloth",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg"
+      },
+      {
+       "card_name": "Albion the Shrouded Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/25451383.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Chaos Angel",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Despian Luluwalilith",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/53971455.jpg"
+      },
+      {
+       "card_name": "Despian Quaeritis",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/72272462.jpg"
+      },
+      {
+       "card_name": "Golden Cloud Beast - Malong",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/93125329.jpg"
+      },
+      {
+       "card_name": "Garura, Wings of Resonant Life",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11765832.jpg"
+      },
+      {
+       "card_name": "Mixousia the Confounder",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/80843006.jpg"
+      },
+      {
+       "card_name": "Mudragon of the Swamp",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/54757758.jpg"
+      },
+      {
+       "card_name": "Cupid Pitch",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/21915012.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      },
+      {
+       "card_name": "Hey, Space Trunade!",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "The Great Gallant Bandit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24203749.jpg"
+      },
+      {
+       "card_name": "Pot of Sloth",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98476659.jpg"
+      },
+      {
+       "card_name": "Bystial Magnamhut",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33854624.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6addee6dd32354c9709753ef",
+   "author": "Luis Rivera",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 8.0,
+   "date": "2026-10-24",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 60,
+     "cards": [
+      {
+       "card_name": "Black Chaos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98684220.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "Ragged Records of Rites",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+      },
+      {
+       "card_name": "Skull Archfiend of Chaos",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24088928.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Griffoh",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg"
+      },
+      {
+       "card_name": "Light and Darkness Ritual",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33599853.jpg"
+      },
+      {
+       "card_name": "Magician of Dark Chaos - Black Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44001993.jpg"
+      },
+      {
+       "card_name": "Mind Shuffle",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24749710.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Black Luster Soldier - Soldier of Light and Darkness",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70405001.jpg"
+      },
+      {
+       "card_name": "Celtic Mystic",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/50073633.jpg"
+      },
+      {
+       "card_name": "Spell Shattering Sword",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/77456448.jpg"
+      },
+      {
+       "card_name": "Dark Magical Curtain",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41350417.jpg"
+      },
+      {
+       "card_name": "Super Polymerization",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/48130397.jpg"
+      },
+      {
+       "card_name": "Dominus Impulse",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/40366667.jpg"
+      },
+      {
+       "card_name": "The Great Gallant Bandit",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24203749.jpg"
+      },
+      {
+       "card_name": "Dark Magician",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/46986420.jpg"
+      },
+      {
+       "card_name": "The Gaze of Timaeus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/22283204.jpg"
+      },
+      {
+       "card_name": "Imsety, Glory of Horus",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84941194.jpg"
+      },
+      {
+       "card_name": "Kashtira Unicorn",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68304193.jpg"
+      },
+      {
+       "card_name": "Kashtira Fenrir",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/32909498.jpg"
+      },
+      {
+       "card_name": "Dark Magician, the Pharaoh's Servant",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/88570003.jpg"
+      },
+      {
+       "card_name": "Duamutef, Blessing of Horus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/11335209.jpg"
+      },
+      {
+       "card_name": "Fleeting Phantom Mask Master",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44694191.jpg"
+      },
+      {
+       "card_name": "Foolish Burial",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/81439173.jpg"
+      },
+      {
+       "card_name": "Hapi, Guidance of Horus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/47330808.jpg"
+      },
+      {
+       "card_name": "Kashtira Birth",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/69540484.jpg"
+      },
+      {
+       "card_name": "King's Sarcophagus",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/16528181.jpg"
+      },
+      {
+       "card_name": "Nightmare Hands",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/25224340.jpg"
+      },
+      {
+       "card_name": "Terraforming",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73628505.jpg"
+      },
+      {
+       "card_name": "Walls of the Imperial Tomb",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/26984177.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Chaos Angel",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+      },
+      {
+       "card_name": "Dark Magician of Destruction",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59400890.jpg"
+      },
+      {
+       "card_name": "Dharc the Dark Charmer, Gloomy",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/8264361.jpg"
+      },
+      {
+       "card_name": "I:P Masquerena",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/65741786.jpg"
+      },
+      {
+       "card_name": "S:P Little Knight",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29301450.jpg"
+      },
+      {
+       "card_name": "A Bao A Qu, the Lightless Shadow",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4731783.jpg"
+      },
+      {
+       "card_name": "Accesscode Talker",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/86066372.jpg"
+      },
+      {
+       "card_name": "Mediclius the Extraordinary Power Patron",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/4063756.jpg"
+      },
+      {
+       "card_name": "Mudragon of the Swamp",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/54757758.jpg"
+      },
+      {
+       "card_name": "Axon Kicker Oracle",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33171768.jpg"
+      },
+      {
+       "card_name": "Favorite HERO Flame Wingman",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/13243124.jpg"
+      },
+      {
+       "card_name": "Maple Maiden",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73104892.jpg"
+      },
+      {
+       "card_name": "Master of Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/85059922.jpg"
+      },
+      {
+       "card_name": "Number 90: Galaxy-Eyes Photon Lord",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/8165596.jpg"
+      },
+      {
+       "card_name": "Timaeus the United Magical Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/85899505.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Solemn Judgment",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41420027.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      },
+      {
+       "card_name": "Hey, Space Trunade!",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+      },
+      {
+       "card_name": "Solemn Accusation",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78114463.jpg"
+      },
+      {
+       "card_name": "Artifact Lancea",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/34267821.jpg"
+      },
+      {
+       "card_name": "Shiina, Twin Tempests of Celestial Thunder",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/12197223.jpg"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "deck_id": "6adcb3186c56332a0b708ca1",
+   "author": "Stefan Gojkov",
+   "tournament_type": "Yu-Gi-Oh! WCQ Regional",
+   "placement": 8.0,
+   "date": "2026-10-18",
+   "zones": [
+    {
+     "zone": "main",
+     "n_cards": 40,
+     "cards": [
+      {
+       "card_name": "Black Chaos",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/98684220.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Fuwalos",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/42141493.jpg"
+      },
+      {
+       "card_name": "Ragged Records of Rites",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24461358.jpg"
+      },
+      {
+       "card_name": "Skull Archfiend of Chaos",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24088928.jpg"
+      },
+      {
+       "card_name": "Droll & Lock Bird",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/94145021.jpg"
+      },
+      {
+       "card_name": "Griffoh",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/97462632.jpg"
+      },
+      {
+       "card_name": "Light and Darkness Ritual",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33599853.jpg"
+      },
+      {
+       "card_name": "Magician of Dark Chaos - Black Chaos",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44001993.jpg"
+      },
+      {
+       "card_name": "Mind Shuffle",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24749710.jpg"
+      },
+      {
+       "card_name": "Ash Blossom & Joyous Spring",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/14558127.jpg"
+      },
+      {
+       "card_name": "Ghost Ogre & Snow Rabbit",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/59438930.jpg"
+      },
+      {
+       "card_name": "Black Luster Soldier - Soldier of Light and Darkness",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70405001.jpg"
+      },
+      {
+       "card_name": "Celtic Mystic",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/50073633.jpg"
+      },
+      {
+       "card_name": "Spell Shattering Sword",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/77456448.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      },
+      {
+       "card_name": "Fallen of the White Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+      },
+      {
+       "card_name": "Branded in High Spirits",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+      },
+      {
+       "card_name": "Blazing Cartesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+      },
+      {
+       "card_name": "Fallen of Albaz",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+      },
+      {
+       "card_name": "Incredible Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+      },
+      {
+       "card_name": "Fydraulis Harmonia",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/70088809.jpg"
+      },
+      {
+       "card_name": "Mulcharmy Purulia",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/84192580.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "extra",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Chaos Angel",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+      },
+      {
+       "card_name": "Granguignol the Dusk Dragon",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+      },
+      {
+       "card_name": "Ecclesia and the Dark Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/78397661.jpg"
+      },
+      {
+       "card_name": "Mirrorjade the Iceblade Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+      },
+      {
+       "card_name": "Rindbrumm the Striking Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+      },
+      {
+       "card_name": "The Dragon that Devours the Dogma",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76666602.jpg"
+      },
+      {
+       "card_name": "The Three Champions of Swordsoul",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/74405783.jpg"
+      },
+      {
+       "card_name": "Titaniklad the Ash Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+      },
+      {
+       "card_name": "Despian Luluwalilith",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/53971455.jpg"
+      },
+      {
+       "card_name": "Despian Quaeritis",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/72272462.jpg"
+      },
+      {
+       "card_name": "Golden Cloud Beast - Malong",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/93125329.jpg"
+      },
+      {
+       "card_name": "Albion the Branded Dragon",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/87746184.jpg"
+      },
+      {
+       "card_name": "Enigmaster Packbit",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/72444406.jpg"
+      },
+      {
+       "card_name": "Stardust Dragon - Victim Sanctuary",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/76636978.jpg"
+      }
+     ]
+    },
+    {
+     "zone": "side",
+     "n_cards": 15,
+     "cards": [
+      {
+       "card_name": "Nibiru, the Primal Being",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/27204311.jpg"
+      },
+      {
+       "card_name": "Solemn Judgment",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/41420027.jpg"
+      },
+      {
+       "card_name": "Nadir Servant",
+       "amount": 3,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+      },
+      {
+       "card_name": "Artifact Lancea",
+       "amount": 2,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/34267821.jpg"
+      },
+      {
+       "card_name": "Bystial Magnamhut",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/33854624.jpg"
+      },
+      {
+       "card_name": "Dogmatika Fleurdelis, the Knighted",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/69680031.jpg"
+      },
+      {
+       "card_name": "Harpie's Feather Duster",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/18144507.jpg"
+      },
+      {
+       "card_name": "Called by the Grave",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/24224830.jpg"
+      },
+      {
+       "card_name": "Dogmatika Ecclesia, the Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+      },
+      {
+       "card_name": "The Fallen & The Virtuous",
+       "amount": 1,
+       "image_url": "https://images.ygoprodeck.com/images/cards_small/30271097.jpg"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

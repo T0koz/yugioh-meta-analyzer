@@ -248,3 +248,74 @@ export interface ArchetypeResponse {
     signals: BoutiqueSignal[];
   } | null;
 }
+
+// ── Decks (TOK-114) ──────────────────────────────────────────────────────────
+
+export type Zone = "main" | "extra" | "side";
+/** « base » : au moins `rule.base_min_share` des listes ; « appoint » : au moins `rule.flex_min_share`. */
+export type CardRole = "base" | "appoint";
+
+export interface DeckProfileRule {
+  base_min_share: number;
+  flex_min_share: number;
+  /** Listes en dessous desquelles aucune part n'est calculée. */
+  min_decks: number;
+}
+
+export interface DeckCardStat {
+  card_name: string;
+  /** Listes de l'archétype qui contiennent la carte dans cette zone. */
+  n_lists: number;
+  /** n_lists / listes de l'archétype, de 0 à 1. */
+  share: number;
+  /** Médiane des exemplaires parmi les listes qui la jouent. */
+  median_copies: number;
+  role: CardRole | null;
+  image_url: string | null;
+}
+
+export interface DeckIndexEntry {
+  archetype: string;
+  slug: string;
+  tier: Tier;
+  decks: number;
+  share: number;
+  has_profile: boolean;
+  image_url: string | null;
+  base_cards: number;
+  base_copies: number;
+  preview: DeckCardStat[];
+}
+
+export interface DeckIndexResponse {
+  data: DeckIndexEntry[];
+  window: TierWindow | null;
+  rule: DeckProfileRule;
+  computed_at: string | null;
+}
+
+export interface RecentDeck {
+  deck_id: string;
+  author: string | null;
+  tournament_type: string | null;
+  /** 1 = vainqueur, 2 = finaliste, 3,5 = demi-finaliste, 8 = top 8… */
+  placement: number;
+  date: string;
+  zones: { zone: Zone; n_cards: number; cards: { card_name: string; amount: number; image_url: string | null }[] }[];
+}
+
+export interface DeckResponse {
+  archetype: string;
+  slug: string;
+  image_url: string | null;
+  tier: Tier | null;
+  decks: number;
+  share: number;
+  has_profile: boolean;
+  window: TierWindow;
+  rule: DeckProfileRule;
+  computed_at: string;
+  /** Vide sous l'effectif minimal. */
+  zones: { zone: Zone; cards: DeckCardStat[] }[];
+  recent_decks: RecentDeck[];
+}

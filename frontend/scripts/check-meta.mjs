@@ -16,6 +16,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1"
 const STATIC_PATHS = [
   "/",
   "/tier-list",
+  "/decks",
   "/evolution",
   "/predictions",
   "/boutique",
@@ -127,8 +128,14 @@ async function archetypeSlugs() {
   return [...new Set([...tierList.data.map((e) => e.slug), ...boutique.data.map((s) => s.archetype_slug)])].sort();
 }
 
+async function deckSlugs() {
+  const decks = await (await fetch(apiUrl + "/decks")).json();
+  return decks.data.filter((d) => d.has_profile).map((d) => d.slug).sort();
+}
+
 // ── Pages principales ──────────────────────────────────────────────────────────
 const slugs = await archetypeSlugs();
+const decks = await deckSlugs();
 const pages = [];
 for (const path of STATIC_PATHS) pages.push(await checkPage(path));
 
@@ -148,7 +155,11 @@ if (/^Disallow:\s*\/\s*$/im.test(robots)) fail("/robots.txt", "tout le site est 
 
 const sitemap = (await get("/sitemap.xml")).body.toString("utf8");
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => decode(m[1]));
-const expected = [...STATIC_PATHS.map(absolute), ...slugs.map((slug) => absolute(`/archetype/${slug}`))];
+const expected = [
+  ...STATIC_PATHS.map(absolute),
+  ...slugs.map((slug) => absolute(`/archetype/${slug}`)),
+  ...decks.map((slug) => absolute(`/decks/${slug}`)),
+];
 for (const url of expected) if (!locs.includes(url)) fail("/sitemap.xml", `adresse absente : ${url}`);
 for (const url of locs) if (!expected.includes(url)) fail("/sitemap.xml", `adresse inattendue : ${url}`);
 if (new Set(locs).size !== locs.length) fail("/sitemap.xml", "adresses en double");
@@ -158,6 +169,11 @@ let archetypePages = 0;
 for (const slug of slugs) {
   const page = await checkPage(`/archetype/${slug}`);
   if (page) archetypePages++;
+}
+let deckPages = 0;
+for (const slug of decks) {
+  const page = await checkPage(`/decks/${slug}`);
+  if (page) deckPages++;
 }
 
 // ── Canonique d'une variante de casse, et page absente ─────────────────────────
@@ -173,7 +189,7 @@ console.log("| Page | Titre | Description (car.) | Image (ko) |");
 console.log("|---|---|---|---|");
 for (const page of pages.filter(Boolean))
   console.log(`| \`${page.path}\` | ${page.title} | ${page.description.length} | ${page.imageBytes ? Math.round(page.imageBytes / 1000) : "?"} |`);
-console.log(`\n${pages.filter(Boolean).length} pages principales, ${archetypePages} pages d'archétype, ${locs.length} adresses dans le sitemap.`);
+console.log(`\n${pages.filter(Boolean).length} pages principales, ${archetypePages} pages d'archétype, ${deckPages} fiches de deck, ${locs.length} adresses dans le sitemap.`);
 
 if (errors.length) {
   console.error(`\n✗ ${errors.length} règle(s) non tenue(s) :`);

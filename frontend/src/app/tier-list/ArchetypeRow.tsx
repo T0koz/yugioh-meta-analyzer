@@ -85,7 +85,14 @@ export function ArchetypeRow({
           </SharedElement>
         </Link>
         <small className={`block text-[12px] font-normal tabular-nums ${banner ? "text-soft" : "text-muted-text"}`}>
-          score {fmtNum(entry.meta_score * 100, 1)}
+          score {fmtNum(entry.meta_score * 100, 1)} ·{" "}
+          {/* Au-dessus du lien de ligne (::after) : mène à la fiche de composition (TOK-114). */}
+          <Link
+            href={`/decks/${entry.slug}`}
+            className="relative z-10 -my-1.5 inline-block py-1.5 underline decoration-line-2 underline-offset-4 transition-colors duration-200 hover:text-signal-hi"
+          >
+            composition
+          </Link>
         </small>
       </span>
 

@@ -21,6 +21,7 @@ const NAV_ENTRIES: NavEntry[] = [
     label: "Méta",
     items: [
       { href: "/tier-list", label: "Tier list" },
+      { href: "/decks", label: "Decks" },
       { href: "/evolution", label: "Évolution" },
       { href: "/predictions", label: "Prédictions" },
     ],
@@ -63,9 +64,14 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
+// Une entrée reste active sur ses sous-pages (« /decks/branded » pour « /decks »).
+function isCurrent(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 function PanelLink({ item, pathname, onSelect }: { item: NavLink; pathname: string; onSelect: () => void }) {
   return (
-    <Link href={item.href} onClick={onSelect} className={linkClass(pathname === item.href, "w-full justify-start")}>
+    <Link href={item.href} onClick={onSelect} className={linkClass(isCurrent(pathname, item.href), "w-full justify-start")}>
       {item.label}
     </Link>
   );
@@ -86,7 +92,7 @@ function NavDropdown({
   onToggle: () => void;
   onSelect: () => void;
 }) {
-  const active = items.some((item) => item.href === pathname);
+  const active = items.some((item) => isCurrent(pathname, item.href));
 
   return (
     <div className="relative shrink-0">

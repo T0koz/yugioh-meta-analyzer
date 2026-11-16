@@ -193,6 +193,8 @@ class BanHistoryList(BaseModel):
     as_of: str
     retained: bool
     skip_reason: Optional[Literal["decks", "hits"]] = None
+    # Place de la liste par rapport au calage des poids (2026-08-14).
+    sample: Literal["calage", "validation", "retrospective", "prospective"]
     n_decks: int
     n_hits: int
     n_cards: Optional[int] = None

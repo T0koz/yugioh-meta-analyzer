@@ -72,6 +72,7 @@ PAGES = [
     ("early-signals", "/early-signals"),
     ("graph", "/graph"),
     ("ban-radar", "/ban"),
+    ("ban-historique", "/ban?tab=historique"),
     ("ban-impact", "/ban?tab=impact"),
     ("ban-simulateur", "/ban?tab=simulateur"),
     ("archetype-tcg", f"/archetype/{ARCHETYPES[0]}"),

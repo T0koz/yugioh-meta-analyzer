@@ -10,13 +10,15 @@ import { Page } from "@/components/ds/page";
 import { BanRadarView } from "./BanRadarView";
 import { CardImpactView } from "./CardImpactView";
 import { BanSimulatorView } from "./BanSimulatorView";
+import { BanHistoryView } from "./BanHistoryView";
 import { parseKind } from "./kind-filter";
 import type { BanSimResult } from "@/types";
 
-type Tab = "radar" | "impact" | "simulateur";
+type Tab = "radar" | "historique" | "impact" | "simulateur";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "radar", label: "Ban Radar" },
+  { id: "historique", label: "Historique" },
   { id: "impact", label: "Cartes à impact" },
   { id: "simulateur", label: "Simulateur" },
 ];
@@ -38,6 +40,15 @@ export async function generateMetadata({
       title: "Simulateur de ban",
       description: `Archétypes et decks de tournoi Yu-Gi-Oh! TCG reliés à une carte dans le graphe de co-occurrences, et cohésion du graphe sans elle. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
       path: "/ban?tab=simulateur",
+    });
+  }
+  if (tab === "historique") {
+    const { lists, computed_at } = await api.banHistory();
+    const retained = lists.filter((l) => l.retained).length;
+    return pageMetadata({
+      title: "Ban Radar : historique des banlists",
+      description: `Classement du Ban Radar recalculé la veille de ${fmtNum(retained)} banlists Yu-Gi-Oh! TCG et OCG, face aux cartes réellement restreintes, comparé au hasard et aux staples les plus jouées. Calcul du ${fmtDate(computed_at)}. Sources : ${DECK_SOURCE}, Yugipedia.`,
+      path: "/ban?tab=historique",
     });
   }
   if (tab === "impact") {
@@ -93,6 +104,9 @@ export default async function BanPage({
       <HoverPreviewPanel />
       <Page>
         {tab === "radar" && <BanRadarView view={parseKind(params.kind, "radar")} tabs={tabs} />}
+        {tab === "historique" && (
+          <BanHistoryView selected={typeof params.liste === "string" ? params.liste : undefined} tabs={tabs} />
+        )}
         {tab === "impact" && <CardImpactView view={parseKind(params.kind, "impact")} tabs={tabs} />}
         {tab === "simulateur" && (
           <BanSimulatorView

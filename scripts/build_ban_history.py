@@ -40,9 +40,27 @@ import build_ban_radar as radar  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "data" / "yugioh.db"
 
-# Taille du « top prévu » montré pour chaque liste. 10 cartes ≈ 1 % d'un univers
-# de 700 à 1 200 cartes : c'est la tête du classement qu'un lecteur regarde.
-TOP_N = 10
+# Taille du « top prévu » montré pour chaque liste : 25 cartes ≈ 2 à 3 % d'un
+# univers de 700 à 1 250 cartes. Recommandé par la revue data du 2026-11-17 : à 10,
+# 5 listes sur 20 affichaient 0 carte touchée (dont la liste de calage) et les
+# comptes de 0 à 4 étaient surtout du bruit ; à 25, il en reste 2.
+TOP_N = 25
+
+# Les poids ont été calés autour du 2026-08-14 sur la liste TCG du 2026-05-18 ;
+# la liste OCG du 2026-07-01 a servi de validation à la même date. Seules les
+# listes postérieures au calage sont prospectives. Les autres sont rejouées
+# après coup, avec des poids choisis plus tard.
+CALIBRATION_DATE = "2026-08-14"
+CALIBRATION_LIST = ("TCG", "2026-05-18")
+SEEN_AT_CALIBRATION = {("OCG", "2026-07-01")}
+
+
+def sample_kind(fmt: str, effective: str) -> str:
+    if (fmt, effective) == CALIBRATION_LIST:
+        return "calage"
+    if (fmt, effective) in SEEN_AT_CALIBRATION:
+        return "validation"
+    return "prospective" if effective > CALIBRATION_DATE else "retrospective"
 RANDOM_DRAWS = 20_000
 RANDOM_SEED = 55
 
@@ -84,6 +102,7 @@ def collect(conn: sqlite3.Connection) -> tuple[pd.DataFrame, pd.DataFrame]:
                 "n_hits": len(hits),
                 "retained": int(result["retained"]),
                 "skip_reason": None,
+                "sample": sample_kind(fmt, effective),
             }
             if not result["retained"]:
                 row["skip_reason"] = ("decks" if result["n_decks"] < radar.BACKTEST_MIN_DECKS
@@ -148,7 +167,7 @@ def collect(conn: sqlite3.Connection) -> tuple[pd.DataFrame, pd.DataFrame]:
     lists_df = pd.DataFrame(lists)
     # Les listes écartées n'ont pas de classement : sans Int64, pandas passerait
     # toutes ces colonnes en flottants et SQLite les stockerait en REAL.
-    for column in lists_df.columns.difference(["format", "effective_date", "as_of", "skip_reason"]):
+    for column in lists_df.columns.difference(["format", "effective_date", "as_of", "skip_reason", "sample"]):
         lists_df[column] = lists_df[column].astype("Int64")
     lists_df["computed_at"] = computed_at
     # Seuils servis avec les données : l'API et la page les affichent sans les recopier.

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Lance scripts/check.py sur les commits poussés. Installé par :
+#     git config core.hooksPath .githooks
+# Contourner exceptionnellement (en connaissance de cause) : git push --no-verify
+ROOT="$(git rev-parse --show-toplevel)"
+PY="$ROOT/.venv/bin/python"
+[ -x "$PY" ] || PY="python3"
+exec "$PY" "$ROOT/scripts/check.py" --pre-push

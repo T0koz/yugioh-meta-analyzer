@@ -134,6 +134,11 @@ def main() -> None:
     parser.add_argument("--check", action="store_true", help="Vérifie la couverture sans écrire")
     args = parser.parse_args()
 
+    # sqlite3.connect crée un fichier vide si la base manque : la garde passerait
+    # alors « OK » sans avoir rien vérifié (aucune table, donc aucune orpheline).
+    if not SOURCE_DB.exists():
+        raise SystemExit(f"Base absente : {SOURCE_DB.relative_to(ROOT)} — rien à vérifier.")
+
     conn = sqlite3.connect(SOURCE_DB)
 
     missing = check_coverage(conn)

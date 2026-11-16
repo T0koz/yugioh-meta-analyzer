@@ -1,0 +1,217 @@
+# Archive du backlog — tickets terminés
+
+Contenu déplacé tel quel depuis `BACKLOG.md` le 2026-11-16 (outillage : alléger le chargement des sessions). Linear reste la source de vérité. Aucun statut modifié.
+
+---
+
+## Phase 1 — Données cartes
+
+| TOK | Item | Statut |
+|-----|------|--------|
+| TOK-5 | `views_week` comme signal précoce d'entrée en méta | ✅ Done |
+| TOK-6 | NLP sur texte des effets `desc` (synergies textuelles) | ✅ Done |
+| TOK-7 | Endpoint `/archetypes.php` pour matching officiel | ✅ Done |
+| TOK-8 | Historique banlist complet (scraping Yugipedia) | ✅ Done |
+| TOK-9 | Prix dans le temps — snapshot quotidien toutes cartes | ✅ Done |
+| TOK-10 | Images des cartes (`image_url`, `image_url_small` dans `cards`) | ✅ Done |
+
+---
+
+## Phase 2 — Decklists + co-occurrence + graphe
+
+| TOK | Item | Statut |
+|-----|------|--------|
+| TOK-11 | Co-occurrence sur fenêtre glissante 90j | ✅ Done |
+| TOK-12 | Tier list yugiohmeta.com (`/api/v1/tier-list`) | ✅ Done |
+| TOK-13 | Pondération co-occurrence par placement (`1/placement`) | ✅ Done |
+| TOK-14 | Extra deck analysé séparément (Jaccard + profil archetype) | ✅ Done |
+| TOK-15 | Clustering des decks par style (K-Means k=4, silhouette=0.171) | ✅ Done |
+| TOK-16 | Betweenness centrality sur le graphe | ✅ Done |
+| TOK-17 | Nommage automatique des 63 communautés du graphe | ✅ Done |
+| TOK-18 | Co-occurrence par trimestre (10 quarters) | ✅ Done |
+| TOK-19 | Filtrer sur YCS / Nationals / WCQ uniquement | ✅ Done |
+| TOK-20 | Segmentation OCG vs TCG | ✅ Done |
+
+---
+
+## Phase 3 — Score méta + modèle prédictif
+
+| TOK | Item | Statut |
+|-----|------|--------|
+| TOK-21 | Features lag temporelles (`t-1`, `t-2`, `t-3`, delta, roll_mean) | ✅ Done |
+| TOK-22 | Banlist historique comme feature temporelle | ✅ Done |
+| TOK-23 | `trend_ratio_monthly` par fenêtre mensuelle glissante | ✅ Done |
+| TOK-24 | Feature `months_since_debut` (âge de l'archetype) | ✅ Done |
+| TOK-25 | Modèle AR(1) par archetype (AutoReg statsmodels) | ✅ Done |
+
+---
+
+## Phase 4 — Dashboard + NLP
+
+| TOK | Item | Statut |
+|-----|------|--------|
+| TOK-26 | Appliquer la blacklist NLP dans notebook 08 | ✅ Done |
+| TOK-27 | Tester NLP sur vraies vidéos combo guide | ✅ Done |
+| TOK-28 | Pipeline NLP multi-vidéos / chaîne YouTube entière | ✅ Done |
+
+---
+
+## Signal boutiques
+
+| TOK | Item | Statut |
+|-----|------|--------|
+| TOK-29 | Historique prix Cardmarket comme signal d'achat | ✅ Done |
+| TOK-30 | Dashboard boutique dédié (B2B) | ✅ Done |
+
+
+---
+
+## Phase 5 — Front-end & API 🏗️ En cours
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-31 | Backend FastAPI — endpoints /meta, /boutique, /graph, /cards | ✅ Done | 🔴 High |
+| TOK-32 | Front Next.js — toutes les pages | ✅ Done | 🔴 High |
+| TOK-33 | Front — graphe synergies interactif (vis-network branché API) | ✅ Done | 🟠 Medium |
+| TOK-34 | Front — simulateur de ban (branché API) | ✅ Done | 🟠 Medium |
+
+**Pages livrées** (toutes branchées sur l'API réelle, design system Ember depuis le 2026-10-31) :
+- `/` — Home en bento : signal boutique, top Ban Radar, plus forte hausse prévue, graphe, aperçu simulateur
+- `/tier-list` — Liste dense : hero + stats, filtres (Tous / T0–T3 / Rogue / En hausse), barre relative au max
+- `/evolution` — Line chart mensuel (recharts), 4 séries max, accent sur la première
+- `/predictions` — Tableau actuel vs prévu + delta
+- `/boutique` — Signaux d'achat avec statut banlist TCG
+- `/early-signals` — Liste dense : score + vues/semaine
+- `/graph` — vis-network interactif, accent sur l'archétype filtré
+- `/ban` — Ban Center : onglets Radar (score + barre empilée des critères), Cartes à impact, Simulateur
+
+---
+
+## Fiabilité des données & validité statistique — point du 2026-11-16
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-68 | Fix doublons `deck_cards` + purge de la base | ✅ Done | 🔴 High |
+| TOK-70 | Rafraîchir les decklists de tournoi (figées au 9 août) | ✅ Done (2026-11-16) — `refresh_decks.py` + job launchd lundi 8h30 | 🔴 High |
+| TOK-69 | Pipeline de rafraîchissement des tables dérivées (`meta_scores` gelé en 2026-06) | ✅ Done — `scripts/refresh_all.py` | 🔴 High |
+| TOK-71 | Snapshot quotidien des prix fiable (launchd, `scripts/launchd/`) | ✅ Done | 🔴 High |
+| TOK-72 | Légalité des decks à la date du tournoi — étape 2 (rebrancher les consommateurs) | ✅ Done — recalcul + backtest faits | 🔴 High |
+| TOK-73 | Évaluer honnêtement la prédiction + robustesse du signal OCG→TCG | ✅ Done — `docs/evaluation-prediction.md` | 🔴 High |
+| TOK-74 | Vérifier l'entrée de Kewl Tune en TCG (prévue octobre 2026) | ✅ Done — verdict défavorable, `docs/tok-74-kewl-tune.md` | 🔴 High |
+| TOK-75 | Script de validation du `prediction_log` (débloque TOK-55) | ✅ Done — `scripts/validate_predictions.py` | 🟠 Medium |
+| TOK-77 | Mesurer la pollution Genesys dans le méta TCG | ✅ Done — `docs/tok-77-genesys.md` (27-44 % des decks TCG depuis juillet) | 🟠 Medium |
+| TOK-79 | Agent `coordinateur` (Rapport + Dispatch) + point hebdo `yugioh-point-hebdo` | ✅ Done | 🟠 Medium |
+| TOK-83 | Perf : `GET /ban-radar` 10-20 s (jointure `REPLACE` sans index) | ✅ Done — index d'expression `idx_cards_name_clean` + `= +col` dans les routeurs (~30 ms) ; `serving.db` reconstruite | 🟠 Medium |
+| TOK-91 | Tier list maison : recalculer depuis nos données (`meta_tier_list` figée au 17 juin, endpoint yugiohmeta 404) | ✅ Done via TOK-97 — calculée à la volée depuis `meta_scores` (`backend/app/tiering.py`) | 🔴 High |
+| TOK-113 | Signal boutique v3 : archétypes pas encore en TCG (règle par cartes), fenêtre de sortie à 80 % au lieu de la fausse date | ✅ Done (2026-11-16) — fusionné dans `main`, base recalculée (3 archétypes, 12 signaux : Fort 3, Modéré 5, Faible 4) | 🔴 High |
+
+---
+
+## TOK-94 — Refonte front « Braise vivante » (audit du 2026-11-16) — PRIORITAIRE
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-95 | Préalables bloquants : correctif TOK-83 dans `main` + erreur 500 de `/early-signals` | ✅ Done (2026-11-16) — branche fusionnée (`/ban-radar` 7 s → 0,05 s), `archetype` nullable, test de fumée `backend/tests` | 🔴 Urgent |
+| TOK-96 | Jour 1 : gains rapides sans décision de design | ✅ Done (2026-11-16) — fusionné dans `main` et poussé | 🔴 High |
+| TOK-97 | Crédibilité des chiffres affichés (Elfnote, Ash Blossom, date de la tier list, écart 3 ou 4 mois) | ✅ Done (2026-11-16) — fusionné et poussé ; suite à la source : TOK-113 | 🔴 High |
+| TOK-98 | Semaine 1 : cartes, mouvement, typographie | ✅ Done (2026-11-16) — fusionné et poussé (LCP ≈ 2,0 s) | 🔴 High |
+
+TOK-83 et la partie front de TOK-82 sont dans `main` depuis la fusion de `claude/front-vitrine-06112d` (TOK-95, 2026-11-16).
+
+**TOK-96 — état (2026-11-16)** : écrans de chargement, d'erreur et 404 aux couleurs du site ; `/ban-simulator`
+redirigé vers `/ban?tab=simulateur` ; axes de `/evolution` ajustés ; `--faint` relevé (0 échec de contraste sur
+toutes les pages) ; vignettes de cartes dans le Ban Center ; 10 titres distincts en français ; libellés traduits ;
+Ban Radar ouvert sur « Pièces d'archétype » (décision 4). **Écart au critère** : 28 vignettes sur 50 dans le
+radar (et non 50), parce que 22 cartes récentes manquent dans la table `cards` — relancer `fetch_cards.py` puis
+`build_serving_db.py` (à faire par le gardien des données, hors de ce chantier).
+
+**TOK-97 — état (2026-11-16)**, analyse de l'agent `data-scientist-ygo` puis correctifs dans l'API, sans écrire en base :
+- **Tier list recalculée depuis `meta_scores`** (couvre le besoin de TOK-91 côté affichage) : mois récents cumulés
+  jusqu'à 300 decks, tiers sur la part de decks, tendance par test de deux proportions. `meta_tier_list` et
+  `archetype_trend` ne sont plus lues par l'API.
+- **Signaux boutique** : archétypes déjà en TCG écartés (7 sur 10) ; colonne « Entrée TCG » supprimée, c'était
+  « date du calcul + 4 mois » pour toutes les lignes. **Il reste 41 signaux, aucun « Fort »** : à arbitrer avant TOK-106.
+- **Ban Radar** : aucun poids modifié ; encart chiffré sur les vues « Staples » et « Tout » (6 places sur 100 contre 19).
+- **Écart OCG → TCG** : « 2 à 6 mois » partout.
+- Suites hors chantier : `log_predictions.py` journalise la fausse date comme `target_date` ; le notebook 10 ne
+  filtre pas les archétypes déjà en TCG ; `/meta/evolution` choisit son top 15 sur un mois à petits effectifs.
+
+**TOK-98 — état (2026-11-16)** : `CardArt` sur `next/image` (0 image surdimensionnée, 0 requête du navigateur vers
+YGOPRODeck) ; une image de carte au premier écran de 8 pages sur 9 (le graphe est l'exception) ; bandeaux d'archétype
+sur les lignes T0 à T3 ; tokens de mouvement, ouverture de page et `Reveal` en CSS seul (0 animation en mouvement
+réduit) ; mono sous 40 % des caractères sur les 9 pages (11 à 37 %) ; barre de la tier list = part de méta ; plus de
+colonne de barres orange dans les tableaux ; Lighthouse installé, référence dans `docs/audit-front/lighthouse-2026-11-16.md`
+(desktop 100 partout ; mobile 98 sauf `/evolution` 90 et `/graph` 73 ; LCP mobile réel ≈ 2,0 s, à l'objectif de TOK-106 — les 3,3 s d'abord mesurés venaient de la simulation de Lighthouse).
+
+**Après fusion de TOK-113 dans la branche (2026-11-16)** : la page boutique affiche les 12 signaux du signal v3 et la
+fenêtre d'arrivée en TCG ; le filtre par nom de TOK-97 est retiré de l'API (règle appliquée à la source).
+
+
+---
+
+## TOK-107 — Collaboration et stack (2026-11-16)
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-112 | Règles de travail à deux (`CLAUDE.md`, vérifications avant push, `ONBOARDING.md`) | ✅ `scripts/check.py` + hook optionnel + CI non bloquante ; `CLAUDE.md` et `ONBOARDING.md` §8 réécrits et validés ; `requirements.txt` racine figé, `launch.json` sans chemin absolu | 🟠 Medium |
+| TOK-110 | Investiguer une base de données hébergée (note de comparaison, pas de migration) | ✅ Note `docs/collaboration/base-hebergee.md` (reco : copie de référence partagée, pas de base hébergée tant que le pipeline est mono-écrivain) | 🟠 Medium |
+| TOK-111 | Avis sur la stack pour travailler à deux (note, pas de changement) | ✅ Note `docs/collaboration/avis-stack.md` (la stack tient ; priorité : dépendances figées, chemins relatifs, notebooks → scripts) | 🟠 Medium |
+
+---
+
+## TOK-84 — Moteur de combos, pilote Branded (réunion du 2026-11-16)
+
+**État au 2026-11-16 (préparation, aucun code de moteur).** Deck source : régional WCQ du 8 novembre
+2026, top 4, 40 cartes, légal (`6af240d2…`). Décisions D1 à D9 prises le 2026-11-16 (déléguées à
+Claude, recommandations retenues) : `docs/moteur-combos/decisions-a-prendre-tok-85-87.md`. D8 bis est
+faite : `scripts/fetch_new_cards.py` ajoute chaque lundi les cartes sorties depuis le dernier
+chargement (étape `new_cards` de `refresh_decks.py`, non bloquante, sans réécrire les cartes existantes).
+
+- ✅ **Quatre cartes du deck sans texte, corrigé le 2026-11-16** : `fetch_cards.py` relancé, 287
+  cartes nouvelles insérées dans `cards` (13 797 → 14 084, sans réécrire les cartes existantes ;
+  une 288e, doublon de nom d'une carte renumérotée par YGOPRODeck, a été insérée puis retirée) et
+  un nom corrigé (`The Fallen &amp; The Virtuous`, entité HTML qui cassait la jointure par nom).
+  Conséquences hors combos, non traitées : `site-facts.ts` affiche encore 13 797
+  cartes ; `serving.db` sera reconstruite par le job du lundi.
+
+- Hypothèse de Winston (§ 8.7) : fausse telle quelle, reformulée sur le chemin entier ; à tester en tranche 0.
+
+---
+
+## Site public — Brainstorming 2026-08-05
+
+### TOK-46 — Phase A : UX Fondations (site présentable)
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-48 | Smart Search + autocomplete + card preview au hover | ✅ Done | 🟠 Medium |
+| TOK-49 | Card chip cliquable avec visuel partout sur le site | ✅ Done | 🟠 Medium |
+| TOK-50 | Archetype thumbnails (image emblématique de l'archétype) | ✅ Done | 🟠 Medium |
+| TOK-51 | Tooltip ⓘ "Comment c'est calculé" sur chaque stat | ✅ Done | 🟠 Medium |
+
+### TOK-47 — Phase C : Data & Features avancées (différenciation)
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-53 | Ban Radar — score de risque de ban (scoring multi-critères) | ✅ Done | 🟠 Medium |
+| TOK-54 | Top cartes à fort impact si bannies (bridge score classé) | ✅ Done | 🟠 Medium |
+
+**TOK-53 livré** : table `ban_radar` (`scripts/build_ban_radar.py`), endpoint
+`GET /api/v1/ban-radar`, page `/ban-radar` avec filtre Tout / Pièces d'archétype
+/ Staples génériques. Score de risque 0-100 sur 6 critères pondérés, le décisif
+étant le nombre moyen d'exemplaires joués — pas l'omniprésence.
+
+Backtest (`--backtest`, listes dérivées de `banlist_history`, plus codées en dur) :
+
+| Liste | Rang médian | Hasard | Top-25% |
+|---|---|---|---|
+| TCG 2026-05-18 | **127**/923 | 462 | 8/11 |
+| OCG 2026-07-01 | **31**/1 089 | 544 | 7/11 |
+| OCG 2026-04-01 *(416 decks, écartée)* | 285/556 | 278 | 2/7 |
+
+Le modèle transfère à l'OCG sans y avoir été calibré, et y fait mieux qu'en TCG.
+En dessous de ~600 decks dans la fenêtre, il ne vaut rien — seuil à ne pas
+baisser pour gagner des listes. Détail dans le docstring du script.
+
+**Tickets créés le 2026-11-16 :** TOK-80 ✅ Done (`meta_scores` TCG pur + `meta_scores_ocg`) ; TOK-81 ✅ Done (échelle de
+`price_opp`) ; TOK-82 ✅ Done (fenêtres du notebook 11 + chiffres et textes du front, `site-facts.ts`).

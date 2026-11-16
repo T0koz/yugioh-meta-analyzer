@@ -4,7 +4,8 @@ Rafraîchissement hebdomadaire des decklists (TOK-70) + journal de santé des fe
     python scripts/refresh_decks.py            # TCG, OCG, légalité, puis contrôle de fraîcheur
     python scripts/refresh_decks.py --status   # n'exécute rien : affiche les 10 derniers runs + fraîcheur
 
-Enchaîne `fetch_tournament_decks.py`, `fetch_ocg_decks.py`, `fetch_banlist_history.py`, `compute_deck_legality.py`
+Enchaîne `fetch_tournament_decks.py`, `fetch_ocg_decks.py`, `fetch_banlist_history.py`, `compute_deck_legality.py`,
+`refresh_all.py` (tables dérivées) et `build_serving_db.py` (base de service)
 en sous-processus, **en séquence** (un seul écrivain sur `yugioh.db`). Chaque étape est
 journalisée dans `data/fetch_health.jsonl` (fichier, pas table : il reste lisible quand la
 base est verrouillée et il survit à une reconstruction de la base) : code de retour, durée,
@@ -35,6 +36,12 @@ STEPS = [
     # sont jugés contre l'ancienne, donc illégaux, donc exclus de tous les scores.
     ("banlist", "scripts/fetch_banlist_history.py"),
     ("legality", "scripts/compute_deck_legality.py"),
+]
+# Étapes aval : recalcul de toutes les tables dérivées puis base de service. Sautées si une étape
+# amont a échoué (on ne recalcule pas, et on ne journalise pas de prédiction « live », sur des decks périmés).
+DOWNSTREAM = [
+    ("derived", "scripts/refresh_all.py"),
+    ("serving", "scripts/build_serving_db.py"),
 ]
 
 
@@ -77,7 +84,11 @@ def main() -> int:
         return status()
 
     failed = 0
-    for name, script in STEPS:
+    for name, script in STEPS + DOWNSTREAM:
+        if name in dict(DOWNSTREAM) and failed:
+            log({"step": name, "ok": False, "skipped": "étape amont en échec"})
+            print(f"[{name}] sautée (étape amont en échec)")
+            continue
         t0 = time.time()
         p = subprocess.run([sys.executable, script], cwd=ROOT, capture_output=True, text=True)
         ok = p.returncode == 0

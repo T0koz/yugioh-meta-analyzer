@@ -15,7 +15,7 @@
     <string>/Users/thomascozian/code/yugioh-meta-analyzer</string>
 
     <!-- Chaque lundi à 8h30 (Weekday 1 = lundi). Si le Mac dort, launchd rattrape au réveil.
-         Les scripts sont idempotents. Durée typique : ~20 min (TCG + OCG).
+         Les scripts sont idempotents. Durée typique : ~20 min (decks, banlist, légalité, recalcul des scores, base de service).
          Un échec est journalisé dans data/fetch_health.jsonl (voir `refresh_decks.py --status`). -->
     <key>StartCalendarInterval</key>
     <dict>

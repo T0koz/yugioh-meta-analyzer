@@ -223,9 +223,32 @@ de valider un seuil (une seule série datée, rien d'échu avant mars 2027) ; un
 `ocg_archetype_scores` est dans `SERVED_TABLES` : sans reconstruction de `serving.db`, l'API sert les signaux sans libellé.
 → détail complet : `docs/journal/seuils-signal-boutique.md`
 
+### 🏠 Nouvelle page d'accueil (TOK-106, 2026-11-16, branche `claude/tok-106-accueil-66ff33`, non fusionnée)
+
+Accueil « Braise vivante » portée du prototype : hero (éventail de 5 cartes, braises), exemple Kewl Tune piloté par le
+défilement, bento d'outils, méthode et limites, pied de page (`SiteFooter`, accueil seulement pour l'instant).
+Mesuré sur build de production, mobile, `LH_THROTTLING=devtools` : Performance 98, Accessibilité 100, LCP 1,79 à 1,88 s,
+JavaScript transféré 180 ko, CLS 0.
+- **`loading.tsx` ne doit pas revenir à la racine de `app/`.** Next enveloppait toutes les pages dans un Suspense : le
+  HTML statique livrait le squelette puis le contenu dans un bloc caché révélé par script. Sans JavaScript, les pages
+  n'affichaient que « Chargement des données… », et React retardait la révélation d'environ 0,4 s (c'était l'écart
+  « non isolé » entre premier affichage et LCP). Il est dans `app/ban/` (seule route dynamique). Gain : LCP mobile
+  ≈ 1,65 à 1,75 s sur les pages statiques (avant ≈ 2,0 s).
+- **Ton des textes (consigne du 2026-11-16, tout le site)** : sobre, factuel, statistique ; aucun appel à l'action ; une
+  phrase porte une mesure, une période et une source, sinon elle disparaît ; le graphique explique, le texte annote.
+- **Tuile boutique** : le grand chiffre est le **rang de l'archétype** (`archetype_rank` sur `label_rule.population`),
+  jamais `buy_score` (ordre d'affichage). Libellé `signal_label` toujours accompagné de « seuils provisoires, non validés
+  hors échantillon ».
+- **Données figées** : `lib/proof-data.ts` (parts mensuelles de Kewl Tune, relevé du 16/11 : `meta_scores_ocg` n'est pas
+  servie) et `SITE_FACTS.banBacktest` (4 des 20 listes du backtest). À relever de nouveau quand la base change.
+- **Effets** (`components/home/effects.tsx`) : chacun part d'un HTML serveur complet ; `data-live` (posé en JS, ≥ 900 px,
+  mouvement autorisé) est le seul interrupteur du récit au défilement. Styles `home-*` dans `globals.css`.
+- Tokens ajoutés : `--ocg` (série OCG uniquement), `--shadow-card`, `--holo`, `--tile-glow`. `CRITERIA` du Ban Radar est
+  dans `lib/ban-criteria.ts` (partagé avec l'accueil). `LH_PAGES=/,/boutique` limite `npm run lighthouse` à quelques pages.
+→ détail complet : `docs/journal/accueil-tok-106.md`
+
 ### 🔜 À faire
 
-- **TOK-106** : nouvelle page d'accueil d'après le prototype (`docs/audit-front/prototype/`), prochaine étape du front, en session neuve
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)
 - **Suites de TOK-113** : rafraîchir `cards` dans la chaîne (`views_week` figé au 13 juin), seuil absolu pour Fort / Modéré / Faible
 - **TOK-92** : images de cartes à ré-héberger avant le déploiement ; des cartes récentes n'ont toujours pas d'image (`fetch_new_cards.py` tourne désormais le lundi)

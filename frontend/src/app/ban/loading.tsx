@@ -1,7 +1,12 @@
 import { Page } from "@/components/ds/page";
 
-// Squelette commun à toutes les routes : même gabarit que PageHero + une liste,
-// pour que l'arrivée des données ne décale pas la mise en page.
+// Squelette du Ban Center, seule route rendue à la demande (elle lit ?tab= et ?kind=).
+// Il vivait à la racine (app/loading.tsx) : Next enveloppait alors TOUTES les pages
+// dans un Suspense, et le HTML statique livrait ce squelette puis le contenu dans
+// un bloc caché, révélé par un script. Conséquences mesurées (TOK-106) : sans
+// JavaScript, les pages statiques n'affichaient que « Chargement des données… »,
+// et React retardait la révélation d'environ 0,4 s (LCP mobile 2,1 s au lieu de 1,7 s).
+// Ne pas le remettre à la racine tant que les autres pages sont statiques.
 export default function Loading() {
   return (
     <Page>

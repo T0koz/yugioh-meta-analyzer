@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { artCropUrl } from "@/lib/card-images";
+import { artCropUrl, fullCardUrl } from "@/lib/card-images";
 
 // Image de carte à dimensions fixes (rapport 59:86 d'une carte Yu-Gi-Oh!).
 // `width`/`height` réservent la place avant le chargement (CLS nul) et
@@ -48,6 +48,44 @@ export function CardArt({
       height={box.height}
       loading={eager ? "eager" : "lazy"}
       className={`shrink-0 border border-line-2 object-cover ${box.className} ${className}`}
+    />
+  );
+}
+
+/**
+ * Carte entière qui remplit son parent (positionné, rapport 59:86) : éventail du
+ * hero, carte vedette. `sizes` = largeur d'affichage, pour que next/image serve
+ * le bon fichier. Sans image : le nom de la carte, jamais un trou.
+ */
+export function CardArtFill({
+  src,
+  name,
+  sizes,
+  eager = false,
+}: {
+  src: string | null;
+  name: string;
+  sizes: string;
+  eager?: boolean;
+}) {
+  if (!src) {
+    return (
+      <span
+        aria-hidden
+        className="absolute inset-0 grid place-items-center p-3 text-center font-mono text-[11px] tracking-[0.1em] text-muted-text uppercase"
+      >
+        {name}
+      </span>
+    );
+  }
+  return (
+    <Image
+      src={fullCardUrl(src)}
+      alt=""
+      fill
+      sizes={sizes}
+      loading={eager ? "eager" : "lazy"}
+      className="object-cover"
     />
   );
 }

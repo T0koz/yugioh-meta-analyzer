@@ -368,6 +368,16 @@ Commande `/fin-de-journee` (`.claude/commands/`) : propose les diffs de `context
 - **TOK-35** : choisir le stockage, y envoyer le dossier, renseigner la variable.
 → détail : `docs/journal/images-tok-92.md`
 
+### 🚀 Préparation du déploiement Vercel (TOK-35, lot 14, 2026-11-17, branche `claude/lot14-tok-35-deploiement-2c1401`, non fusionnée)
+
+Option A configurée sans rien déployer : `vercel.json` (racine, **Vercel Services**, bêta tous plans : service `backend` FastAPI `app.main:app` + service `frontend` Next.js, `/api/*` → API), `.vercelignore`, `.env.example`.
+Guide pas à pas et formulaire de décisions : `docs/deploiement.md`.
+- **Le projet doit être relié depuis la racine**, Root Directory vide, preset « Services » (le lien actuel part de `frontend/`).
+- **Base embarquée** : `cp data/serving.db backend/data/serving.db` (ignoré par Git) avant `vercel deploy` ; sur Vercel (`VERCEL` défini) `db.py` la lit seule, et ouvre toujours en `mode=ro`. Pas de Git connecté : tout déploiement part de la machine de Thomas.
+- **Bloquant** : le build du front interroge l'API (pages pré-générées), et la liaison `BACKEND_URL` ne se résout pas au build ; `lib/api.ts` et `card-chip.tsx` partagent `NEXT_PUBLIC_API_URL`. Lot de code à prévoir (§ 8.1 du guide).
+- **Images** : ni Vercel Blob (1 Go et 2 000 opérations gratuits pour 1,17 Go et 42 136 fichiers) ni le déploiement (100 Mo) ne conviennent ; recommandé : Cloudflare R2 (10 Go, 1 M d'écritures gratuits, sortie gratuite). `next/image` : 5 000 transformations par mois en Hobby → images de cartes en `unoptimized` (lot suivant).
+- **Protection** : la production est indexable ; « All Deployments » + Vercel Authentication est gratuit (tous plans), Password Protection est payant. Retour arrière sur Hobby : seulement le déploiement de production précédent.
+
 ### 🔜 À faire
 
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)

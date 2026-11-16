@@ -1,0 +1,37 @@
+# Fichiers que `vercel deploy` N'ENVOIE PAS (syntaxe .gitignore). Limite d'envoi du plan gratuit : 100 Mo.
+# Ce fichier remplace .gitignore pour la CLI : tout ce qui est exclu de Git mais doit partir
+# (backend/data/serving.db) n'est donc volontairement pas listé ici.
+
+# Bases SQLite complètes et sauvegardes (la fonction n'embarque que backend/data/serving.db)
+/data/
+# Images de cartes : 1,1 Go, hébergées à part (docs/deploiement.md §6)
+/data/card-images/
+
+# Dépendances et sorties de build, recréées sur place
+node_modules/
+.next/
+.next-visual/
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets et réglages locaux
+.env
+.env.*
+!.env.example
+.vercel/
+
+# Hors site : notebooks, docs, scripts de données, outillage, anciens dossiers
+/notebooks/
+/docs/
+/scripts/
+/_bmad/
+/_bmad-output/
+/.claude/
+/.github/
+/.githooks/
+/app.py
+/run.sh
+/frontend/tests/
+/frontend/.next/
+/backend/tests/

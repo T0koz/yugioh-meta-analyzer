@@ -19,7 +19,10 @@ class TierEntry(BaseModel):
 
 class TierListResponse(BaseModel):
     data: list[TierEntry]
-    generated_at: str
+    # Fenêtre de calcul : mois « AAAA-MM » du premier et du dernier mois cumulés.
+    window_start: str
+    window_end: str
+    n_decks: int
 
 
 class EvolutionPoint(BaseModel):
@@ -51,7 +54,6 @@ class BoutiqueSignal(BaseModel):
     buy_label: BuyLabel
     cm_price: float
     ban_tcg: Optional[str] = None
-    tcg_entry_estimated: Optional[str] = None
 
 
 class BoutiqueResponse(BaseModel):

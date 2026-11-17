@@ -117,3 +117,31 @@ il ne comprend ni la relecture par Thomas ni la validation des désaccords (R23)
   (jouer réellement les actions de la « mémoire du tour »).
 - Un point sur 34 (R23) n'est pas tranchable par l'oracle à cause d'une divergence de **texte** entre sources : le
   coût d'un oracle n'est pas seulement le build, c'est aussi la qualité de ses textes.
+
+## TOK-90, tranche 0 du 18 novembre 2026 (lot C1)
+
+Heures relevées avec `date` : 01:55 (pendant la lecture), 02:07 (tests et harnais verts), 02:08:51 (début de la
+documentation), ≈ 02:11 (fin, commit).
+Les autres bornes sont estimées. Temps d'horloge d'un agent ; ni la relecture par Thomas ni une validation par
+l'oracle des choix de la tranche ne sont comptées.
+
+| # | Étape | Début | Fin | Durée (agent) | Produit | Temps humain de validation |
+|---|---|---|---|---|---|---|
+| 1 | Lecture du brief, des définitions, des points de règle, des réponses du juge et de l'oracle, du code du lot 18 ; harnais lancé | ≈ 01:47 | ≈ 01:57 | ≈ 10 min | rien d'écrit | — |
+| 2 | Choix du combo et des négatifs, lecture des textes des cartes et des lignes de matériels de l'Extra Deck | ≈ 01:57 | ≈ 02:00 | ≈ 3 min | combo retenu | à mesurer (formulaire) |
+| 3 | Code : `catalogue.py`, `regles.py`, `cartes.py` (5 cartes), `scenarios.py` (10 situations) | ≈ 02:00 | ≈ 02:04 | ≈ 4 min | ≈ 1 450 lignes | — |
+| 4 | Premier essai (10 scénarios conformes du premier coup), séparation réserves / listes incomplètes, 27 tests pytest | ≈ 02:04 | 02:07 | ≈ 3 min | `tests/test_tranche0.py` | — |
+| 5 | Harnais (statut « exécuté », statuts des cartes), `check.py` vert | 02:07 | ≈ 02:08 | ≈ 1 min | `harnais.py` | — |
+| 6 | Documentation : définitions § 3.4, 11 décisions par défaut et formulaire, ce journal, `context.md`, `BACKLOG.md` | ≈ 02:08 | ≈ 02:11 | ≈ 3 min | — | à mesurer (Thomas) |
+| | **Total** | ≈ 01:47 | ≈ 02:11 | **≈ 24 min** | 10 situations exécutées, 5 cartes formalisées | |
+
+**Enseignements pour les estimations** :
+- **Le coût n'est pas la règle, c'est la frontière du « non couvert ».** Les règles du combo tiennent en peu de code ;
+  la moitié de la réflexion a porté sur ce que le moteur doit faire quand une carte non formalisée est **à côté**
+  (en main, dans une liste de choix, comme matériel possible). D'où trois sorties distinctes : `non_couvert`,
+  réserves, options indéterminées.
+- **Une carte « cible » en entraîne d'autres** : formaliser `Branded Fusion` oblige à lire les lignes de matériels
+  des 12 Fusions de l'Extra Deck (faite par le texte pour le nombre et les noms, par la formalisation pour le reste).
+  Pour J1, compter chaque carte avec ses voisines dans les listes de choix, pas seule.
+- Dix situations du jeu de tests sur soixante-douze passent ; le reste demande surtout des **scénarios** (traduction
+  de l'action en décisions) et la formalisation de 32 cartes, pas de nouvelles règles de base.

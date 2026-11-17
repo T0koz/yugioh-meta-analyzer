@@ -1,4 +1,4 @@
-"""Harnais du jeu de tests Branded (lot 18) : tout ce qui s'exécute sans règle de jeu.
+"""Harnais du jeu de tests Branded (lot 18, tranche 0) : structure, puis situations exécutées par le moteur.
 
     python scripts/combos_harnais.py            # rapport + écriture dans data/combos.db
     python scripts/combos_harnais.py --detail   # une ligne par test
@@ -9,8 +9,11 @@
    noms et archétypes, validité (3 par nom, « always treated as » compris), clauses « per turn » ;
 2. jeu de tests : alias, identifiants, verdicts, cohérence avec le tableau des points de règle ;
 3. pour chaque situation : état de départ construit (zones, deck, Extra Deck), empreinte, classe ;
-4. verdicts vérifiables sans règle : seulement « non couvert » (D5 : action sur une carte dont le
-   statut n'est ni `formalisee` ni `verifiee`). Les autres attendent la tranche 0 : ce n'est pas un échec.
+4. situations qui ont un scénario (`scenarios.py`, tranche 0) : **exécutées par le moteur** ; le verdict et la
+   liste `choix` doivent être ceux du YAML (statut `verifie`, affiché « exécuté »). Sans scénario, seul « non
+   couvert » se vérifie sans règle (D5) ; les autres attendent : ce n'est pas un échec.
+5. statut des cartes dans `combos.db` : `formalisee` (tous les effets écrits), `brouillon` (effets déclarés, une
+   résolution manquante), `non_traitee` sinon ; calculé depuis `cartes.py` et l'empreinte du texte.
 
 Code de sortie : 0 si tout ce qui est structurel passe, 1 sinon.
 """
@@ -27,12 +30,15 @@ from pathlib import Path
 
 from . import chemins
 from .base import maintenant, ouvrir_combos, ouvrir_reference
+from .cartes import FORMALISATIONS
+from .catalogue import construire_catalogue
 from .classement import CLASSES, classer, ecarts_croises, lire_points, regles_precisees
 from .deck import (
     analyser_limites, charger_deck, controle_validite, enregistrer_carte, enregistrer_deck, etiquettes,
     lire_textes, tous_les_noms, verifier_empreintes, vocabulaire_archetypes,
 )
 from .modele import STATUTS_EXECUTABLES
+from .scenarios import SCENARIOS, executer_situation
 from .situations import cartes_citees, charger_tests, construire_depart, verifier_jeu
 
 
@@ -50,6 +56,7 @@ class LigneTest:
     erreurs: list[str]
     etat_id: str | None
     statut: str
+    detail: str = ""
 
 
 @dataclass
@@ -113,6 +120,16 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
         partages = {c.nom: sorted(noms_portes[c.nom] - {c.nom}) for c in deck.cartes if noms_portes[c.nom] - {c.nom}}
         for nom, autres in partages.items():
             r.ok(f"nom partagé : {nom} porte aussi {', '.join(autres)}")
+    catalogue = None
+    if textes and len(textes) == len(deck.cartes):
+        catalogue = construire_catalogue(deck, textes, noms_base or set(), FORMALISATIONS)
+        declarees = sorted(n for n, f in catalogue.fiches.items() if f.declaree)
+        ecartees = sorted(n for n, f in catalogue.fiches.items() if f.formalisation_ecartee)
+        r.ok(f"cartes formalisées (tranche 0) : {len(declarees)} — {', '.join(declarees)}")
+        if ecartees:
+            r.echec("formalisation écrite sur un autre texte (errata ?) : carte redevenue non couverte", ecartees)
+    else:
+        r.avert("textes absents : le moteur ne s'exécute pas (situations laissées en attente)")
     violations = controle_validite(deck, noms_portes)
     if violations:
         r.echec("deck invalide", violations)
@@ -165,6 +182,8 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
                     con.close()
                     return r
                 enregistrer_deck(con, deck, str(chemins.DECK_SOURCE.relative_to(chemins.ROOT)))
+                if catalogue is not None:
+                    _statuts_formalisation(con, deck, catalogue)
                 statut_carte = {row["name"]: row["status"] for row in con.execute("SELECT name, status FROM cb_card")}
             elif con.execute("SELECT COUNT(*) FROM cb_deck WHERE deck_ref = ?", (deck.ref,)).fetchone()[0] == 0:
                 r.avert("combos.db sans deck chargé et base de référence absente : rien n'est écrit")
@@ -177,7 +196,7 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
             # Purge puis réinsertion : une situation retirée du YAML disparaît aussi de la base.
             con.execute("DELETE FROM cb_test_situation")
         for s in jeu.situations:
-            r.lignes.append(_traiter(s, jeu, deck, points, statut_carte, con))
+            r.lignes.append(_traiter(s, jeu, deck, points, statut_carte, con, catalogue))
         if con is not None:
             con.commit()
     finally:
@@ -194,9 +213,15 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
     echecs_verdict = [lt.test_id for lt in r.lignes if lt.statut == "echec"]
     if echecs_verdict:
         r.echec("verdict vérifiable sans règle, mais différent de l'attendu", echecs_verdict)
-    verifies = [lt.test_id for lt in r.lignes if lt.statut == "verifie"]
-    r.ok(f"verdicts vérifiés sans règle de jeu : {', '.join(verifies) or 'aucun'} ; "
-         f"{sum(lt.statut == 'en_attente_tranche_0' for lt in r.lignes)} en attente de la tranche 0")
+    for lt in r.lignes:
+        if lt.statut == "echec":
+            print(f"      {lt.test_id} : {lt.detail}")
+    executes = [lt.test_id for lt in r.lignes if lt.statut == "verifie" and lt.test_id in SCENARIOS]
+    sans_regle = [lt.test_id for lt in r.lignes if lt.statut == "verifie" and lt.test_id not in SCENARIOS]
+    r.ok(f"exécutés par le moteur, conformes au YAML : {len(executes)} — {', '.join(executes) or 'aucun'}")
+    if sans_regle:
+        r.ok(f"vérifiés sans règle de jeu : {', '.join(sans_regle)}")
+    r.ok(f"{sum(lt.statut == 'en_attente_tranche_0' for lt in r.lignes)} en attente (pas encore de scénario)")
     if len({lt.test_id for lt in r.lignes}) != len(jeu.situations):
         r.echec("situations non classées", [])
 
@@ -205,7 +230,10 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
         for lt in r.lignes:
             depart = "invalide" if not lt.depart_valide else ("complet" if lt.depart_complet
                                                                else f"partiel ({len(lt.faits_libres)})")
-            print(f"  {lt.test_id:<5} {lt.classe:<27} {depart:<16} {lt.statut:<21} {', '.join(lt.regles) or '—'}")
+            statut = "exécuté" if lt.statut == "verifie" and lt.test_id in SCENARIOS else lt.statut
+            print(f"  {lt.test_id:<5} {lt.classe:<27} {depart:<16} {statut:<21} {', '.join(lt.regles) or '—'}")
+            if lt.test_id in SCENARIOS and lt.detail:
+                print(f"        → {lt.detail[:150]}")
 
     print("\n▶ Classement des 72 situations")
     compte = Counter(lt.classe for lt in r.lignes)
@@ -222,7 +250,24 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
     return r
 
 
-def _traiter(s: dict, jeu, deck, points, statut_carte: dict[str, str], con: sqlite3.Connection | None) -> LigneTest:
+def _statuts_formalisation(con: sqlite3.Connection, deck, catalogue) -> None:
+    """Statut de chaque carte calculé depuis `cartes.py` (jamais `verifiee` : c'est l'oracle ou le juge)."""
+    for c in deck.cartes:
+        f = catalogue.get(c.nom)
+        if f is None or f.formalisation is None:
+            con.execute("UPDATE cb_card SET status = 'non_traitee' WHERE card_id = ? AND status IN"
+                        " ('formalisee', 'brouillon')", (c.card_id,))
+            continue
+        fo = f.formalisation
+        statut = "formalisee" if fo.complete else "brouillon"
+        raison = None if fo.complete else ("effets déclarés ; résolution non codée : effet(s) "
+                                           + ", ".join(map(str, fo.manquantes())))
+        con.execute("UPDATE cb_card SET status = ?, status_reason = ?, updated_at = ? WHERE card_id = ?"
+                    " AND status <> 'verifiee'", (statut, raison, maintenant(), c.card_id))
+
+
+def _traiter(s: dict, jeu, deck, points, statut_carte: dict[str, str], con: sqlite3.Connection | None,
+             catalogue=None) -> LigneTest:
     depart = construire_depart(s, jeu, deck)
     attendu = s["attendu"]["verdict"]
     # Verdict vérifiable sans règle : « non couvert » (D5, niveau 1). Si une carte citée dans l'action
@@ -230,8 +275,14 @@ def _traiter(s: dict, jeu, deck, points, statut_carte: dict[str, str], con: sqli
     citees = [jeu.alias[a] for a in cartes_citees(s.get("action", ""), jeu.alias)]
     non_couvertes = [n for n in citees if statut_carte.get(n, "non_traitee") not in STATUTS_EXECUTABLES]
     verifiable = attendu == "non_couvert"
+    detail = ""
+    execution = None
+    if depart.valide and catalogue is not None:
+        execution = executer_situation(s, depart.etat, jeu.alias, catalogue)
     if not depart.valide:
         statut = "depart_invalide"
+    elif execution is not None:
+        statut, detail = execution.statut, execution.detail
     elif verifiable:
         statut = "verifie" if non_couvertes else "echec"
     else:
@@ -258,7 +309,7 @@ def _traiter(s: dict, jeu, deck, points, statut_carte: dict[str, str], con: sqli
     return LigneTest(
         test_id=s["id"], perimetre=s["perimetre"], regles=regles, classe=classe, raison=raison, attendu=attendu,
         depart_valide=depart.valide, depart_complet=depart.complet, faits_libres=depart.faits_libres,
-        erreurs=depart.erreurs, etat_id=etat_id, statut=statut,
+        erreurs=depart.erreurs, etat_id=etat_id, statut=statut, detail=detail,
     )
 
 
@@ -285,7 +336,7 @@ def main(argv: list[str] | None = None) -> int:
     if rapport.echecs:
         print(f"✗ {len(rapport.echecs)} échec(s) : {', '.join(rapport.echecs)}")
         return 1
-    print("✓ Harnais : tout ce qui est structurel passe (aucune règle de jeu exécutée).")
+    print("✓ Harnais : tout ce qui est structurel passe ; situations à scénario exécutées et conformes.")
     if not args.sans_ecriture:
         print(f"  Écrit dans {args.base}")
     return 0

@@ -14,6 +14,11 @@
 > implémenté dans `moteur_combos/schema.sql` (base à part `data/combos.db`, ignorée par Git). Les passages
 > modifiés portent la mention **(relecture 1)** ou **(lot 18)**. Aucune règle de jeu n'est codée : la
 > consommation des limites, les verrous et la légalité restent à la tranche 0 (TOK-90).
+>
+> **Mise à jour du 18 novembre 2026 (tranche 0, TOK-90)** : premières règles de jeu codées dans
+> `moteur_combos/regles.py` (Invocation Normale, Invocation Spéciale et Fusion, activation, coût, limites dans les
+> cinq formes, chaîne simple), cinq cartes formalisées dans `moteur_combos/cartes.py`, situations traduites en
+> scénarios dans `moteur_combos/scenarios.py`. Application de D5 au niveau de l'effet : voir § 3.4 (tranche 0).
 
 Les exemples viennent du deck source du jeu de tests (voir
 [`jeu-de-tests-branded.md`](jeu-de-tests-branded.md)), et les numéros `T..` renvoient à ses situations.
@@ -391,6 +396,17 @@ trois (formalisée, vérifiée, non formalisable). Je propose les **cinq**, dans
 | `formalisee` | la forme passe les tests du moteur | oui, résultats étiquetés **« non vérifié »** |
 | `verifiee` | accord avec l'oracle, ou relue par un juge | oui, résultats **« démontrés »** |
 | `non_formalisable` | le texte ne s'exprime pas dans le modèle (raison écrite) | non → « non couvert » |
+
+**Application en tranche 0 (TOK-90).** Le statut se calcule depuis la formalisation écrite dans
+`moteur_combos/cartes.py` et l'empreinte du texte (un errata la désactive). Une formalisation **déclare tous
+les effets** de la carte (zone, déclencheur ou condition, limites) ; une résolution peut manquer (`NON_CODEE`)
+ou supposer l'adversaire (`HORS_PERIMETRE`, condition écrite et fausse dans le pilote). D'où : `formalisee` =
+toutes les résolutions écrites ou hors du pilote ; `brouillon` = effets déclarés, au moins une résolution
+manquante (`Rindbrumm`, effet 1) : le moteur peut déplacer la carte (il sait quand elle pourrait agir) mais
+n'exécute jamais l'effet manquant, l'option apparaît « non couverte ». Une carte `non_traitee` jouée, déplacée
+ou choisie arrête la transition sur `non_couvert`. En exécution dirigée (un chemin donné, pas une exploration),
+le cas 2 ne coupe pas le résultat : il l'accompagne de **réserves** (cartes non formalisées en main, sur le
+terrain ou au Cimetière, qui auraient pu agir) ; le cas 3 donne la liste des options **indéterminées**.
 
 « Exhaustif » (§ 4) = toute carte a l'un de ces statuts ; le taux de couverture publié est la part
 de `formalisee` + `verifiee`, et le taux démontré la part de `verifiee`.

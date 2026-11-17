@@ -472,11 +472,12 @@ Méthode déjà conformes. Rien n’est appliqué avant la validation de Thomas.
 
 Aucun score ne remplit « estimé, validé hors échantillon, comparé au naïf, incertitude affichée » ; pires écarts : signaux précoces (carte interdite en tête, banlist figée au 13 juin), fenêtre d'arrivée « 80 % » couvrant 62-67 % en 2024-2025, score boutique ≈ part OCG (ρ 0,94) → `docs/journal/audit-rigueur-statistique.md`.
 
-### 🌙 File de nuit du 16-17/11 (orchestrateur) : état au matin du 17/11
+### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
-Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration **`claude/front-nuit-17-11`**, **pas dans `main`, rien poussé**.
-Le dépôt principal est sur cette branche (retour : `git checkout main`). Dernier `check.py --visuel` : vert (46 tests, 51 captures).
-Les sections ci-dessus qui disent « branche … non fusionnée » sont dans la branche d'intégration. État lot par lot : `docs/planning/etat.md` ;
+Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le
+17/11 vers midi (`bd22ae8`), après la revue avec Thomas ; rien poussé** (`main` a 120 commits d'avance sur `origin/main`).
+Le dépôt principal est revenu sur `main`. Dernier `check.py --all --visuel` : vert (46 tests sur chaque base, 51 captures).
+Les sections ci-dessus qui disent « branche … non fusionnée » sont donc dans `main`. État lot par lot : `docs/planning/etat.md` ;
 décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ; Linear synchronisé le 17/11 (tickets livrés en « In Review »).
 - **Bases modifiées par l'orchestrateur** (après sauvegarde `data/backup_*_20261116.db` / `_20261117.db`) : tables ajoutées par TOK-114,
   TOK-103 et TOK-55 dans `yugioh.db` (aucune table existante changée, vérifié contre les sauvegardes) ; `serving.db` reconstruite (11,8 Mo).
@@ -493,12 +494,19 @@ décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ;
   titre neutre « Méta Yu-Gi-Oh! TCG et OCG », `check_copy.py` bloquant) ; source de l'oracle TOK-86 (`edo9300/ygopro-core`, usage
   local hors dépôt) ; D1 à D7 du moteur de combos ; les 14 notes « à valider » de `docs/decisions/` (52 acceptées).
 - **Lots prêts à lancer** (un à la fois) : 16 seconde moitié (application des textes), 18 (fondations du moteur), 20 (correctifs
-  A1 à A8 de l'audit). Le lot 17 (TOK-86) attend que Thomas installe `premake` et `lua`.
+  A1 à A8 de l'audit). Le lot 17 (TOK-86) est prêt aussi : `premake` 5.0.0 et `lua@5.4`
+  installés le 17/11 (`/opt/homebrew/opt/lua@5.4`, non liée ; le cœur demande Lua 5.3 ou 5.4, pas la 5.5 de `brew install lua`).
 - **Encore en attente de Thomas** : lots de correctifs de la revue de code (rapport de la tâche de fond).
 - **TOK-116** : servir les parts OCG mensuelles par l'API, pour retirer les données figées de l'accueil (`lib/proof-data.ts`).
-- **Fusion** de `claude/front-nuit-17-11` dans `main` après relecture, puis push par Thomas ; supprimer les branches de lots fusionnées.
+- **Push de `main` par Thomas** (fusion faite le 17/11, `check.py --all --visuel` vert) ; supprimer les worktrees et les branches de lots fusionnées.
 - **TOK-35** : relier le projet Vercel depuis la racine du dépôt, créer le compte Cloudflare R2, premier déploiement de prévisualisation (`docs/deploiement.md`).
-- **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109), protection de `main`, contact d'un juge (TOK-89).
+- **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109), protection de `main`.
+- **TOK-89, relecture 1 faite le 17/11** (joueur de tournoi, non arbitre) : 32 points de règle sur 34 confirmés, taux d'erreur
+  mesuré 1/34 (Wilson 95 % : 0,5 à 14,9 %, borne optimiste : un relecteur, ancrage sur la lecture affichée). **D3 infirmée**
+  (colonnes et Zone Monstre Extra comptent), révisée le 18/11 en « entre-deux » ; **D1 maintenue** malgré l'absence de
+  `Lubellion` (83 % des listes) : si le jalon J2 échoue sur un combo qui passe par elle, suspecter la liste avant le moteur.
+  Le Google Form régénéré depuis `dossier-juge.md` par `scripts/build_judge_form.py` (`formulaire-juge.gs`).
+  → `docs/moteur-combos/reponses-juge-2026-11-17.md`
 - **À relire par la collaboratrice** : calcul de Wilson (`frontend/src/lib/wilson.ts`), diagnostic TOK-115, recalculs de l'audit (62-67 %, 0,94).
 - **Suites** : `views_week` figé au 13 juin ; date de calcul du graphe de co-occurrences absente ; dates d'annonce des banlists ;
   gain du modèle de prédiction cité à 4, 5 ou 6 % selon les documents.
@@ -551,4 +559,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-11-17 (fin de la file de nuit : lots 1 à 19 dans `claude/front-nuit-17-11`, non fusionnés dans `main`)*
+*Dernière mise à jour : 2026-11-17 (revue du matin : décisions validées, lots 1 à 19 fusionnés dans `main`, non poussés)*

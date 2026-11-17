@@ -7,12 +7,20 @@
 >
 > **Validées par Thomas le 17 novembre 2026** (revue du matin) : D1 à D7 confirmées telles que
 > pré-cochées. D1 et D3 restent à confirmer par le juge (TOK-89).
+>
+> **Relecture 1 du 17/11** (`reponses-juge-2026-11-17.md`) : **D3 infirmée** (les colonnes et la Zone Monstre
+> Extra comptent, y compris par les cartes adverses) et **D1 rouverte** (liste sans `Lubellion the Searing Dragon`,
+> jouée dans 102 des 123 listes Branded TCG de juin à novembre 2026).
+>
+> **Tranché par Thomas le 18/11** : D3 remplacée par l'« entre-deux » (ci-dessous) ; D1 **maintenue** (« on continue
+> avec un seul deck »), risque noté : si les guides publics passent par `Lubellion`, l'échec au jalon J2 pourra venir
+> de la liste et non du moteur. À rouvrir à ce moment-là.
 
 | N° | Décision retenue | Ce qui la ferait rouvrir |
 |---|---|---|
-| D1 | Deck du régional du 08/11/2026 (`6af240d2…`) | un juge estime le deck atypique |
+| D1 | Deck du régional du 08/11/2026 (`6af240d2…`), **maintenue le 18/11** malgré l'absence de `Lubellion` (jouée dans 83 % des listes) | le moteur échoue au jalon J2 sur des combos qui passent par `Lubellion` |
 | D2 | Deux niveaux : pas et transitions | l'oracle ne donne pas la liste des actions légales (question ouverte n° 3) |
-| D3 | Placement par défaut, zones énumérées seulement si une carte lit la position | le juge infirme l'hypothèse (question 3 hors tests) |
+| D3 | **Révisée le 18/11 (entre-deux)** : l'état porte toujours la case exacte ; à chaque sortie de l'Extra Deck, le moteur essaie Zone Monstre Extra et zone principale (un monstre revenu du Cimetière ne peut pas aller en Zone Extra) ; colonnes essayées seulement si une carte du deck les lit, et notées sur le plateau final | le nombre d'états explose malgré tout, ou une carte adverse modélisée lit les colonnes |
 | D4 | Actions sans intérêt : légales pour le moteur, filtrables et publiées dans l'exploration | le nombre de lignes reste ingérable malgré les filtres |
 | D5 | « Non couvert » à trois niveaux | trop de résultats « incomplets » pour être utiles |
 | D6 | Cinq statuts de formalisation | — |

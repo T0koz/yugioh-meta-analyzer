@@ -3,6 +3,8 @@
 #
 # TOUTES les situations sont « à valider par un juge humain (TOK-89) » : leur auteur n'est pas un
 # juge et Thomas ne joue pas. Aucun script de simulateur n'a été consulté.
+# Relecture 1 (17/11/2026, joueur de tournoi, non arbitre) : 32 points de règle sur 34 confirmés, aucun
+# verdict modifié ; objection sur T45 (R22) levée par cohérence, annotations sur T37 et T65. Détail : reponses-juge-2026-11-17.md
 # Mode d'emploi, deck source, conventions : jeu-de-tests-branded.md
 # Points de règle (R01…) : points-de-regle-a-valider.md
 #
@@ -554,6 +556,7 @@ situations:
     source: "Texte d'IECCLESIA (dernier effet)."
     regles: [R23]
     confiance: moyenne
+    relecture: "Relecture 1 : confirmé. Le deux-points fait de l'effet un effet déclaré (activé, il ouvre une chaîne), bien qu'obligatoire."
 
   - id: T38
     mecanique: cout_ou_effet
@@ -645,6 +648,7 @@ situations:
     source: "Textes de CARTESIA, GRANG, TBKITT ; livret de règles (effets déclenchés simultanés)."
     regles: [R22]
     confiance: moyenne
+    relecture: "Relecture 1 : contesté sur « n'activer que l'un des deux », malentendu de formulation probable ; levé par cohérence avec R23 (« You can » = facultatif). Choix inchangés, non confirmé explicitement."
 
   - id: T46
     mecanique: une_fois_par_tour_par_nom
@@ -889,6 +893,7 @@ situations:
     source: "Texte de TFTV (chargé en base le 2026-11-16)."
     regles: [R34]
     confiance: basse
+    relecture: "Relecture 1 : verdict confirmé ; la cible se choisit à l'activation (tout ce qui précède le point-virgule)."
   - id: T66
     mecanique: nombre_de_materiels
     perimetre: pilote

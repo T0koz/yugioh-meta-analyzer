@@ -53,3 +53,5 @@ dire **ce qu'elle va devenir et à publier s'il s'est trompé**.
 Rouvrir à la main (navigateur) les sites bloqués : HSReplay, Moxfield, 17Lands, InkDecks, Marvel Snap Zone,
 Trainer Hill, et les pages « Ban List » et prix de yugiohmeta.com. Les cases de notre avantage (cercle 1) sont
 « non vérifié » sur 13 sites : la conclusion 1 doit être confirmée avant d'être affichée publiquement.
+
+- **Ajout demandé par Thomas (18/11)** : regarder **Duelingbook** (duelingbook.com), simulateur de duels Yu-Gi-Oh! en ligne : fonctionnalités, public, ce qu'il propose autour des decks et de la méta, et s'il peut servir au projet (tests de combos à la main, communauté).

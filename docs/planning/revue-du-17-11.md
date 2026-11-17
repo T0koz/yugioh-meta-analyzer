@@ -20,7 +20,8 @@
       ajoutés le 17/11 : précision de la règle d'or (deuxième session pendant une attente passive) et principe de rigueur statistique
 - [x] `python scripts/check.py --all --visuel` : vert le 17/11 vers 12 h 10 (46 tests sur chaque base, 19 tables servies,
       51 captures identiques, backtest aux rangs de référence) ; 13 textes signalés par `check_copy.py` (non bloquant, lot 16)
-- [ ] Fusion de `claude/front-nuit-17-11` dans `main` (`--no-ff`), retour du dépôt principal sur `main`, push par Thomas
+- [x] Fusion de `claude/front-nuit-17-11` dans `main` (`--no-ff`, `bd22ae8`), dépôt principal revenu sur `main`
+- [ ] Push de `main` par Thomas (120 commits d'avance sur `origin/main`)
 - [ ] Supprimer les worktrees des lots terminés (`lot11`, `lot12` : fusionnés et propres ; `lot06-benchmark` porte le
       rapport de la tâche de fond, branche `claude/fond-2026-11-17-b80f1e` non fusionnée) et les branches fusionnées
 - [ ] Mettre Linear à jour (lots fusionnés → Done)

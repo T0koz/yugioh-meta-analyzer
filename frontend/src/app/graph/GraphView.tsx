@@ -193,7 +193,7 @@ export function GraphView({ data }: { data: GraphResponse }) {
           id="graph-archetype"
           value={archetypeFilter}
           onChange={(e) => setArchetypeFilter(e.target.value)}
-          className="rounded-[4px] border border-line-2 bg-ink px-2.5 py-1.5 font-mono text-[12px] text-text"
+          className="rounded-[var(--r-tab)] border border-line-2 bg-ink px-2.5 py-1.5 font-mono text-[12px] text-text"
         >
           <option value="all">Tous ({data.nodes.length} cartes)</option>
           {archetypes.map((a) => (
@@ -209,7 +209,7 @@ export function GraphView({ data }: { data: GraphResponse }) {
         className="h-[min(600px,70vh)] w-full rounded-[4px] bg-ink"
       />
       <p className="mt-3 text-[13px] text-muted-text">
-        {data.nodes.length} cartes · {data.edges.length} liens (Jaccard ≥ seuil) · survol pour voir la carte
+        {data.nodes.length} cartes · {data.edges.length} liens · survol : aperçu de la carte
       </p>
     </div>
   );

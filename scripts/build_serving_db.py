@@ -29,9 +29,18 @@ ROUTERS_DIR = ROOT / "backend" / "app" / "routers"
 # référence une qui manque ici — sans quoi un nouvel endpoint passerait en
 # production avec une table absente et ne casserait qu'à la première requête.
 SERVED_TABLES = [
+    # TOK-114 : profils de composition et extrait des listes récentes (scripts/build_archetype_profiles.py).
+    "archetype_card_profile",
+    "archetype_recent_deck_cards",
+    "archetype_recent_decks",
     "archetype_trend",
+    # TOK-55 : backtest du Ban Radar liste par liste (scripts/build_ban_history.py, à lancer avant).
+    "ban_backtest_cards",
+    "ban_backtest_lists",
     "ban_radar",
     "boutique_buy_signals",
+    # TOK-103 : relevés de prix des cartes du signal boutique (scripts/build_boutique_price_history.py).
+    "boutique_price_history",
     "card_cooccurrence",
     "card_graph_metrics",
     "card_impact",
@@ -41,6 +50,7 @@ SERVED_TABLES = [
     "meta_predictions",
     "meta_scores",
     "meta_tier_list",
+    "ocg_archetype_scores",
 ]
 
 TABLE_REFERENCE = re.compile(r"\b(?:FROM|JOIN)\s+([a-z_][a-z0-9_]*)", re.IGNORECASE)

@@ -12,6 +12,7 @@ from app.schemas import (
     TierEntry,
     TierListResponse,
 )
+from app.slugs import slugify
 from app.tiering import MIN_WINDOW_DECKS, meta_score_for, tier_for, trend_for
 
 router = APIRouter(prefix="/meta", tags=["meta"])
@@ -86,12 +87,15 @@ ORDER BY a.decks DESC, a.avg_placement ASC
 """
 
 
-@router.get("/tier-list", response_model=TierListResponse)
-def get_tier_list(db: sqlite3.Connection = Depends(get_db)) -> TierListResponse:
-    """Tier list recalculée depuis `meta_scores` (TOK-91), règles dans app/tiering.py."""
+def compute_tier_list(db: sqlite3.Connection, with_images: bool = True) -> tuple[list[TierEntry], list[sqlite3.Row]]:
+    """Entrées de la tier list (triées) et lignes SQL correspondantes, dans le même ordre.
+
+    Partagé avec la page d'archétype (routers/archetypes.py) : un archétype y a
+    exactement le tier, la part et la tendance affichés dans la tier list.
+    """
     rows = db.execute(TIER_LIST_SQL, {"min": MIN_WINDOW_DECKS}).fetchall()
     if not rows:
-        return TierListResponse(data=[], window_start="", window_end="", n_decks=0)
+        return [], []
 
     n_cur, n_prev = rows[0]["n_cur"], rows[0]["n_prev"]
     best_placement_score = max(1 / row["avg_placement"] for row in rows if row["avg_placement"] > 0)
@@ -102,15 +106,26 @@ def get_tier_list(db: sqlite3.Connection = Depends(get_db)) -> TierListResponse:
         data.append(
             TierEntry(
                 archetype=row["archetype"],
+                slug=slugify(row["archetype"]),
                 tier=tier_for(share, row["decks"]),
                 meta_score=meta_score_for(share, row["avg_placement"], best_placement_score),
                 share=share,
+                decks=row["decks"],
                 trend=trend_for(row["decks"], n_cur, row["decks_prev"], n_prev),
-                image_url=get_archetype_image(db, row["archetype"]),
+                image_url=get_archetype_image(db, row["archetype"]) if with_images else None,
             )
         )
+    return data, rows
+
+
+@router.get("/tier-list", response_model=TierListResponse)
+def get_tier_list(db: sqlite3.Connection = Depends(get_db)) -> TierListResponse:
+    """Tier list recalculée depuis `meta_scores` (TOK-91), règles dans app/tiering.py."""
+    data, rows = compute_tier_list(db)
+    if not rows:
+        return TierListResponse(data=[], window_start="", window_end="", n_decks=0)
     return TierListResponse(
-        data=data, window_start=rows[0]["window_start"], window_end=rows[0]["window_end"], n_decks=n_cur
+        data=data, window_start=rows[0]["window_start"], window_end=rows[0]["window_end"], n_decks=rows[0]["n_cur"]
     )
 
 
@@ -136,7 +151,7 @@ def get_evolution(db: sqlite3.Connection = Depends(get_db)) -> EvolutionResponse
     placeholders = ",".join("?" for _ in top_archetypes)
     rows = db.execute(
         f"""
-        SELECT archetype, month, meta_score, share
+        SELECT archetype, month, meta_score, share, deck_count
         FROM meta_scores
         WHERE archetype IN ({placeholders})
         ORDER BY archetype, month
@@ -147,10 +162,16 @@ def get_evolution(db: sqlite3.Connection = Depends(get_db)) -> EvolutionResponse
     data: dict[str, list[EvolutionPoint]] = {a: [] for a in top_archetypes}
     for row in rows:
         data[row["archetype"]].append(
-            EvolutionPoint(month=row["month"], meta_score=row["meta_score"], share=row["share"])
+            EvolutionPoint(
+                month=row["month"], meta_score=row["meta_score"], share=row["share"], decks=row["deck_count"]
+            )
         )
     images = {a: url for a in top_archetypes if (url := get_archetype_image(db, a))}
-    return EvolutionResponse(data=data, images=images)
+    decks_by_month = {
+        row["month"]: row["n"]
+        for row in db.execute("SELECT month, MAX(total_decks) AS n FROM meta_scores GROUP BY month")
+    }
+    return EvolutionResponse(data=data, images=images, decks_by_month=decks_by_month)
 
 
 @router.get("/predictions", response_model=PredictionsResponse)
@@ -176,4 +197,12 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
         )
         for row in rows
     ]
-    return PredictionsResponse(data=data, model="70 % naïf + 30 % Ridge")
+    try:
+        computed_at = db.execute(
+            "SELECT MAX(computed_at) FROM meta_predictions WHERE data_month = ?", (latest_month,)
+        ).fetchone()[0]
+    except sqlite3.OperationalError:  # base sans colonne computed_at : le front écrit « date inconnue »
+        computed_at = None
+    return PredictionsResponse(
+        data=data, model="70 % naïf + 30 % Ridge", data_month=latest_month, computed_at=computed_at
+    )

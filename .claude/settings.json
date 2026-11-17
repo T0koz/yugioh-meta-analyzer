@@ -1,0 +1,72 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(find *)",
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff)",
+      "Bash(git diff *)",
+      "Bash(git log)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch --list *)",
+      "Bash(git branch --list)",
+      "Bash(git worktree list)",
+      "Bash(git worktree list *)",
+      "Bash(python scripts/check.py)",
+      "Bash(python scripts/check.py *)",
+      "Bash(.venv/bin/python scripts/check.py)",
+      "Bash(.venv/bin/python scripts/check.py *)",
+      "Bash(python scripts/build_serving_db.py --check)",
+      "Bash(.venv/bin/python scripts/build_serving_db.py --check)",
+      "Bash(python .claude/hooks/test_garde_fou.py)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx eslint *)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint *)",
+      "Bash(npm run build)",
+      "Bash(pytest)",
+      "Bash(pytest *)",
+      "Bash(python -m pytest *)",
+      "Bash(.venv/bin/python -m pytest *)",
+      "Bash(../.venv/bin/python -m pytest *)",
+      "Bash(.venv/bin/python scripts/visual_tests.py)"
+    ],
+    "deny": [
+      "Bash(find * -delete*)",
+      "Bash(find * -exec*)",
+      "Bash(find * -execdir*)",
+      "Bash(find * -ok*)",
+      "Bash(find * -fprint*)",
+      "Bash(find * -fls*)",
+      "Bash(rg * --pre*)",
+      "Bash(git diff * --output*)",
+      "Bash(git log * --output*)",
+      "Bash(git show * --output*)",
+      "Bash(npx eslint * --fix*)",
+      "Bash(git push)",
+      "Bash(git push *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/garde_fou.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

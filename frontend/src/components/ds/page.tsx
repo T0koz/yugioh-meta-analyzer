@@ -1,4 +1,5 @@
 // Briques de mise en page communes à toutes les pages (docs/design-system.md §4-5).
+import { controlClass } from "@/components/ds/control";
 
 /** Conteneur de page : largeur max 1200 px, gutter latéral, marge basse. */
 export function Page({ children }: { children: React.ReactNode }) {
@@ -95,13 +96,6 @@ export function Toolbar({ children, count }: { children: React.ReactNode; count?
   );
 }
 
-/** Classes d'une pill de filtre (bouton ou lien). Active = fond texte, encre dessus. */
-export function pillClass(active: boolean) {
-  return `rounded-[4px] border px-2.5 py-1.5 text-[13px] font-medium transition-[color,background-color,border-color,scale] duration-200 motion-safe:active:scale-[0.97] ${
-    active ? "border-text bg-text text-ink" : "border-line-2 text-soft hover:text-text"
-  }`;
-}
-
 /** Encart d'info : titre mono accent + texte doux. */
 export function Callout({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -119,7 +113,7 @@ export function Callout({ title, children }: { title: string; children: React.Re
 export function Explainer({ label, title, children }: { label: string; title: string; children: React.ReactNode }) {
   return (
     <details className="group mb-6">
-      <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-[4px] border border-line-2 bg-ink-3 px-3.5 py-2 text-[13px] font-medium text-text transition-colors duration-200 hover:border-soft [&::-webkit-details-marker]:hidden">
+      <summary className={controlClass({ size: "sm" })}>
         {label}
         <span aria-hidden className="font-mono text-muted-text transition-transform group-open:rotate-45">
           +
@@ -138,6 +132,41 @@ export function Meter({ value, max, tone = "signal" }: { value: number; max: num
   return (
     <div className="h-1 overflow-hidden rounded-[2px] bg-ink-4">
       <div className={`fill-in h-full rounded-[2px] ${tone === "signal" ? "bg-signal" : "bg-soft/60"}`} style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+/**
+ * Pied de données : source, date et échantillon sous chaque graphique ou tableau
+ * (TOK-99). `date` est obligatoire : une visualisation sans date ne se publie pas.
+ */
+export function DataFooter({
+  source,
+  date,
+  sample,
+  uncertainty,
+  children,
+}: {
+  source: string;
+  /** Déjà rédigée : « au 14 novembre 2026 », « août 25 à nov. 26 »… */
+  date: string;
+  sample?: string;
+  /**
+   * Obligatoire (lot 15, charte §3) : ce que montre l'incertitude dessinée
+   * (« bande : intervalle à 95 % ») ou pourquoi il n'y en a pas.
+   */
+  uncertainty: React.ReactNode;
+  /** Note de lecture facultative (légende, limite connue). */
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="mt-3 grid gap-0.5 font-mono text-[12px] leading-[1.7] text-muted-text">
+      <p>
+        Source : {source} · {date}
+        {sample && ` · ${sample}`}
+        {children && <> · {children}</>}
+      </p>
+      <p>Incertitude : {uncertainty}</p>
     </div>
   );
 }

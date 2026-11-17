@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { api } from "@/lib/api";
+import { fmtDate, fmtNum } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
 import { HoverPreviewPanel } from "@/components/hover-preview-panel";
+import { TabLink, TabRail } from "@/components/ds/control";
 import { Page } from "@/components/ds/page";
 import { BanRadarView } from "./BanRadarView";
 import { CardImpactView } from "./CardImpactView";
 import { BanSimulatorView } from "./BanSimulatorView";
+import { BanHistoryView } from "./BanHistoryView";
 import { parseKind } from "./kind-filter";
 import type { BanSimResult } from "@/types";
 
-type Tab = "radar" | "impact" | "simulateur";
+type Tab = "radar" | "historique" | "impact" | "simulateur";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "radar", label: "Ban Radar" },
+  { id: "historique", label: "Historique" },
   { id: "impact", label: "Cartes à impact" },
   { id: "simulateur", label: "Simulateur" },
 ];
@@ -22,47 +27,56 @@ function parseTab(raw: string | string[] | undefined): Tab {
   return TABS.some((t) => t.id === raw) ? (raw as Tab) : "radar";
 }
 
-const TAB_META: Record<Tab, { title: string; description: string }> = {
-  radar: {
-    title: "Ban Radar",
-    description: "Les cartes Yu-Gi-Oh! les plus exposées à la prochaine banlist TCG, notées sur six critères.",
-  },
-  impact: {
-    title: "Cartes à impact",
-    description: "Les cartes dont l’interdiction toucherait le plus d’archétypes et de decks Yu-Gi-Oh!.",
-  },
-  simulateur: {
-    title: "Simulateur de ban",
-    description: "Retire une carte de la méta Yu-Gi-Oh! et regarde quels archétypes sont touchés.",
-  },
-};
-
-// Un titre par onglet : les trois vues partagent la même route.
+// Un titre, une description et une adresse canonique par onglet : les trois vues
+// partagent la même route, mais pas le même contenu.
 export async function generateMetadata({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }): Promise<Metadata> {
-  return TAB_META[parseTab((await searchParams).tab)];
+  const tab = parseTab((await searchParams).tab);
+  if (tab === "simulateur") {
+    return pageMetadata({
+      title: "Simulateur de ban",
+      description: `Archétypes et decks de tournoi Yu-Gi-Oh! TCG reliés à une carte dans le graphe de co-occurrences, et cohésion du graphe sans elle. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
+      path: "/ban?tab=simulateur",
+    });
+  }
+  if (tab === "historique") {
+    const { lists, computed_at } = await api.banHistory();
+    const retained = lists.filter((l) => l.retained).length;
+    return pageMetadata({
+      title: "Ban Radar : historique des banlists",
+      description: `Classement du Ban Radar recalculé la veille de ${fmtNum(retained)} banlists Yu-Gi-Oh! TCG et OCG, face aux cartes réellement restreintes, comparé au hasard et aux staples les plus jouées. Calcul du ${fmtDate(computed_at)}. Sources : ${DECK_SOURCE}, Yugipedia.`,
+      path: "/ban?tab=historique",
+    });
+  }
+  if (tab === "impact") {
+    const { as_of, n_decks_window } = await api.cardImpact();
+    return pageMetadata({
+      title: "Cartes à impact",
+      description: `Cartes Yu-Gi-Oh! TCG classées par nombre d’archétypes et de decks qui les jouent, sur ${fmtNum(n_decks_window)} decks de tournoi, relevé du ${fmtDate(as_of)}. Source : ${DECK_SOURCE}.`,
+      path: "/ban?tab=impact",
+    });
+  }
+  const { as_of, n_decks_window } = await api.banRadar();
+  return pageMetadata({
+    title: "Ban Radar",
+    description: `Cartes Yu-Gi-Oh! TCG notées de 0 à 100 sur six critères de risque de restriction, sur ${fmtNum(n_decks_window)} decks de tournoi, relevé du ${fmtDate(as_of)}. Source : ${DECK_SOURCE}.`,
+    path: "/ban",
+  });
 }
 
-// Même grammaire que la nav : texte doux, onglet actif en clair sur --ink-4.
+// Même grammaire que la nav : onglet actif en relief dans son rail.
 function TabNav({ active }: { active: Tab }) {
   return (
-    <nav aria-label="Ban Center" className="mt-8 inline-flex flex-wrap gap-1 rounded-[8px] border border-line-2 bg-ink-2 p-1">
+    <TabRail aria-label="Ban Center" className="mt-8">
       {TABS.map((t) => (
-        <Link
-          key={t.id}
-          href={`/ban?tab=${t.id}`}
-          aria-current={active === t.id ? "page" : undefined}
-          className={`rounded-[4px] px-3 py-1.5 text-[13px] transition-colors duration-200 ${
-            active === t.id ? "bg-ink-4 text-text" : "text-muted-text hover:text-text"
-          }`}
-        >
+        <TabLink key={t.id} href={`/ban?tab=${t.id}`} current={active === t.id}>
           {t.label}
-        </Link>
+        </TabLink>
       ))}
-    </nav>
+    </TabRail>
   );
 }
 
@@ -90,6 +104,9 @@ export default async function BanPage({
       <HoverPreviewPanel />
       <Page>
         {tab === "radar" && <BanRadarView view={parseKind(params.kind, "radar")} tabs={tabs} />}
+        {tab === "historique" && (
+          <BanHistoryView selected={typeof params.liste === "string" ? params.liste : undefined} tabs={tabs} />
+        )}
         {tab === "impact" && <CardImpactView view={parseKind(params.kind, "impact")} tabs={tabs} />}
         {tab === "simulateur" && (
           <BanSimulatorView

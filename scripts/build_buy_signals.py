@@ -27,6 +27,8 @@ futur deck jouera, pas les cartes inédites.
 ⚠ `alert_norm` et `buy_score_100` sont relatifs au maximum du lot : il y a toujours une carte à 100,
 même quand le signal est faible dans l'absolu. Les libellés Fort / Modéré / Faible classent les
 cartes entre elles, ils ne mesurent pas une force de signal.
+Depuis le 2026-11-17 l'API ne lit plus `buy_label` : elle sert `signal_label`, rang absolu de l'archétype
+parmi les archétypes OCG (`ocg_archetype_scores`), calculé à la volée (docs/journal/seuils-signal-boutique.md).
 
     python scripts/build_buy_signals.py [--dry-run]
 """

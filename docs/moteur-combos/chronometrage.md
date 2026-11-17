@@ -69,3 +69,9 @@ formalisation : elle remet en cause les listes exactes des tests existants.
 ```
 | n | Étape | début | fin | durée (agent) | produit | temps humain de validation |
 ```
+
+## TOK-86 (2026-11-17)
+
+| Étape | durée (agent) | produit |
+|---|---|---|
+| Installation de l'oracle | ≈ 10 min, arrêtée | échec : cœur hors organisation officielle, `premake5` et Lua absents ; voir `reponses-oracle.md` |

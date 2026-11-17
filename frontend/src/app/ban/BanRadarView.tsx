@@ -4,21 +4,12 @@ import { SITE_FACTS } from "@/lib/site-facts";
 import { CardChip } from "@/components/card-chip";
 import { CardArt } from "@/components/card-art";
 import { Em } from "@/components/ds/em";
-import { Callout, Explainer, PageHero } from "@/components/ds/page";
+import { Callout, DataFooter, Explainer, PageHero } from "@/components/ds/page";
+import { MethodNote } from "@/components/ds/explain";
 import { BanStatus } from "@/components/ds/tags";
 import type { BanRadarCriteria, BanRadarEntry, RiskLabel } from "@/types";
+import { CRITERIA } from "@/lib/ban-criteria";
 import { KindFilterTabs, apiKind, type KindView } from "./kind-filter";
-
-// Ordre et libellés de la barre de décomposition, alignés sur WEIGHTS côté API.
-// Une seule teinte : l'opacité décroît avec le poids du critère (design system §4).
-const CRITERIA: { key: keyof BanRadarCriteria; label: string; opacity: number; help: string }[] = [
-  { key: "ubiquity", label: "Ubiquité", opacity: 0.9, help: "Part des decks du format qui jouent la carte." },
-  { key: "carrier", label: "Porteur", opacity: 0.75, help: "La carte est indispensable à un archétype qui pèse dans la méta." },
-  { key: "copies", label: "Copies", opacity: 0.6, help: "Nombre moyen d'exemplaires joués : une carte jouée à 3 peut être limitée, une carte déjà à 1 beaucoup moins." },
-  { key: "restriction", label: "Restriction", opacity: 0.45, help: "La carte est déjà limitée ou semi-limitée : Konami y revient souvent." },
-  { key: "momentum", label: "Élan", opacity: 0.3, help: "Usage des 3 derniers mois comparé aux 3 précédents." },
-  { key: "bridge", label: "Pont", opacity: 0.18, help: "Centralité de type pont : la carte relie des paquets de cartes autrement séparés." },
-];
 
 // L'accent ne marque que les risques qui comptent ; le libellé porte toujours l'information.
 const RISK_TONE: Record<RiskLabel, string> = {
@@ -55,14 +46,14 @@ export function BigScore({ value, label, tone }: { value: string; label: string;
 function CriteriaStack({ criteria, score }: { criteria: BanRadarCriteria; score: number }) {
   return (
     <div className="mt-3 flex h-2 gap-0.5 overflow-hidden rounded-[2px] bg-ink-4">
-      {CRITERIA.map(({ key, label, opacity }) => {
+      {CRITERIA.map(({ key, label, color }) => {
         const contribution = criteria[key];
         if (contribution <= 0) return null;
         return (
           <i
             key={key}
-            className="block h-full bg-signal"
-            style={{ width: `${contribution}%`, opacity }}
+            className="block h-full"
+            style={{ width: `${contribution}%`, backgroundColor: color }}
             title={`${label} : ${fmtNum(contribution, 1)} pts sur ${fmtNum(score, 1)}`}
           />
         );
@@ -76,7 +67,7 @@ function CriteriaLegend() {
     <div className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 font-mono text-[10.5px] tracking-[0.06em] text-muted-text uppercase">
       {CRITERIA.map((c) => (
         <span key={c.key} className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-[7px] w-[7px] rounded-[1px] bg-signal" style={{ opacity: c.opacity }} />
+          <span className="inline-block h-[7px] w-[7px] rounded-[1px]" style={{ backgroundColor: c.color }} />
           {c.label}
         </span>
       ))}
@@ -174,7 +165,7 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
           {CRITERIA.map((c) => (
             <div key={c.key} className="flex gap-2">
               <dt className="flex shrink-0 items-center gap-1.5 text-text uppercase">
-                <span className="inline-block h-[7px] w-[7px] rounded-[1px] bg-signal" style={{ opacity: c.opacity }} />
+                <span className="inline-block h-[7px] w-[7px] rounded-[1px]" style={{ backgroundColor: c.color }} />
                 {c.label}
               </dt>
               <dd className="font-sans text-[13px]">{c.help}</dd>
@@ -200,6 +191,16 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
           <RadarRow key={entry.card_name} entry={entry} rank={index + 1} />
         ))}
       </div>
+      <DataFooter
+        source="decklists de tournoi TCG (yugiohmeta.com), banlists (Yugipedia)"
+        date={`au ${fmtDate(as_of)}, 6 mois glissants`}
+        sample={`${fmtNum(n_decks_window)} decks, ${fmtNum(data.length)} cartes affichées`}
+        uncertainty="aucun intervalle : un score de risque classe les cartes, ce n’est pas une probabilité ; sa fiabilité se lit dans l’onglet Historique"
+      />
+      <MethodNote anchor="ban-radar">
+        <p>Le score rapproche chaque carte du profil des cartes déjà touchées par Konami, sur six critères ; la barre en donne la part de chacun.</p>
+        <p>Fenêtre : les 6 derniers mois de decks de tournoi TCG.</p>
+      </MethodNote>
     </>
   );
 }

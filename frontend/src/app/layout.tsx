@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter_Tight, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import { Nav } from "@/components/nav";
+import { INDEXABLE, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // Sans `weight` : next/font charge la version variable (un fichier, toutes les graisses).
@@ -9,7 +10,12 @@ const serif = Instrument_Serif({ variable: "--font-instrument-serif", subsets: [
 const mono = JetBrains_Mono({ variable: "--font-jetbrains-mono", subsets: ["latin"], weight: ["400", "500"] });
 
 // `template` s'applique aux pages enfants : chacune n'exporte que son titre court.
+// `metadataBase` rend absolus les liens canoniques et les adresses Open Graph de toutes les pages.
+// Chaque page fournit le reste (canonique, Open Graph, Twitter) avec `pageMetadata` (lib/seo.ts).
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  robots: INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
   title: {
     default: "YGO Meta · Analyse de la méta Yu-Gi-Oh!",
     template: "%s · YGO Meta",

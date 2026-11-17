@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { ButtonLink } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
 import { Page, PageHero } from "@/components/ds/page";
 
-export const metadata: Metadata = { title: "Page introuvable" };
+export const metadata: Metadata = { title: "Page introuvable", robots: { index: false, follow: false } };
 
 export default function NotFound() {
   return (
@@ -18,18 +18,10 @@ export default function NotFound() {
         intro="L’adresse est fausse ou la page a été déplacée. Les outils sont toujours là."
       >
         <div className="mt-7 flex flex-wrap gap-2.5">
-          <Link
-            href="/"
-            className="rounded-[4px] border border-signal bg-signal px-[18px] py-[11px] text-[14px] font-medium text-on-signal transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-px"
-          >
+          <ButtonLink href="/" variant="primary">
             Retour à l’accueil
-          </Link>
-          <Link
-            href="/tier-list"
-            className="rounded-[4px] border border-line-2 bg-ink-3 px-[18px] py-[11px] text-[14px] font-medium text-text transition-transform duration-[250ms] ease-[var(--ease)] motion-safe:hover:-translate-y-px"
-          >
-            Voir la tier list
-          </Link>
+          </ButtonLink>
+          <ButtonLink href="/tier-list">Voir la tier list</ButtonLink>
         </div>
       </PageHero>
     </Page>

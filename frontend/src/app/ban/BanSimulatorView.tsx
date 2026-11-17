@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ds/control";
 import { Input } from "@/components/ui/input";
 import { CardChip } from "@/components/card-chip";
 import { Em } from "@/components/ds/em";
-import { Callout, Eyebrow, PageHero, StatBand } from "@/components/ds/page";
+import { Callout, DataFooter, Eyebrow, PageHero, StatBand } from "@/components/ds/page";
 import { api } from "@/lib/api";
 import { fmtNum, fmtPct } from "@/lib/format";
 import type { BanSimResult } from "@/types";
@@ -49,7 +50,7 @@ export function BanSimulatorView({
             Et si Konami la <Em>bannissait</Em> ?
           </>
         }
-        intro="Retire une carte du graphe de synergies et regarde ce qui casse : archétypes touchés, centralité, perte de cohésion."
+        intro="Effet du retrait d’une carte sur le graphe de co-occurrences : archétypes touchés, position de pont, perte de cohésion."
       >
         {tabs}
       </PageHero>
@@ -66,22 +67,18 @@ export function BanSimulatorView({
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ex : Ash Blossom & Joyous Spring"
           aria-label="Carte à simuler"
-          className="h-auto min-w-0 flex-1 basis-64 rounded-[4px] border-line-2 bg-ink px-3 py-[11px] font-mono text-[13px] md:text-[13px]"
+          className="h-auto min-w-0 flex-1 basis-64 rounded-[var(--r-ctl)] border-line-2 bg-ink px-3.5 py-[11px] font-mono text-[13px] md:text-[13px]"
         />
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-[4px] border border-signal bg-signal px-[18px] py-[11px] text-[14px] font-medium text-on-signal transition-transform duration-[250ms] ease-[var(--ease)] disabled:opacity-50 motion-safe:hover:-translate-y-px"
-        >
+        <Button type="submit" variant="primary" disabled={loading}>
           {loading ? "Simulation…" : "Simuler le ban"}
-        </button>
+        </Button>
       </form>
 
       {notFound && (
         <Callout title="Carte introuvable">
           <p>
-            Cette carte n’est pas dans la base. Essaie « Ash Blossom &amp; Joyous Spring » ou « Nibiru, the Primal
-            Being ».
+            Carte absente de la table des cartes. Exemples présents : « Ash Blossom &amp; Joyous Spring », « Nibiru,
+            the Primal Being ».
           </p>
         </Callout>
       )}
@@ -128,6 +125,11 @@ export function BanSimulatorView({
               </div>
             </div>
           )}
+          <DataFooter
+            source="graphe de co-occurrences des decklists de tournoi, yugiohmeta.com"
+            date="date de calcul non enregistrée dans la base servie"
+            uncertainty="aucun intervalle : la simulation recalcule le graphe sans la carte, elle ne prévoit pas ce que joueraient les joueurs"
+          />
         </section>
       )}
     </>

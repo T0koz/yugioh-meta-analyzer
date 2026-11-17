@@ -1,0 +1,140 @@
+{
+ "data": [
+  {
+   "archetype": "Elfnote",
+   "current": 0.15226499029394747,
+   "predicted": 0.15236383758920471,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/13597785.jpg"
+  },
+  {
+   "archetype": "Radiant Typhoon",
+   "current": 0.11081832770072812,
+   "predicted": 0.10328982154548542,
+   "direction": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/20508881.jpg"
+  },
+  {
+   "archetype": "Dark Magician Chaos Ritual",
+   "current": 0.0908673799223074,
+   "predicted": 0.08733669329386796,
+   "direction": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/46986420.jpg"
+  },
+  {
+   "archetype": "Maliss",
+   "current": 0.08164965809277261,
+   "predicted": 0.07690842663597426,
+   "direction": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/69272449.jpg"
+  },
+  {
+   "archetype": "Branded",
+   "current": 0.06338189233707384,
+   "predicted": 0.06985647518666765,
+   "direction": "Rising",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/87746184.jpg"
+  },
+  {
+   "archetype": "Artmage",
+   "current": 0.07282190812544191,
+   "predicted": 0.06766205434110632,
+   "direction": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/74733322.jpg"
+  },
+  {
+   "archetype": "Invoked",
+   "current": 0.06846531968814577,
+   "predicted": 0.06564051414498731,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/86120752.jpg"
+  },
+  {
+   "archetype": "Chaos Ritual",
+   "current": 0.06410607647560324,
+   "predicted": 0.06415697175108723,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/22850702.jpg"
+  },
+  {
+   "archetype": "Phantom Knights",
+   "current": 0.06454972243679027,
+   "predicted": 0.05958362859474126,
+   "direction": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/62709239.jpg"
+  },
+  {
+   "archetype": "Synchrons",
+   "current": 0.06454972243679027,
+   "predicted": 0.05805652836262746,
+   "direction": "Declining",
+   "image_url": null
+  },
+  {
+   "archetype": "Sacred Beast",
+   "current": 0.0570265948512201,
+   "predicted": 0.053991739304490874,
+   "direction": "Declining",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/81034083.jpg"
+  },
+  {
+   "archetype": "Clown Crew",
+   "current": 0.05504818825631803,
+   "predicted": 0.052393784768841434,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/82159583.jpg"
+  },
+  {
+   "archetype": "Magistus Fairy Tail",
+   "current": 0.05,
+   "predicted": 0.048693968223178216,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/19144622.jpg"
+  },
+  {
+   "archetype": "Blitzclique",
+   "current": 0.04412528185113799,
+   "predicted": 0.04777995989087391,
+   "direction": "Rising",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/58916810.jpg"
+  },
+  {
+   "archetype": "DoomZ",
+   "current": 0.04385290096535146,
+   "predicted": 0.0443596471659836,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/28877382.jpg"
+  },
+  {
+   "archetype": "Dracotail",
+   "current": 0.04385290096535146,
+   "predicted": 0.04184501040933163,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1498449.jpg"
+  },
+  {
+   "archetype": "Power Patron Elfnote",
+   "current": 0.040824829046386304,
+   "predicted": 0.041765373040794286,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/70488851.jpg"
+  },
+  {
+   "archetype": "Sky Striker",
+   "current": 0.02988071523335984,
+   "predicted": 0.03502582129986717,
+   "direction": "Rising",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/63166095.jpg"
+  },
+  {
+   "archetype": "Power Patron",
+   "current": 0.03450327796711771,
+   "predicted": 0.033680416975796754,
+   "direction": "Stable",
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/70488851.jpg"
+  }
+ ],
+ "model": "70 % naïf + 30 % Ridge",
+ "data_month": "2026-10",
+ "computed_at": "2026-11-16"
+}

@@ -1,43 +1,40 @@
 import type { Metadata } from "next";
 import { api } from "@/lib/api";
-import { fmtNum, fmtSigned } from "@/lib/format";
+import { fmtDate, fmtMonthShort, fmtNum, fmtSigned } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
+import { DECK_SOURCE } from "@/lib/site";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import { CardArt } from "@/components/card-art";
+import { controlClass } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
-import { Meter, Page, PageHero } from "@/components/ds/page";
+import { DataFooter, Page, PageHero } from "@/components/ds/page";
+import { MethodNote } from "@/components/ds/explain";
 import { TrendLabel } from "@/components/ds/tags";
+import { PredictionsChart } from "./PredictionsChart";
 
-export const metadata: Metadata = {
-  title: "Prédictions de méta",
-  description: "Score méta prévu le mois prochain pour chaque archétype Yu-Gi-Oh! TCG, avec les limites du modèle.",
-};
 
-// Les deux barres sont neutres : seul l'écart est coloré. Une hausse en --good,
-// une baisse en gris (le rouge reste réservé à l'accent).
-function Delta({ current, predicted }: { current: number; predicted: number }) {
-  const delta = (predicted - current) * 100;
-  const tone = delta > 0 ? "text-good" : "text-muted-text";
-  return <span className={`font-mono text-[13px] font-medium tabular-nums ${tone}`}>{fmtSigned(delta)}</span>;
+/** « 2026-10 » → « 2026-11 ». */
+function nextMonth(yearMonth: string): string {
+  const [year, month] = yearMonth.split("-").map(Number);
+  return month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, "0")}`;
 }
 
-function ScoreCell({ value, max, tone }: { value: number; max: number; tone: "signal" | "soft" }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="w-24">
-        <Meter value={value} max={max} tone={tone} />
-      </div>
-      <span className="w-9 text-right font-mono text-[13px] tabular-nums">{fmtNum(value * 100, 1)}</span>
-    </div>
-  );
+export async function generateMetadata(): Promise<Metadata> {
+  const { data, data_month, computed_at } = await api.predictions();
+  const target = data_month ? ` pour ${fmtMonthShort(nextMonth(data_month))}` : "";
+  const computed = computed_at ? `, calcul du ${fmtDate(computed_at)}` : "";
+  return pageMetadata({
+    title: "Prédictions de méta",
+    description: `Score méta prévu${target} sur ${data.length} archétypes Yu-Gi-Oh! TCG${computed}. Données : decklists de tournoi, ${DECK_SOURCE}.`,
+    path: "/predictions",
+  });
 }
 
 export default async function PredictionsPage() {
-  const { data } = await api.predictions();
-
-  // Même échelle réduite que meta_score en tier-list : normalisation relative au max affiché.
-  const maxScore = Math.max(...data.flatMap((d) => [d.current, d.predicted]), 0);
+  const { data, data_month, computed_at } = await api.predictions();
   const rows = [...data].sort((a, b) => b.predicted - a.predicted);
+  const observed = data_month ? fmtMonthShort(data_month) : "dernier mois";
+  const target = data_month ? fmtMonthShort(nextMonth(data_month)) : "mois suivant";
 
   return (
     <Page>
@@ -50,49 +47,69 @@ export default async function PredictionsPage() {
         }
         intro={
           <>
-            Score méta actuel et prévu pour chaque archétype (×100). Modèle : mélange de 70 % de prévision naïve et de 30 % de régression Ridge. Il prolonge surtout la tendance et ramène vers la moyenne : il n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
-            <InfoTooltip text="Mélange : 70 % de prévision naïve (rien ne change) + 30 % de régression Ridge (α = 50, variation mensuelle). Validation glissante dans le temps : l’erreur sur la variation mensuelle baisse d’environ 5 % par rapport à « rien ne change », autant qu’une régression à une variable (retour à la moyenne)." />
+            Score méta ×100 de {rows.length} archétypes TCG : observé en {observed}, prévu
+            <InfoTooltip
+              term="Prévision"
+              text="Valeur attendue si la situation récente se prolonge, en ramenant les écarts vers la moyenne."
+            />{" "}
+            pour {target}. Le modèle n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
           </>
         }
       />
 
-      <div className="overflow-hidden rounded-[6px] border border-line">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead>Archétype</TableHead>
-              <TableHead>Actuel</TableHead>
-              <TableHead>Prévu</TableHead>
-              <TableHead className="text-right">Δ</TableHead>
-              <TableHead className="text-right">Direction</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rows.map((entry, index) => (
-              <TableRow key={entry.archetype}>
-                <TableCell className="font-medium tracking-[-0.01em]">
-                  <span className="flex items-center gap-3">
-                    <CardArt src={entry.image_url} name={entry.archetype} eager={index < 8} />
-                    {entry.archetype}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <ScoreCell value={entry.current} max={maxScore} tone="soft" />
-                </TableCell>
-                <TableCell>
-                  <ScoreCell value={entry.predicted} max={maxScore} tone="soft" />
-                </TableCell>
-                <TableCell className="text-right">
-                  <Delta current={entry.current} predicted={entry.predicted} />
-                </TableCell>
-                <TableCell className="text-right">
-                  <TrendLabel trend={entry.direction} />
-                </TableCell>
+      <PredictionsChart rows={rows} observedLabel={observed} targetLabel={target} />
+      <DataFooter
+        source="decklists de tournoi TCG, yugiohmeta.com"
+        date={`observé ${observed}, calcul du ${computed_at ? fmtDate(computed_at) : "date inconnue"}`}
+        sample={`${rows.length} archétypes`}
+        uncertainty="aucun intervalle par archétype : le modèle ne produit qu’une valeur ; son erreur moyenne est mesurée sur l’historique (page Méthode)"
+      >
+        anneau : observé ; point plein : prévu
+      </DataFooter>
+      <MethodNote anchor="predictions">
+        <p>Prévision : surtout la valeur du mois observé, corrigée d’une part de retour à la moyenne.</p>
+        <p>Rejouée mois par mois sur l’historique, elle se trompe d’environ 5 % de moins que « rien ne change ».</p>
+      </MethodNote>
+
+      <details className="group mt-5">
+        <summary className={controlClass({ size: "sm" })}>
+          Tableau des valeurs
+          <span aria-hidden className="font-mono text-muted-text transition-transform group-open:rotate-45">
+            +
+          </span>
+        </summary>
+        <div className="mt-3 overflow-hidden rounded-[6px] border border-line">
+          <Table>
+            <caption className="sr-only">
+              Score méta ×100 observé en {observed} et prévu pour {target}, par archétype
+            </caption>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>Archétype</TableHead>
+                <TableHead className="text-right">Observé {observed}</TableHead>
+                <TableHead className="text-right">Prévu {target}</TableHead>
+                <TableHead className="text-right">Écart</TableHead>
+                <TableHead className="text-right">Direction</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {rows.map((entry) => (
+                <TableRow key={entry.archetype}>
+                  <TableCell className="font-medium tracking-[-0.01em]">{entry.archetype}</TableCell>
+                  <TableCell className="text-right font-mono text-[13px] tabular-nums">{fmtNum(entry.current * 100, 2)}</TableCell>
+                  <TableCell className="text-right font-mono text-[13px] tabular-nums">{fmtNum(entry.predicted * 100, 2)}</TableCell>
+                  <TableCell className="text-right font-mono text-[13px] tabular-nums">
+                    {fmtSigned((entry.predicted - entry.current) * 100, 2)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <TrendLabel trend={entry.direction} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </details>
     </Page>
   );
 }

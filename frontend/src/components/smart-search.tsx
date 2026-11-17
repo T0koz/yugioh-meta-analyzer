@@ -71,7 +71,7 @@ export function SmartSearch() {
         onKeyDown={(e) => e.key === "Escape" && e.currentTarget.blur()}
         placeholder="Rechercher une carte…"
         aria-keyshortcuts="Meta+K Control+K"
-        className="w-full rounded-[4px] border border-line bg-ink py-2 pl-3 pr-3 font-mono text-[12px] text-text text-ellipsis placeholder:text-faint min-[760px]:pr-12 transition-colors duration-200 focus:border-signal-hi focus:outline-none"
+        className="w-full rounded-[var(--r-tab)] border border-line bg-ink py-2 pl-3 pr-3 font-mono text-[12px] text-text text-ellipsis placeholder:text-faint min-[760px]:pr-12 transition-colors duration-200 focus:border-signal-hi focus:outline-none"
       />
       <kbd className="pointer-events-none absolute hidden min-[760px]:block right-2 top-1/2 -translate-y-1/2 rounded-[3px] border border-line-2 px-1.5 font-mono text-[11px] text-muted-text">
         ⌘K

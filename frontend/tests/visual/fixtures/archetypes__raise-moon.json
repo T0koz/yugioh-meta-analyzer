@@ -1,0 +1,73 @@
+{
+ "archetype": "Raise Moon",
+ "slug": "raise-moon",
+ "image_url": "https://images.ygoprodeck.com/images/cards_small/75934716.jpg",
+ "tcg_window": {
+  "start": "2026-10",
+  "end": "2026-11",
+  "n_decks": 396
+ },
+ "tcg": null,
+ "history": [],
+ "key_cards": null,
+ "ocg": {
+  "share": 0.08708708708708708,
+  "decks": 87,
+  "computed_at": "2026-11-16"
+ },
+ "boutique": {
+  "signal_label": "Fort",
+  "archetype_rank": 3,
+  "label_rule": {
+   "population": 89,
+   "strong_max_rank": 8,
+   "moderate_max_rank": 22,
+   "provisional": true,
+   "note": "Seuils provisoires, non validés hors échantillon : le libellé est le rang de l’archétype parmi les archétypes OCG, pas une probabilité d’arrivée ni de hausse de prix."
+  },
+  "tcg_window_start": "2026-11-19",
+  "tcg_window_end": "2027-03-26",
+  "computed_at": "2026-11-16",
+  "signals": [
+   {
+    "archetype": "Raise Moon",
+    "archetype_slug": "raise-moon",
+    "card_name": "Pot of Desires",
+    "buy_score": 100.0,
+    "signal_label": "Fort",
+    "archetype_rank": 3,
+    "cm_price": 0.1,
+    "ban_tcg": null,
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/35261759.jpg",
+    "tcg_window_start": "2026-11-19",
+    "tcg_window_end": "2027-03-26"
+   },
+   {
+    "archetype": "Raise Moon",
+    "archetype_slug": "raise-moon",
+    "card_name": "Foolish Burial Goods",
+    "buy_score": 88.9,
+    "signal_label": "Fort",
+    "archetype_rank": 3,
+    "cm_price": 0.46,
+    "ban_tcg": null,
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/35726888.jpg",
+    "tcg_window_start": "2026-11-19",
+    "tcg_window_end": "2027-03-26"
+   },
+   {
+    "archetype": "Raise Moon",
+    "archetype_slug": "raise-moon",
+    "card_name": "Sacred Sword of Seven Stars",
+    "buy_score": 86.1,
+    "signal_label": "Fort",
+    "archetype_rank": 3,
+    "cm_price": 0.5,
+    "ban_tcg": null,
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/45725480.jpg",
+    "tcg_window_start": "2026-11-19",
+    "tcg_window_end": "2027-03-26"
+   }
+  ]
+ }
+}

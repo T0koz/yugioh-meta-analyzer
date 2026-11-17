@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { controlClass } from "@/components/ds/control";
 import { SmartSearch } from "@/components/smart-search";
 
 type NavLink = { href: string; label: string };
@@ -20,6 +21,7 @@ const NAV_ENTRIES: NavEntry[] = [
     label: "Méta",
     items: [
       { href: "/tier-list", label: "Tier list" },
+      { href: "/decks", label: "Decks" },
       { href: "/evolution", label: "Évolution" },
       { href: "/predictions", label: "Prédictions" },
     ],
@@ -36,11 +38,9 @@ const NAV_ENTRIES: NavEntry[] = [
   { kind: "link", href: "/graph", label: "Graphe" },
 ];
 
-// Lien de premier niveau (docs/design-system.md §4) : actif = texte plein sur --ink-4.
-function linkClass(active: boolean) {
-  return `flex items-center gap-1 rounded-[4px] px-2.5 py-1.5 text-[13px] transition-colors duration-200 ${
-    active ? "bg-ink-4 text-text" : "text-muted-text hover:text-text"
-  }`;
+// Lien de premier niveau : un onglet du composant source (actif = en relief sur --ink-4).
+function linkClass(active: boolean, className?: string) {
+  return controlClass({ variant: "tab", active, className });
 }
 
 // Même surface que la nav pour les sous-menus et le menu mobile.
@@ -64,9 +64,14 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
+// Une entrée reste active sur ses sous-pages (« /decks/branded » pour « /decks »).
+function isCurrent(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 function PanelLink({ item, pathname, onSelect }: { item: NavLink; pathname: string; onSelect: () => void }) {
   return (
-    <Link href={item.href} onClick={onSelect} className={`${linkClass(pathname === item.href)} w-full`}>
+    <Link href={item.href} onClick={onSelect} className={linkClass(isCurrent(pathname, item.href), "w-full justify-start")}>
       {item.label}
     </Link>
   );
@@ -87,7 +92,7 @@ function NavDropdown({
   onToggle: () => void;
   onSelect: () => void;
 }) {
-  const active = items.some((item) => item.href === pathname);
+  const active = items.some((item) => isCurrent(pathname, item.href));
 
   return (
     <div className="relative shrink-0">
@@ -157,7 +162,7 @@ export function Nav() {
                 key={entry.href}
                 href={entry.href}
                 onClick={closeAll}
-                className={`${linkClass(pathname === entry.href)} shrink-0`}
+                className={linkClass(pathname === entry.href, "shrink-0")}
               >
                 {entry.label}
               </Link>
@@ -183,7 +188,7 @@ export function Nav() {
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
-          className="shrink-0 rounded-[4px] border border-line-2 px-2.5 py-1.5 font-mono text-[12px] text-soft min-[760px]:hidden"
+          className={controlClass({ size: "sm", className: "shrink-0 font-mono text-[12px] min-[760px]:hidden" })}
         >
           Menu
         </button>

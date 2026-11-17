@@ -1,0 +1,342 @@
+{
+ "archetype": "Branded",
+ "slug": "branded",
+ "image_url": "https://images.ygoprodeck.com/images/cards_small/87746184.jpg",
+ "tcg_window": {
+  "start": "2026-10",
+  "end": "2026-11",
+  "n_decks": 396
+ },
+ "tcg": {
+  "tier": "T3",
+  "trend": "Stable",
+  "rank": 6,
+  "n_archetypes": 60,
+  "share": 0.04040404040404041,
+  "decks": 16,
+  "meta_score": 0.06427102390775408,
+  "share_prev": 0.046242774566473986,
+  "decks_prev": 24,
+  "n_decks_prev": 519
+ },
+ "history": [
+  {
+   "month": "2024-01",
+   "decks": 19,
+   "total_decks": 293,
+   "share": 0.06484641638225255
+  },
+  {
+   "month": "2024-02",
+   "decks": 12,
+   "total_decks": 273,
+   "share": 0.04395604395604396
+  },
+  {
+   "month": "2024-03",
+   "decks": 34,
+   "total_decks": 439,
+   "share": 0.0774487471526196
+  },
+  {
+   "month": "2024-04",
+   "decks": 14,
+   "total_decks": 218,
+   "share": 0.06422018348623854
+  },
+  {
+   "month": "2024-05",
+   "decks": 16,
+   "total_decks": 470,
+   "share": 0.03404255319148936
+  },
+  {
+   "month": "2024-06",
+   "decks": 22,
+   "total_decks": 414,
+   "share": 0.05314009661835749
+  },
+  {
+   "month": "2024-07",
+   "decks": 3,
+   "total_decks": 146,
+   "share": 0.02054794520547945
+  },
+  {
+   "month": "2024-08",
+   "decks": 4,
+   "total_decks": 256,
+   "share": 0.015625
+  },
+  {
+   "month": "2024-09",
+   "decks": 5,
+   "total_decks": 243,
+   "share": 0.0205761316872428
+  },
+  {
+   "month": "2024-10",
+   "decks": 0,
+   "total_decks": 261,
+   "share": 0.0
+  },
+  {
+   "month": "2024-11",
+   "decks": 1,
+   "total_decks": 275,
+   "share": 0.0036363636363636364
+  },
+  {
+   "month": "2024-12",
+   "decks": 3,
+   "total_decks": 243,
+   "share": 0.012345679012345678
+  },
+  {
+   "month": "2025-01",
+   "decks": 0,
+   "total_decks": 187,
+   "share": 0.0
+  },
+  {
+   "month": "2025-02",
+   "decks": 1,
+   "total_decks": 338,
+   "share": 0.0029585798816568047
+  },
+  {
+   "month": "2025-03",
+   "decks": 3,
+   "total_decks": 375,
+   "share": 0.008
+  },
+  {
+   "month": "2025-04",
+   "decks": 0,
+   "total_decks": 175,
+   "share": 0.0
+  },
+  {
+   "month": "2025-05",
+   "decks": 2,
+   "total_decks": 540,
+   "share": 0.003703703703703704
+  },
+  {
+   "month": "2025-06",
+   "decks": 2,
+   "total_decks": 315,
+   "share": 0.006349206349206349
+  },
+  {
+   "month": "2025-07",
+   "decks": 1,
+   "total_decks": 211,
+   "share": 0.004739336492890996
+  },
+  {
+   "month": "2025-08",
+   "decks": 1,
+   "total_decks": 370,
+   "share": 0.002702702702702703
+  },
+  {
+   "month": "2025-09",
+   "decks": 2,
+   "total_decks": 367,
+   "share": 0.005449591280653951
+  },
+  {
+   "month": "2025-10",
+   "decks": 0,
+   "total_decks": 200,
+   "share": 0.0
+  },
+  {
+   "month": "2025-11",
+   "decks": 2,
+   "total_decks": 342,
+   "share": 0.005847953216374269
+  },
+  {
+   "month": "2025-12",
+   "decks": 1,
+   "total_decks": 218,
+   "share": 0.0045871559633027525
+  },
+  {
+   "month": "2026-01",
+   "decks": 3,
+   "total_decks": 152,
+   "share": 0.019736842105263157
+  },
+  {
+   "month": "2026-02",
+   "decks": 20,
+   "total_decks": 351,
+   "share": 0.05698005698005698
+  },
+  {
+   "month": "2026-03",
+   "decks": 15,
+   "total_decks": 313,
+   "share": 0.04792332268370607
+  },
+  {
+   "month": "2026-04",
+   "decks": 22,
+   "total_decks": 279,
+   "share": 0.07885304659498207
+  },
+  {
+   "month": "2026-05",
+   "decks": 69,
+   "total_decks": 405,
+   "share": 0.17037037037037037
+  },
+  {
+   "month": "2026-06",
+   "decks": 42,
+   "total_decks": 281,
+   "share": 0.1494661921708185
+  },
+  {
+   "month": "2026-07",
+   "decks": 14,
+   "total_decks": 131,
+   "share": 0.10687022900763359
+  },
+  {
+   "month": "2026-08",
+   "decks": 15,
+   "total_decks": 272,
+   "share": 0.05514705882352941
+  },
+  {
+   "month": "2026-09",
+   "decks": 24,
+   "total_decks": 519,
+   "share": 0.046242774566473986
+  },
+  {
+   "month": "2026-10",
+   "decks": 11,
+   "total_decks": 240,
+   "share": 0.04583333333333333
+  },
+  {
+   "month": "2026-11",
+   "decks": 5,
+   "total_decks": 156,
+   "share": 0.03205128205128205
+  }
+ ],
+ "key_cards": {
+  "data": [
+   {
+    "card_name": "Fallen of the White Dragon",
+    "decks": 305,
+    "deck_share": 16.2,
+    "mean_copies": 2.03,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/73819701.jpg"
+   },
+   {
+    "card_name": "Incredible Ecclesia, the Virtuous",
+    "decks": 304,
+    "deck_share": 16.14,
+    "mean_copies": 1.52,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/55273560.jpg"
+   },
+   {
+    "card_name": "Mirrorjade the Iceblade Dragon",
+    "decks": 288,
+    "deck_share": 15.29,
+    "mean_copies": 1.01,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/44146295.jpg"
+   },
+   {
+    "card_name": "Fallen of Albaz",
+    "decks": 287,
+    "deck_share": 15.24,
+    "mean_copies": 1.0,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/68468459.jpg"
+   },
+   {
+    "card_name": "Rindbrumm the Striking Dragon",
+    "decks": 270,
+    "deck_share": 14.34,
+    "mean_copies": 1.0,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/51409648.jpg"
+   },
+   {
+    "card_name": "Blazing Cartesia, the Virtuous",
+    "decks": 252,
+    "deck_share": 13.38,
+    "mean_copies": 1.75,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/95515789.jpg"
+   },
+   {
+    "card_name": "Titaniklad the Ash Dragon",
+    "decks": 249,
+    "deck_share": 13.22,
+    "mean_copies": 1.0,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/41373230.jpg"
+   },
+   {
+    "card_name": "Granguignol the Dusk Dragon",
+    "decks": 248,
+    "deck_share": 13.17,
+    "mean_copies": 1.56,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/24915933.jpg"
+   },
+   {
+    "card_name": "Branded in High Spirits",
+    "decks": 237,
+    "deck_share": 12.59,
+    "mean_copies": 2.73,
+    "current_status": "Limited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/29948294.jpg"
+   },
+   {
+    "card_name": "Dogmatika Ecclesia, the Virtuous",
+    "decks": 228,
+    "deck_share": 12.11,
+    "mean_copies": 1.01,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/60303688.jpg"
+   },
+   {
+    "card_name": "Branded Fusion",
+    "decks": 209,
+    "deck_share": 11.1,
+    "mean_copies": 1.05,
+    "current_status": "Limited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/44362883.jpg"
+   },
+   {
+    "card_name": "Nadir Servant",
+    "decks": 209,
+    "deck_share": 11.1,
+    "mean_copies": 2.57,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/1984618.jpg"
+   }
+  ],
+  "as_of": "2026-11-14",
+  "n_decks_window": 1883
+ },
+ "ocg": {
+  "share": 0.028028028028028028,
+  "decks": 28,
+  "computed_at": "2026-11-16"
+ },
+ "boutique": null
+}

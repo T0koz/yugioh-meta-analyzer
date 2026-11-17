@@ -18,7 +18,7 @@
 2. **Hiérarchie par la taille, pas par des boîtes.** Un gros titre, un gros chiffre, puis du détail discret. Pas de carte autour de tout.
 3. **Un seul mot en serif italique par titre** (couleur accent). Jamais deux, jamais dans le corps de texte.
 4. **Les chiffres et labels sont en monospace** : scores, pourcentages, dates, étiquettes (`TIER`, `ROGUE`, `AU 9 AOÛT 2026`).
-5. **Bordures fines, pas d'ombres.** Séparation par lignes à 12 % d'opacité et par changement de surface.
+5. **Bordures fines, pas d'ombres** sur les surfaces : séparation par lignes à 12 % d'opacité et par changement de surface. Deux exceptions portent une ombre : la carte (objet-signature) et les composants d'interaction (§4, lot 8), parce qu'on appuie dessus.
 6. **Dense mais respirant** : lignes de tableau de 64 px max, marges généreuses autour des blocs.
 
 ## 2. Tokens
@@ -61,16 +61,20 @@ Thème **sombre uniquement** (pas de mode clair). Définir sur `:root` (pas de c
   --good: #3ddc97;       /* tendance haussière uniquement */
   --warn: #f5c451;       /* restrictions de banlist uniquement */
   /* tendance baissière = --muted-text + ▼ (le rouge est réservé à l'accent) */
+  --ocg: #7fb0ff;        /* série de données « OCG » uniquement */
+  /* palette catégorielle de données : voir §4 « Palette de données » */
+  --cat-1: var(--signal);  --cat-2: #4795ee;  --cat-3: #1fa894;
+  --cat-4: #ba880f;  --cat-5: #dc6497;  --cat-6: #9183ea;
 
   /* forme */
-  --r: 4px;              /* rayon par défaut (boutons, pills, lignes) */
+  --r: 4px;              /* rayon par défaut (étiquettes, lignes) ; contrôles : --r-ctl, §4 */
   --r-lg: 8px;           /* tuiles, frames */
   --gutter: clamp(16px, 3.2vw, 44px);
   --maxw: 1200px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* mouvement (TOK-98) */
-  --dur-1: 180ms;   /* survol, focus, pression */
+  --dur-1: 180ms;   /* survol, focus */
   --dur-2: 500ms;   /* apparition d'un bloc */
   --dur-3: 1000ms;  /* remplissage d'une barre, ouverture */
   --stagger: 70ms;  /* décalage dans une séquence */
@@ -165,7 +169,7 @@ Créer dans `src/components/ds/` (ou adapter l'existant) ; garder les composants
 - Conteneur : `sticky top-3 z-40`, marge latérale `--gutter`, `max-w-[1200px] mx-auto`.
 - Boîte : `bg-ink-2/85 backdrop-blur border border-line-2 rounded-[10px] p-2 pl-4`, flex, gap 16.
 - Gauche : logo `YGO META` en mono 600 14 px, tracking .08em, précédé d'un glyphe accent 14 px.
-- Centre : liens (Méta, Ban Center, Boutique, Graphe) en 13 px `--muted-text` ; actif = `--text` sur fond `--ink-4`, rayon 4. Masqués sous 760 px (menu à prévoir).
+- Centre : liens (Méta, Ban Center, Boutique, Graphe) = onglets du composant source (`controlClass({ variant: "tab" })`) ; actif en relief sur `--ink-4`. Masqués sous 760 px (menu à prévoir).
 - Droite : champ de recherche (SmartSearch existant) : mono 12 px, bordure `--line`, placeholder « Rechercher une carte… », pastille `⌘K` à droite. Le raccourci ⌘K / Ctrl+K doit focus le champ.
 - Garder les sous-menus actuels (Méta, Boutique) en dropdown restylé (même surface que la nav).
 
@@ -192,13 +196,60 @@ Plus aucune couleur propre à chaque tier.
 ### Tendance
 Mono 500 12 px : `▲ Rising` en `--good`, `→ Stable` en `--muted-text`, `▼ Declining` en `--muted-text`. (Le rouge n'est pas utilisé pour une baisse.)
 
-### Filtres (pills)
-Mono 500 12 px, padding 6×10, rayon 4, bordure `--line-2`, texte `--soft`. Actif : fond `--text`, texte `--ink`. Compteur à droite en mono 11 px `--muted-text` (`8 / 47 ARCHÉTYPES`).
+### Composants d'interaction : boutons, pills, onglets, bascules (lot 8, 2026-11-17)
 
-### Boutons
-Rayon 4, 14 px / 500, padding 11×18. **Un seul bouton plein par écran.**
-- Primaire : fond `--signal`, texte `--on-signal`. Secondaire : fond `--ink-3`, bordure `--line-2`. Ghost : transparent.
-- Survol : `translateY(-1px)` en .25 s `--ease`. Focus visible : `outline 2px --signal-hi`, offset 2.
+Demande de Thomas : des contrôles qui ont l'air physiques (formes arrondies, ombres douces en plusieurs couches, légère
+variation de teinte, mouvement au survol et à l'appui). **Une seule source** : `frontend/src/components/ds/control.tsx`
+choisit la variante, le bloc « Composants d'interaction » de `globals.css` (classe `.ctl`, dans `@layer components`)
+porte l'apparence et tous les états. Aucun autre fichier ne décrit un fond, une ombre ou un état de bouton.
+CSS seul (`:hover`, `:active`, `:focus-visible`) : aucun état React, aucun `"use client"`, aucun JavaScript ajouté.
+
+| Besoin | Composant | Balise et état |
+|---|---|---|
+| Bouton principal, secondaire, discret | `Button variant="primary" \| "secondary" \| "ghost"`, `size="sm" \| "md" \| "lg"` | `<button type="button">` ; `disabled` |
+| Lien qui a l'air d'un bouton | `ButtonLink` (mêmes variantes) | `<a>` via `Link` : un lien reste un lien |
+| Pill de filtre locale, bascule | `Pill pressed={…}` | `<button aria-pressed>` |
+| Pill de filtre portée par l'adresse (`?kind=`) | `PillLink current={…}` | `<a aria-current="page">` |
+| Onglets portés par l'adresse (`?tab=`) | `TabRail` + `TabLink current={…}` | `<nav>` + `<a aria-current="page">` |
+| Autre balise (`<a href="#ancre">`, `<summary>`, liens de la nav) | `controlClass({ variant, size, active })` | la balise d'origine |
+
+**Un seul bouton principal par écran** (inchangé).
+
+Forme et matière (tokens `--r-ctl*`, `--ctl-*`, `--ease-soft`, `--ease-spring`, `--dur-press`, `--dur-spring`) :
+- Rayons : bouton 12 px (`--r-ctl`), petit bouton 10 px, onglet 8 px dans un rail de 12 px, pill entièrement ronde.
+- Hauteurs : bouton 44 px (`sm` 36, `lg` 48), pill 34 px, onglet 32 px.
+- Ombres en couches, toujours par token, jamais en valeur brute dans un composant : 2 couches internes (reflet d'un
+  pixel en haut, arête en bas) + 3 couches portées (contact, proche, diffuse). **Chaque liste garde ce nombre de
+  couches d'un état à l'autre**, sinon le navigateur n'interpole pas et l'ombre saute.
+- Variation de teinte : dégradé fixe (`--ctl-sheen-top` → `--ctl-sheen-bottom`) posé sur `background-color` ; c'est la
+  couleur de fond qui transite (un dégradé ne s'anime pas).
+- Bouton principal : l'ombre diffuse prend la teinte de la braise (`--ctl-glow*`).
+
+États :
+| État | Effet | Durée et courbe |
+|---|---|---|
+| Survol (`@media (hover: hover)`) | teinte éclaircie, ombre plus profonde, élévation de 1 px | 180 ms (`--dur-1`), `--ease-soft` |
+| Appui | échelle 0,97, descente de 0,5 px, ombre resserrée, creux interne | 120 ms (`--dur-press`), `--ease-soft` |
+| Relâchement | retour avec dépassement (ressort court) | 200 ms (`--dur-spring`), `--ease-spring` |
+| Focus clavier | anneau 2 px `--signal-hi`, décalé de 3 px (1 px pour un onglet dans son rail) | immédiat |
+| Désactivé | à plat : fond `--ink-4`, texte `--faint`, ni ombre ni dégradé, pas d'opacité réduite | — |
+| Actif (pill) | fond `--text`, texte `--ink`, reflet fort | |
+| Actif (onglet) | en relief sur `--ink-4` dans le rail en creux | |
+
+Règles :
+- On n'anime que `transform`, `box-shadow` et des couleurs : la mise en page ne bouge pas (CLS 0 mesuré).
+- **Mouvement réduit** : les transformations (élévation, enfoncement, ressort) ne sont déclarées que sous
+  `prefers-reduced-motion: no-preference` ; la règle globale coupe les transitions. Mesuré : 0 animation, aucune
+  transformation, y compris bouton maintenu enfoncé.
+- **Contraste** : `npm run contrast` mesure le texte de chaque variante dans chaque état, dégradé compris (pire cas
+  retenu), et l'anneau de focus (seuil 3:1). Toute retouche d'un token `--ctl-*` de couleur se relance.
+- Ajuster un contrôle sur une page : utilitaires de mise en page seulement (`w-full`, `justify-start`, `shrink-0`),
+  jamais de fond, de bordure, d'ombre ni de rayon.
+- Non concernés : les étiquettes non interactives (`Tag`, `TierTag`, `BanStatus`, métadonnées mono des tuiles) et les
+  lignes de résultat de la recherche (options de liste). Les champs (recherche, simulateur, sélecteur du graphe)
+  reprennent seulement les rayons `--r-tab` / `--r-ctl`.
+
+Planche des états à 375, 768 et 1440 px : `docs/planning/2026-11-17/lot-08-captures/` (script `etats.py` à côté).
 
 ### Tuiles bento (home)
 Grille 12 colonnes, gap 12, rayon 8, padding 22, bordure `--line-2`. Trois variantes :
@@ -211,13 +262,17 @@ Home : hero = « Le TCG suit l'OCG, `<Em>quatre mois</Em>` plus tard. » (chiffr
 ### Ban Radar (`/ban`, onglet Radar)
 - En-tête : eyebrow + h1 « Qui sera `<Em>banni</Em>` ensuite ? » à gauche ; à droite, bloc mono 11 px aligné à droite (`DONNÉES AU 9 AOÛT 2026 / 2 018 DECKS · 6 MOIS`).
 - Carte-ligne : grille `110px 40px 1fr auto`, padding 20, bordure haute `--line`. Score 40–60 px Inter Tight 500 (`tabular-nums`) avec, dessous, le libellé de risque en mono 11 px MAJUSCULES couleur `--signal` (`CRITIQUE`). Puis rang `#1`, nom (20 px), méta mono (`83,4 % des decks · 1 682 decks · 82 archétypes`), **barre empilée des 6 critères**, puis statut banlist à droite.
-- Barre empilée : hauteur 8, gap 2, un segment par critère dont la largeur = sa contribution en points (somme = score, sur 100). Un seul teinte (`--signal`) avec opacité décroissante par critère : ubiquité .9, porteur .75, copies .6, restriction .45, élan .3, pont .18. Légende mono 10,5 px sous la 1re ligne seulement.
+- Barre empilée : hauteur 8, gap 2, un segment par critère dont la largeur = sa contribution en points (somme = score, sur 100). Une teinte de la palette de données par critère (`--cat-1` à `--cat-6`, voir « Palette de données »). Légende mono 10,5 px sous la 1re ligne seulement.
 - Statut : mono 500 11 px, bordure 1 px ; `Unlimited` en `--soft` ; `Limited`/`Semi-Limited` en `--warn` (contour + texte).
 - L'encart « Comment lire ce score » (actuellement un pavé) passe dans une info-bulle ou un panneau repliable ouvert par un bouton `Comment lire ce score ?`.
 - Les poids des critères restent **dupliqués** entre `scripts/build_ban_radar.py` (`WEIGHTS`) et `backend/app/routers/ban_radar.py` : ne pas les toucher dans un travail de design.
 
 ### Encart d'info / tooltip
-Surface `--ink-3`, bordure `--line-2`, rayon 4, padding 14×16. Titre mono 11 px MAJUSCULES `--signal`, texte 14 px `--soft`. `InfoTooltip` : même surface, 12 px.
+Surface `--ink-3`, bordure `--line-2`, rayon 4, padding 14×16. Titre mono 11 px MAJUSCULES `--signal`, texte 14 px `--soft`.
+`InfoTooltip` (lot 15) : `<InfoTooltip term="Tier" text="…" />`, une seule phrase de définition en langage simple (jamais de formule, de
+nom de variable, de série de seuils ni de résultat). Bouton de 24 px (rond visible de 16 px), texte relié par `aria-describedby` et
+`role="tooltip"` ; s'ouvre au survol, au focus clavier et au toucher (le bouton bascule), se ferme par Échap ou un toucher ailleurs ;
+bulle vers le bas, 13 px.
 
 ### Tableau (`boutique`, etc.)
 `Table` shadcn restylé : pas de fond de ligne, filets `--line`, en-têtes mono 11 px MAJUSCULES `--muted-text`, nombres en mono `tabular-nums` alignés à droite, survol de ligne `--ink-3`. Badges de signal : `Fort` = étiquette T1 (plein accent) ; `Moyen`/`Faible` = contour. Statut banlist TCG = statut jaune `--warn`.
@@ -225,8 +280,58 @@ Surface `--ink-3`, bordure `--line-2`, rayon 4, padding 14×16. Titre mono 11 px
 ### Card chip (`card-chip.tsx`)
 Vignette mini + nom, fond `--ink-4`, bordure `--line`, rayon 4, mono 12 px ; au survol le panneau de prévisualisation s'affiche (comportement existant).
 
-### Graphiques (recharts)
-Série principale `--signal` (trait 2 px), séries secondaires `--soft` / `--muted-text` / `--faint`, grille `--line` en pointillés, axes et légendes en mono 11 px `--muted-text`, tooltip sur surface `--ink-3`. Pas de dégradés multicolores. Point final de la série principale mis en évidence (cercle 4,5 px).
+### Graphiques (SVG maison + D3, TOK-99)
+Plus de recharts. D3 calcule (échelles, tracés), React rend le SVG, côté serveur d'abord : le graphique est dans le HTML et se lit sans JavaScript ; survol et clavier s'ajoutent ensuite.
+- Modules autorisés : `d3-array`, `d3-shape`, `d3-scale`. Jamais le paquet `d3` entier. **`d3-scale` reste côté serveur** (≈ 20 ko compressés) : dans un composant client, une échelle linéaire s'écrit à la main avec `nice` et `ticks` de `d3-array` (budget : 200 ko de JavaScript par page).
+- Trait 2 px, point de 2 px sur chaque mois mesuré, point final 4,5 px cerclé de la surface. Grille `--line` en pointillés, ligne de zéro pleine. Axes en mono 12 px `--muted-text` (pas 11 px : Lighthouse compte le texte de moins de 12 px).
+- L'axe vertical part de zéro et s'arrête au maximum des séries affichées ; l'axe du temps commence au premier mois mesuré d'une série affichée (TOK-96).
+- **Étiquette directe** en bout de courbe (valeur en `--text`, nom en `--soft`) : le texte ne porte jamais la couleur de la série, c'est la marque à côté qui la porte.
+- **Taille d'échantillon visible** : bande de barres `--line-2` sous l'axe du temps (decks comptés par mois).
+- Survol : fil vertical + infobulle sur surface `--ink-3`. Clavier : le cadre du graphique est focalisable, flèches gauche et droite, Début, Fin, Échap ; la lecture est annoncée par une zone `aria-live`.
+- **Alternative tabulaire** : un `<details>` « Tableau des valeurs » sous chaque graphique.
+- Écart entre deux mesures (`/predictions`) : haltère (anneau = observé, point plein `--text` = prévu), trait `--good` pour une hausse, `--muted-text` pour une baisse ; l'écart a sa propre colonne et sa propre échelle, centrée sur zéro. Coordonnées en pourcentage de la largeur : le même SVG sert à 375 et à 1440 px.
+
+### Palette de données (TOK-99, décision 6)
+Six teintes catégorielles, dans cet ordre, jamais recyclées (une 7e série se replie dans « autres » ou dans un second graphique). Elles disent **qui** (une série, un critère), jamais **dans quel état** : `--good` et `--warn` gardent leur sens, `--ocg` reste réservé à la série OCG et ne se mélange pas aux `--cat-*` dans un même graphique.
+
+| Token | Valeur | Nom | Contraste sur `--ink` / `--ink-4` | Usage |
+|---|---|---|---|---|
+| `--cat-1` | `var(--signal)` `#ff5a3c` | braise | 6,51 / 5,52 | série principale ; critère ubiquité |
+| `--cat-2` | `#4795ee` | azur | 6,53 / 5,54 | 2e série ; porteur |
+| `--cat-3` | `#1fa894` | sarcelle | 6,80 / 5,77 | 3e série ; copies |
+| `--cat-4` | `#ba880f` | or | 6,35 / 5,39 | 4e série ; restriction (voisin du jaune des statuts de banlist) |
+| `--cat-5` | `#dc6497` | rose | 6,06 / 5,14 | élan |
+| `--cat-6` | `#9183ea` | violet | 6,37 / 5,40 | pont |
+
+- Contrôle : `npm run contrast` (dans `frontend/`) lit `globals.css` et échoue sous 4,5:1 sur `--ink` à `--ink-4`. À relancer à chaque retouche d'un token de couleur.
+- Séparation entre teintes voisines (OKLab ×100, validateur de palette du 2026-11-16) : au pire 12,8 en vision daltonienne simulée (cible ≥ 8) et 16,4 en vision normale (plancher 15). Toutes les paires non voisines ne sont pas séparables (rose et sarcelle en deutéranopie) : **l'identité ne passe jamais par la couleur seule**, toujours une étiquette directe ou une légende.
+- Une série garde sa teinte tant qu'elle est affichée : en retirer une ne repeint pas les autres.
+- Barre empilée du Ban Radar : une teinte par critère, écart de 2 px entre segments, légende sous la première ligne.
+
+### Pied de données (`DataFooter`, `components/ds/page.tsx`)
+Sous **chaque** graphique et tableau : `Source : … · date · échantillon · note de lecture`, en mono 12 px `--muted-text`. La date est une propriété obligatoire du composant. Quand la base servie n'enregistre pas la date d'un calcul, le pied le dit (« date de calcul non enregistrée ») plutôt que d'en afficher une autre.
+Depuis le lot 15, `uncertainty` est aussi **obligatoire** : seconde ligne « Incertitude : … » qui dit ce que montre l'incertitude dessinée
+(« bande : intervalle à 95 % ») ou pourquoi il n'y en a pas (« aucun intervalle : le score classe les cartes »). Un pied sans elle ne
+compile pas.
+
+### Explication graphique (lot 15, `components/ds/explain.tsx`)
+Briques de la charte `docs/charte-ton-et-explication.md` (§2 : encodage → annotation → incertitude → légende → infobulle → pied →
+Méthode). Toutes rendues côté serveur, importables depuis un composant client.
+- **`SampleBadge`** `k`, `n`, `unit?` : « 15 sur 16 listes », mono 12 px dans un filet `--line`. Tout pourcentage a son effectif.
+- **`ChartLegend`** `items` (`swatch` : `line`, `dashed`, `band`, `bar`, `dot`, `ring`, `span`, `zone`) : légende en ligne au-dessus du
+  graphique, une entrée par marque, sans phrase ; `as="figcaption"` en tête d'une `<figure>`.
+- **`ChartAnnotation`** `x`, `y` (en % du cadre), `below?` : libellé 12 px accroché à un point, au plus deux par graphique.
+- **Incertitude** : `bandPath(points)` (chemin fermé `lo`/`hi` déjà projetés) remplie de la couleur de la série à `BAND_OPACITY`
+  (0,16) ; `IntervalBar` (HTML) : segment `[lo, hi]` sur une échelle commune aux lignes, point plein à la valeur observée.
+- **Données atténuées** : `isWeakMonth(n)` (moins de 100 decks, `WEAK_MONTH_DECKS` dans `lib/wilson.ts`) et le mois en cours ;
+  segment `WEAK_STROKE` (pointillé 3/4, opacité 0,55), point `WEAK_FILL_OPACITY`. Un segment est atténué si l'un de ses deux mois
+  l'est ; un mois atténué ne fixe pas l'échelle (à 1 deck, une part peut valoir 100 %), il est posé au bord du cadre.
+- **`MethodNote`** `anchor` : `<details>` « Méthode » en bas de bloc, 1 à 3 lignes sans formule, lien vers `/methode#anchor`.
+  Ancres en service : `tier-list`, `evolution`, `part-mensuelle`, `predictions`, `ban-radar`, `ban-historique`, `signaux-precoces`,
+  `graphe` (et `decks`, `boutique`, `sources`, `seuils` sur la page).
+- **Intervalle de Wilson** : `lib/wilson.ts`, seul endroit du calcul, testé par `npm run test:stats` (lancé par `check.py`).
+  Utilisé par `/evolution`, la page d'archétype et la tier list. Aucune autre statistique n'est calculée dans le front.
+- **Formules** : aucune sur le site, ni dans `/methode` (charte §2). Elles restent dans le code et la documentation du dépôt.
 
 ## 5. Mise en page
 
@@ -241,6 +346,12 @@ Série principale `--signal` (trait 2 px), séries secondaires `--soft` / `--mut
 - Respecter `prefers-reduced-motion` : supprimer transitions et transformations.
 - Focus clavier toujours visible (`outline 2px --signal-hi`). Contraste : texte `--soft`/`--muted-text` sur `--ink` ≥ 4.5:1 ; le texte sur fond `--signal` utilise `--on-signal`.
 - L'information ne passe jamais par la couleur seule (tendances : flèche + mot ; risque : libellé + score).
+
+### Transitions de vue (TOK-101)
+Embellissement, jamais une condition : sans l'API du navigateur, la navigation est inchangée. Deux effets seulement,
+entre une liste et sa page de détail : l'élément partagé (`SharedElement` : vignette et nom, 420 ms, `--ease`) et le
+contenu qui glisse de 24 px selon le sens du lien (`PageTransition`, `transitionTypes` sur le `Link`). Rien au premier
+chargement. En mouvement réduit, aucune animation (règle `::view-transition-*` de `globals.css`).
 
 ## 7. Copy
 
@@ -265,6 +376,7 @@ Série principale `--signal` (trait 2 px), séries secondaires `--soft` / `--mut
 
 - Couleurs Tailwind brutes (`slate`, `indigo`, `emerald`, `red`…) ou hex en dur dans les composants.
 - Plus d'un accent, plus d'un bouton plein, plus d'une tuile `signal` par écran.
-- Ombres portées, dégradés violet/bleu, coins très arrondis (> 8 px), cartes empilées dans des cartes.
+- Ombres portées et coins très arrondis (> 8 px) **hors composants d'interaction et carte** ; dégradés violet/bleu ; cartes empilées dans des cartes.
+- Un style de bouton, de pill ou d'onglet écrit ailleurs que dans `components/ds/control.tsx` et son bloc de `globals.css`.
 - Rouge pour une baisse ou une erreur ordinaire : le rouge = signal. Les erreurs techniques s'affichent en `--warn` avec un message clair.
 - Toucher à la logique des données, aux endpoints ou au scoring dans une tâche de design.

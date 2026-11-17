@@ -3,7 +3,14 @@ from typing import Literal
 
 from fastapi import APIRouter, Depends, Query
 
-from app.schemas import BanRadarCriteria, BanRadarEntry, BanRadarResponse
+from app.schemas import (
+    BanHistoryCard,
+    BanHistoryList,
+    BanHistoryResponse,
+    BanRadarCriteria,
+    BanRadarEntry,
+    BanRadarResponse,
+)
 from app.db import get_db
 
 router = APIRouter(tags=["ban-radar"])
@@ -90,4 +97,88 @@ def get_ban_radar(
         as_of=meta["as_of"],
         n_decks_window=meta["n_decks_window"],
         weights=WEIGHTS,
+    )
+
+
+def _table_exists(db: sqlite3.Connection, name: str) -> bool:
+    return db.execute(
+        "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", (name,)
+    ).fetchone() is not None
+
+
+@router.get("/ban-radar/history", response_model=BanHistoryResponse)
+def get_ban_radar_history(db: sqlite3.Connection = Depends(get_db)) -> BanHistoryResponse:
+    """Backtest du Ban Radar liste par liste (TOK-55), écrit par scripts/build_ban_history.py.
+
+    Listes retenues et écartées, TCG et OCG. Les listes écartées antérieures aux
+    premiers decks collectés (fenêtre vide) ne sont pas renvoyées : elles ne disent
+    rien du score, seulement de la période couverte par les données.
+    """
+    # Table absente tant que build_ban_history.py n'a pas tourné sur la base :
+    # réponse vide plutôt qu'une erreur 500.
+    if not (_table_exists(db, "ban_backtest_lists") and _table_exists(db, "ban_backtest_cards")):
+        return BanHistoryResponse(lists=[], computed_at="", top_n=0, min_decks=0, min_hits=0)
+
+    list_rows = db.execute(
+        """
+        SELECT * FROM ban_backtest_lists
+        WHERE n_decks > 0
+        ORDER BY effective_date DESC, format DESC
+        """
+    ).fetchall()
+    if not list_rows:
+        return BanHistoryResponse(lists=[], computed_at="", top_n=0, min_decks=0, min_hits=0)
+
+    card_rows = db.execute(
+        """
+        SELECT b.*, c.image_url_small
+        FROM ban_backtest_cards b
+        LEFT JOIN cards c ON REPLACE(REPLACE(c.name, '<', ''), '>', '') = +b.card_name -- « + » : voir get_ban_radar (TOK-83)
+        -- Top prévu d'abord, dans l'ordre du classement ; puis les cartes touchées
+        -- plus bas, par rang ; celles hors univers (rang nul) en dernier.
+        ORDER BY b.rank IS NULL, b.rank, b.card_name
+        """
+    ).fetchall()
+
+    cards_by_list: dict[tuple[str, str], list[BanHistoryCard]] = {}
+    seen: set[tuple[str, str, str]] = set()
+    for row in card_rows:
+        key = (row["format"], row["effective_date"], row["card_name"])
+        # cards.name n'est pas unique (renumérotations YGOPRODeck) : une carte ne
+        # doit pas apparaître deux fois si la jointure double.
+        if key in seen:
+            continue
+        seen.add(key)
+        cards_by_list.setdefault(key[:2], []).append(
+            BanHistoryCard(
+                card_name=row["card_name"],
+                rank=row["rank"],
+                ban_risk_score=row["ban_risk_score"],
+                baseline_rank=row["baseline_rank"],
+                hit=bool(row["hit"]),
+                in_top=bool(row["in_top"]),
+                generic=bool(row["generic"]),
+                top_archetype=row["top_archetype"],
+                status_before=row["status_before"],
+                status_after=row["status_after"],
+                image_url=row["image_url_small"],
+            )
+        )
+
+    fields = BanHistoryList.model_fields.keys() - {"retained", "cards"}
+    lists = [
+        BanHistoryList(
+            **{f: row[f] for f in fields},
+            retained=bool(row["retained"]),
+            cards=cards_by_list.get((row["format"], row["effective_date"]), []),
+        )
+        for row in list_rows
+    ]
+    first = list_rows[0]
+    return BanHistoryResponse(
+        lists=lists,
+        computed_at=first["computed_at"],
+        top_n=max((row["top_n"] or 0) for row in list_rows),
+        min_decks=first["min_decks"],
+        min_hits=first["min_hits"],
     )

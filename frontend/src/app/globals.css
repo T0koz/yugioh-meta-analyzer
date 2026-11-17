@@ -49,6 +49,10 @@
   --color-paper: var(--paper);  --color-paper-ink: var(--paper-ink);
   --color-paper-muted: var(--paper-muted);
   --color-good: var(--good);  --color-warn: var(--warn);
+  --color-ocg: var(--ocg);
+  --color-cat-1: var(--cat-1);  --color-cat-2: var(--cat-2);
+  --color-cat-3: var(--cat-3);  --color-cat-4: var(--cat-4);
+  --color-cat-5: var(--cat-5);  --color-cat-6: var(--cat-6);
   --font-sans: var(--font-inter-tight);
   --font-serif: var(--font-instrument-serif);
   --font-mono: var(--font-jetbrains-mono);
@@ -88,6 +92,21 @@
   --good: #3ddc97;       /* tendance haussière uniquement */
   --warn: #f5c451;       /* restrictions de banlist uniquement */
   /* tendance baissière = --muted-text + ▼ (le rouge est réservé à l'accent) */
+  --ocg: #7fb0ff;        /* série de données « OCG » uniquement (décision 6) : 8,9:1 sur --ink */
+
+  /* palette catégorielle de données (TOK-99, décision 6) : identité d'une série ou d'un critère,
+     jamais un état. Ordre fixe, jamais recyclé. ≥ 5,1:1 sur --ink à --ink-4 (npm run contrast). */
+  --cat-1: var(--signal); /* braise : série principale */
+  --cat-2: #4795ee;       /* azur */
+  --cat-3: #1fa894;       /* sarcelle */
+  --cat-4: #ba880f;       /* or */
+  --cat-5: #dc6497;       /* rose */
+  --cat-6: #9183ea;       /* violet */
+
+  /* profondeur et reflet : réservés à la carte, objet-signature (TOK-106) */
+  --shadow-card: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(170, 195, 235, 0.14);
+  --holo: linear-gradient(115deg, transparent 30%, rgba(255, 140, 110, 0.55) 45%, rgba(127, 176, 255, 0.5) 52%, transparent 66%);
+  --tile-glow: rgba(255, 90, 60, 0.13);
 
   /* forme */
   --r: 4px;
@@ -102,6 +121,42 @@
   --dur-3: 1000ms;  /* remplissage d'une barre, ouverture */
   --stagger: 70ms;  /* décalage entre éléments d'une même séquence */
   --glow: rgba(255, 90, 60, 0.28); /* lueur d'accent, réservée à la carte vedette */
+
+  /* composants d'interaction (lot 8, components/ds/control.tsx) : seuls éléments du site à
+     porter une ombre, avec la carte. Chaque liste d'ombres garde le même nombre de couches
+     (2 internes, 3 portées) d'un état à l'autre, sinon la transition saute au lieu d'interpoler. */
+  --r-ctl: 12px;         /* boutons, rail d'onglets */
+  --r-ctl-sm: 10px;      /* petit bouton */
+  --r-tab: 8px;          /* onglet dans son rail (rayon du rail moins son retrait) */
+  --r-pill: 999px;       /* pill de filtre, bascule */
+  --ease-soft: cubic-bezier(0.3, 0.7, 0.4, 1);        /* survol, appui */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);   /* retour après appui : dépasse puis se pose */
+  --dur-press: 120ms;    /* enfoncement */
+  --dur-spring: 200ms;   /* retour */
+  /* teintes d'état (hexadécimales : lues par npm run contrast) */
+  --ctl-raise: #1b2433;       /* surface neutre survolée, onglet actif */
+  --ctl-primary-lo: #f65638;  /* bouton principal enfoncé */
+  --ctl-on-hi: #f6f8fb;       /* pill active survolée */
+  --ctl-on-lo: #cdd5e2;       /* pill active enfoncée */
+  /* variation de teinte du haut vers le bas, posée sur la couleur de fond */
+  --ctl-sheen-top: rgba(255, 255, 255, 0.07);
+  --ctl-sheen-bottom: rgba(0, 0, 0, 0.1);
+  /* reflet interne (haut) et arête basse */
+  --ctl-inset: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  --ctl-inset-bright: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+  --ctl-inset-press: inset 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0);
+  --ctl-inset-none: inset 0 0 0 rgba(0, 0, 0, 0), inset 0 0 0 rgba(0, 0, 0, 0);
+  --ctl-inset-well: inset 0 1px 2px rgba(0, 0, 0, 0.55), inset 0 -1px 0 rgba(170, 195, 235, 0.05);
+  /* ombre de contact, ombre proche, ombre diffuse */
+  --ctl-drop: 0 1px 1px rgba(0, 0, 0, 0.55), 0 2px 5px -1px rgba(0, 0, 0, 0.5), 0 10px 20px -8px rgba(0, 0, 0, 0.6);
+  --ctl-drop-hover: 0 1px 2px rgba(0, 0, 0, 0.55), 0 5px 10px -2px rgba(0, 0, 0, 0.5), 0 18px 30px -10px rgba(0, 0, 0, 0.7);
+  --ctl-drop-press: 0 0 1px rgba(0, 0, 0, 0.6), 0 1px 2px 0 rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --ctl-drop-low: 0 1px 1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.45), 0 6px 12px -6px rgba(0, 0, 0, 0.5);
+  --ctl-drop-none: 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
+  /* bouton principal : l'ombre diffuse prend la teinte de la braise */
+  --ctl-glow: 0 1px 1px rgba(0, 0, 0, 0.55), 0 3px 8px -2px rgba(255, 90, 60, 0.3), 0 12px 26px -10px rgba(255, 90, 60, 0.45);
+  --ctl-glow-hover: 0 1px 2px rgba(0, 0, 0, 0.55), 0 6px 14px -3px rgba(255, 90, 60, 0.4), 0 20px 38px -12px rgba(255, 90, 60, 0.6);
+  --ctl-glow-press: 0 0 1px rgba(0, 0, 0, 0.6), 0 1px 3px 0 rgba(255, 90, 60, 0.3), 0 3px 8px -4px rgba(255, 90, 60, 0.35);
 
   /* mapping shadcn */
   --background: var(--ink);
@@ -177,6 +232,380 @@
   animation: fade-rise var(--dur-2) var(--ease) both;
 }
 
+/* ---------- Accueil (TOK-106, d'après docs/audit-front/prototype) ----------
+   Même règle que plus haut : les keyframes ne décrivent que l'état de départ,
+   et tout ce qui dépend du défilement n'est activé que par le JavaScript
+   (attribut data-live). Sans JS ou en mouvement réduit, la page est complète
+   et statique, graphique dans son état final. */
+
+/* Titre révélé mot par mot : le mot monte derrière un masque, sans fondu (LCP). */
+@keyframes word-rise {
+  from { transform: translateY(105%); }
+}
+.home-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+}
+.home-word > span {
+  display: inline-block;
+  animation: word-rise var(--dur-3) var(--ease) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger) + 120ms);
+}
+
+/* Éventail de cartes en 3D, CSS seul. --k : position (-2 à 2), --z : profondeur. */
+@keyframes deal {
+  from { transform: rotate(0deg) translate3d(0, 60%, -200px); }
+}
+@keyframes ember-pulse {
+  0% { box-shadow: 0 0 0 0 var(--glow); }
+  70%, 100% { box-shadow: 0 0 0 9px transparent; }
+}
+.home-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: clamp(340px, 44vw, 560px);
+  perspective: 1400px;
+}
+.home-fan {
+  position: relative;
+  width: clamp(128px, 17vw, 230px);
+  aspect-ratio: 59 / 86;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 8deg)) rotateY(var(--ry, -14deg));
+  transition: transform 0.5s var(--ease);
+}
+.home-fan-card {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 9px;
+  background: linear-gradient(160deg, var(--ink-4), var(--ink-2));
+  box-shadow: var(--shadow-card);
+  transform-origin: 50% 120%;
+  transform: rotate(calc(var(--k) * 11deg))
+    translate3d(calc(var(--k) * 34%), calc(var(--k) * var(--k) * 4%), calc(var(--z) * 1px));
+  animation: deal 1.2s var(--ease) backwards;
+  animation-delay: calc(var(--n) * 90ms + 0.2s);
+}
+.home-fan-card[data-hot] {
+  box-shadow: var(--shadow-card), 0 0 60px -6px var(--glow);
+}
+/* Reflet holographique : suit le pointeur via --sx / --sy. */
+.home-fan-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0.55;
+  background: var(--holo);
+  background-size: 260% 260%;
+  background-position: var(--sx, 30%) var(--sy, 30%);
+  transition: background-position 0.4s var(--ease);
+}
+.home-pulse::before {
+  animation: ember-pulse 2.4s var(--ease) infinite;
+}
+
+/* Tuile du bento : lueur qui suit le pointeur (--mx / --my posés en JS). */
+.home-tile {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-2) var(--ease), border-color var(--dur-2);
+}
+.home-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), var(--tile-glow), transparent 60%);
+  transition: opacity var(--dur-2);
+}
+@media (hover: hover) {
+  .home-tile:hover { border-color: var(--signal-hi); }
+  .home-tile:hover::before { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .home-tile:hover { transform: translateY(-3px); }
+    .home-tile:hover .home-bigcard { transform: rotate(-2deg) scale(1.04); }
+  }
+}
+.home-bigcard {
+  transform: rotate(-5deg);
+  transition: transform var(--dur-3) var(--ease);
+  box-shadow: var(--shadow-card), 0 0 50px -10px var(--glow);
+}
+
+/* La preuve : état par défaut = graphique complet, étapes toutes lisibles.
+   data-live (posé par ProofScroll, ≥ 900 px, mouvement autorisé) épingle le
+   graphique et relie le tracé à la progression du défilement. */
+.home-proof[data-live] { height: 340vh; }
+.home-proof[data-live] .home-proof-sticky {
+  position: sticky;
+  top: 0;
+  display: grid;
+  align-items: center;
+  height: 100svh;
+  padding-block: 0;
+}
+.home-step {
+  border-left: 2px solid var(--signal);
+  background: linear-gradient(90deg, var(--tile-glow), transparent);
+  color: var(--text);
+  transition: color var(--dur-2), border-color var(--dur-2), background var(--dur-2);
+}
+.home-proof[data-live] .home-step {
+  border-left-color: var(--line-2);
+  background: none;
+  color: var(--muted-text);
+}
+.home-proof[data-live][data-step="0"] .home-step:nth-child(1),
+.home-proof[data-live][data-step="1"] .home-step:nth-child(2),
+.home-proof[data-live][data-step="2"] .home-step:nth-child(3) {
+  border-left-color: var(--signal);
+  background: linear-gradient(90deg, var(--tile-glow), transparent);
+  color: var(--text);
+}
+.home-curve-ocg { stroke-dashoffset: var(--ocg-off, 0); }
+.home-curve-tcg { stroke-dashoffset: var(--tcg-off, 0); }
+.home-ocg-group { transition: transform 1.2s var(--ease), opacity 0.6s; }
+.home-proof[data-live][data-step="2"] .home-ocg-group {
+  transform: translateX(var(--lag-shift));
+  opacity: 0.55;
+}
+.home-mark { transition: opacity 0.6s; }
+.home-proof[data-live] .home-mark { opacity: 0; }
+.home-proof[data-live][data-ocg] .home-mark-ocg-dot,
+.home-proof[data-live][data-ocg]:not([data-step="2"]) .home-mark-ocg-label,
+.home-proof[data-live][data-tcg] .home-mark-tcg,
+.home-proof[data-live][data-tcg][data-step="1"] .home-mark-lag {
+  opacity: 1;
+}
+
+/* Constellation du graphe (illustration) : SVG animé en CSS, aucun JavaScript. */
+@keyframes travel {
+  to { offset-distance: 100%; }
+}
+@keyframes drift {
+  50% { transform: translate(var(--dx, 2px), var(--dy, -3px)); }
+}
+.home-node {
+  animation: drift 6s ease-in-out infinite;
+  animation-delay: calc(var(--n, 0) * -0.7s);
+  transition: opacity var(--dur-2);
+}
+.home-constellation g[data-cluster] { transition: opacity var(--dur-2); }
+@media (hover: hover) {
+  .home-constellation:has(g[data-cluster]:hover) g[data-cluster]:not(:hover) { opacity: 0.25; }
+}
+
+/* ---------- Transitions de vue (TOK-101) ----------
+   Posées par React (<ViewTransition>, components/view-transitions.tsx) pendant une
+   navigation ; un navigateur sans l'API change de page comme avant. Deux effets
+   seulement : l'élément partagé (vignette, nom) qui va de la ligne à l'en-tête, et
+   le contenu qui glisse de 24 px selon le sens du lien. On n'anime que transform
+   et opacity, jamais au premier chargement. */
+@keyframes vt-fade {
+  from { opacity: 0; }
+}
+@keyframes vt-slide {
+  from { translate: var(--vt-offset) 0; }
+}
+::view-transition-group(.shared-morph) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease);
+}
+::view-transition-old(.slide-forward),
+::view-transition-old(.slide-back) {
+  animation: 140ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.slide-forward),
+::view-transition-new(.slide-back) {
+  animation:
+    220ms ease-out 100ms both vt-fade,
+    420ms var(--ease) both vt-slide;
+}
+::view-transition-new(.slide-forward) { --vt-offset: 24px; }
+::view-transition-new(.slide-back) { --vt-offset: -24px; }
+
+/* ---------- Composants d'interaction (lot 8) ----------
+   Source unique des boutons, pills, onglets et bascules : la classe `.ctl`, posée
+   par components/ds/control.tsx. Aucun autre fichier ne décrit un fond, une ombre
+   ou un état de bouton. CSS seul : les états sont :hover, :active, :focus-visible.
+
+   Une variante ne change que cinq variables (--_bg, --_fg, --_bd, --_inset, --_drop) ;
+   un état en change une partie. On n'anime que transform, box-shadow et des couleurs :
+   rien ne décale la mise en page (CLS 0).
+
+   Dans @layer components pour qu'un utilitaire (w-full, justify-start) puisse ajuster. */
+@layer components {
+  .ctl {
+    --_bg: var(--ink-3);
+    --_fg: var(--text);
+    --_bd: var(--line-2);
+    --_inset: var(--ctl-inset);
+    --_drop: var(--ctl-drop);
+    --_y: 0px;
+    --_s: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--_bd);
+    border-radius: var(--r-ctl);
+    background-color: var(--_bg);
+    background-image: linear-gradient(180deg, var(--ctl-sheen-top), transparent 52%, var(--ctl-sheen-bottom));
+    box-shadow: var(--_inset), var(--_drop);
+    color: var(--_fg);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transform: translateY(var(--_y)) scale(var(--_s));
+    /* Le retour (relâchement, fin de survol) suit le ressort ; l'aller est réglé par :active. */
+    transition:
+      transform var(--dur-spring) var(--ease-spring),
+      box-shadow var(--dur-1) var(--ease-soft),
+      background-color var(--dur-1) var(--ease-soft),
+      border-color var(--dur-1) var(--ease-soft),
+      color var(--dur-1) var(--ease-soft);
+  }
+  .ctl:focus-visible {
+    outline: 2px solid var(--signal-hi);
+    outline-offset: 3px;
+  }
+  /* dans un rail, l'anneau reste à l'intérieur du retrait de 4 px */
+  .ctl-tab:focus-visible { outline-offset: 1px; }
+  summary.ctl { list-style: none; }
+  summary.ctl::-webkit-details-marker { display: none; }
+
+  /* tailles (boutons) */
+  .ctl-sm { min-height: 36px; padding: 0 14px; border-radius: var(--r-ctl-sm); font-size: 13px; }
+  .ctl-lg { min-height: 48px; padding: 0 22px; font-size: 15px; }
+
+  /* principal : un seul par écran */
+  .ctl-primary {
+    --_bg: var(--signal);
+    --_fg: var(--on-signal);
+    --_bd: var(--signal);
+    --_inset: var(--ctl-inset-bright);
+    --_drop: var(--ctl-glow);
+  }
+  /* discret : aucune surface au repos */
+  .ctl-ghost,
+  .ctl-tab {
+    --_bg: transparent;
+    --_bd: transparent;
+    --_inset: var(--ctl-inset-none);
+    --_drop: var(--ctl-drop-none);
+    background-image: none;
+  }
+  .ctl-ghost { --_fg: var(--soft); }
+
+  /* pill de filtre et bascule : active = aria-pressed, aria-current ou .ctl-on */
+  .ctl-pill {
+    --_fg: var(--soft);
+    --_drop: var(--ctl-drop-low);
+    min-height: 34px;
+    padding: 0 13px;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+  }
+  .ctl-pill:is([aria-pressed="true"], [aria-current="page"], .ctl-on) {
+    --_bg: var(--text);
+    --_fg: var(--ink);
+    --_bd: var(--text);
+    --_inset: var(--ctl-inset-bright);
+  }
+
+  /* onglet : à plat dans son rail, l'onglet actif est en relief */
+  .ctl-tab {
+    --_fg: var(--muted-text);
+    min-height: 32px;
+    padding: 0 10px; /* pas plus : à 768 px la nav loge quatre onglets et la recherche */
+    gap: 4px;
+    border-radius: var(--r-tab);
+    font-size: 13px;
+  }
+  .ctl-tab:is([aria-current="page"], [aria-selected="true"], .ctl-on) {
+    --_bg: var(--ink-4);
+    --_fg: var(--text);
+    --_bd: var(--line);
+    --_inset: var(--ctl-inset);
+    --_drop: var(--ctl-drop-low);
+    background-image: linear-gradient(180deg, var(--ctl-sheen-top), transparent 52%, var(--ctl-sheen-bottom));
+  }
+  .ctl-rail {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-ctl);
+    background-color: var(--ink-2);
+    box-shadow: var(--ctl-inset-well);
+  }
+
+  /* survol : teinte éclaircie, ombre plus profonde, 1 px d'élévation */
+  @media (hover: hover) {
+    .ctl:hover { --_drop: var(--ctl-drop-hover); }
+    .ctl-secondary:hover { --_bg: var(--ink-4); --_bd: var(--muted-text); }
+    .ctl-primary:hover { --_bg: var(--signal-hi); --_bd: var(--signal-hi); --_drop: var(--ctl-glow-hover); }
+    .ctl-ghost:hover { --_bg: var(--ink-4); --_fg: var(--text); --_drop: var(--ctl-drop-none); }
+    .ctl-pill:hover { --_bg: var(--ink-4); --_fg: var(--text); --_bd: var(--muted-text); }
+    .ctl-pill:is([aria-pressed="true"], [aria-current="page"], .ctl-on):hover {
+      --_bg: var(--ctl-on-hi); --_fg: var(--ink); --_bd: var(--ctl-on-hi);
+    }
+    .ctl-tab:hover { --_bg: var(--ink-3); --_fg: var(--text); --_drop: var(--ctl-drop-none); }
+    .ctl-tab:is([aria-current="page"], [aria-selected="true"], .ctl-on):hover {
+      --_bg: var(--ctl-raise); --_drop: var(--ctl-drop);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .ctl:hover { --_y: -1px; }
+      .ctl-ghost:hover, .ctl-tab:hover { --_y: 0px; }
+    }
+  }
+
+  /* appui : enfoncement rapide ; au relâchement la transition de base (ressort) reprend */
+  .ctl:active {
+    --_inset: var(--ctl-inset-press);
+    --_drop: var(--ctl-drop-press);
+    transition-duration: var(--dur-press);
+    transition-timing-function: var(--ease-soft);
+  }
+  .ctl-primary:active { --_bg: var(--ctl-primary-lo); --_bd: var(--ctl-primary-lo); --_drop: var(--ctl-glow-press); }
+  .ctl-secondary:active, .ctl-pill:active { --_bg: var(--ink-3); }
+  .ctl-ghost:active, .ctl-tab:active { --_bg: var(--ink-4); --_drop: var(--ctl-drop-none); }
+  .ctl-pill:is([aria-pressed="true"], [aria-current="page"], .ctl-on):active { --_bg: var(--ctl-on-lo); --_bd: var(--ctl-on-lo); }
+  @media (prefers-reduced-motion: no-preference) {
+    .ctl:active { --_y: 0.5px; --_s: 0.97; }
+  }
+
+  /* désactivé : à plat, sans opacité réduite (le texte reste à 4,5:1) */
+  .ctl:is(:disabled, [aria-disabled="true"]) {
+    --_bg: var(--ink-4);
+    --_fg: var(--faint);
+    --_bd: var(--line);
+    --_inset: var(--ctl-inset-none);
+    --_drop: var(--ctl-drop-none);
+    --_y: 0px;
+    --_s: 1;
+    background-image: none;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -201,6 +630,14 @@
   *::before,
   *::after {
     transition: none !important;
+    animation: none !important;
+  }
+  /* Les pseudo-éléments de transition de vue ne sont pas couverts par `*` :
+     sans animation, l'ancienne page est remplacée d'un coup (TOK-101). */
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
     animation: none !important;
   }
 }

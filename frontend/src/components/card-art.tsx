@@ -1,9 +1,11 @@
-import Image from "next/image";
-import { artCropUrl } from "@/lib/card-images";
+import Image, { type ImageProps } from "next/image";
+import { SafeImage } from "@/components/safe-image";
+import { artCropUrl, fullCardUrl, smallCardUrl } from "@/lib/card-images";
 
 // Image de carte à dimensions fixes (rapport 59:86 d'une carte Yu-Gi-Oh!).
-// `width`/`height` réservent la place avant le chargement (CLS nul) et
-// next/image sert un fichier à la taille d'affichage, différé hors écran.
+// `width`/`height` réservent la place avant le chargement (CLS nul), chargement
+// différé hors écran. Les fichiers sont déjà en WebP à la taille d'affichage
+// (lib/card-images.ts) : ils ne passent pas par /_next/image (TOK-35).
 // Les cartes récentes absentes de la table `cards` n'ont pas d'image : on
 // dessine alors un repli avec les initiales, jamais un trou.
 const SIZES = {
@@ -28,21 +30,21 @@ export function CardArt({
 }) {
   const box = SIZES[size];
 
-  if (!src) {
-    return (
-      <span
-        aria-hidden
-        className={`grid shrink-0 place-items-center border border-line-2 bg-ink-4 font-mono text-[11px] text-muted-text ${box.className} ${className}`}
-      >
-        {name.slice(0, 2).toUpperCase()}
-      </span>
-    );
-  }
+  const placeholder = (
+    <span
+      aria-hidden
+      className={`grid shrink-0 place-items-center border border-line-2 bg-ink-4 font-mono text-[11px] text-muted-text ${box.className} ${className}`}
+    >
+      {name.slice(0, 2).toUpperCase()}
+    </span>
+  );
+  if (!src) return placeholder;
 
   return (
     // Décorative : le nom de la carte est toujours écrit à côté.
-    <Image
-      src={src}
+    <SafeImage
+      fallback={placeholder}
+      src={size === "lg" ? fullCardUrl(src) : smallCardUrl(src)}
       alt=""
       width={box.width}
       height={box.height}
@@ -52,10 +54,58 @@ export function CardArt({
   );
 }
 
+/**
+ * Carte entière qui remplit son parent (positionné, rapport 59:86) : éventail du
+ * hero, carte vedette. `sizes` = largeur d'affichage (sans effet tant que
+ * l'image n'est pas optimisée). Sans image : le nom de la carte, jamais un trou.
+ */
+export function CardArtFill({
+  src,
+  name,
+  sizes,
+  eager = false,
+}: {
+  src: string | null;
+  name: string;
+  sizes: string;
+  eager?: boolean;
+}) {
+  const placeholder = (
+    <span
+      aria-hidden
+      className="absolute inset-0 grid place-items-center p-3 text-center font-mono text-[11px] tracking-[0.1em] text-muted-text uppercase"
+    >
+      {name}
+    </span>
+  );
+  if (!src) return placeholder;
+  return (
+    <SafeImage
+      fallback={placeholder}
+      src={fullCardUrl(src)}
+      alt=""
+      fill
+      sizes={sizes}
+      loading={eager ? "eager" : "lazy"}
+      className="object-cover"
+    />
+  );
+}
+
+/**
+ * `next/image` sans optimisation, pour toute image de carte affichée hors de `CardArt` (bandeaux,
+ * tuiles) : le fichier est demandé tel quel à NEXT_PUBLIC_CARD_IMAGES_URL, jamais à /_next/image,
+ * dont le quota gratuit (5 000 transformations par mois) ne suffirait pas (TOK-35).
+ */
+export function CardImage(props: ImageProps) {
+  // eslint-disable-next-line jsx-a11y/alt-text -- `alt` est transmis par l'appelant
+  return <Image unoptimized {...props} />;
+}
+
 /** Pastille ronde recadrée sur l'illustration (pills, légendes). */
 export function ArtDot({ src, size = 18 }: { src: string; size?: number }) {
   return (
-    <Image
+    <CardImage
       src={artCropUrl(src)}
       alt=""
       width={size}

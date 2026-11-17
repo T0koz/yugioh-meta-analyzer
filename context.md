@@ -222,6 +222,21 @@ mémoire en texte libre), classement 54 « règles confirmées » / 6 « un seul
 → détail : `docs/moteur-combos/definitions-et-schema.md` (§ 2 mis à jour, § 3), décisions par défaut :
 `docs/planning/2026-11-18/decisions-prises.md`
 
+**Lot C1, tranche 0 du moteur (TOK-90, 2026-11-18, branche `claude/c1-tok-90-tranche-0-554a89`, non fusionnée)** :
+premières règles de jeu (`moteur_combos/regles.py` : Invocation Normale, Invocation Spéciale et Fusion, activation,
+coût, limites dans les cinq formes, chaîne simple), 5 cartes formalisées (`cartes.py` : Aluber, Branded Fusion,
+Fallen of Albaz, Tri-Brigade Springans Kitt, Rindbrumm en `brouillon`), 10 situations exécutées et conformes au YAML
+(`scenarios.py` : T01, T03, T04, T05, T08, T09, T11, T15, T60, T68). Combo : Aluber → Branded Fusion → Rindbrumm
+(Albaz + Kitt du Deck) → Kitt rappelle Albaz. Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (C1).
+- **« Non couvert » s'applique effet par effet** : une formalisation déclare tous les effets ; une résolution peut
+  rester `NON_CODEE` (jamais jouée) ou `HORS_PERIMETRE` (suppose l'adversaire). Une carte `non_traitee` jouée,
+  déplacée ou choisie → `non_couvert` ; restée en main → **réserve** dans le résultat ; option de légalité inconnue →
+  liste « peut-être incomplète ». Ne jamais faire disparaître une option : la ranger dans l'une de ces trois sorties.
+- **Formaliser une carte, c'est écrire contre `text_sha256`** : un errata désactive la formalisation (test dédié).
+- **Un scénario traduit l'action d'une situation, il ne dit jamais le verdict** : verdict et `choix` viennent du YAML.
+- Plusieurs déclencheurs simultanés → `non_couvert` (R22 non tranché) ; le test « retirer X » (hypothèse de Winston,
+  definitions § 4) n'est pas encore écrit.
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree

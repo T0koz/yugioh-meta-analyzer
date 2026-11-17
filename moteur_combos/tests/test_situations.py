@@ -124,12 +124,17 @@ def test_harnais_de_bout_en_bout(tmp_path):
     assert len(rapport.lignes) == 72
     compte = Counter(lt.classe for lt in rapport.lignes)
     assert sum(compte.values()) == 72 and set(compte) <= set(CLASSES)
-    assert [lt.test_id for lt in rapport.lignes if lt.statut == "verifie"] == ["T68"]
+    # Tranche 0 : les situations à scénario sont exécutées par le moteur et conformes au YAML.
+    from moteur_combos.scenarios import SCENARIOS
+
+    assert [lt.test_id for lt in rapport.lignes if lt.statut == "verifie"] == sorted(SCENARIOS)
     import sqlite3
 
     con = sqlite3.connect(tmp_path / "combos.db")
     assert con.execute("SELECT COUNT(*) FROM cb_test_situation").fetchone()[0] == 72
-    assert con.execute("SELECT COUNT(*) FROM cb_card WHERE status = 'non_traitee'").fetchone()[0] == 45
+    assert con.execute("SELECT COUNT(*) FROM cb_card WHERE status = 'non_traitee'").fetchone()[0] == 40
+    assert dict(con.execute("SELECT status, COUNT(*) FROM cb_card WHERE status <> 'non_traitee' GROUP BY status")
+                .fetchall()) == {"formalisee": 4, "brouillon": 1}
     orphelins = con.execute("SELECT COUNT(*) FROM cb_test_situation t LEFT JOIN cb_state s"
                             " ON s.state_id = t.start_state WHERE s.state_id IS NULL").fetchone()[0]
     assert orphelins == 0

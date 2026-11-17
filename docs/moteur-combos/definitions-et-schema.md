@@ -19,6 +19,10 @@
 > `moteur_combos/regles.py` (Invocation Normale, Invocation Spéciale et Fusion, activation, coût, limites dans les
 > cinq formes, chaîne simple), cinq cartes formalisées dans `moteur_combos/cartes.py`, situations traduites en
 > scénarios dans `moteur_combos/scenarios.py`. Application de D5 au niveau de l'effet : voir § 3.4 (tranche 0).
+>
+> **Mise à jour du 18 novembre 2026 (J1, lot C2, TOK-118)** : les 37 cartes du pilote sont formalisées
+> (`moteur_combos/cartes_j1.py`), règles ajoutées dans `regles.py` (R22 codé, Synchro, procédure, Phase de Fin…),
+> statut `formalisee` durci (§ 3.4, J1). Rapport : [`j1-rapport.md`](j1-rapport.md).
 
 Les exemples viennent du deck source du jeu de tests (voir
 [`jeu-de-tests-branded.md`](jeu-de-tests-branded.md)), et les numéros `T..` renvoient à ses situations.
@@ -407,6 +411,11 @@ n'exécute jamais l'effet manquant, l'option apparaît « non couverte ». Une c
 ou choisie arrête la transition sur `non_couvert`. En exécution dirigée (un chemin donné, pas une exploration),
 le cas 2 ne coupe pas le résultat : il l'accompagne de **réserves** (cartes non formalisées en main, sur le
 terrain ou au Cimetière, qui auraient pu agir) ; le cas 3 donne la liste des options **indéterminées**.
+
+**Application en J1 (lot C2, décision par défaut).** `formalisee` exige en plus que **chaque effet du pilote ait été
+exercé par au moins un test exécuté** (situations de `tests-branded.yaml` ou de `situations-j1.yaml`), compté par le
+moteur (`regles.EXERCES`) et lu par le harnais ; un effet jamais exercé laisse la carte en `brouillon` (« écrite, non
+testée »). `verifiee` reste réservé à l'oracle ou au juge (aucune carte au 18/11).
 
 « Exhaustif » (§ 4) = toute carte a l'un de ces statuts ; le taux de couverture publié est la part
 de `formalisee` + `verifiee`, et le taux démontré la part de `verifiee`.

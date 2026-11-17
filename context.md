@@ -237,6 +237,24 @@ Fallen of Albaz, Tri-Brigade Springans Kitt, Rindbrumm en `brouillon`), 10 situa
 - Plusieurs déclencheurs simultanés → `non_couvert` (R22 non tranché) ; le test « retirer X » (hypothèse de Winston,
   definitions § 4) n'est pas encore écrit.
 
+**Lot C2, J1 formalisation (TOK-118, 2026-11-18, branche `claude/c2-j1-formalisation-a044b3`, non fusionnée)** : les 37
+cartes du pilote sont `formalisee` (`moteur_combos/cartes_j1.py` + tranche 0) ; 72 effets déclarés, 57 du pilote, tous
+exercés par un test ; 69/72 situations du YAML et 30/30 situations J1 (`situations-j1.yaml`, verdicts de l'agent)
+exécutées et conformes ; 0 erreur de formalisation trouvée, 173 tests pytest. **J1 non déclaré atteint** : le taux
+d'erreur demande l'oracle sur les situations J1 et la relecture à l'aveugle de 20 effets tirés (graine 20260118, cible
+borne haute Wilson ≤ 20 %). Rapport : `docs/moteur-combos/j1-rapport.md` ; pour l'oracle :
+`situations-pour-oracle.md` ; formulaire : `docs/planning/2026-11-18/decisions-prises.md` (C2).
+- **`formalisee` = résolutions écrites ET chaque effet du pilote exercé par un test** (`regles.EXERCES`, compté par le
+  harnais), sinon `brouillon`. Le YAML n'exerçait que 29 des 57 effets : sans la mesure, 28 effets jamais joués
+  auraient été déclarés formalisés.
+- **R22 codé** (ordre libre, obligatoires d'abord) ; **R23 obligatoire** (texte TCG) contre l'oracle (texte OCG).
+- **Passer les tests du premier coup ne vaut pas vérification** : YAML et formalisation sont deux lectures LLM du même
+  texte. Le 0/30 d'aujourd'hui est un constat, pas le taux de J1 (avis `data-scientist-ygo`).
+- 13 points non tranchés par le texte (N01 à N13, marqués ⚖ dans le code) ; N01 (`Luluwalilith` sur sa propre sortie
+  de l'Extra Deck) répond « non couvert » : toute Invocation Synchro de `Luluwalilith` est non couverte pour l'instant.
+- Une situation J1 ou un scénario du YAML est une traduction en décisions ; la liste attendue reste celle du YAML.
+  Nouvelle situation : départ dans `situations-j1.yaml`, scénario dans `SCENARIOS_J1` (`scenarios.py`).
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree

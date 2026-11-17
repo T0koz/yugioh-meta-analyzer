@@ -145,3 +145,30 @@ l'oracle des choix de la tranche ne sont comptées.
   Pour J1, compter chaque carte avec ses voisines dans les listes de choix, pas seule.
 - Dix situations du jeu de tests sur soixante-douze passent ; le reste demande surtout des **scénarios** (traduction
   de l'action en décisions) et la formalisation de 32 cartes, pas de nouvelles règles de base.
+
+## TOK-118, J1 formalisation du 18 novembre 2026 (lot C2)
+
+Heures relevées avec `date` : 02:12 (début de la lecture), 02:17:53 (début du code), 02:32:38 (début des scénarios),
+02:43 (situations J1 vertes, rédaction), ≈ 02:52 (fin, commit). Temps d'horloge d'un agent ; ni la relecture de
+l'échantillon (humain), ni le passage de l'oracle sur les situations J1, ni la validation des décisions par Thomas ne
+sont comptés.
+
+| # | Étape | Début | Fin | Durée (agent) | Produit | Temps humain de validation |
+|---|---|---|---|---|---|---|
+| 1 | Lecture du brief, des définitions, des réponses du juge et de l'oracle, du YAML, du code ; textes des 45 cartes relevés | 02:12 | ≈ 02:17 | ≈ 6 min | rien d'écrit | — |
+| 2 | Moteur étendu (`regles.py`) et 32 cartes (`cartes_j1.py`), Rindbrumm effet 1 | ≈ 02:17 | ≈ 02:28 | ≈ 11 min | ≈ 2 000 lignes | — |
+| 3 | Scénarios des 59 situations restantes du YAML, traduction de la mémoire du tour ; 59/62 au premier passage, 2 erreurs de scénario | ≈ 02:28 | ≈ 02:35 | ≈ 7 min | `scenarios.py` | — |
+| 4 | Couverture (29/57 effets exercés), 30 situations J1, statut par couverture, tests pytest (173) | ≈ 02:35 | ≈ 02:42 | ≈ 7 min | `situations-j1.yaml`, `test_j1.py` | relecture des verdicts J1 : oracle |
+| 5 | Avis `data-scientist-ygo` (en parallèle), tirage de l'échantillon, relecture de l'auteur (13 points ⚖) | ≈ 02:40 | ≈ 02:44 | ≈ 4 min | `echantillon.py` | relecture de 20 effets + 15 hors périmètre : à mesurer |
+| 6 | Documentation : rapport J1, situations pour l'oracle, décisions et formulaire, ce journal, `context.md`, `BACKLOG.md`, `check.py` | ≈ 02:44 | ≈ 02:52 | ≈ 8 min | — | à mesurer (Thomas) |
+| | **Total** | 02:12 | ≈ 02:52 | **≈ 40 min** | 37 cartes `formalisee`, 69 + 30 situations exécutées | |
+
+**Enseignements pour les estimations** :
+- **Formaliser coûte peu ; vérifier coûte tout.** 32 cartes en ≈ 11 minutes d'agent ; la mesure du taux d'erreur, elle,
+  attend deux ressources rares (l'oracle, piloté par une autre session, et un relecteur humain). Le temps humain de
+  J1 est dominé par la relecture des 35 effets de l'échantillon.
+- **Passer les tests du premier coup ne prouve pas grand-chose ici** : les verdicts du YAML et la formalisation
+  viennent de lectures du même texte par un LLM. Les 59 situations conformes au premier passage disent que le code
+  suit la lecture ; l'indépendance vient de l'oracle (sur les verdicts) et de la relecture (clause par clause).
+- **La couverture d'effets est l'indicateur utile** : le YAML, écrit pour les points de règle, n'exerçait que 29 des 57
+  effets ; sans la mesure, 28 effets auraient été déclarés « formalisés » sans avoir jamais tourné.

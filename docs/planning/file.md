@@ -54,8 +54,19 @@ Prompt de reprise (identique à chaque fenêtre) : « Lis docs/planning/file.md 
 | 18 | Fondations du moteur de combos (arrêt si D1-D7 non validées par Thomas) | `combos/fondations-moteur.md` | Opus |
 | 19 | Audit de rigueur statistique de tous les scores (rapport seul) | `sprint-3/audit-rigueur-statistique.md` | Opus |
 | 20 | Correctifs de l'audit A1 à A8 (A1-A4 d'abord) | `sprint-3/audit-A1-A8.md` | Opus |
+| 21 | Collecte des dates d'annonce des banlists | `sprint-4/21-dates-annonce.md` | Sonnet |
+| 22 | Ban Radar : rangs par liste, régression conditionnelle, pont daté | `sprint-4/22-ban-radar-rangs.md` | Opus |
+| 23 | B2 backtest des signaux précoces (après A1) | `sprint-4/23-B2-signaux-precoces.md` | Opus |
+| 24 | B1 fenêtre d'arrivée par analyse de survie (après A2) | `sprint-4/24-B1-fenetre-survie.md` | Opus |
+| 25 | B4 intervalles de prévision par archétype | `sprint-4/25-B4-intervalles.md` | Opus |
+| 26 | B3 pont et simulateur face aux banlists (après A4) | `sprint-4/26-B3-pont-simulateur.md` | Opus |
+| C1 | Combos : TOK-90 tranche 0 (un combo Branded de bout en bout) | `combos/tok-90-tranche-0.md` | Opus |
+| C2 | Combos : J1, formalisation des 37 cartes du pilote + taux d'erreur | `combos/j1-formalisation.md` | Opus |
+| C3 | Combos : J2, exploration, retrouver les combos des guides | `combos/j2-exploration.md` | Opus |
 
 Les tests visuels du lot 5 sont à mettre à jour après les lots 9, 11 et 12 (nouvelles pages).
+
+**Ordre (Thomas, 18/11 1 h 31) : priorité au moteur de combos.** 17 et 18 en cours → C1 → C2 → C3, chaîne prioritaire. En deuxième session (seulement pendant une attente passive de la chaîne combos) : 16 → 20 → 21 → 22 → 23 → 24 → 25 → 26, puis tâches de fond. Lots de méthode : règles dans `sprint-4/regles-methode.md`.
 
 ## Quand la file est vide ou en attente de Thomas
 Passe aux tâches de fond : `docs/planning/taches-de-fond.md` (Sonnet, 3 par nuit, branche à part, rapports seuls pour la revue et les données).

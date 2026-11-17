@@ -1,8 +1,8 @@
 # 0047 — Tests visuels avec Playwright Python plutôt que @playwright/test
 
 - Date : 2026-11-16
-- Statut : à valider par Thomas
-- Décidé par : Lot 5, par défaut ; en attente de revue de Thomas
+- Statut : acceptée
+- Décidé par : Lot 5, par défaut ; validée par Thomas le 2026-11-17 (revue du matin)
 - Tickets : TOK-100
 
 ## Contexte

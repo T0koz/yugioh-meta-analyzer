@@ -4,6 +4,9 @@
 > prendre ces décisions tout seul ? ») : les options pré-cochées ci-dessous sont **retenues**.
 > Ce sont des choix techniques, réversibles tant que le moteur n'existe pas. Thomas peut en rouvrir
 > un à tout moment ; les formulaires sont conservés pour cela.
+>
+> **Validées par Thomas le 17 novembre 2026** (revue du matin) : D1 à D7 confirmées telles que
+> pré-cochées. D1 et D3 restent à confirmer par le juge (TOK-89).
 
 | N° | Décision retenue | Ce qui la ferait rouvrir |
 |---|---|---|

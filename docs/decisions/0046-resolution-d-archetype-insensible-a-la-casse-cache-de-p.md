@@ -1,8 +1,8 @@
 # 0046 — Résolution d'archétype insensible à la casse (cache de pages corrompu sur macOS)
 
 - Date : 2026-11-16
-- Statut : à valider par Thomas
-- Décidé par : Lot 4, par défaut ; en attente de revue de Thomas
+- Statut : acceptée
+- Décidé par : Lot 4, par défaut ; validée par Thomas le 2026-11-17 (revue du matin)
 - Tickets : TOK-101
 
 ## Contexte

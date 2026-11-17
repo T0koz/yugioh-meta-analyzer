@@ -1,8 +1,8 @@
 # 0041 — Données de Kewl Tune figées dans le front pour l'exemple de l'accueil
 
 - Date : 2026-11-16
-- Statut : à valider par Thomas
-- Décidé par : Lot 2, par défaut ; en attente de revue de Thomas
+- Statut : acceptée
+- Décidé par : Lot 2, par défaut ; validée par Thomas le 2026-11-17 (revue du matin)
 - Tickets : TOK-106
 
 ## Contexte
@@ -20,6 +20,8 @@ Pas d'écriture en base ni de nouvel endpoint cette nuit ; réversible.
 
 ## Conséquences
 À relever de nouveau quand la base change ; un endpoint pourra le remplacer avec TOK-101.
+
+Revue du 2026-11-17 : acceptée pour l'instant par Thomas, avec un ticket pour servir les parts OCG mensuelles par l'API et retirer les données figées : TOK-116.
 
 ## Sources
 - `docs/planning/2026-11-17/decisions-prises.md` (Lot 2)

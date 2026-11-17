@@ -472,16 +472,37 @@ Méthode déjà conformes. Rien n’est appliqué avant la validation de Thomas.
 
 Aucun score ne remplit « estimé, validé hors échantillon, comparé au naïf, incertitude affichée » ; pires écarts : signaux précoces (carte interdite en tête, banlist figée au 13 juin), fenêtre d'arrivée « 80 % » couvrant 62-67 % en 2024-2025, score boutique ≈ part OCG (ρ 0,94) → `docs/journal/audit-rigueur-statistique.md`.
 
+### 🌙 File de nuit du 16-17/11 (orchestrateur) : état au matin du 17/11
+
+Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration **`claude/front-nuit-17-11`**, **pas dans `main`, rien poussé**.
+Le dépôt principal est sur cette branche (retour : `git checkout main`). Dernier `check.py --visuel` : vert (46 tests, 51 captures).
+Les sections ci-dessus qui disent « branche … non fusionnée » sont dans la branche d'intégration. État lot par lot : `docs/planning/etat.md` ;
+décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ; Linear synchronisé le 17/11 (tickets livrés en « In Review »).
+- **Bases modifiées par l'orchestrateur** (après sauvegarde `data/backup_*_20261116.db` / `_20261117.db`) : tables ajoutées par TOK-114,
+  TOK-103 et TOK-55 dans `yugioh.db` (aucune table existante changée, vérifié contre les sauvegardes) ; `serving.db` reconstruite (11,8 Mo).
+- **Parallélisme** (règle de Thomas, 17/11, `file.md`) : un lot à la fois ; une deuxième session seulement pendant une attente passive de la
+  première, sur d'autres fichiers ; jamais plus de deux. Motif noté dans `etat.md`.
+- **Modèle** : lots front sur Opus 5.5 à partir du lot 11 (consigne de Thomas du 16/11 au soir) ; `CLAUDE.md` dit encore « Fable ».
+- **Garde-fou** : faux positif connu (heredoc qui cite la commande de push) et contournements par la syntaxe du shell, rapport de revue
+  `docs/planning/fond/2026-11-17.md` sur la branche `claude/fond-2026-11-17-b80f1e` (non fusionnée, tâche de fond).
+
 ### 🔜 À faire
 
-- **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109, `scripts/export_db_snapshot.py`), protection de `main` (interdire force-push), contact d'un juge pour les combos (TOK-89, `docs/moteur-combos/dossier-juge.md`)
-- **Suites de TOK-113** : rafraîchir `cards` dans la chaîne (`views_week` figé au 13 juin), seuil absolu pour Fort / Modéré / Faible
-- **TOK-92** : images faites (section ci-dessous) ; reste l'envoi vers le stockage définitif au déploiement (TOK-35)
-- **Vérifier** au prochain `fetch_cards.py` que le nom corrigé par la session combos n'est pas écrasé
-
-- **TOK-35** : déploiement — base de service prête, reste à trancher l'hébergement (Vercel seul vs Vercel + Railway) et à fournir les credentials
-- **TOK-52** : Mode Joueur / Mode Boutique (toggle UX) — nécessite de trancher ce que chaque mode change concrètement (pas fait en autonome pour cette raison)
-- **TOK-55** : page faite (lot 12, section ci-dessus) ; reste les dates d'annonce des banlists (veille de l'annonce au lieu de l'entrée en vigueur) et l'ajout à `refresh_all.py`
+- **Validé par Thomas le 17/11 (revue du matin, détail dans `docs/planning/2026-11-17/decisions-prises.md`)** : formulaire TOK-115
+  (poids inchangés, verdict de l'Historique tel que proposé) ; audit de rigueur (A1-A4 puis A5-A8) ; textes du lot 16 (tout appliquer,
+  titre neutre « Méta Yu-Gi-Oh! TCG et OCG », `check_copy.py` bloquant) ; source de l'oracle TOK-86 (`edo9300/ygopro-core`, usage
+  local hors dépôt) ; D1 à D7 du moteur de combos ; les 14 notes « à valider » de `docs/decisions/` (52 acceptées).
+- **Lots prêts à lancer** (un à la fois) : 16 seconde moitié (application des textes), 18 (fondations du moteur), 20 (correctifs
+  A1 à A8 de l'audit). Le lot 17 (TOK-86) attend que Thomas installe `premake` et `lua`.
+- **Encore en attente de Thomas** : lots de correctifs de la revue de code (rapport de la tâche de fond).
+- **TOK-116** : servir les parts OCG mensuelles par l'API, pour retirer les données figées de l'accueil (`lib/proof-data.ts`).
+- **Fusion** de `claude/front-nuit-17-11` dans `main` après relecture, puis push par Thomas ; supprimer les branches de lots fusionnées.
+- **TOK-35** : relier le projet Vercel depuis la racine du dépôt, créer le compte Cloudflare R2, premier déploiement de prévisualisation (`docs/deploiement.md`).
+- **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109), protection de `main`, contact d'un juge (TOK-89).
+- **À relire par la collaboratrice** : calcul de Wilson (`frontend/src/lib/wilson.ts`), diagnostic TOK-115, recalculs de l'audit (62-67 %, 0,94).
+- **Suites** : `views_week` figé au 13 juin ; date de calcul du graphe de co-occurrences absente ; dates d'annonce des banlists ;
+  gain du modèle de prédiction cité à 4, 5 ou 6 % selon les documents.
+- **TOK-52** : Mode Joueur / Mode Boutique — à trancher ce que chaque mode change.
 - **Phase B/C (TOK-54 à 67)** : Deck Builder, Referral boutique, API freemium — voir BACKLOG.md
 
 ### ✅ Fait en autonome / avec Thomas le 2026-08-05
@@ -530,4 +551,4 @@ yugioh-meta-analyzer/
 
 ---
 
-*Dernière mise à jour : 2026-11-16 (fin de journée : refonte front, collaboration, combos et TOK-113 fusionnés dans `main`)*
+*Dernière mise à jour : 2026-11-17 (fin de la file de nuit : lots 1 à 19 dans `claude/front-nuit-17-11`, non fusionnés dans `main`)*

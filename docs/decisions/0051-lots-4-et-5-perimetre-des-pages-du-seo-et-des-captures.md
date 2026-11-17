@@ -1,8 +1,8 @@
 # 0051 — Lots 4 et 5 : périmètre des pages, du SEO et des captures
 
 - Date : 2026-11-16
-- Statut : à valider par Thomas
-- Décidé par : Lots 4 et 5, par défaut ; en attente de revue de Thomas
+- Statut : acceptée
+- Décidé par : Lots 4 et 5, par défaut ; validée par Thomas le 2026-11-17 (revue du matin)
 - Tickets : TOK-101, TOK-100
 
 ## Contexte

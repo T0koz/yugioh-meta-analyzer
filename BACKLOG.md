@@ -57,6 +57,8 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 | — | _4 tickets terminés (TOK-95 à 98) : voir l’archive_ | | |
 
+- **TOK-116** (🔜 Backlog, 🟠 Medium, créé le 2026-11-17) : servir les parts OCG mensuelles par l'API pour remplacer
+  les données figées de l'accueil (`lib/proof-data.ts`, décision 0041).
 - Suites hors chantier : `log_predictions.py` journalise la fausse date comme `target_date` ; le notebook 10 ne
   filtre pas les archétypes déjà en TCG ; `/meta/evolution` choisit son top 15 sur un mois à petits effectifs.
 
@@ -222,4 +224,9 @@ Suites de TOK-113 sans ticket : rafraîchir `cards` dans la chaîne (`views_week
 du moteur de combos (TOK-85, 87) sont dans `main`, poussés. Reste à Thomas : pseudo GitHub (TOK-108), envoi de la base
 (TOK-109), protection de `main`, contact d'un juge (TOK-89). Prochaine étape technique : TOK-106.
 
-*Dernière mise à jour : 2026-11-16 (fin de journée)*
+**File de nuit du 16-17/11 :** lots 1 à 19 fusionnés dans `claude/front-nuit-17-11` (non fusionnée dans `main`, rien poussé) ;
+statuts « 🟡 Livré … sur `claude/lotNN-…` » ci-dessus = présents dans cette branche d'intégration. Linear synchronisé le 17/11 :
+TOK-55, 92, 99, 100, 101, 103, 106, 114, 115 en « In Review » ; TOK-35 et TOK-86 en « In Progress ». Décisions en attente de Thomas :
+`context.md` § « À faire » et `docs/planning/etat.md`.
+
+*Dernière mise à jour : 2026-11-17 (fin de la file de nuit)*

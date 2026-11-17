@@ -50,6 +50,7 @@ Prompt de reprise (identique à chaque fenêtre) : « Lis docs/planning/file.md 
 | 17 | TOK-86 banc d'oracle Project Ignis (agent séparé) | `combos/tok-86-banc-oracle.md` | Sonnet |
 | 18 | Fondations du moteur de combos (arrêt si D1-D7 non validées par Thomas) | `combos/fondations-moteur.md` | Opus |
 | 19 | Audit de rigueur statistique de tous les scores (rapport seul) | `sprint-3/audit-rigueur-statistique.md` | Opus |
+| 20 | Correctifs de l'audit A1 à A8 (A1-A4 d'abord) | `sprint-3/audit-A1-A8.md` | Opus |
 
 Les tests visuels du lot 5 sont à mettre à jour après les lots 9, 11 et 12 (nouvelles pages).
 

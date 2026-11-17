@@ -1,8 +1,8 @@
 # 0043 — Champs de date ajoutés à quatre réponses d'API pour les pieds « source + date »
 
 - Date : 2026-11-16
-- Statut : à valider par Thomas
-- Décidé par : Lot 3, par défaut ; en attente de revue de Thomas
+- Statut : acceptée
+- Décidé par : Lot 3, par défaut ; validée par Thomas le 2026-11-17 (revue du matin)
 - Tickets : TOK-99
 
 ## Contexte

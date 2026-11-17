@@ -1,8 +1,8 @@
 # 0050 — Lots 2 et 3 : choix de contenu, de palette et de forme des graphiques
 
 - Date : 2026-11-16
-- Statut : à valider par Thomas
-- Décidé par : Lots 2 et 3, par défaut ; en attente de revue de Thomas
+- Statut : acceptée
+- Décidé par : Lots 2 et 3, par défaut ; validée par Thomas le 2026-11-17 (revue du matin)
 - Tickets : TOK-106, TOK-99
 
 ## Contexte
@@ -13,7 +13,7 @@ Registre des décisions de moindre portée prises par défaut pendant ce lot. Ch
 
 ## Décision
 
-  - Titre du prototype et « 100/100 » boutique faux → **titre « La méta OCG précède la méta TCG de 2 à 6 mois. » ; tuile boutique = rang de l'archétype (3ᵉ sur 89) et libellé, pas `buy_score`** (chiffres de `SITE_FACTS` et du lot 1)
+  - Titre du prototype et « 100/100 » boutique faux → **titre « La méta OCG précède la méta TCG de 2 à 6 mois. » ; tuile boutique = rang de l'archétype (3ᵉ sur 89) et libellé, pas `buy_score`** (chiffres de `SITE_FACTS` et du lot 1) — **titre remplacé le 2026-11-17** par le titre neutre « Méta Yu-Gi-Oh! TCG et OCG » (formulaire des textes du lot 16, `decisions-prises.md`) ; la tuile boutique reste valable
   - Pied de page : partout ou accueil seulement → **accueil seulement (`SiteFooter` réutilisable)** (périmètre du lot ; l'étendre au layout est une ligne)
   - Prototype : barre du radar colorée avec `--warn` et bleu OCG → **une seule teinte (accent, opacité décroissante) ; `--ocg` réservé à l'OCG** (règles du design system)
   - Tuiles « Prédictions » et « Recherche » absentes du prototype → **retirées ; bande de 4 liens sous le bento** (fidélité au prototype sans perdre l'accès aux pages)
@@ -29,7 +29,7 @@ Registre des décisions de moindre portée prises par défaut pendant ce lot. Ch
 Une raison est donnée entre parenthèses pour chaque ligne.
 
 ## Conséquences
-À relire par Thomas ligne par ligne ; chacune est réversible sauf mention contraire dans la source.
+Relue par Thomas le 2026-11-17 : toutes les lignes acceptées, sauf le titre de l'accueil (remplacé, voir la première ligne). Pied de page : accueil seulement pour l'instant. Chacune est réversible sauf mention contraire dans la source.
 
 ## Sources
 - `docs/planning/2026-11-17/decisions-prises.md` (Lots 2 et 3)

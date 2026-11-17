@@ -257,6 +257,13 @@ def enregistrer_carte(con: sqlite3.Connection, carte: CarteDeck, texte: TexteCar
     alors la formalisation ne vaut plus, retour à `non_traitee` (détection d'errata).
     Renvoie 'nouvelle', 'inchangee' ou 'texte_change'."""
     maintenant_ = maintenant()
+    homonyme = con.execute("SELECT card_id FROM cb_card WHERE name = ? AND card_id <> ?",
+                           (carte.nom, carte.card_id)).fetchone()
+    if homonyme is not None:
+        # Piège connu : YGOPRODeck renumérote parfois une carte (même nom, autre id).
+        raise ValueError(f"{carte.nom} : déjà en base sous l'id {homonyme['card_id']}, le deck dit {carte.card_id} "
+                         "(renumérotation YGOPRODeck ?) — à traiter à la main, rien n'est écrit")
+    raison_absent = "texte absent de la source" if not texte.texte else None
     ancienne = con.execute("SELECT text_sha256 FROM cb_card WHERE card_id = ?", (carte.card_id,)).fetchone()
     lit_position = int(carte.nom in CARTES_LISANT_LA_POSITION)
     valeurs = dict(
@@ -268,10 +275,10 @@ def enregistrer_carte(con: sqlite3.Connection, carte: CarteDeck, texte: TexteCar
     if ancienne is None:
         con.execute(
             "INSERT INTO cb_card (card_id, name, text, text_sha256, text_fetched, frame_type, card_type, attribute,"
-            " race, level, atk, def, reads_position, status, updated_at) VALUES (:card_id, :name, :text,"
-            " :text_sha256, :text_fetched, :frame_type, :card_type, :attribute, :race, :level, :atk, :def_,"
-            " :reads_position, 'non_traitee', :updated_at)",
-            valeurs,
+            " race, level, atk, def, reads_position, status, status_reason, updated_at) VALUES (:card_id, :name,"
+            " :text, :text_sha256, :text_fetched, :frame_type, :card_type, :attribute, :race, :level, :atk, :def_,"
+            " :reads_position, 'non_traitee', :raison, :updated_at)",
+            {**valeurs, "raison": raison_absent},
         )
         etat = "nouvelle"
     elif ancienne["text_sha256"] != texte.sha256:
@@ -283,6 +290,8 @@ def enregistrer_carte(con: sqlite3.Connection, carte: CarteDeck, texte: TexteCar
             " updated_at = :updated_at WHERE card_id = :card_id",
             valeurs,
         )
+        # Les effets formalisés sur l'ancien texte ne valent plus rien non plus.
+        con.execute("UPDATE cb_effect SET status = 'non_traitee' WHERE card_id = ?", (carte.card_id,))
         etat = "texte_change"
     else:
         con.execute("UPDATE cb_card SET reads_position = ? WHERE card_id = ?", (lit_position, carte.card_id))

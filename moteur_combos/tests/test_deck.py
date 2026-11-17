@@ -126,4 +126,13 @@ def test_errata_remet_le_statut_a_non_traitee(tmp_path, deck, textes):
     assert enregistrer_carte(con, carte, t, set()) == "texte_change"
     statut, raison = con.execute("SELECT status, status_reason FROM cb_card").fetchone()
     assert statut == "non_traitee" and "errata" in raison
+    # Les effets formalisés sur l'ancien texte repassent aussi à non_traitee.
+    con.execute("INSERT INTO cb_effect (card_id, position, kind, optional, text_span, text_sha256, status)"
+                " VALUES (?, 1, 'ignition', 1, 'x', 'y', 'verifiee')", (carte.card_id,))
+    t.texte += " (errata 2)"
+    assert enregistrer_carte(con, carte, t, set()) == "texte_change"
+    assert con.execute("SELECT status FROM cb_effect").fetchone()[0] == "non_traitee"
+    # Renumérotation YGOPRODeck : même nom, autre id → refus explicite.
+    with pytest.raises(ValueError, match="renumérotation"):
+        enregistrer_carte(con, replace(carte, card_id=carte.card_id + 1), t, set())
     con.close()

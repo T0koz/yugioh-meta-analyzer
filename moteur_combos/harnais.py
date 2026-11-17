@@ -105,6 +105,8 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
         vocab = vocabulaire_archetypes([t.texte for t in textes.values()], noms_base or set())
         r.ok(f"archétypes cités par les textes : {', '.join(sorted(vocab))}")
         for c in deck.cartes:
+            if c.card_id not in textes:
+                continue  # déjà signalé par la vérification des empreintes
             tags = etiquettes(c.nom, textes[c.card_id].texte, vocab)
             tags_par_carte[c.nom] = tags
             noms_portes[c.nom] = {t for t, k, _ in tags if k == "nom"}
@@ -121,6 +123,8 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
         formes: Counter[str] = Counter()
         non_reconnues, noms_differents = [], []
         for c in deck.cartes:
+            if c.card_id not in textes:
+                continue
             a = analyser_limites(c.nom, textes[c.card_id].texte)
             formes.update(f for f, _ in a.clauses)
             non_reconnues += [f"{c.nom} : « {p[:90]} »" for p in a.non_reconnues]
@@ -151,9 +155,15 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
     statut_carte: dict[str, str] = {}
     try:
         if con is not None:
-            if textes:
-                for c in deck.cartes:
-                    enregistrer_carte(con, c, textes[c.card_id], tags_par_carte[c.nom])
+            if textes and len(textes) == len(deck.cartes):
+                try:
+                    for c in deck.cartes:
+                        enregistrer_carte(con, c, textes[c.card_id], tags_par_carte[c.nom])
+                except ValueError as exc:
+                    r.echec("cartes impossibles à enregistrer", [str(exc)])
+                    con.rollback()
+                    con.close()
+                    return r
                 enregistrer_deck(con, deck, str(chemins.DECK_SOURCE.relative_to(chemins.ROOT)))
                 statut_carte = {row["name"]: row["status"] for row in con.execute("SELECT name, status FROM cb_card")}
             elif con.execute("SELECT COUNT(*) FROM cb_deck WHERE deck_ref = ?", (deck.ref,)).fetchone()[0] == 0:
@@ -163,6 +173,9 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
             else:
                 statut_carte = {row["name"]: row["status"] for row in con.execute("SELECT name, status FROM cb_card")}
 
+        if con is not None:
+            # Purge puis réinsertion : une situation retirée du YAML disparaît aussi de la base.
+            con.execute("DELETE FROM cb_test_situation")
         for s in jeu.situations:
             r.lignes.append(_traiter(s, jeu, deck, points, statut_carte, con))
         if con is not None:
@@ -236,7 +249,7 @@ def _traiter(s: dict, jeu, deck, points, statut_carte: dict[str, str], con: sqli
                  int(e.est_stable()), e.empreinte_plateau()),
             )
         con.execute(
-            "INSERT OR REPLACE INTO cb_test_situation (test_id, yaml_sha256, deck_ref, perimetre, rules_json, classe,"
+            "INSERT INTO cb_test_situation (test_id, yaml_sha256, deck_ref, perimetre, rules_json, classe,"
             " start_state, start_complete, free_facts_json, expected, status, updated_at)"
             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (s["id"], jeu.sha256, deck.ref, s["perimetre"], json.dumps(regles), classe, etat_id,

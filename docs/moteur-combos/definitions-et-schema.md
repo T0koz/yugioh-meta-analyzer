@@ -332,9 +332,9 @@ cb_test_situation >── cb_state    les 72 situations du jeu de tests, leur d�
 
 | Table | Rôle | Changement au lot 18 |
 |---|---|---|
-| `cb_card` | une carte, texte figé et empreinte | + `text` (copie locale, la base n'est pas versionnée : le texte appartient à Konami), caractéristiques (`frame_type`, `attribute`, `race`, `level`, `atk`, `def`), `reads_position` (D3). `text_sha256` obligatoire. Un texte changé remet le statut à `non_traitee` (errata) ; un statut n'est jamais rétrogradé autrement. |
+| `cb_card` | une carte, texte figé et empreinte | `CHECK` : `verifiee` exige `verified_by`, `non_formalisable` exige une raison. Une renumérotation YGOPRODeck (même nom, autre id) est refusée explicitement. + `text` (copie locale, la base n'est pas versionnée : le texte appartient à Konami), caractéristiques (`frame_type`, `attribute`, `race`, `level`, `atk`, `def`), `reads_position` (D3). `text_sha256` obligatoire. Un texte changé remet le statut à `non_traitee` (errata) ; un statut n'est jamais rétrogradé autrement. |
 | `cb_card_name_tag` | noms portés et archétypes | + colonne `kind` (`nom` / `archetype`) : « always treated as "X" » donne un **nom** (limite de 3, § 2.6), « always treated as a "X" card » un **archétype**. `origin` : `nom_imprime` / `traite_comme`. |
-| `cb_effect` | un effet découpé dans le texte | la colonne `limit_scope` est remplacée par la table `cb_effect_limit` (un effet peut porter plusieurs limites). Vide au lot 18. |
+| `cb_effect` | un effet découpé dans le texte | la colonne `limit_scope` est remplacée par la table `cb_effect_limit` (un effet peut porter plusieurs limites) ; + `text_sha256` (texte formalisé). Un errata remet aussi les effets à `non_traitee`. Vide au lot 18. |
 | `cb_effect_limit` | **nouvelle** : limites « une fois par tour » | forme parmi `activation_par_nom`, `par_nom_effet`, `par_nom_carte`, `invocation_par_nom`, `par_exemplaire` (§ 1 et § 2.1 D) ; `name_key` = nom cité par la clause (il peut différer du nom imprimé : `The Three Champions of Swordsoul`). |
 | `cb_deck`, `cb_deck_card` | **nouvelles** : la liste source | empreinte du fichier `deck-branded-source.json`, zone, nombre, statut de banlist au jour de l'extraction. |
 | `cb_state` | états, adressés par l'empreinte de leur forme canonique | + `CHECK` sur la phase, le joueur, la longueur de l'empreinte. Un état n'est jamais modifié (`INSERT OR IGNORE`). |
@@ -342,9 +342,18 @@ cb_test_situation >── cb_state    les 72 situations du jeu de tests, leur d�
 | `cb_run` | une exploration | + `target_id` (cible, facultative), `columns_enumerated` (D3 révisée), `deck_ref` relié à `cb_deck`, obligatoire en mode `decklist`. |
 | `cb_transition`, `cb_combo` | transitions et combos | `stop_reason` contrôlé : + `boucle`, `cible_atteinte` (§ 2.4 d, e). |
 | `cb_step` | pas élémentaires | + type `placer` et colonne `option` (choix Zone Monstre Extra / zone principale, D3 révisée). |
-| `cb_step_card` | cartes nommées par un pas | + `to_cell` (case exacte d'arrivée : `M1`-`M5`, `ZME_G`, `ZME_D`, `S1`-`S5`, `TERRAIN`). |
+| `cb_step_card` | cartes nommées par un pas | + `to_cell` (case exacte d'arrivée : `M1`-`M5`, `ZME_G`, `ZME_D`, `S1`-`S5`, `TERRAIN`) ; + `copy_index` dans la clé (deux matériels homonymes dans le même pas). |
 | `cb_window`, `cb_condition`, `cb_transition_condition`, `cb_relation`, `cb_combo_step` | inchangées sur le fond | `CHECK` ajoutés sur les valeurs fermées. |
 | `cb_test_situation` | **nouvelle** : harnais | une ligne par situation du YAML : empreinte du fichier, points de règle (R27 précisé en R27a / R27b), classe, état de départ, départ complet ou non, faits en texte libre, verdict attendu, statut (`verifie`, `en_attente_tranche_0`, `depart_invalide`, `echec`). |
+
+**Garde-fous et versions** (relecture de l'agent `gardien-donnees`, 18/11, 3 défauts bloquants corrigés) :
+`moteur_combos/base.py` résout le chemin de `combos.db` et refuse un nom de base du projet sans tenir compte de la
+casse (`yugioh.db`, `serving.db`, `backup_*.db` : le disque du Mac est insensible à la casse), le même fichier que la
+base de référence (lien symbolique compris) et toute base existante qui contient une table sans le préfixe `cb_`.
+La base de référence s'ouvre par une URI échappée en `mode=ro`. Une base plus ancienne que le code reçoit les
+fichiers `moteur_combos/migrations/NNN.sql` dans une transaction avant de changer de numéro (aucun encore) :
+`CREATE TABLE IF NOT EXISTS` n'ajoute jamais une colonne, une base ne doit donc jamais être déclarée migrée sans
+migration. Index ajoutés pour la requête « combos qui passent par X » et pour chaque clé étrangère.
 
 **Forme canonique de l'état** (`Etat.forme_canonique()`) : blocs A (cadre), B (zones des deux joueurs, cases exactes,
 Zones Monstre Extra communes avec leur contrôleur), C (attributs dans chaque exemplaire), D (mémoire du tour). Les

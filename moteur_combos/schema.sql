@@ -31,7 +31,9 @@ CREATE TABLE IF NOT EXISTS cb_card (
         ('non_traitee', 'brouillon', 'formalisee', 'verifiee', 'non_formalisable')),
     status_reason  TEXT,
     verified_by    TEXT CHECK (verified_by IS NULL OR verified_by IN ('oracle', 'juge', 'oracle+juge')),
-    updated_at     TEXT NOT NULL
+    updated_at     TEXT NOT NULL,
+    CHECK ((status = 'verifiee') = (verified_by IS NOT NULL)),
+    CHECK (status <> 'non_formalisable' OR status_reason IS NOT NULL)
 );
 
 -- Noms et archétypes d'une carte, calculés depuis le NOM imprimé et les clauses « always treated as »,
@@ -63,6 +65,7 @@ CREATE TABLE IF NOT EXISTS cb_effect (
     timing         TEXT CHECK (timing IS NULL OR timing IN ('if', 'when')),
     text_span      TEXT NOT NULL,                             -- extrait exact du texte officiel
     formal_json    TEXT,                                      -- condition, coût, cibles, résolution
+    text_sha256    TEXT NOT NULL,                             -- empreinte du texte de la carte formalisé
     status         TEXT NOT NULL CHECK (status IN
         ('non_traitee', 'brouillon', 'formalisee', 'verifiee', 'non_formalisable')),
     UNIQUE (card_id, position)
@@ -105,13 +108,14 @@ CREATE TABLE IF NOT EXISTS cb_deck_card (
     ban_tcg    TEXT,                                    -- statut au jour de l'extraction
     PRIMARY KEY (deck_ref, card_id, zone)
 );
+CREATE INDEX IF NOT EXISTS idx_cb_deck_card_card ON cb_deck_card (card_id);
 
 -- ── États ────────────────────────────────────────────────────────────────────────────────────
 
 -- États : identifiés par l'empreinte de leur forme canonique (§ 2.3). Contenu adressé : un état
 -- n'est jamais modifié, on n'ajoute que des états nouveaux.
 CREATE TABLE IF NOT EXISTS cb_state (
-    state_id       TEXT PRIMARY KEY CHECK (length(state_id) = 64),   -- SHA-256 de canonical_json
+    state_id       TEXT PRIMARY KEY CHECK (length(state_id) = 64 AND state_id NOT GLOB '*[^0-9a-f]*'),   -- SHA-256 de canonical_json
     canonical_json TEXT NOT NULL,                                   -- blocs A, B, C, D
     turn           INTEGER NOT NULL CHECK (turn >= 1),
     active_player  INTEGER NOT NULL CHECK (active_player IN (0, 1)), -- 0 = nous
@@ -166,6 +170,7 @@ CREATE TABLE IF NOT EXISTS cb_transition (
 );
 CREATE INDEX IF NOT EXISTS idx_cb_transition_from ON cb_transition (run_id, from_state);
 CREATE INDEX IF NOT EXISTS idx_cb_transition_actor ON cb_transition (actor_card_id);
+CREATE INDEX IF NOT EXISTS idx_cb_transition_to ON cb_transition (to_state);
 
 -- Pas : les décisions élémentaires à l'intérieur d'une transition (niveau oracle, D2).
 -- `option` porte le choix d'une décision à options, dont le placement d'une Invocation depuis
@@ -181,20 +186,24 @@ CREATE TABLE IF NOT EXISTS cb_step (
     option         TEXT,
     UNIQUE (transition_id, position)
 );
+CREATE INDEX IF NOT EXISTS idx_cb_step_effect ON cb_step (effect_id);
 
 -- Toutes les cartes qu'un pas nomme, avec leur rôle et leur case d'arrivée sur le terrain.
+-- `copy_index` distingue deux exemplaires de même nom et de même rôle dans un pas (deux matériels
+-- homonymes, l'un pris en main, l'autre sur le terrain).
 CREATE TABLE IF NOT EXISTS cb_step_card (
     step_id    INTEGER NOT NULL REFERENCES cb_step(step_id),
     card_id    INTEGER NOT NULL REFERENCES cb_card(card_id),
+    copy_index INTEGER NOT NULL DEFAULT 1 CHECK (copy_index >= 1),
     role       TEXT NOT NULL CHECK (role IN
         ('acteur', 'cout', 'materiel', 'cible', 'choisie', 'deplacee', 'revelee', 'condition')),
     from_zone  TEXT,
     to_zone    TEXT,
     to_cell    TEXT CHECK (to_cell IS NULL OR to_cell IN
         ('M1', 'M2', 'M3', 'M4', 'M5', 'ZME_G', 'ZME_D', 'S1', 'S2', 'S3', 'S4', 'S5', 'TERRAIN')),
-    PRIMARY KEY (step_id, card_id, role)
+    PRIMARY KEY (step_id, card_id, role, copy_index)
 );
-CREATE INDEX IF NOT EXISTS idx_cb_step_card_card ON cb_step_card (card_id);
+CREATE INDEX IF NOT EXISTS idx_cb_step_card_card ON cb_step_card (card_id, step_id);
 
 -- Fenêtres d'interruption adverse : réservées, sans réponse dans le pilote (§ 2.5).
 CREATE TABLE IF NOT EXISTS cb_window (
@@ -203,6 +212,7 @@ CREATE TABLE IF NOT EXISTS cb_window (
     window_type TEXT NOT NULL CHECK (window_type IN ('reponse_activation', 'reponse_invocation')),
     response    TEXT NOT NULL DEFAULT 'aucune'
 );
+CREATE INDEX IF NOT EXISTS idx_cb_window_step ON cb_window (step_id);
 
 -- Conditions : rattachées aux transitions, hors du combo.
 CREATE TABLE IF NOT EXISTS cb_condition (
@@ -226,8 +236,10 @@ CREATE TABLE IF NOT EXISTS cb_relation (
     target_card   INTEGER NOT NULL REFERENCES cb_card(card_id),
     family        TEXT NOT NULL CHECK (family IN
         ('deplace', 'materiel_ou_cout', 'conditionne', 'interagit_adverse')),
-    detail        TEXT
+    detail        TEXT,
+    UNIQUE (transition_id, source_card, target_card, family)
 );
+CREATE INDEX IF NOT EXISTS idx_cb_relation_transition ON cb_relation (transition_id);
 CREATE INDEX IF NOT EXISTS idx_cb_relation_pair ON cb_relation (source_card, target_card, family);
 
 -- Combos : un chemin, enregistré dans son ordre réel.
@@ -241,6 +253,9 @@ CREATE TABLE IF NOT EXISTS cb_combo (
         ('fin_forcee', 'fin_volontaire', 'tronque_profondeur', 'retour_etat_connu',
          'boucle', 'cible_atteinte', 'non_couvert', 'hors_perimetre'))
 );
+CREATE INDEX IF NOT EXISTS idx_cb_combo_run ON cb_combo (run_id);
+-- actor_card_id est recopié de cb_transition pour la requête « A puis B » ; l'écrivain (moteur) garde
+-- les deux égaux. Pas de déclencheur au lot 18 : aucune écriture de combo n'existe encore.
 CREATE TABLE IF NOT EXISTS cb_combo_step (
     combo_id      INTEGER NOT NULL REFERENCES cb_combo(combo_id),
     position      INTEGER NOT NULL CHECK (position >= 1),
@@ -249,6 +264,7 @@ CREATE TABLE IF NOT EXISTS cb_combo_step (
     PRIMARY KEY (combo_id, position)
 );
 CREATE INDEX IF NOT EXISTS idx_cb_combo_step_actor ON cb_combo_step (actor_card_id, combo_id, position);
+CREATE INDEX IF NOT EXISTS idx_cb_combo_step_transition ON cb_combo_step (transition_id, combo_id);
 
 -- ── Jeu de tests (harnais du lot 18) ─────────────────────────────────────────────────────────
 
@@ -269,3 +285,4 @@ CREATE TABLE IF NOT EXISTS cb_test_situation (
         ('verifie', 'en_attente_tranche_0', 'depart_invalide', 'echec')),
     updated_at      TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_cb_test_situation_state ON cb_test_situation (start_state);

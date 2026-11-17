@@ -144,7 +144,7 @@ prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decis
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🟡 Relu (17/11) et implémenté le 2026-11-18 (lot 18, branche `claude/lot18-fondations-moteur-dab1df`) : `moteur_combos/`, `data/combos.db`, harnais `python scripts/combos_harnais.py` (72 tests classés : 54 / 6 / 12), 46 tests pytest ; aucune règle de jeu. Reste : décisions par défaut à valider (`docs/planning/2026-11-18/decisions-prises.md`) — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
+| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🟡 Relu (17/11) et implémenté le 2026-11-18 (lot 18, branche `claude/lot18-fondations-moteur-dab1df`) : `moteur_combos/`, `data/combos.db`, harnais `python scripts/combos_harnais.py` (72 tests classés : 54 / 6 / 12), 50 tests pytest ; aucune règle de jeu. Reste : décisions par défaut à valider (`docs/planning/2026-11-18/decisions-prises.md`) — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
 | TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🟡 Installation arrêtée le 2026-11-17 (cœur hors organisation officielle, `premake5` et Lua absents) ; décision de Thomas requise — `docs/moteur-combos/reponses-oracle.md` | 🟠 Medium |
 | TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🟡 Rédigé (2026-11-16), 72 situations **non validées** — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
 | TOK-90 | Tranche 0 : un combo Branded de bout en bout (bloqué par TOK-85 et TOK-87) | 🔜 Backlog | 🟠 Medium |

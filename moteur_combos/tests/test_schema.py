@@ -107,16 +107,20 @@ def test_case_d_arrivee_et_option_de_placement(con):
                 " VALUES (?, ?, ?, 'activation', 0)", (run, SHA, SHA))
     con.execute("INSERT INTO cb_step (transition_id, position, step_type, option) VALUES (1, 1, 'placer',"
                 " 'zone_monstre_extra')")
-    con.execute("INSERT INTO cb_step_card VALUES (1, 1, 'deplacee', 'extra', 'terrain', 'ZME_G')")
+    cols = "(step_id, card_id, copy_index, role, from_zone, to_zone, to_cell)"
+    con.execute(f"INSERT INTO cb_step_card {cols} VALUES (1, 1, 1, 'materiel', 'main', 'cimetiere', NULL)")
+    # Deux matériels homonymes dans le même pas (relecture gardien-donnees) : copy_index les distingue.
+    con.execute(f"INSERT INTO cb_step_card {cols} VALUES (1, 1, 2, 'materiel', 'terrain', 'cimetiere', NULL)")
+    con.execute(f"INSERT INTO cb_step_card {cols} VALUES (1, 1, 1, 'deplacee', 'extra', 'terrain', 'ZME_G')")
     with pytest.raises(sqlite3.IntegrityError):
-        con.execute("INSERT INTO cb_step_card VALUES (1, 1, 'acteur', 'extra', 'terrain', 'M6')")
+        con.execute(f"INSERT INTO cb_step_card {cols} VALUES (1, 1, 1, 'acteur', 'extra', 'terrain', 'M6')")
 
 
 def test_limites_d_effet(con):
     con.execute("INSERT INTO cb_card (card_id, name, text, text_sha256, text_fetched, updated_at)"
                 " VALUES (1, 'Carte', 't', ?, 'x', 'x')", (SHA,))
-    con.execute("INSERT INTO cb_effect (card_id, position, kind, optional, text_span, status)"
-                " VALUES (1, 1, 'ignition', 1, 't', 'brouillon')")
+    con.execute("INSERT INTO cb_effect (card_id, position, kind, optional, text_span, text_sha256, status)"
+                " VALUES (1, 1, 'ignition', 1, 't', ?, 'brouillon')", (SHA,))
     con.execute("INSERT INTO cb_effect_limit VALUES (1, 'par_nom_effet', 'Carte', 't')")
     with pytest.raises(sqlite3.IntegrityError):
         con.execute("INSERT INTO cb_effect_limit VALUES (1, 'par_exemplaire', 'Carte', 't')")  # sans nom
@@ -129,3 +133,51 @@ def test_statut_de_formalisation(con):
     with pytest.raises(sqlite3.IntegrityError):
         con.execute("INSERT INTO cb_card (card_id, name, text, text_sha256, text_fetched, status, updated_at)"
                     " VALUES (2, 'X', 't', ?, 'x', 'presque', 'x')", (SHA,))
+
+
+def test_statut_verifie_et_non_formalisable(con):
+    base = "INSERT INTO cb_card (card_id, name, text, text_sha256, text_fetched, status, verified_by, status_reason," \
+           " updated_at) VALUES (?, ?, 't', ?, 'x', ?, ?, ?, 'x')"
+    with pytest.raises(sqlite3.IntegrityError):
+        con.execute(base, (3, "A", SHA, "verifiee", None, None))       # vérifiée sans vérificateur
+    with pytest.raises(sqlite3.IntegrityError):
+        con.execute(base, (4, "B", SHA, "non_formalisable", None, None))  # sans raison
+    con.execute(base, (5, "C", SHA, "verifiee", "juge", None))
+    con.execute(base, (6, "D", SHA, "non_formalisable", None, "texte hors modèle"))
+
+
+def test_empreinte_d_etat_hexadecimale(con):
+    with pytest.raises(sqlite3.IntegrityError):
+        _etat(con, "Z" * 64)
+
+
+def test_garde_fou_casse_lien_et_tables_etrangeres(tmp_path):
+    ref = tmp_path / "ref.db"
+    sqlite3.connect(ref).execute("CREATE TABLE cards (id)").connection.commit()
+    for nom in ("Yugioh.db", "SERVING.db", "backup_x_20261118.db"):
+        with pytest.raises(ValueError):
+            ouvrir_combos(tmp_path / nom, reference=ref)
+    lien = tmp_path / "combos.db"
+    lien.symlink_to(ref)
+    with pytest.raises(ValueError):          # lien vers la base de référence
+        ouvrir_combos(lien, reference=ref)
+    autre = tmp_path / "autre.db"
+    sqlite3.connect(autre).execute("CREATE TABLE tournament_decks (id)").connection.commit()
+    with pytest.raises(ValueError):          # base existante qui n'est pas celle du moteur
+        ouvrir_combos(autre, reference=ref)
+    assert [r[0] for r in sqlite3.connect(ref).execute("SELECT name FROM sqlite_master")] == ["cards"]
+
+
+def test_migration_manquante_refusee(tmp_path):
+    from moteur_combos import base
+
+    chemin = tmp_path / "combos.db"
+    ouvrir_combos(chemin).close()
+    ancien = base.SCHEMA_VERSION
+    try:
+        base.SCHEMA_VERSION = ancien + 1     # simule un code plus récent que la base
+        with pytest.raises(RuntimeError, match="migration manquante"):
+            ouvrir_combos(chemin)
+        assert sqlite3.connect(chemin).execute("PRAGMA user_version").fetchone()[0] == ancien
+    finally:
+        base.SCHEMA_VERSION = ancien

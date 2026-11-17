@@ -41,6 +41,15 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | C2 (TOK-118) | Mémoire du tour en phrases (24 départs partiels) ? | 13 motifs traduits de plus dans `scenarios.py` (verrous de `Nadir`, `White`, `Dogmatika Ecclesia` ; « X activée ce tour » ; « 1er / 2e effet de X utilisé » ; « un monstre Fusion (X) a été envoyé au Cimetière ce tour » ; envoyé sans invocation ; notes descriptives « Invocation Fusion par X »…). Plus aucun fait libre dans les 69 situations exécutées. | Une phrase n'est traduite que si elle n'a qu'une lecture ; chaque traduction est listée dans le résultat. |
 | C2 (TOK-118) | Effets continus et de remplacement (`Dogma`, `Titaniklad`, `Albion` « ne sert pas de matériel », `Branded Opening` effet 2) ? | Genre `restriction` (ne s'active pas), codés dans le moteur (`insensible`, `bonus_atk`, `interdit_materiel_fusion`, `Partie.detruire`) et comptés comme effets du pilote. | Ils changent des résultats au tour 1 (T56, J24, J26, J29). |
 | C2 (TOK-118) | Schéma de `combos.db` ? | Inchangé (statuts écrits dans les colonnes existantes) ; `gardien-donnees` non sollicité. Les situations J1 ne sont pas écrites dans `cb_test_situation` (réservée aux 72 situations du YAML). | Pas de migration pour un lot de formalisation. |
+| C3 (TOK-119) | N04, seconde moitié : l'oracle refuse de déclarer un Attribut déjà porté ; le texte TCG ne l'interdit pas. | **Permis** (texte TCG d'`Aeon` et de `Mixousia`) ; DIVIN déclarable (oracle, adopté). | Le texte TCG fait foi (précédent R23) ; restriction probable du script de l'oracle ; sans conséquence de jeu (une liste de choix). Taux pessimiste du volet oracle de J1 : 3/57. |
+| C3 (TOK-119) | N09 : la règle (effet sans cible qui choisit un monstre insensible) vaut-elle pour `Luluwalilith` 1, `Aeon` 1 et `Rindbrumm` 1, que l'oracle n'a pas joués ? | **Oui**, même correction que `Mirrorjade` 1. | C'est la lecture générale des règles (brief), pas un texte propre à une carte ; laisser deux comportements pour la même règle serait incohérent. À faire rejouer par l'oracle. |
+| C3 (TOK-119) | Quels guides ? | 5 combos tirés de 6 pages masterduelmeta (juin-août 2026, 4 auteurs), les seules lisibles en texte ; tableurs en images écartés ; lignes `Aluber` / `Branded Fusion` proposées « à faire confirmer par un joueur », non comptées. | Ne rien inventer (brief) ; les pages sont datées et publiques. |
+| C3 (TOK-119) | Les guides passent par des cartes absentes (`Albion the Branded Dragon`, `Branded Retribution`, `Branded in Red`, `Khaos Starsource`). | Mesure **jusqu'à la dernière étape réalisable** ; un coût payé par une carte absente est payé par une carte de la liste qui remplit la même clause (substitution déclarée) ; la suite est classée « manqué : carte absente de la liste ». | Même règle que pour `Lubellion` (D1) ; aucun guide relevé ne passe par `Lubellion`. |
+| C3 (TOK-119) | Main de départ d'un combo « à une carte » ? | La carte seule ; les 4 autres cartes (cartes de réponse) **retirées du jeu**. | Premier essai avec les 4 cartes en main : `Ghost Ogre` servait de matériel de Fusion (G2), le combo n'était plus « à une carte ». Les mains de 5 cartes sont mesurées à part (tirage au hasard). |
+| C3 (TOK-119) | Filtres d'exploration (D4) ? | 8 filtres déclarés, enregistrés dans `cb_run.filters_json` (`moteur_combos/exploration.py`, `FILTRES_DISPONIBLES`) : pas de réponse à ses propres maillons, cartes de réponse jamais activées ni Invoquées Normalement, position Attaque, Zone Monstre Extra d'abord, pas de changement d'Attribut, pas d'annulation de soi, `Aeon` sans bannissement, pioche à une branche. | Sans eux, l'exploration double à chaque position, chaque réponse possible ; chacun est levable. |
+| C3 (TOK-119) | Comment juger « retrouvé » ? | Deux niveaux : **plateau** (la cible du guide, conditions d'inclusion par zone) et **séquence** (les jalons du guide, actions clés dans l'ordre, sous-suite). Deux recherches : dirigée (A*) et en largeur sans cible ; plus un joueur au hasard comme méthode naïve. | Sans jalons, G3 remplissait la cible par un autre chemin (Three Champions envoyée en coût) ; avis de `data-scientist-ygo` (publier les deux taux, largeur en tête, « 4 sur 5 » et jamais « 80 % »). |
+| C3 (TOK-119) | Que stocker dans `combos.db` ? | Les chemins retenus seulement : le chemin vers la cible (et vers la séquence), et pour chaque main réaliste un chemin le plus court par plateau final distinct (200 au plus) ; compteurs du parcours dans le rapport. Schéma inchangé (`gardien-donnees` non sollicité). | Le graphe complet fait des centaines de milliers d'arêtes ; les requêtes « A puis directement B » et « passe par X » portent sur les combos. |
+| C3 (TOK-119) | Verdict J2 ? | **« Atteint sous réserve », horloge du 13/01/2027 maintenue** (avis `data-scientist-ygo`) : J2 plein demande cible et jalons figés avant exécution (par un humain ou l'oracle), 5 combos de plus d'autres auteurs, un essai à 5 cartes, et battre nettement le joueur au hasard. | n = 5, guides non tirés au hasard, cible et jalons écrits par l'agent qui connaissait la réponse. |
 | Orchestrateur | Lancer C3 tout de suite, ou d'abord faire rejouer les situations J1 par l'oracle ? | D'abord l'oracle (lot C2 bis, Sonnet, seul), puis C3. Pas de deuxième session : aucune attente passive dans la chaîne. | Une erreur de formalisation trouvée par l'oracle doit être corrigée avant que l'exploration ne s'appuie dessus ; le brief de J1 prévoit la comparaison à l'oracle. |
 
 ## Formulaire
@@ -132,5 +141,36 @@ Commentaire libre :
 C2 (TOK-118) — R23 (Incredible Ecclesia)
 [x] Obligatoire, texte TCG de notre base (désaccord avec l'oracle listé, non compté comme erreur)
 [ ] Facultatif, comme l'oracle
+Commentaire libre :
+
+C3 (TOK-119) — N04, déclarer un Attribut déjà porté
+[x] Permis (texte TCG), DIVIN déclarable (oracle)
+[ ] Interdit, comme l'oracle
+Commentaire libre :
+
+C3 (TOK-119) — N09 étendu à Luluwalilith 1, Aeon 1, Rindbrumm 1
+[x] Oui, même règle générale (à faire rejouer par l'oracle)
+[ ] Seulement Mirrorjade (ce que l'oracle a joué)
+Commentaire libre :
+
+C3 (TOK-119) — cartes absentes des guides
+[x] Mesurer jusqu'à la dernière étape réalisable, substitution déclarée des coûts, suite « manqué : carte absente »
+[ ] Ne compter que les combos entièrement réalisables avec la liste (aucun aujourd'hui)
+Commentaire libre :
+
+C3 (TOK-119) — main d'un combo « à une carte »
+[x] La carte seule, les 4 autres retirées du jeu
+[ ] La carte + 4 cartes de réponse en main (elles peuvent servir de matériel ou de coût)
+Commentaire libre :
+
+C3 (TOK-119) — filtres d'exploration (D4)
+[x] Les 8 filtres déclarés de `exploration.py`, enregistrés avec chaque exploration
+[ ] Sans filtre (exploration bien plus lente)
+Commentaire libre :
+
+C3 (TOK-119) — verdict J2
+[x] Atteint sous réserve, horloge du 13/01/2027 maintenue (conditions d'un J2 plein listées dans `j2-rapport.md`)
+[ ] Atteint
+[ ] Non atteint
 Commentaire libre :
 ```

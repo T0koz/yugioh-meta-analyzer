@@ -164,3 +164,34 @@ def test_fin_de_tour_refusee_avec_un_effet_obligatoire():
     assert r.verdict == "legal"
     r = Moteur(cat).jouer(replace(etat, cadre=Cadre(phase="principale_1")), Declaration("activer", "Retour", 1))
     assert r.verdict == "illegal" and "Phase de Fin" in r.raison
+
+
+# ── Étape 0 du lot C3 : réponses de l'oracle sur N01, N04, N09 (18/11) ─────────────────────────
+
+@avec_base
+def test_n09_mirrorjade_peut_choisir_titaniklad_insensible(monde):
+    """J26 : Titaniklad est proposé, choisi, et reste sur le terrain (insensible, l'effet est sans effet sur lui)."""
+    deck, cat, _, jeu = monde
+    s = next(x for x in jeu.situations if x["id"] == "J26")
+    ex = executer_situation(s, construire_depart(s, jeu, deck).etat, jeu.alias, cat, SCENARIOS_J1)
+    assert ex.statut == "verifie", ex.detail
+    choix = ex.resultat.decision("bannir").valeurs()
+    assert any(v.startswith("Titaniklad") for v in choix)
+    terrain = [i.carte for _, i in ex.resultat.etat.joueurs[0].cases]
+    assert "Titaniklad the Ash Dragon" in terrain
+
+
+@avec_base
+def test_n01_luluwalilith_ne_se_declenche_pas_sur_sa_sortie(monde):
+    deck, cat, _, jeu = monde
+    s = next(x for x in jeu.situations if x["id"] == "J30")
+    ex = executer_situation(s, construire_depart(s, jeu, deck).etat, jeu.alias, cat, SCENARIOS_J1)
+    assert ex.resultat.verdict == "legal"
+    assert not any(d.question == "activer_declenche" for d in ex.resultat.decisions)
+
+
+def test_n04_divin_declarable_et_attribut_porte_permis():
+    from moteur_combos.cartes_j1 import _options_attribut
+    options, indeterminees = _options_attribut(None)
+    valeurs = [o.valeur for o in options]
+    assert "DIVINE" in valeurs and "DARK" in valeurs and indeterminees == []

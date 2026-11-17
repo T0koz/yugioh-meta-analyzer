@@ -127,6 +127,34 @@ erreur sur 34 (Wilson 95 % : 0,5 à 14,9 %). Repère, pas un test : 1/34 contre 
 les verdicts, pas sur le choix des chemins testés (une clause mal lue peut n'être jamais exercée) ; seule la relecture
 clause par clause couvre ce risque.
 
+### Volet oracle (recensement complet), rempli le 18/11 au lot C3 (étape 0)
+
+Source : `reponses-oracle.md` § 7 (lot C2 bis), 30 situations J1 et points N01 à N13 rejoués par l'oracle. Lecture seule
+des réponses ; le code de l'oracle n'a pas été lu. **Indicateur secondaire, pas le taux de J1** : un recensement des
+chemins que l'oracle a joués, sur les 57 effets du pilote, sans tirage au hasard.
+
+| Effets du pilote dont un chemin contredit l'oracle | Avant correction | Après correction (lot C3) |
+|---|---|---|
+| Désaccord ferme (règle) | **2** : `Titaniklad` 2, `Mirrorjade` 1 (une seule règle, N09) | **0** |
+| Litige (N04, seconde moitié : déclarer l'Attribut déjà porté) | 3 : `Aeon` 2, `Mixousia` 1 et 3 | 3, **tranchés par le texte TCG** (permis, voir ci-dessous) |
+| Désaccord de texte (R23, `Incredible Ecclesia` 3) | 1 | 1, inchangé (le texte TCG fait foi) |
+| Taux arbitré (ferme seulement) | 2/57 = 3,5 % | 0/57 |
+| Taux pessimiste (litige non tranché par un humain = erreur) | 5/57 = 8,8 % | 3/57 = 5,3 % |
+
+- **N09 corrigé** : un effet sans cible qui choisit à la résolution propose aussi un monstre insensible ; l'effet est
+  alors sans effet sur lui (`Mirrorjade` 1, et par la même règle générale `Luluwalilith` 1, `Aeon` 1, `Rindbrumm` 1 :
+  ces trois derniers n'ont pas été joués par l'oracle sur ce point). Situation J26 réécrite sur la réponse de l'oracle
+  (`Titaniklad` choisi, reste sur le terrain), test `test_n09_mirrorjade_peut_choisir_titaniklad_insensible`.
+- **N04** : DIVIN est déclarable (oracle, adopté). Attribut déjà porté : le texte TCG d'`Aeon` (« declare 1 Attribute;
+  all other monsters on the field become that Attribute ») et de `Mixousia` (« declare 1 Attribute; it becomes that
+  Attribute ») ne l'interdit pas ; la restriction vue chez l'oracle vient probablement de son script. **Gardé permis**,
+  lu par l'agent : à confirmer par un juge (sans conséquence de jeu, une liste de choix seulement).
+- **N01 adopté** : `Luluwalilith` ne se déclenche pas sur sa propre sortie de l'Extra Deck (J30 passe de « non couvert »
+  à « légal, aucun déclenchement »). Toute Invocation Synchro de `Luluwalilith` est désormais couverte.
+- **Confirmés sans changement** : N02, N03, N05 à N08, N10, N11, N13 (la formalisation répondait déjà comme l'oracle ;
+  les notes ⚖ correspondantes sont levées). N12 reste non testable (hors pilote).
+- Le volet humain (20 effets à l'aveugle) attend toujours un relecteur : rien n'est rempli ci-dessous.
+
 ### Échantillon tiré (graine 20260118) — à relire par le juge ou un joueur, pas par Thomas
 
 Strate a (YAML + oracle) : 30 effets ; strate b (situations J1 seules) : 27 ; hors périmètre : 15. Graine 20260118, 10 par strate.
@@ -178,6 +206,10 @@ Le texte officiel n'est pas recopié ici (dépôt public, texte de Konami) : le 
 carte. 16 cartes distinctes dans l’échantillon de 20 effets.
 
 ## 5. Désaccords avec les réponses existantes de l'oracle
+
+> **Mise à jour du 18/11 (lot C3)** : le passage de l'oracle sur J1 (C2 bis) ajoute N09 (désaccord ferme, **corrigé**)
+> et N04 seconde moitié (litige, **tranché par le texte TCG**, permis) ; voir « Volet oracle » au § 4. Le tableau
+> ci-dessous reste celui du jeu de tests (lot 17).
 
 | Point | Oracle | Formalisation | Statut |
 |---|---|---|---|

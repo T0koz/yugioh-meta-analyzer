@@ -352,10 +352,12 @@ def _rind_annuler(p, m) -> None:
     if cible < len(p.chaine):
         p.chaine[cible].annule = True
         p.notes.append(f"Rindbrumm annule l'effet du maillon {cible + 1} ({p.chaine[cible].carte})")
-    monstres = [(c, i) for c, i in p.monstres() if not p.insensible(i, RIND)]
+    monstres = list(p.monstres())   # N09 (oracle, 18/11) : un monstre insensible reste choisissable, sans effet
     options = [Option(f"{i.carte} ({c})", True, None, (c, i.carte)) for c, i in monstres] + [Option("ne pas renvoyer")]
     o = p.choisir(Decision("choisir", "renvoyer", options))
-    if o.valeur != "ne pas renvoyer":
+    if o.valeur != "ne pas renvoyer" and p.insensible(p.instance_en(("terrain", o.donnees[0]), o.donnees[1]), RIND):
+        p.notes.append(f"{o.donnees[1]} est insensible : rien n'est renvoyé (N09)")
+    elif o.valeur != "ne pas renvoyer":
         c, n = o.donnees
         f = p.cat[n]
         p.pas.append(Pas("resoudre", f"{n} renvoyé {'dans l’Extra Deck' if f.est_extra else 'en main'}"))

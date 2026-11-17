@@ -238,8 +238,8 @@ situations:
   - id: J26
     effets: ["TITAN/2"]
     depart: {main: [SPOLY, ASH], terrain: ["MIRROR (Invocation Fusion)", "GRANG (Invocation Fusion)", ALBAZ]}
-    action: "J25 (TITAN en zone principale), puis effet de MIRROR (envoyer SANCTIFIRE) : TITAN ne fait pas partie des monstres qu'il peut bannir."
-    attendu: {verdict: legal}
+    action: "J25 (TITAN en zone principale), puis effet de MIRROR (envoyer SANCTIFIRE) en choisissant TITAN : il est proposé (effet sans cible), insensible, il n'est pas banni (N09, réponse de l'oracle du 18/11 ; la lecture d'origine l'excluait de la liste)."
+    attendu: {verdict: legal, etat: "TITAN reste sur le terrain ; SANCTIFIRE au Cimetière."}
     regles: [N09]
 
   - id: J27
@@ -267,5 +267,5 @@ situations:
     effets: []
     depart: {terrain: ["QUEM (Invocation Normale)", "DECCLESIA (Invoquée Spécialement)", "ALUBER (Invoqué Spécialement)"]}
     action: "Invocation Synchro de LULU (QUEM + DECCLESIA + ALUBER) : LULU sort de l'Extra Deck."
-    attendu: {verdict: non_couvert, raison: "N01 : LULU se déclenche-t-elle sur sa propre sortie de l'Extra Deck ? Non tranché."}
+    attendu: {verdict: legal, etat: "LULU sur le terrain, aucun déclenchement de LULU (N01 : non, réponse de l'oracle du 18/11 ; la lecture d'origine répondait « non couvert »)."}
     regles: [N01]

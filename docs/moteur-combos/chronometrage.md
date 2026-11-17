@@ -75,3 +75,28 @@ formalisation : elle remet en cause les listes exactes des tests existants.
 | Étape | durée (agent) | produit |
 |---|---|---|
 | Installation de l'oracle | ≈ 10 min, arrêtée | échec : cœur hors organisation officielle, `premake5` et Lua absents ; voir `reponses-oracle.md` |
+
+## TOK-86, relance du 18 novembre 2026 (lot 17, banc d'oracle)
+
+Heures relevées avec `date` (01:15:10 début des commandes, 01:44:17 fin de la rédaction). Temps d'horloge d'un agent ;
+il ne comprend ni la relecture par Thomas ni la validation des désaccords (R23).
+
+| # | Étape | Début | Fin | Durée (agent) | Produit | Temps humain de validation |
+|---|---|---|---|---|---|---|
+| 1 | Lecture du brief, des 34 points et des réponses du relecteur | ≈ 01:10 | 01:15 | ≈ 5 min | rien d'écrit | — |
+| 2 | Clonage des trois sources autorisées, génération du projet (`premake5`), compilation du cœur (Lua 5.4 du sous-module) | 01:15:10 | ≈ 01:17 | ≈ 2 min | cœur compilé, hors dépôt | — |
+| 3 | Lanceur Python (`ctypes`), décodage des messages, exécuteur de consignes, premier scénario | ≈ 01:17 | ≈ 01:24 | ≈ 7 min | `~/code/oracle-ignis/lanceur/` | — |
+| 4 | Points prioritaires : R08, R27 (b), R34, R22 | ≈ 01:24 | ≈ 01:32 | ≈ 8 min | 4 réponses (dont la moitié « annulation d'activation » de R08) | — |
+| 5 | Reste des 34 points et variantes témoins (68 situations sur 72 touchées) | ≈ 01:32 | ≈ 01:41 | ≈ 9 min | 30 réponses, un désaccord (R23) | — |
+| 6 | Réglages du duel (3 jeux d'options) et vérifications | ≈ 01:39 | 01:42 | ≈ 3 min | nuance sur R22 | — |
+| 7 | Rédaction de `reponses-oracle.md` et relecture des affirmations | 01:42 | 01:44 | ≈ 2 min (+ corrections) | `reponses-oracle.md` | à mesurer (Thomas) |
+| | **Total** | 01:15:10 | 01:44:17 | **≈ 29 min** (+ 5 min de lecture) | 34 points sur 34, 1 désaccord | |
+
+**Enseignements pour les estimations** :
+- L'installation n'a pris que deux minutes une fois les sources autorisées et les outils présents ; la première
+  tentative (≈ 10 min, arrêtée) coûtait plus que la réussite, faute de décision.
+- **Un lanceur de 400 lignes suffit** pour répondre à la plupart des points de règle : le cœur fournit la liste des
+  actions légales, qui vaut verdict. Le coût principal n'est pas la machine mais la **mise en scène de chaque état**
+  (jouer réellement les actions de la « mémoire du tour »).
+- Un point sur 34 (R23) n'est pas tranchable par l'oracle à cause d'une divergence de **texte** entre sources : le
+  coût d'un oracle n'est pas seulement le build, c'est aussi la qualité de ses textes.

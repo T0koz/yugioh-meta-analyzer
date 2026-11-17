@@ -47,7 +47,7 @@ def test_cinq_cartes_formalisees_sur_le_texte_actuel(monde):
     for nom in (ALUBER, BFUSION, ALBAZ, TBKITT, RIND):
         assert cat[nom].declaree, f"{nom} : formalisation écartée ({cat[nom].formalisation_ecartee})"
     assert not cat["Lava Golem"].declaree
-    assert [n for n, f in FORMALISATIONS.items() if not f.complete] == [RIND]  # effet 1 : résolution non codée
+    assert [n for n, f in FORMALISATIONS.items() if not f.complete] == []  # lot C2 : Rindbrumm effet 1 écrit
 
 
 @avec_base
@@ -83,16 +83,10 @@ def test_combo_de_bout_en_bout(monde):
     assert sum(1 for i in j.deck if i.carte in (ALBAZ, TBKITT, BFUSION)) == 0
     # Le déclencheur d'Albaz rappelé est vu, et écarté pour la bonne raison (aucun monstre adverse).
     assert any("Fallen of Albaz/1 non activable" in n and "R01" in n for n in etape2.notes)
-    # Réserves : les cartes non formalisées restées en main auraient pu agir ; rien n'est caché.
-    assert etape2.reserves == {"Ash Blossom & Joyous Spring", "Ghost Ogre & Snow Rabbit", "Droll & Lock Bird"}
-    # Listes peut-être incomplètes : 4 Fusions dont la ligne de matériels n'est pas formalisée, et les paires de
-    # matériels qui font intervenir une carte non formalisée (Fallen of the White Dragon, Springans Kitt…).
-    fusions = {x for x in etape2.incomplet if "(" not in x}
-    assert fusions == {"Albion the Sanctifire Dragon", "Mirrorjade the Iceblade Dragon",
-                       "Sprind the Irondash Dragon", "Titaniklad the Ash Dragon"}
-    paires = etape2.incomplet - fusions
-    assert f"{ALBAZ} (deck) + Springans Kitt (deck)" in paires
-    assert f"{ALBAZ} (deck) + {TBKITT} (deck)" not in paires
+    # Lot C2 : Ash Blossom, Ghost Ogre et Droll & Lock Bird sont formalisées : plus aucune réserve, et aucune
+    # liste n'est « peut-être incomplète » (toutes les lignes de matériels sont lues).
+    assert etape2.reserves == set()
+    assert etape2.incomplet == set()
     # Déterminisme : rejouer donne la même empreinte d'état.
     bis = moteur.jouer(moteur.jouer(d.etat, COMBO[0].declaration, Script(list(COMBO[0].script))).etat,
                        COMBO[1].declaration, Script(list(COMBO[1].script)))
@@ -123,9 +117,17 @@ def test_les_trois_negatifs_et_non_couvert(monde):
 
 
 @avec_base
+def _sans_formalisation(cat, *noms):
+    """Copie du catalogue où ces cartes perdent leur formalisation (mécanisme D5, depuis que les 37 sont écrites)."""
+    copie = Catalogue()
+    copie.fiches = {n: (replace(f, formalisation=None) if n in noms else f) for n, f in cat.fiches.items()}
+    return copie
+
+
 def test_choisir_une_carte_non_formalisee_renvoie_non_couvert(monde):
     """Aluber peut légalement chercher Branded Opening ; la suite ferait intervenir une carte non formalisée."""
     _, cat, _ = monde
+    cat = _sans_formalisation(cat, "Branded Opening")
     _, d = _depart(monde, "T01")
     script = Script([("activer_declenche", f"{ALUBER}/1"), ("reponse", "passer"), ("carte", "Branded Opening")])
     r = Moteur(cat).jouer(d.etat, Declaration("invocation_normale", ALUBER), script)
@@ -135,6 +137,7 @@ def test_choisir_une_carte_non_formalisee_renvoie_non_couvert(monde):
 @avec_base
 def test_materiel_non_formalise_renvoie_non_couvert(monde):
     _, cat, _ = monde
+    cat = _sans_formalisation(cat, "Springans Kitt")
     _, d = _depart(monde, "T15")
     script = Script([("reponse", "passer"), ("fusion", RIND), ("materiaux", f"{ALBAZ} (deck) + Springans Kitt (deck)")])
     r = Moteur(cat).jouer(d.etat, Declaration("activer", BFUSION, 1), script)

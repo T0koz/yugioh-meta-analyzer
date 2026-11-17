@@ -38,7 +38,9 @@ from .deck import (
     lire_textes, tous_les_noms, verifier_empreintes, vocabulaire_archetypes,
 )
 from .modele import STATUTS_EXECUTABLES
-from .scenarios import SCENARIOS, executer_situation
+from . import regles
+from .regles import HORS_PERIMETRE
+from .scenarios import SCENARIOS, SCENARIOS_J1, executer_situation
 from .situations import cartes_citees, charger_tests, construire_depart, verifier_jeu
 
 
@@ -65,6 +67,8 @@ class Rapport:
     avertissements: list[str] = field(default_factory=list)
     lignes: list[LigneTest] = field(default_factory=list)
     infos: list[str] = field(default_factory=list)
+    lignes_j1: list = field(default_factory=list)
+    couverture: dict = field(default_factory=dict)
 
     def echec(self, titre: str, details: list[str]) -> None:
         self.echecs.append(titre)
@@ -202,6 +206,8 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
     finally:
         if con is not None:
             con.close()
+    con_final = ouvrir_combos(base_combos) if (base_combos is not None and catalogue is not None
+                                              and statut_carte) else None
 
     invalides = [f"{lt.test_id} : {'; '.join(lt.erreurs)}" for lt in r.lignes if not lt.depart_valide]
     if invalides:
@@ -224,6 +230,37 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
     r.ok(f"{sum(lt.statut == 'en_attente_tranche_0' for lt in r.lignes)} en attente (pas encore de scénario)")
     if len({lt.test_id for lt in r.lignes}) != len(jeu.situations):
         r.echec("situations non classées", [])
+
+    # ── 4. Situations J1 (lot C2) et couverture des effets ──────────────────────────────────────
+    if catalogue is not None:
+        print("\n▶ Situations J1 (situations-j1.yaml : lecture de l'agent, à faire jouer à l'oracle)")
+        jeu_j1 = charger_tests(chemins.SITUATIONS_J1)
+        r.lignes_j1 = []
+        for s in jeu_j1.situations:
+            dep = construire_depart(s, jeu_j1, deck)
+            if not dep.valide:
+                r.echec(f"{s['id']} : départ invalide", dep.erreurs)
+                continue
+            ex = executer_situation(s, dep.etat, jeu_j1.alias, catalogue, SCENARIOS_J1)
+            statut = ex.statut if ex is not None else "sans_scenario"
+            r.lignes_j1.append((s["id"], statut, ex.detail if ex is not None else ""))
+        ok = [i for i, st, _ in r.lignes_j1 if st == "verifie"]
+        ko = [f"{i} : {st} — {d}" for i, st, d in r.lignes_j1 if st != "verifie"]
+        r.ok(f"{len(ok)} situations J1 sur {len(jeu_j1.situations)} exécutées et conformes")
+        if ko:
+            r.echec("situations J1 non conformes", ko)
+        r.couverture = couverture(catalogue)
+        nb = sum(len(v) for v in r.couverture.values())
+        nb_ex = sum(sum(1 for x in v.values() if x) for v in r.couverture.values())
+        r.ok(f"effets du pilote exercés par au moins un test : {nb_ex} sur {nb}")
+        for nom, effs in sorted(r.couverture.items()):
+            manque = [n for n, x in effs.items() if not x]
+            if manque:
+                r.avert(f"{nom} : effet(s) {manque} jamais exercé(s) → carte « brouillon »")
+        if con_final is not None:
+            _statuts_formalisation(con_final, deck, catalogue, r.couverture)
+            con_final.commit()
+            con_final.close()
 
     if detail:
         print("\n  Test  Classe                      Départ           Statut                Règles")
@@ -250,8 +287,22 @@ def executer(base_combos: Path | None, base_ref: Path | None, detail: bool = Fal
     return r
 
 
-def _statuts_formalisation(con: sqlite3.Connection, deck, catalogue) -> None:
-    """Statut de chaque carte calculé depuis `cartes.py` (jamais `verifiee` : c'est l'oracle ou le juge)."""
+def couverture(catalogue) -> dict[str, dict[int, bool]]:
+    """Effets du pilote (résolution écrite, pas `HORS_PERIMETRE`) et s'ils ont été exercés par un test exécuté dans ce
+    processus (`regles.EXERCES`)."""
+    out = {}
+    for nom, f in catalogue.fiches.items():
+        if f.formalisation is None:
+            continue
+        out[nom] = {e.numero: (nom, e.numero) in regles.EXERCES for e in f.formalisation.effets
+                    if e.resolution != HORS_PERIMETRE}
+    return out
+
+
+def _statuts_formalisation(con: sqlite3.Connection, deck, catalogue, couv: dict | None = None) -> None:
+    """Statut de chaque carte calculé depuis `cartes.py` / `cartes_j1.py` (jamais `verifiee` : c'est l'oracle ou le
+    juge). Lot C2 : `formalisee` exige aussi que chaque effet du pilote ait été exercé par un test (situations du
+    YAML ou situations J1) ; sinon `brouillon` (« écrite, non testée », D6)."""
     for c in deck.cartes:
         f = catalogue.get(c.nom)
         if f is None or f.formalisation is None:
@@ -259,9 +310,14 @@ def _statuts_formalisation(con: sqlite3.Connection, deck, catalogue) -> None:
                         " ('formalisee', 'brouillon')", (c.card_id,))
             continue
         fo = f.formalisation
-        statut = "formalisee" if fo.complete else "brouillon"
-        raison = None if fo.complete else ("effets déclarés ; résolution non codée : effet(s) "
+        non_testes = [n for n, x in (couv or {}).get(c.nom, {}).items() if not x] if couv is not None else []
+        if not fo.complete:
+            statut, raison = "brouillon", ("effets déclarés ; résolution non codée : effet(s) "
                                            + ", ".join(map(str, fo.manquantes())))
+        elif non_testes:
+            statut, raison = "brouillon", "écrite, effet(s) jamais exercé(s) par un test : " + ", ".join(map(str, non_testes))
+        else:
+            statut, raison = "formalisee", None
         con.execute("UPDATE cb_card SET status = ?, status_reason = ?, updated_at = ? WHERE card_id = ?"
                     " AND status <> 'verifiee'", (statut, raison, maintenant(), c.card_id))
 

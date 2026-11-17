@@ -29,6 +29,18 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | C1 (TOK-90) | Plusieurs effets déclenchés en même temps ? | `non_couvert` (« ordre de chaîne non codé »). | R22 et le réglage `FIRSTTRIGGER` signalé par l'oracle ne sont pas tranchés ; aucun test de la tranche n'en a besoin. |
 | C1 (TOK-90) | Mémoire du tour en phrases ? | Deux phrases traduites dans `scenarios.py`, pour les cartes formalisées seulement : « effet d'X activé ce tour » (quand tous les effets de X portent la même limite) et « verrou X : Extra Deck = Fusion seulement ». Le reste demeure en texte libre ; un verdict n'est accepté malgré des faits libres que si le scénario dit pourquoi ils ne jouent pas (T04 : une limite consommée ne redevient disponible par aucun fait). Un verrou en phrases rend toute Invocation depuis l'Extra Deck indécidable. | Suite de la décision du lot 18 (« la tranche 0 formalise en même temps que les cartes ») ; traduction minimale, déclarée. |
 | C1 (TOK-90) | Harnais : statut « exécuté » ? | Valeur `verifie` de `cb_test_situation.status` réutilisée (affichée « exécuté ») : aucun changement de schéma, donc pas de `gardien-donnees`. Classe « confirmé par le relecteur et l'oracle » non ajoutée. Les transitions et les pas restent en mémoire (pas d'écriture dans `cb_transition`, `cb_step`, `cb_effect`). Les classes de T03, T04, T60 restent `non_executable_sans_regles` (la classe dit l'absence de point relu, pas l'exécution). | Changer le schéma demandait une migration et une relecture pour un mot ; l'écriture des transitions se décidera avec l'exploration (C3). |
+| C2 (TOK-118) | Statut `formalisee` : suffit-il que toutes les résolutions soient écrites ? | Non : il faut aussi que **chaque effet du pilote ait été exercé par au moins un test exécuté** (situations du YAML ou situations J1), compté par le moteur (`regles.EXERCES`) ; sinon `brouillon` (« écrite, non testée »). Résultat : 37 `formalisee` après les 30 situations J1 (29 seulement sans elles). | Sens d'origine de D6 (`brouillon` = « proposée, non testée ») ; la règle de C1 (« résolution manquante ») aurait déclaré formalisées des cartes jamais jouées. |
+| C2 (TOK-118) | Comment exercer les 27 effets que le YAML n'exerce pas ? | 30 situations nouvelles, `docs/moteur-combos/situations-j1.yaml`, **verdicts écrits par l'agent**, exécutées par le harnais, à faire rejouer à l'oracle (`situations-pour-oracle.md`). Le YAML écrit à la main n'est pas modifié. | Elles détectent les erreurs de code ; l'oracle les rend indépendantes. Ne pas mêler au jeu de tests relu par le juge des verdicts non relus. |
+| C2 (TOK-118) | R22 (déclencheurs simultanés) : coder ? | **Codé** (le brief le permet) : mise en chaîne un par un, ordre libre, obligatoires d'abord, facultatifs laissables ; réglage par défaut de l'oracle, pas `FIRSTTRIGGER`. | T45 et T62 en dépendent ; le relecteur (« choisit l'ordre ») et l'oracle (réglage par défaut) concordent. |
+| C2 (TOK-118) | R23 : `Incredible Ecclesia`, effet de Phase de Fin ? | **Obligatoire** (texte TCG de notre base) ; fin de tour illégale tant qu'il attend (T37). Désaccord avec l'oracle listé, non compté comme erreur. | Le texte TCG fait foi (brief). |
+| C2 (TOK-118) | Taux d'erreur de J1 : méthode ? | Avis de `data-scientist-ygo` repris tel quel : unité l'effet ; 0/30 d'aujourd'hui publié comme **constat**, pas comme taux ; mesure = oracle sur les 30 situations J1 + relecture humaine à l'aveugle de **20 effets stratifiés 10/10** (graine 20260118), hors périmètre relus en exhaustif ; taux arbitré et pessimiste ; naïf = lecture directe par un LLM (1/34 le 17/11). **J1 non déclaré atteint** avant cette mesure. | Seule une vérification indépendante de l'auteur mesure une erreur de lecture. |
+| C2 (TOK-118) | Cible qui déclare J1 atteint, écrite avant le tirage ? | **Borne haute de Wilson 95 % du taux arbitré ≤ 20 %** (0 erreur sur 20 → 16,1 %). | Sans cible écrite d'avance, le seuil serait choisi après le résultat. |
+| C2 (TOK-118) | Statut `verifiee` dès maintenant pour les cartes dont tous les effets passent des situations rejouées par l'oracle ? | **Non** : aucune carte `verifiee` tant que l'oracle n'a pas rejoué les situations J1 et que la relecture n'est pas faite. | L'oracle a vérifié des verdicts de situations, pas la formalisation clause par clause. |
+| C2 (TOK-118) | Points que le texte ne tranche pas (N01 à N13 : `Luluwalilith` sur sa propre sortie de l'Extra Deck, `Branded Opening` sans « Despia » dans le Deck, `Sprind` depuis la Zone Monstre Extra, déclarer DIVIN, retour d'`EDD`, `Cocatorium` matériel, effet résolu après destruction, cibler un monstre insensible, choisir un monstre insensible, remplacement de `Branded Opening` contre sa propre carte, « 1 other Mulcharmy », zones centrales d'`Albion`, `Golden Swordsoul` et son propre bannissement) ? | Un choix codé pour chacun, marqué ⚖ ; N01 répond « non couvert » ; DIVIN donne une option « indéterminée ». Liste dans `situations-pour-oracle.md` § 2. | Ne jamais présenter un choix non tranché comme une règle ; le « non couvert » reste disponible quand aucun choix n'est raisonnable. |
+| C2 (TOK-118) | `Mulcharmy Fuwalos` : retour aléatoire en Phase de Fin si la main dépasse 6 ; défausse de fin de tour au-delà de 6 cartes ? | Non codés : la fin du tour répond « non couvert » dans ces cas ; la carte reste `formalisee` (la résolution de son effet est écrite). | Cas rares au tour 1 ; jamais un résultat faux. |
+| C2 (TOK-118) | Mémoire du tour en phrases (24 départs partiels) ? | 13 motifs traduits de plus dans `scenarios.py` (verrous de `Nadir`, `White`, `Dogmatika Ecclesia` ; « X activée ce tour » ; « 1er / 2e effet de X utilisé » ; « un monstre Fusion (X) a été envoyé au Cimetière ce tour » ; envoyé sans invocation ; notes descriptives « Invocation Fusion par X »…). Plus aucun fait libre dans les 69 situations exécutées. | Une phrase n'est traduite que si elle n'a qu'une lecture ; chaque traduction est listée dans le résultat. |
+| C2 (TOK-118) | Effets continus et de remplacement (`Dogma`, `Titaniklad`, `Albion` « ne sert pas de matériel », `Branded Opening` effet 2) ? | Genre `restriction` (ne s'active pas), codés dans le moteur (`insensible`, `bonus_atk`, `interdit_materiel_fusion`, `Partie.detruire`) et comptés comme effets du pilote. | Ils changent des résultats au tour 1 (T56, J24, J26, J29). |
+| C2 (TOK-118) | Schéma de `combos.db` ? | Inchangé (statuts écrits dans les colonnes existantes) ; `gardien-donnees` non sollicité. Les situations J1 ne sont pas écrites dans `cb_test_situation` (réservée aux 72 situations du YAML). | Pas de migration pour un lot de formalisation. |
 
 ## Formulaire
 
@@ -77,5 +89,47 @@ Commentaire libre :
 C1 (TOK-90) — harnais
 [x] Réutiliser `verifie` (affiché « exécuté »), pas de migration du schéma
 [ ] Ajouter une valeur `execute` à cb_test_situation.status (migration 002, relecture gardien-donnees)
+Commentaire libre :
+
+C2 (TOK-118) — statut `formalisee`
+[x] Résolutions écrites ET chaque effet du pilote exercé par un test (sinon `brouillon`, « non testée »)
+[ ] Résolutions écrites suffisent (règle de C1)
+Commentaire libre :
+
+C2 (TOK-118) — situations J1 écrites par l'agent
+[x] Fichier à part (`situations-j1.yaml`), à faire rejouer à l'oracle ; le YAML relu par le juge n'est pas touché
+[ ] Les ajouter à `tests-branded.yaml`
+Commentaire libre :
+
+C2 (TOK-118) — R22 (déclencheurs simultanés)
+[x] Ordre libre, obligatoires d'abord, facultatifs laissables (réglage par défaut de l'oracle)
+[ ] Ordre imposé (« premier déclenché d'abord », FIRSTTRIGGER)
+[ ] Laisser « non couvert »
+Commentaire libre :
+
+C2 (TOK-118) — méthode du taux d'erreur (avis data-scientist-ygo)
+[x] Oracle sur les 30 situations J1 + relecture à l'aveugle de 20 effets stratifiés 10/10 (graine 20260118), hors périmètre en exhaustif
+[ ] Relecture de 35 effets (borne haute < 10 % si 0 erreur), coût humain plus élevé
+[ ] Oracle seul, sans relecture humaine
+Commentaire libre :
+
+C2 (TOK-118) — cible de J1, écrite avant le tirage
+[x] Borne haute de Wilson 95 % du taux arbitré ≤ 20 %
+[ ] Borne haute ≤ 10 % (demande ≈ 35 effets relus)
+Commentaire libre :
+
+C2 (TOK-118) — statut `verifiee`
+[x] Aucune carte `verifiee` avant le passage de l'oracle sur J1 et la relecture
+[ ] `verifiee` dès maintenant pour les cartes dont tous les effets sont exercés par des situations rejouées par l'oracle
+Commentaire libre :
+
+C2 (TOK-118) — points non tranchés N01 à N13
+[x] Choix codés et marqués ⚖, N01 en « non couvert », à faire trancher par l'oracle
+[ ] « non couvert » pour tous les N
+Commentaire libre :
+
+C2 (TOK-118) — R23 (Incredible Ecclesia)
+[x] Obligatoire, texte TCG de notre base (désaccord avec l'oracle listé, non compté comme erreur)
+[ ] Facultatif, comme l'oracle
 Commentaire libre :
 ```

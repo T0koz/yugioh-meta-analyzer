@@ -1,0 +1,271 @@
+# Situations J1 (lot C2, TOK-118) — écrites par l'agent qui a formalisé les cartes, le 2026-11-18.
+#
+# But : exercer chaque effet du pilote que tests-branded.yaml n'exerce pas (27 effets sur 56). Le verdict et les
+# listes sont **la lecture de l'agent**, pas celle d'un juge ni de l'oracle : ces situations détectent une erreur
+# d'écriture du code, pas une erreur de lecture du texte. Elles sont à faire jouer à l'oracle (TOK-86) par une
+# session séparée : voir situations-pour-oracle.md. Un désaccord de l'oracle compte comme une erreur de
+# formalisation (taux d'erreur J1).
+# Même schéma que tests-branded.yaml (conventions de départ identiques). Points de règle nouveaux : N01…
+# (situations-pour-oracle.md § 2).
+
+version: 1
+deck_source: 6af240d29e8b7a3a8eb28d8d
+auteur: "agent C2 (formalisation), non relu"
+
+cartes:
+  ALUBER: "Aluber the Jester of Despia"
+  ASH: "Ash Blossom & Joyous Spring"
+  CARTESIA: "Blazing Cartesia, the Virtuous"
+  BFUSION: "Branded Fusion"
+  BOPENING: "Branded Opening"
+  BHIGH: "Branded in High Spirits"
+  COCA: "Cocatorium the Heavy Metal Avian"
+  DECCLESIA: "Dogmatika Ecclesia, the Virtuous"
+  DROLL: "Droll & Lock Bird"
+  ALBAZ: "Fallen of Albaz"
+  WHITE: "Fallen of the White Dragon"
+  OGRE: "Ghost Ogre & Snow Rabbit"
+  SARC: "Gold Sarcophagus"
+  QUEM: "Guiding Quem, the Virtuous"
+  IECCLESIA: "Incredible Ecclesia, the Virtuous"
+  FUWALOS: "Mulcharmy Fuwalos"
+  NADIR: "Nadir Servant"
+  SKITT: "Springans Kitt"
+  SPOLY: "Super Polymerization"
+  TFTV: "The Fallen & The Virtuous"
+  GSWORD: "The Golden Swordsoul"
+  MERC: "Tri-Brigade Mercourier"
+  TBKITT: "Tri-Brigade Springans Kitt"
+  SANCTIFIRE: "Albion the Sanctifire Dragon"
+  LULU: "Despian Luluwalilith"
+  EDD: "Ecclesia and the Dark Dragon"
+  GARURA: "Garura, Wings of Resonant Life"
+  GRANG: "Granguignol the Dusk Dragon"
+  AEON: "Hyperinvoked Aeon"
+  MIRROR: "Mirrorjade the Iceblade Dragon"
+  MIXOUSIA: "Mixousia the Confounder"
+  DRAGO: "Predaplant Dragostapelia"
+  RIND: "Rindbrumm the Striking Dragon"
+  SPRIND: "Sprind the Irondash Dragon"
+  DOGMA: "The Dragon that Devours the Dogma"
+  CHAMPIONS: "The Three Champions of Swordsoul"
+  TITAN: "Titaniklad the Ash Dragon"
+  LAVA: "Lava Golem"                           # side deck, texte présent, non formalisée
+
+situations:
+
+  - id: J01
+    effets: ["RIND/1"]
+    depart: {terrain: ["RIND (Invocation Fusion)", "EDD (Invocation Synchro ce tour)"]}
+    action: "Effet rapide d'EDD ; enchaîner l'effet rapide de RIND pour l'annuler ; ne renvoyer aucun monstre."
+    attendu: {verdict: legal, etat: "EDD reste sur le terrain (son effet, annulé, ne la bannit pas) ; rien n'est Invoqué."}
+    regles: []
+
+  - id: J02
+    effets: ["EDD/1"]
+    depart: {main: [ASH], terrain: ["EDD (Invocation Synchro ce tour)"]}
+    action: "Effet rapide d'EDD : se bannir jusqu'à la Phase de Fin, Invoquer Spécialement ALBAZ du Deck."
+    attendu:
+      verdict: legal
+      choix: [ALBAZ, WHITE, CARTESIA, QUEM, IECCLESIA, SKITT, GSWORD, MERC, TBKITT]
+      note: "« Fallen of Albaz », ou monstre de Niveau 4 ou moins qui le mentionne, du Deck ou du Cimetière."
+    regles: [N05]
+
+  - id: J03
+    effets: ["EDD/1"]
+    depart: {main: [ASH], terrain: ["EDD (Invocation Synchro ce tour)"]}
+    action: "J02, puis passer à la Phase de Fin : EDD revient sur le terrain."
+    attendu: {verdict: legal, etat: "EDD revient en zone Monstre principale, dans sa position (Attaque)."}
+    regles: [N05]
+
+  - id: J04
+    effets: ["EDD/2"]
+    depart:
+      terrain: ["ALUBER (Invocation Normale)"]
+      cimetiere: [EDD, "TITAN (Invoqué par Fusion ce tour, puis utilisé comme matériel)"]
+    action: "Effet d'EDD au Cimetière : cibler TITAN (Cimetière) et ALUBER (terrain) ; les mélanger avec EDD."
+    attendu: {verdict: legal, etat: "TITAN et EDD dans l'Extra Deck, ALUBER dans le Deck."}
+    regles: []
+
+  - id: J05
+    effets: ["CARTESIA/3"]
+    depart: {phase: "Phase de Fin", cimetiere: [CARTESIA, TITAN], memoire: ["un monstre Fusion (TITAN) a été envoyé au Cimetière ce tour"]}
+    action: "Effet de Phase de Fin de CARTESIA (revenir en main)."
+    attendu: {verdict: legal}
+    regles: []
+
+  - id: J06
+    effets: ["BHIGH/2"]
+    depart: {phase: "Phase de Fin", cimetiere: [BHIGH, TITAN], memoire: ["un monstre Fusion (TITAN) a été envoyé au Cimetière ce tour"]}
+    action: "Effet de Phase de Fin de BHIGH (revenir en main), aucun autre effet de BHIGH utilisé ce tour."
+    attendu: {verdict: legal}
+    regles: [R21]
+
+  - id: J07
+    effets: ["IECCLESIA/3"]
+    depart: {phase: "Phase de Fin", cimetiere: [IECCLESIA, TITAN], memoire: ["un monstre Fusion (TITAN) a été envoyé au Cimetière ce tour"]}
+    action: "Résoudre l'effet obligatoire d'IECCLESIA, puis terminer le tour."
+    attendu: {verdict: legal, etat: "IECCLESIA en main ; la fin du tour devient légale (R23)."}
+    regles: [R23]
+
+  - id: J08
+    effets: ["IECCLESIA/1"]
+    perimetre: hors_pilote
+    depart: {main: [IECCLESIA, ASH], terrain_adverse: ["monstre générique"]}
+    action: "Invoquer Spécialement IECCLESIA par sa procédure (l'adversaire contrôle 1 monstre, nous 0)."
+    attendu: {verdict: legal, note: "Pas de chaîne (R15)."}
+    regles: [R15, R16]
+
+  - id: J09
+    effets: ["COCA/1"]
+    depart: {main: [COCA, ASH], terrain: ["SKITT (Invocation Normale)"]}
+    action: "Effet de COCA en main : Sacrifier SKITT (Bête) ; Invoquer Spécialement COCA."
+    attendu: {verdict: legal, etat: "COCA sur le terrain, « bannie quand elle quitte le terrain »."}
+    regles: []
+
+  - id: J10
+    effets: ["COCA/1"]
+    depart: {main: [COCA, SPOLY, ASH], terrain: ["SKITT (Invocation Normale)", "ALBAZ (Invoqué Spécialement)"]}
+    action: "J09, puis SPOLY (défausser ASH) : Fusion de RIND avec ALBAZ + COCA."
+    attendu: {verdict: legal, etat: "COCA, matériel, est bannie au lieu d'aller au Cimetière."}
+    regles: [N06]
+
+  - id: J11
+    effets: ["OGRE/1"]
+    depart: {main: [QUEM, OGRE, ASH]}
+    action: "Invocation Normale de QUEM ; activer son 1er effet ; enchaîner OGRE (main) pour détruire QUEM ; l'effet de QUEM se résout quand même (envoyer ALBAZ)."
+    attendu: {verdict: legal, etat: "QUEM et OGRE au Cimetière ; ALBAZ au Cimetière."}
+    regles: [N07]
+
+  - id: J12
+    effets: ["TFTV/1"]
+    depart: {main: [TFTV], terrain: ["ALUBER (Invocation Normale)"]}
+    action: "TFTV, 1er effet : envoyer TITAN de l'Extra Deck, cibler ALUBER ; le détruire."
+    attendu: {verdict: legal}
+    regles: [R34]
+
+  - id: J13
+    effets: ["TFTV/2"]
+    depart: {main: [TFTV], cimetiere: [IECCLESIA, ALUBER]}
+    action: "TFTV, 2e effet (IECCLESIA au Cimetière) : cibler ALUBER au Cimetière ; l'Invoquer Spécialement."
+    attendu: {verdict: legal, choix: [IECCLESIA, ALUBER]}
+    regles: [R09]
+
+  - id: J14
+    effets: ["LULU/1"]
+    depart: {main: [NADIR], terrain: ["LULU (Invocation Synchro ce tour)", "ALUBER (Invocation Normale)"]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ) ; TITAN quitte l'Extra Deck : effet de LULU, +500 ATK, ne rien annuler."
+    attendu: {verdict: legal, etat: "LULU et ALUBER gagnent 500 ATK."}
+    regles: [N01]
+
+  - id: J15
+    effets: ["LULU/2"]
+    depart: {phase: "Phase de Fin", main: [ASH], cimetiere: ["LULU (envoyée au Cimetière ce tour)"]}
+    action: "Effet de Phase de Fin de LULU : Invoquer Spécialement 1 LUMIÈRE Magicien dont l'ATK égale la DEF, de la main ou du Deck."
+    attendu: {verdict: legal, choix: [CARTESIA, QUEM, IECCLESIA, DECCLESIA]}
+    regles: []
+
+  - id: J16
+    effets: ["AEON/1"]
+    depart: {main: [SPOLY, ASH], terrain: ["RIND (Invocation Fusion)", "GRANG (Invocation Fusion)"]}
+    action: "SPOLY (défausser ASH) : Fusion d'AEON avec GRANG + RIND (TÉNÈBRES et LUMIÈRE) ; son effet bannit GRANG du Cimetière."
+    attendu: {verdict: legal}
+    regles: []
+
+  - id: J17
+    effets: ["AEON/2"]
+    depart: {terrain: ["AEON (Invocation Fusion)", "ALUBER (Invocation Normale)"]}
+    action: "Effet rapide d'AEON : déclarer LUMIÈRE ; ALUBER devient LUMIÈRE jusqu'à la fin du tour."
+    attendu: {verdict: legal}
+    regles: [N04]
+
+  - id: J18
+    effets: ["MIXOUSIA/1"]
+    depart: {terrain: ["MIXOUSIA (Invocation Fusion)", "ALUBER (Invocation Normale)"]}
+    action: "Effet de MIXOUSIA : cibler ALUBER, déclarer EAU."
+    attendu: {verdict: legal}
+    regles: [N04]
+
+  - id: J19
+    effets: ["MIXOUSIA/3"]
+    depart: {cimetiere: [MIXOUSIA]}
+    action: "Effet de MIXOUSIA au Cimetière : déclarer LUMIÈRE."
+    attendu: {verdict: legal}
+    regles: [N04]
+
+  - id: J20
+    effets: ["SPRIND/1"]
+    depart: {terrain: ["RIND (Invocation Fusion)", "SPRIND (Invocation Fusion)"]}
+    action: "Effet de SPRIND (en M1) : aller en M2, puis détruire les autres cartes face visible de la colonne 2 (RIND, en Zone Monstre Extra de gauche)."
+    attendu: {verdict: legal, etat: "SPRIND en M2 ; RIND au Cimetière."}
+    regles: [N03]
+
+  - id: J21
+    effets: ["SPRIND/2"]
+    depart: {phase: "Phase de Fin", cimetiere: ["SPRIND (Invoqué par Fusion ce tour, puis utilisé comme matériel)"]}
+    action: "Effet de Phase de Fin de SPRIND : Invoquer Spécialement TBKITT du Deck."
+    attendu: {verdict: legal, choix: [ALBAZ, WHITE, SKITT, TBKITT]}
+    regles: []
+
+  - id: J22
+    effets: ["DOGMA/2"]
+    depart: {main: [ALUBER], terrain: ["CARTESIA (Invoquée Spécialement)", ALBAZ]}
+    action: "Effet rapide de CARTESIA : Fusion de DOGMA (ALBAZ + CARTESIA + ALUBER) ; effet de DOGMA : mélanger ALBAZ (Cimetière) dans le Deck."
+    attendu: {verdict: legal}
+    regles: [R24]
+
+  - id: J23
+    effets: ["DOGMA/3"]
+    depart: {phase: "Phase de Fin", cimetiere: ["DOGMA (Invoqué par Fusion ce tour, puis utilisé comme matériel)"]}
+    action: "Effet de Phase de Fin de DOGMA : ajouter 1 carte « Dogmatika » ou « Tri-Brigade » du Deck."
+    attendu: {verdict: legal, choix: [DECCLESIA, QUEM, TFTV, MERC, TBKITT]}
+    regles: [R11]
+
+  - id: J24
+    effets: ["DOGMA/1"]
+    depart: {main: [TFTV], terrain: ["DOGMA (Invocation Fusion)"], cimetiere: [IECCLESIA]}
+    action: "TFTV, 1er effet (envoyer TITAN) en ciblant DOGMA : DOGMA n'est pas affectée (« Ecclesia » au Cimetière) ; son ATK vaut 3500."
+    attendu: {verdict: legal, etat: "DOGMA reste sur le terrain."}
+    regles: [N08]
+
+  - id: J25
+    effets: ["TITAN/1"]
+    depart: {main: [SPOLY, ASH], terrain: [ALBAZ, "GRANG (Invocation Fusion)"]}
+    action: "SPOLY (défausser ASH) : Fusion de TITAN avec ALBAZ (Niveau 4) + GRANG (Niveau 8, 2500 ATK)."
+    attendu: {verdict: legal, etat: "TITAN : 2500 + 12 × 100 = 3700 ATK."}
+    regles: []
+
+  - id: J26
+    effets: ["TITAN/2"]
+    depart: {main: [SPOLY, ASH], terrain: ["MIRROR (Invocation Fusion)", "GRANG (Invocation Fusion)", ALBAZ]}
+    action: "J25 (TITAN en zone principale), puis effet de MIRROR (envoyer SANCTIFIRE) : TITAN ne fait pas partie des monstres qu'il peut bannir."
+    attendu: {verdict: legal}
+    regles: [N09]
+
+  - id: J27
+    effets: ["CHAMPIONS/1"]
+    depart: {terrain: ["IECCLESIA (Invoquée Spécialement)", "ALUBER (Invocation Normale)"]}
+    action: "Invocation Synchro de CHAMPIONS (IECCLESIA, Syntoniseur de Niveau 4, + ALUBER) ; son effet : ajouter 1 Magicien de Niveau 4 ou 8 dont l'ATK égale la DEF, du Deck ou du Cimetière."
+    attendu: {verdict: legal, choix: [CARTESIA, QUEM, DECCLESIA, IECCLESIA]}
+    regles: [R26]
+
+  - id: J28
+    effets: ["CHAMPIONS/2"]
+    depart: {terrain: ["CHAMPIONS (Invocation Synchro)", "ALUBER (Invocation Normale)"], cimetiere: [ALBAZ]}
+    action: "Effet de CHAMPIONS : cibler ALUBER, annuler ses effets, puis le détruire (ALBAZ au Cimetière)."
+    attendu: {verdict: legal}
+    regles: []
+
+  - id: J29
+    effets: ["BOPENING/2"]
+    depart: {main: [TFTV], terrain: ["RIND (Invocation Fusion)"], cimetiere: [BOPENING]}
+    action: "TFTV, 1er effet (envoyer TITAN) en ciblant RIND ; bannir BOPENING du Cimetière à la place de la destruction."
+    attendu: {verdict: legal, etat: "RIND reste sur le terrain ; BOPENING bannie."}
+    regles: [N10]
+
+  - id: J30
+    effets: []
+    depart: {terrain: ["QUEM (Invocation Normale)", "DECCLESIA (Invoquée Spécialement)", "ALUBER (Invoqué Spécialement)"]}
+    action: "Invocation Synchro de LULU (QUEM + DECCLESIA + ALUBER) : LULU sort de l'Extra Deck."
+    attendu: {verdict: non_couvert, raison: "N01 : LULU se déclenche-t-elle sur sa propre sortie de l'Extra Deck ? Non tranché."}
+    regles: [N01]

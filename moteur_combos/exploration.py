@@ -407,6 +407,50 @@ def explorer(cat: Catalogue, depart: Etat, max_profondeur: int = 12, max_seconde
     return r
 
 
+# ── Méthode naïve : un joueur au hasard (avis data-scientist-ygo, lot C3) ─────────────────────────
+
+def parties_au_hasard(cat: Catalogue, depart: Etat, graine: int, max_secondes: float = 30.0,
+                      max_transitions: int = 20, filtres: tuple[str, ...] = FILTRES_PAR_DEFAUT,
+                      cible: CibleExploration | None = None, accepter=None) -> dict:
+    """Parties où, à chaque état, le joueur prend une transition légale au hasard (uniforme sur toutes les façons de
+    compléter toutes les déclarations légales, mêmes filtres), jusqu'à la fin du tour ou `max_transitions`. Rend le
+    nombre de parties jouées dans le budget et combien remplissent la cible (et les jalons, via `accepter`)."""
+    import random
+    rng = random.Random(graine)
+    moteur = Moteur(cat)
+    fs = frozenset(filtres)
+    t0 = time.monotonic()
+    parties = plateau = sequence = 0
+    while time.monotonic() - t0 < max_secondes:
+        r = Rapport(depart=depart.empreinte(), filtres=tuple(filtres))
+        sid, etat = r.depart, depart
+        r.etats[sid] = etat
+        touche_plateau = touche_seq = False
+        for _ in range(max_transitions):
+            issues = []
+            for decl in declarations(etat, cat, fs):
+                issues += [i for i in developper(moteur, etat, decl, fs)[0] if i.resultat.verdict == "legal"]
+            if not issues:
+                break
+            iss = rng.choice(issues)
+            if iss.declaration.type == "fin_de_tour":
+                break
+            aid = iss.resultat.etat.empreinte()
+            if aid not in r.etats:
+                r.etats[aid] = iss.resultat.etat
+                r.parent[aid] = Arete(sid, aid, iss.declaration, iss.reponses, "legal", None)
+            sid, etat = aid, iss.resultat.etat
+            if cible is not None and cible_remplie(etat, cible):
+                touche_plateau = True
+                if accepter is None or accepter(r, sid):
+                    touche_seq = True
+        parties += 1
+        plateau += touche_plateau
+        sequence += touche_seq
+    return {"parties": parties, "plateau": plateau, "sequence": sequence,
+            "secondes": round(time.monotonic() - t0, 1)}
+
+
 # ── État de départ ─────────────────────────────────────────────────────────────────────────────
 
 def etat_depart(deck, main: list[str], hors_jeu: list[str] = ()) -> Etat:

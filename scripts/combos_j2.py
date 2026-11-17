@@ -33,7 +33,7 @@ from moteur_combos.base import ouvrir_combos, ouvrir_reference  # noqa: E402
 from moteur_combos.cartes import FORMALISATIONS  # noqa: E402
 from moteur_combos.catalogue import construire_catalogue  # noqa: E402
 from moteur_combos.deck import charger_deck, lire_textes, tous_les_noms  # noqa: E402
-from moteur_combos.exploration import FILTRES_PAR_DEFAUT, etat_depart, explorer  # noqa: E402
+from moteur_combos.exploration import FILTRES_PAR_DEFAUT, etat_depart, explorer, parties_au_hasard  # noqa: E402
 from moteur_combos.guides import GUIDES  # noqa: E402
 from moteur_combos.stockage_combos import (  # noqa: E402
     Ecrivain, a_puis_directement_b, combos_passant_par, lire_combo, ouvrir_run,
@@ -135,12 +135,17 @@ def main(argv=None) -> int:
                         info.setdefault("combo_ids", []).append(ecr.combo(sid, "cible_atteinte"))
                 con.commit()
             ligne[nom] = info
+        # Méthode naïve (avis data-scientist-ygo) : joueur au hasard, même budget que le parcours en largeur.
+        ligne["hasard"] = parties_au_hasard(cat, depart, graine=GRAINE_MAINS, max_secondes=args.largeur,
+                                            cible=g.cible, accepter=g.accepter)
         sortie["guides"].append(ligne)
         d, l = ligne["dirigee"], ligne["largeur"]
         def etat(x):
             return ("séquence ✓" if x["sequence"] else ("plateau seul" if x["plateau"] else "✗"))
         print(f"  {g.gid} : dirigée {etat(d)} {d['secondes']} s, {d['etats']} états ({d['arret']})"
-              f" | largeur {etat(l)} {l['secondes']} s, {l['etats']} états ({l['arret']})")
+              f" | largeur {etat(l)} {l['secondes']} s, {l['etats']} états ({l['arret']})"
+              f" | hasard : séquence {ligne['hasard']['sequence']}, plateau {ligne['hasard']['plateau']}"
+              f" sur {ligne['hasard']['parties']} parties")
         for pas in d.get("chemin_sequence", d.get("chemin_plateau", [])):
             print(f"      - {pas}")
 

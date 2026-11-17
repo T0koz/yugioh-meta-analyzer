@@ -19,7 +19,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Callable
 
-from .modele import Verrou
+from .modele import Instance, Verrou
 from .regles import HORS_PERIMETRE, NON_CODEE, Decision, HorsPerimetre, Option, Pas
 
 ALBAZ = "Fallen of Albaz"
@@ -45,6 +45,10 @@ class Effet:
     a_l_activation: Callable | None = None      # (partie, lieu, nom) : ce qui s'applique dès l'activation
     resolution: Callable | str = NON_CODEE      # (partie, maillon) | NON_CODEE | HORS_PERIMETRE
     note: str = ""
+    cible: Callable | None = None               # (partie, lieu, nom) -> [Option] : cible choisie à l'activation
+    categories: tuple[str, ...] = ()            # ce que fait l'effet (lu par Ash Blossom) : recherche_deck…
+    sans_reponse: bool = False                  # « Neither player can activate … in response » (R19)
+    phases: tuple[str, ...] = ()                # « During the Main Phase » : phases permises (vide = toutes)
 
 
 @dataclass(frozen=True)
@@ -56,6 +60,11 @@ class Formalisation:
     interdit_materiel_fusion: bool = False
     invocation_normale_interdite: bool = False
     sources: str = ""
+    materiels_groupe: Callable | None = None     # (partie, [(fiche, exemplaire)]) -> True | False | None
+    synchro_niveau_syntoniseur: int | None = None  # « 1 Level 4 Tuner + … » ; None : tout Syntoniseur
+    un_seul_controle: bool = False               # « You can only control 1 "X" »
+    insensible: Callable | None = None           # (partie, exemplaire, source, effet_active) -> bool
+    bonus_atk: Callable | None = None            # (partie, exemplaire) -> int : gain d'ATK d'un effet continu
 
     def effet(self, numero: int) -> Effet:
         for e in self.effets:
@@ -138,7 +147,7 @@ ALUBER_F = Formalisation(
     effets=(
         Effet(1, "declenche", ("terrain",), (("par_nom_carte", ALUBER),), timing="if",
               declencheur=_soi_invoque, possible=lambda p, l, n: bool(_aluber_cibles(p)),
-              resolution=_aluber_resolution,
+              resolution=_aluber_resolution, categories=("recherche_deck",),
               note="Invoqué Normalement ou Spécialement : ajouter 1 Magie/Piège « Branded » du Deck à la main."),
         Effet(2, "declenche", ("cimetiere",), (("par_nom_carte", ALUBER),), timing="if",
               declencheur=_jamais, resolution=HORS_PERIMETRE,
@@ -202,7 +211,7 @@ BFUSION_F = Formalisation(
         Effet(1, "activation_carte", ("main",), (("activation_par_nom", BFUSION),), vitesse=1,
               condition=_bfusion_condition, possible=_bfusion_possible,
               a_l_activation=lambda p, l, n: p.ajouter_verrou(Verrou(BFUSION, "extra_fusion_seulement")),
-              resolution=_bfusion_resolution,
+              resolution=_bfusion_resolution, categories=("envoi_deck_cimetiere",),
               note="Invocation Fusion d'un monstre qui mentionne Albaz comme matériel, avec 2 monstres de la main, "
                    "du Deck ou du terrain ; verrou « Extra Deck = Fusion » posé dès l'activation, pour tout le tour."),
     ),
@@ -337,21 +346,48 @@ def _rind_condition_rapide(p, lieu, nom):
     return None
 
 
+def _rind_annuler(p, m) -> None:
+    cible = m.donnees["cible_maillon"]
+    if cible < len(p.chaine):
+        p.chaine[cible].annule = True
+        p.notes.append(f"Rindbrumm annule l'effet du maillon {cible + 1} ({p.chaine[cible].carte})")
+    monstres = [(c, i) for c, i in p.monstres() if not p.insensible(i, RIND)]
+    options = [Option(f"{i.carte} ({c})", True, None, (c, i.carte)) for c, i in monstres] + [Option("ne pas renvoyer")]
+    o = p.choisir(Decision("choisir", "renvoyer", options))
+    if o.valeur != "ne pas renvoyer":
+        c, n = o.donnees
+        f = p.cat[n]
+        p.pas.append(Pas("resoudre", f"{n} renvoyé {'dans l’Extra Deck' if f.est_extra else 'en main'}"))
+        if f.est_extra:
+            p.vers_deck("terrain", n, c, "cible")
+        else:
+            p.retirer("terrain", n, c)
+            p.ajouter("main", Instance(carte=n))
+            p.pas[-1].cartes.append((n, "cible", "terrain", "main", None))
+
+
 RIND_F = Formalisation(
     nom=RIND,
     text_sha256="5ee205d6d432b66ea3dfb1001d549242c6aa3903b11a88c6a47e9ae4b751aee1",
     materiels=(None, lambda fiche, inst: fiche.est_monstre and fiche.race in {"Beast", "Beast-Warrior", "Winged Beast"}),
     effets=(
         Effet(1, "rapide", ("terrain",), (("par_nom_effet", RIND),), vitesse=2, condition=_rind_condition_rapide,
-              resolution=NON_CODEE,
-              note="Effet rapide en réponse à l'effet d'un monstre Fusion/Synchro/Xyz/Lien : annuler, puis renvoyer "
-                   "un monstre en main. Condition écrite, résolution non formalisée (tranche 0)."),
+              a_l_activation=lambda p, l, n: {"cible_maillon": len(p.chaine) - 1}, resolution=_rind_annuler,
+              note="Effet rapide en réponse à l'effet d'un monstre Fusion/Synchro/Xyz/Lien (les siens aussi) : "
+                   "annuler cet effet, puis on peut renvoyer 1 monstre du terrain en main (Extra Deck pour un monstre "
+                   "de l'Extra Deck). Résolution écrite au lot C2."),
         Effet(2, "rapide", ("cimetiere",), (("par_nom_effet", RIND),), vitesse=2,
               condition=lambda p, l, n: None if p.etat.cadre.joueur_actif == 1 else "pendant le tour adverse seulement",
               resolution=HORS_PERIMETRE, note="Tour adverse seulement."),
     ),
-    sources="T07, T15 ; R03, R05",
+    sources="T07, T15 ; R03, R05 (effet 1 : lot C2)",
 )
 
 
-FORMALISATIONS: dict[str, Formalisation] = {f.nom: f for f in (ALUBER_F, BFUSION_F, ALBAZ_F, TBKITT_F, RIND_F)}
+FORMALISATIONS_TRANCHE_0: dict[str, Formalisation] = {f.nom: f for f in (ALUBER_F, BFUSION_F, ALBAZ_F, TBKITT_F, RIND_F)}
+
+# Lot C2 (J1, TOK-118) : les 32 autres cartes du pilote, dans `cartes_j1.py` (import en fin de module : il lit les
+# classes et aides ci-dessus).
+from .cartes_j1 import FORMALISATIONS_J1  # noqa: E402
+
+FORMALISATIONS: dict[str, Formalisation] = {**FORMALISATIONS_TRANCHE_0, **FORMALISATIONS_J1}

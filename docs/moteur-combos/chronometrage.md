@@ -206,4 +206,13 @@ Heures relevées avec `date` et l'heure des commits (début ≈ 03:08, à la fus
 | 3 | Étape 0 : N09 corrigé, N01 et DIVIN adoptés, N04 tranché, J26 et J30 réécrites, 3 tests, volet oracle de J1 | ≈ 03:13 | 03:15 | ≈ 3 min | commit `767248a` | formulaire C3 (N04, N09) |
 | 4 | Exploration (`exploration.py`), stockage, guides, script J2 ; un bug de préfixe trouvé en rejouant G1 pas à pas | 03:15 | 03:40 | ≈ 25 min | commit `7d0f192` | — |
 | 5 | Jalons, main d’une carte, priorité A*, joueur au hasard, avis `data-scientist-ygo`, tests | 03:40 | 03:44 | ≈ 4 min | 13 tests | — |
-| 6 | Passage définitif (5 guides × 3 recherches + 5 mains réalistes, ≈ 15 min de calcul), rapport, journaux | 03:44 | voir rapport | — | `j2-rapport.md` | lecture du rapport et du formulaire |
+| 6 | Passage définitif (calcul 736 s en arrière-plan) ; pendant ce temps : relevé des guides, décisions, `check.py` | 03:44 | 03:54 | ≈ 10 min | `combos-guides.md`, commit `3cf2f12` | — |
+| 7 | Rapport J2, vérification d'un chemin suspect (main 4 : légal), `context.md`, `BACKLOG.md` | 03:54 | ≈ 04:00 | ≈ 6 min | `j2-rapport.md` | lecture du rapport et du formulaire C3 |
+| | **Total** | 03:08 | ≈ 04:00 | **≈ 52 min** | étape 0, exploration, 5 combos, rapport | |
+
+**Enseignements pour les estimations** :
+- **Le coût de J2 est dans les données d'entrée, pas dans l'exploration** : trouver des guides lisibles a pris 2 minutes
+  et n'a donné que 5 combos tronqués ; les tableurs utiles sont en images. Un joueur qui transcrit 5 lignes ferait
+  plus pour J2 plein qu'une heure d'agent.
+- **Rejouer une séquence connue pas à pas est le meilleur test de l'explorateur** : c'est ainsi qu'est apparu le bug du
+  préfixe, qu'aucun test unitaire n'aurait signalé (l'exploration « finissait » sans erreur).

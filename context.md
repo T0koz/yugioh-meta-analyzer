@@ -255,6 +255,22 @@ borne haute Wilson ≤ 20 %). Rapport : `docs/moteur-combos/j1-rapport.md` ; pou
 - Une situation J1 ou un scénario du YAML est une traduction en décisions ; la liste attendue reste celle du YAML.
   Nouvelle situation : départ dans `situations-j1.yaml`, scénario dans `SCENARIOS_J1` (`scenarios.py`).
 
+**Lot C3, J2 exploration (TOK-119, 2026-11-18, branche `claude/c3-j2-exploration-ff7592`, non fusionnée)** : étape 0
+(N09 corrigé : un monstre insensible reste choisissable par un effet sans cible, l'effet est sans effet sur lui ; N01
+et DIVIN adoptés ; N04 « Attribut déjà porté » gardé permis par le texte TCG) ; exploration bornée
+(`moteur_combos/exploration.py`, 8 filtres déclarés D4, largeur ou A* vers une cible, jalons), stockage dans
+`combos.db` (schéma inchangé), 5 combos de guides publics (`docs/moteur-combos/combos-guides.md`). Résultat : séquences
+retrouvées **4 sur 5 sans cible** (largeur, 60 s), 5 sur 5 vers la cible, joueur au hasard 0 sur 5 ; **J2 « atteint sous
+réserve », horloge du 13/01/2027 maintenue**. Commande : `python scripts/combos_j2.py` (≈ 12 min). Rapport et
+formulaire : `docs/moteur-combos/j2-rapport.md`.
+- **Une décision à une seule option ne consomme jamais d'entrée du préfixe de réponses** (au premier passage comme au
+  rejeu) : sinon le préfixe se décale et des branches entières disparaissent sans erreur (bug trouvé au lot C3).
+- **Un combo « à une carte » se joue avec la carte seule** (les 4 autres retirées du jeu) : avec des cartes de réponse
+  en main, le moteur s'en sert comme matériel (`Ghost Ogre` pour `Granguignol`).
+- **Une cible de plateau ne suffit pas à dire « retrouvé »** : G3 la remplissait par un autre chemin ; les jalons
+  (actions clés du guide, en sous-suite) font la différence.
+- ≈ 1 200 états/s, facteur 3 à 4 par transition : le parcours en largeur ne dépasse pas 6 transitions en 60 s.
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree

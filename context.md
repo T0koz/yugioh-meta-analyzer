@@ -489,6 +489,11 @@ décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ;
 
 ### 🔜 À faire
 
+- **Priorité n° 1 depuis le 18/11 (décision de Thomas) : le moteur de combos (TOK-84).** Chaîne de la file : lot 17 (oracle,
+  TOK-86) et lot 18 (fondations, TOK-117) en cours, puis C1 tranche 0 (TOK-90) → C2 J1 formalisation (TOK-118) → C3 J2
+  exploration (TOK-119, échéance de la règle d'arrêt 13/01/2027). Le reste (16, 20 = TOK-122, 21 = TOK-121, 22 = TOK-120,
+  23-26 = TOK-123, tâches de fond) passe en deuxième session, pendant une attente passive. Lots de méthode : rien d'affiché ne
+  change sans formulaire de Thomas ; la relecture de la collaboratrice vient après (décision du 18/11).
 - **Validé par Thomas le 17/11 (revue du matin, détail dans `docs/planning/2026-11-17/decisions-prises.md`)** : formulaire TOK-115
   (poids inchangés, verdict de l'Historique tel que proposé) ; audit de rigueur (A1-A4 puis A5-A8) ; textes du lot 16 (tout appliquer,
   titre neutre « Méta Yu-Gi-Oh! TCG et OCG », `check_copy.py` bloquant) ; source de l'oracle TOK-86 (`edo9300/ygopro-core`, usage

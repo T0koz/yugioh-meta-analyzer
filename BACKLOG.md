@@ -124,6 +124,15 @@ validation par Thomas, puis application et passage du script en bloquant (`--str
 
 ---
 
+## Suites du diagnostic TOK-115 et de l'audit de rigueur (17-18/11)
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-122 | Correctifs de l'audit A1 à A8 (A1-A4 d'abord) | 🔜 Lot 20 | 🔴 High |
+| TOK-121 | Collecte des dates d'annonce des banlists | 🔜 Lot 21 | 🟠 Medium |
+| TOK-120 | Ban Radar : rangs par liste, régression conditionnelle, pont daté (B5) | 🔜 Lot 22 | 🟠 Medium |
+| TOK-123 | Chantiers de méthode B1 à B4 (lots 23 à 26), C1 plus tard | 🔜 Lots 23-26 ; relecture de la collaboratrice après (décision du 18/11) | 🟠 Medium |
+
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
 En parallèle de la refonte front. Une collaboratrice (l'amie data scientist de Thomas), accès direct à
@@ -137,19 +146,21 @@ Livrables : `docs/collaboration/`, `scripts/check.py`, `.githooks/pre-push`, `.g
 | TOK-109 | Lui fournir une copie de la base (court terme, accès privé) | 🟡 Méthode prête (`scripts/export_db_snapshot.py`, Drive nominatif, `docs/collaboration/transmission-base.md`) ; envoi par Thomas | 🔴 High |
 | — | _3 tickets terminés (TOK-110, 111, 112) : voir l’archive_ | | |
 
-## TOK-84 — Moteur de combos, pilote Branded (réunion du 2026-11-16)
+## TOK-84 — Moteur de combos, pilote Branded (réunion du 2026-11-16) — PRIORITÉ N° 1 DEPUIS LE 18/11
 
-Projet distinct du produit d'analyse de méta, mené en parallèle (le nettoyage du backlog reste
-prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decisions-2026-11-16.md`](docs/moteur-combos/decisions-2026-11-16.md).
+**Décision de Thomas (18/11)** : le moteur de combos passe en tête de la file (`docs/planning/file.md`, lots 17, 18, C1-C3) ; le reste avance en deuxième session. Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decisions-2026-11-16.md`](docs/moteur-combos/decisions-2026-11-16.md).
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🟡 Rédigé et arbitré (2026-11-16), reste la relecture par un juge — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
+| TOK-85 | Définitions formelles + schéma de données | ✅ Fait ; D3 révisée après la relecture du 17/11 — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
 | TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🟡 Installation arrêtée le 2026-11-17 (cœur hors organisation officielle, `premake5` et Lua absents) ; décision de Thomas requise — `docs/moteur-combos/reponses-oracle.md` | 🟠 Medium |
-| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🟡 Rédigé (2026-11-16), 72 situations **non validées** — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
-| TOK-90 | Tranche 0 : un combo Branded de bout en bout (bloqué par TOK-85 et TOK-87) | 🔜 Backlog | 🟠 Medium |
+| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel) | ✅ 72 situations, relues par le juge le 17/11 (relecture 1) — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
+| TOK-90 | Tranche 0 : un combo Branded de bout en bout | 🔜 Todo, lot C1 de la file (après TOK-117) | 🔴 Urgent |
 | TOK-89 | Trouver un juge humain qui connaît le jeu | 🟡 Relecture 1 faite le 17/11 (joueur de tournoi, non arbitre, Google Form + entretien) : 32 points sur 34 confirmés, R22 contesté (probable malentendu), R34 complété ; D3 révisée (« entre-deux », 18/11), D1 maintenue malgré l'absence de `Lubellion` — `docs/moteur-combos/reponses-juge-2026-11-17.md`. Relecteur plus disponible : R22 levé par cohérence avec R23 ; R08, R27 (b), R34 n'ont qu'un avis (prochain relecteur ou oracle TOK-86) | 🔴 High |
 | TOK-88 | Journal de chronométrage des étapes | 🟡 Ouvert — `docs/moteur-combos/chronometrage.md` (3 sessions d'agent le 2026-11-16, validation humaine non mesurée) | 🟢 Low |
+| TOK-117 | Fondations du moteur (schéma, chargement des decks, harnais de tests) | 🏗️ Lot 18, lancé le 18/11 (`claude/moteur-18-11`) | 🔴 Urgent |
+| TOK-118 | J1 : formaliser les 37 cartes du pilote, taux d'erreur chiffré | 🔜 Lot C2 | 🔴 High |
+| TOK-119 | J2 : retrouver seul les combos des guides publics (échéance de la règle d'arrêt : 13/01/2027) | 🔜 Lot C3 | 🔴 High |
 
 - ⚠ À arbitrer avec le data scientist : `views_week` des cartes existantes n'est jamais rafraîchi
   (1 088 valeurs sur 14 084 égales à celles de l'API du jour), alors que les cartes nouvelles
@@ -157,7 +168,7 @@ prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decis
   dates différentes. Ce défaut existait avant ; l'ajout des cartes nouvelles le rend visible.
 - ⚠ `cards.archetype` ne suit pas les règles du jeu (`Fallen of Albaz` y est « Dogmatika », ce qu'il
   n'est pas) : le moteur calcule l'appartenance depuis le nom et les clauses « always treated as ».
-- TOK-89 passe en priorité haute : sans juge, les 72 tests restent des hypothèses (34 points de règle).
+- TOK-89 fait (relecture 1 du 17/11) ; une seconde relecture par un arbitre reste souhaitable pour R08, R27, R34.
 
 Jalons : **J1** 100 % des cartes Branded formalisées avec un taux d'erreur chiffré · **J2** le moteur
 retrouve seul les combos des guides publics · **J3** il en trouve un qu'aucun guide ne cite. Règle

@@ -12,7 +12,10 @@ Prompt de reprise (identique à chaque fenêtre) : « Lis docs/planning/file.md 
 - Lis d'abord `docs/planning/etat.md` : reprends au premier lot non terminé. Mets `etat.md` à jour **après chaque
   étape** (lot démarré, lot fini, arrêt), et fais commiter souvent sur la branche d'intégration : un arrêt brutal
   ne doit perdre que l'étape en cours.
-- Branche d'intégration unique : `claude/front-nuit-17-11`. Tout s'y empile, y compris le sprint 2. Ni `main`, ni push.
+- Branche d'intégration : `claude/front-nuit-17-11` jusqu'au lot 19 (fusionnée dans `main` le 17/11). **Depuis le 18/11 :
+  `claude/moteur-18-11`** (créée depuis `main`, fusionnée à la revue suivante). Ni `main`, ni push.
+- **Ordre décidé par Thomas le 18/11** (`docs/decisions/0053-*.md`) : lot 18 et lot 17 **en parallèle** (deux sessions,
+  accord explicite), puis la tranche 0 du moteur (TOK-90, brief à écrire), puis les lots 16 et 20.
 - Modèle : front = le plus puissant disponible (Fable, sinon Opus) ; données, doc, recherche = Sonnet si tu peux le
   choisir. Note le modèle réellement utilisé dans `etat.md`.
 - Limite d'usage : tu ne peux pas lire le pourcentage. Dès qu'un message de limite apparaît ou approche, termine

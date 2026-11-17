@@ -91,3 +91,4 @@ Ce que ça change, ce qu'il faudra revoir et quand.
 | 0050 | 2026-11-16 | [Lots 2 et 3 : choix de contenu, de palette et de forme des graphiques](0050-lots-2-et-3-choix-de-contenu-de-palette-et-de-forme-des.md) | acceptée |
 | 0051 | 2026-11-16 | [Lots 4 et 5 : périmètre des pages, du SEO et des captures](0051-lots-4-et-5-perimetre-des-pages-du-seo-et-des-captures.md) | acceptée |
 | 0052 | 2026-11-17 | [Ban Radar : l'omniprésence prédit une partie des bans, le score sert à la tête de liste](0052-ban-radar-l-omniprésence-predit-une-partie-des-bans.md) | acceptée |
+| 0053 | 2026-11-18 | [Reprise du moteur de combos : ordre des lots, parallélisme et horloge](0053-reprise-du-moteur-de-combos-ordre-parallelisme-et-horloge.md) | acceptée |

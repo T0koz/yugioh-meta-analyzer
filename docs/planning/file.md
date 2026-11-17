@@ -62,6 +62,7 @@ Prompt de reprise (identique à chaque fenêtre) : « Lis docs/planning/file.md 
 | 26 | B3 pont et simulateur face aux banlists (après A4) | `sprint-4/26-B3-pont-simulateur.md` | Opus |
 | C1 | Combos : TOK-90 tranche 0 (un combo Branded de bout en bout) | `combos/tok-90-tranche-0.md` | Opus |
 | C2 | Combos (TOK-118) : J1, formalisation des 37 cartes du pilote + taux d'erreur | `combos/j1-formalisation.md` | Opus |
+| C2 bis | Combos : l'oracle rejoue les situations J1 et N01-N13 (mesure de J1, agent séparé) | `combos/oracle-j1.md` | Sonnet |
 | C3 | Combos (TOK-119) : J2, exploration, retrouver les combos des guides | `combos/j2-exploration.md` | Opus |
 
 Les tests visuels du lot 5 sont à mettre à jour après les lots 9, 11 et 12 (nouvelles pages).

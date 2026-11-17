@@ -29,10 +29,11 @@
 | 25 | B4 intervalles de prévision par archétype | à faire (deuxième session) | | |
 | 26 | B3 pont et simulateur face aux banlists | à faire (deuxième session), **après A4 (lot 20)** | | |
 | C1 | Combos : TOK-90 tranche 0 | ✅ fusionné dans `claude/moteur-18-11` (`46c1f33`, travail `53bca7a`) | Opus 5.5 | combo `Aluber` → `Branded Fusion` → `Rindbrumm` → `Kitt` rappelle `Albaz` ; négatifs T60, T04, T11 ; « non couvert » effet par effet ; 10 situations exécutées, 77 tests pytest, `check.py --all` vert ; **5 décisions par défaut à valider** |
-| C2 | Combos : J1, formalisation des 37 cartes (TOK-118) | ▶ lancé le 18/11 après C1 (session unique, travail actif) | Opus 5.5 | brief complété ; situations à faire jouer à l'oracle listées par la session (lot oracle séparé ensuite) |
+| C2 | Combos : J1, formalisation des 37 cartes (TOK-118) | ✅ fusionné dans `claude/moteur-18-11` (travail `19200d3`…`224b0d6`) | Opus 5.5 + sous-agent `data-scientist-ygo` (méthode) | 37 cartes `formalisee`, 57 effets du pilote + 15 hors périmètre ; 69/72 situations YAML et 30/30 situations J1 conformes ; 173 tests pytest ; `check.py --all` vert. **J1 pas encore déclaré atteint** : manquent l'oracle (C2 bis) et la relecture humaine de 20 effets tirés au hasard (`docs/moteur-combos/j1-rapport.md` § 4, cible : borne haute de Wilson ≤ 20 %, à valider) |
+| C2 bis | Oracle sur les situations J1 et N01-N13 | ▶ lancé le 18/11 (session unique ; ajouté par l'orchestrateur, prévu par le brief de J1) | Sonnet 5.5 | brief `combos/oracle-j1.md` ; C3 attend ses réponses (une erreur de formalisation trouvée par l'oracle se corrige avant l'exploration) |
 | C3 | Combos : J2, exploration | à faire, après C2 ; échéance de la règle d'arrêt 13/01/2027 | | |
 
-Dernière mise à jour : 2026-11-18. C1 fusionné, `check.py --all` vert. **C2 (J1) lancé seul** (travail actif, pas de deuxième session). Ni `main` ni push.
+Dernière mise à jour : 2026-11-18. C2 fusionné, `check.py --all` vert. **C2 bis (oracle sur J1) lancé seul**, puis C3. Ni `main` ni push.
 
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |

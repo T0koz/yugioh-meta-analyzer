@@ -231,7 +231,9 @@ def _ss_soi_main(p, m):
 
 
 def _options_attribut(p):
-    return [Option(a) for a in ATTRIBUTS], [Option("DIVINE", False, "⚖ déclarer DIVIN : non tranché (situation pour l'oracle)", None)]
+    # N04 (oracle, 18/11) : DIVIN est déclarable. Seconde moitié (Attribut déjà porté) : le texte TCG d'`Aeon` et de
+    # `Mixousia` ne l'interdit pas, il reste déclarable (litige tranché par le texte, lot C3).
+    return [Option(a) for a in ATTRIBUTS + ("DIVINE",)], []
 
 
 # ── Ash Blossom & Joyous Spring ────────────────────────────────────────────────────────────────
@@ -1106,8 +1108,7 @@ def _lulu_declencheur(p, ev, lieu, nom) -> bool:
     if ev.type != "quitte_extra" or lieu[0] != "terrain":
         return False
     if ev.carte == nom:
-        raise NonCouvert("⚖ Luluwalilith se déclenche-t-elle sur sa propre sortie de l'Extra Deck ? Non tranché "
-                         "(situation pour l'oracle)")
+        return False   # N01 (oracle, 18/11) : pas sur sa propre sortie de l'Extra Deck (elle n'était pas sur le terrain)
     return True
 
 
@@ -1115,12 +1116,18 @@ def _lulu_resolution(p, m):
     for c, i in list(p.monstres()):
         if i.face == "visible" and not p.insensible(i, LULU):
             p.modifier(("terrain", c), i.carte, (Modification("atk_gain", "500", "permanente"),))
-    cibles = [(c, i) for c, i in _cartes_visibles_terrain(p) if not p.insensible(i, LULU)]
+    # N09 (oracle, 18/11) : un effet sans cible qui choisit à la résolution peut choisir une carte insensible ;
+    # l'effet est alors sans effet sur elle.
+    cibles = list(_cartes_visibles_terrain(p))
     options = [Option(f"{i.carte} ({c})", True, None, (c, i.carte)) for c, i in cibles] + [Option("ne pas annuler")]
     o = p.choisir(Decision("choisir", "annuler", options))
     if o.valeur != "ne pas annuler":
         c, n = o.donnees
-        p.modifier(("terrain", c), n, (Modification("effets_annules", "oui", "fin_de_tour"),))
+        inst = p.instance_en(("terrain", c), n)
+        if inst is not None and p.insensible(inst, LULU):
+            p.notes.append(f"{n} est insensible : l'annulation est sans effet sur elle (N09)")
+        else:
+            p.modifier(("terrain", c), n, (Modification("effets_annules", "oui", "fin_de_tour"),))
 
 
 def _lulu_cibles_fin(p):
@@ -1142,7 +1149,7 @@ LULU_F = Formalisation(
               resolution=_lulu_resolution,
               note="Une carte quitte l'Extra Deck : les monstres contrôlés gagnent 500 ATK (permanent), puis on peut "
                    "annuler les effets d'1 carte face visible jusqu'à la fin du tour. ⚖ Sa propre sortie de l'Extra "
-                   "Deck : non couvert."),
+                   "Deck : ne se déclenche pas (N01, oracle)."),
         Effet(2, "fin", ("cimetiere",), (("par_nom_effet", LULU),), condition=_cond_envoyee_ce_tour,
               possible=lambda p, l, n: bool(p.cases_monstre_libres()) and any(ok for _, _, ok in _lulu_cibles_fin(p)),
               resolution=_lulu_fin, categories=("invocation_deck",),
@@ -1303,15 +1310,18 @@ def _aeon_bannir(p, m):
     n = int(next((x.valeur for x in inst.modifications if x.champ == "materiaux"), "0")) if inst else 0
     for _ in range(n):
         options = [Option("terminer")]
-        for c, i in p.monstres() + list(p.j.cases):
-            if not p.insensible(i, AEON):
-                options.append(Option(f"{i.carte} ({c})", p.declaree(i.carte), None, ("terrain", c, i.carte)))
+        for c, i in p.monstres() + list(p.j.cases):   # N09 : les cartes insensibles restent choisissables
+            options.append(Option(f"{i.carte} ({c})", p.declaree(i.carte), None, ("terrain", c, i.carte)))
         for i in sorted({i.carte for i in p.j.cimetiere}):
             options.append(Option(f"{i} (cimetiere)", p.declaree(i), None, ("cimetiere", None, i)))
         o = p.choisir(Decision("choisir", "bannir", options))
         if o.valeur == "terminer":
             break
         z, c, nom = o.donnees
+        inst_c = p.instance_en((z, c), nom) if z == "terrain" else None
+        if inst_c is not None and p.insensible(inst_c, AEON):
+            p.notes.append(f"{nom} est insensible : rien n'est banni (N09)")
+            continue
         p.bannir(z, nom, c, "choisie", "effet")
     if n >= 3:
         o = p.choisir(Decision("choisir", "extra_adverse", [Option("ne pas regarder"), Option("regarder")]))
@@ -1340,7 +1350,7 @@ AEON_F = Formalisation(
                    "matériels ; avec 3 matériels ou plus, regarder l'Extra Deck adverse : hors pilote."),
         Effet(2, "rapide", ("terrain",), (("par_nom_carte", AEON),), vitesse=2, resolution=_aeon_attribut,
               note="Effet rapide : déclarer 1 Attribut ; les autres monstres du terrain le prennent jusqu'à la fin du "
-                   "tour. ⚖ Déclarer DIVIN : non tranché."),
+                   "tour. DIVIN déclarable (N04, oracle) ; un Attribut déjà porté aussi (texte TCG, N04)."),
     ),
     sources="T66",
 )
@@ -1365,13 +1375,18 @@ def _mirror_condition(p, lieu, nom):
 
 
 def _mirror_bannir(p, m):
-    cibles = [(c, i) for j, c, i in _monstres_visibles(p, (0,)) if not p.insensible(i, MIRROR)]
+    # N09 (oracle, 18/11, J26) : le monstre insensible est proposé et choisissable ; l'effet est sans effet sur lui.
+    cibles = [(c, i) for j, c, i in _monstres_visibles(p, (0,))]
     if cibles:
         o = p.choisir(Decision("choisir", "bannir", [Option(f"{i.carte} ({c})", True, None, (c, i.carte))
                                                      for c, i in cibles]))
         c, n = o.donnees
-        p.pas.append(Pas("resoudre", f"{n} banni ({c})"))
-        p.bannir("terrain", n, c, "choisie", "effet")
+        inst_c = p.instance_en(("terrain", c), n)
+        if inst_c is not None and p.insensible(inst_c, MIRROR):
+            p.pas.append(Pas("resoudre", f"{n} est insensible : rien n'est banni (N09)"))
+        else:
+            p.pas.append(Pas("resoudre", f"{n} banni ({c})"))
+            p.bannir("terrain", n, c, "choisie", "effet")
     inst = p.instance_en(m.lieu, MIRROR)
     if inst is not None:
         from dataclasses import replace
@@ -1519,7 +1534,7 @@ SPRIND_F = Formalisation(
               resolution=_sprind_resolution,
               note="Phase Principale du joueur : se déplacer vers une autre de ses zones Monstre principales, puis on "
                    "peut détruire les autres cartes face visible de sa colonne (D3 : colonnes énumérées). ⚖ Depuis "
-                   "la Zone Monstre Extra : permis ici, non tranché."),
+                   "la Zone Monstre Extra : permis (N03 confirmé par l’oracle)."),
         Effet(2, "fin", ("cimetiere",), (("par_nom_effet", SPRIND),), condition=_cond_envoyee_ce_tour,
               possible=lambda p, l, n: bool(_sprind_cibles(p)), resolution=_sprind_fin,
               categories=("recherche_deck", "invocation_deck"),

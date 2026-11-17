@@ -378,8 +378,10 @@ def _ctl_j09(res, s, alias, cat, etat):
 
 
 def _ctl_j26(res, s, alias, cat, etat):
+    """N09 (oracle, 18/11) : TITAN est proposé par MIRROR, choisi, et reste sur le terrain (insensible)."""
     d = res.decision("bannir")
-    return [] if not any(v.startswith(TITAN) for v in d.valeurs()) else [f"TITAN bannissable : {d.valeurs()}"]
+    pb = [] if any(v.startswith(TITAN) for v in d.valeurs()) else [f"TITAN absent des choix : {d.valeurs()}"]
+    return pb + _ctl_ou(TITAN, "terrain")(res, s, alias, cat, etat)
 
 
 SPOLY_ASH = (("cout", f"défausser {ASH}"), PASSE)
@@ -441,7 +443,7 @@ SCENARIOS_J1: dict[str, Scenario] = {s.test_id: s for s in (
     Scenario("J24", Declaration("activer", TFTV, 1), (("cout", TITAN), ("cible", f"{DOGMA} (ZME_G)"), PASSE),
              controle=_tous(_ctl_ou(DOGMA, "terrain"), _ctl_atk(DOGMA, 3500))),
     Scenario("J25", Declaration("activer", SPOLY, 1), J25_SCRIPT, controle=_ctl_atk(TITAN, 3700)),
-    Scenario("J26", Declaration("activer", MIRROR, 1), (("cout", SANCTIFIRE), PASSE, ("bannir", f"{MIRROR} (ZME_G)")),
+    Scenario("J26", Declaration("activer", MIRROR, 1), (("cout", SANCTIFIRE), PASSE, ("bannir", f"{TITAN} (M1)")),
              prealables=((Declaration("activer", SPOLY, 1), SPOLY_ASH + (
                  ("fusion", TITAN), ("materiaux", M((ALBAZ, "terrain"), (GRANG, "terrain"))),
                  ("placement", "zone_principale"), ("position", "attaque"))),),

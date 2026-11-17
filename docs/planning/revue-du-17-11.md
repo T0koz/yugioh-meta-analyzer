@@ -15,11 +15,11 @@
 - [ ] Trous de la nuit : carte en double → brief du lot 11 (déjà refait ?), date du graphe → ignorée
 
 ## 3. Git et ménage
-- [ ] Commiter les fichiers de planning modifiés (`file.md`, `etat.md`, `decisions-prises.md`, `revue-du-17-11.md`,
-      brief `sprint-3/audit-A1-A8.md`, `docs/decisions/`, `context.md`, `BACKLOG.md`)
-- [ ] Appliquer `a-appliquer-a-la-revue.md` à `CLAUDE.md` : journal de décisions et plan mode y sont déjà (lot 13) ;
-      restent la précision de la règle d'or (deuxième session pendant une attente passive) et le principe de rigueur statistique
-- [ ] `python scripts/check.py` (+ `--visuel`)
+- [x] Commiter les fichiers de planning modifiés (`d09a4ed`, 23 fichiers)
+- [x] Appliquer `a-appliquer-a-la-revue.md` à `CLAUDE.md` : journal de décisions et plan mode y étaient déjà (lot 13) ;
+      ajoutés le 17/11 : précision de la règle d'or (deuxième session pendant une attente passive) et principe de rigueur statistique
+- [x] `python scripts/check.py --all --visuel` : vert le 17/11 vers 12 h 10 (46 tests sur chaque base, 19 tables servies,
+      51 captures identiques, backtest aux rangs de référence) ; 13 textes signalés par `check_copy.py` (non bloquant, lot 16)
 - [ ] Fusion de `claude/front-nuit-17-11` dans `main` (`--no-ff`), retour du dépôt principal sur `main`, push par Thomas
 - [ ] Supprimer les worktrees des lots terminés (`lot11`, `lot12` : fusionnés et propres ; `lot06-benchmark` porte le
       rapport de la tâche de fond, branche `claude/fond-2026-11-17-b80f1e` non fusionnée) et les branches fusionnées

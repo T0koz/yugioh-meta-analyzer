@@ -27,6 +27,13 @@ des deux est en face de toi, regarde `git config user.name` ou demande.
 - Linear (tickets TOK) : MCP à reconnecter avant toute synchro.
 - **Règle d'or : une seule session de travail à la fois ; une deuxième seulement sur demande explicite de
   Thomas.** Une session ne lance ni autre session ni sous-agent de sa propre initiative.
+  Précision du 17/11 (files d'orchestrateur) : un lot à la fois ; une deuxième session seulement si la première est
+  bloquée par une attente longue et passive (téléchargement, build long, attente de validation), sur des fichiers
+  différents, et jamais plus de deux sessions en même temps.
+- **Rigueur statistique (principe de Thomas, 17/11)** : tout score, prédiction, seuil ou libellé affiché est
+  estimé à partir des données, validé hors échantillon dans le temps, comparé à une méthode naïve (hasard,
+  popularité, « le mois dernier ») et affiché avec son incertitude. Un réglage à la main n'est acceptable que
+  s'il est déclaré comme tel. Toute session qui crée ou modifie un score sollicite `data-scientist-ygo`.
 - **Journal de décisions** : toute décision structurante (architecture, données, design, process) est notée dans
   `docs/decisions/` (une note par décision, modèle et index dans `docs/decisions/README.md`). Une décision prise
   par défaut en autonomie va d'abord dans le `decisions-prises.md` du jour, et rejoint le journal après validation.

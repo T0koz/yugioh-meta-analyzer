@@ -65,6 +65,7 @@ class Formalisation:
     un_seul_controle: bool = False               # « You can only control 1 "X" »
     insensible: Callable | None = None           # (partie, exemplaire, source, effet_active) -> bool
     bonus_atk: Callable | None = None            # (partie, exemplaire) -> int : gain d'ATK d'un effet continu
+    effet_insensible: int = 1                    # n° de l'effet continu qui porte `insensible` (couverture)
 
     def effet(self, numero: int) -> Effet:
         for e in self.effets:

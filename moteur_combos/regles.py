@@ -49,6 +49,10 @@ NE_PAS_ACTIVER = "ne pas activer"
 PASSER = "passer"
 
 PHASES_PRINCIPALES = ("principale_1", "principale_2")
+
+# Couverture (lot C2) : (carte, n° d'effet) dont la résolution, la procédure ou l'effet continu a réellement joué.
+# Lue par le harnais pour le statut `formalisee` (un effet jamais exercé par un test reste `brouillon`).
+EXERCES: set[tuple[str, int]] = set()
 ZONES_PUBLIQUES = ("main", "terrain", "cimetiere", "bannies")
 
 
@@ -249,6 +253,8 @@ class Partie:
             return base
         bonus = getattr(f.formalisation, "bonus_atk", None) if f.declaree else None
         gain = bonus(self, inst) if bonus is not None and not self.effets_annules(inst) else 0
+        if gain:
+            EXERCES.add((inst.carte, 1))
         return base + gain + sum(int(m.valeur) for m in inst.modifications if m.champ == "atk_gain")
 
     def est_syntoniseur(self, inst: Instance) -> bool:
@@ -262,7 +268,10 @@ class Partie:
         """La carte est-elle insensible à un effet de `source` (`Dogma`, `Titaniklad`) ? Lu dans la formalisation."""
         f = self.cat.get(inst.carte)
         fn = getattr(f.formalisation, "insensible", None) if f is not None and f.declaree else None
-        return bool(fn and not self.effets_annules(inst) and fn(self, inst, source, active))
+        r = bool(fn and not self.effets_annules(inst) and fn(self, inst, source, active))
+        if r:
+            EXERCES.add((inst.carte, getattr(f.formalisation, "effet_insensible", 1)))
+        return r
 
     def lieu_de(self, inst: Instance) -> tuple[str, str | None] | None:
         for c, i in self.monstres() + [x for x in self.j.cases if x[0] not in CELLULES_MONSTRE]:
@@ -424,6 +433,7 @@ class Partie:
             if fo is not None and not self.limite_consommee(fo.effet(2), remplacants[0]):
                 o = self.choisir(Decision("choisir", "remplacement", [
                     Option("bannir Branded Opening"), Option("ne pas remplacer")]))
+                EXERCES.add(("Branded Opening", 2))
                 if o.valeur == "bannir Branded Opening":
                     self.pas.append(Pas("resoudre", f"Branded Opening bannie à la place de la destruction de {nom}"))
                     self.consommer_limites(fo.effet(2), ("cimetiere", None), "Branded Opening")
@@ -655,6 +665,7 @@ class Partie:
         if fi is None or not fi.declaree:
             return False, f"{inst.carte} non formalisée : restrictions de matériel inconnues"
         if getattr(fi.formalisation, "interdit_materiel_fusion", False):
+            EXERCES.add((inst.carte, 1))
             return True, None
         return False, None
 
@@ -972,6 +983,7 @@ class Partie:
                 if e.resolution == HORS_PERIMETRE:
                     raise HorsPerimetre(f"effet {m.effet} de {m.carte} : suppose l'adversaire ou un autre tour")
                 e.resolution(self, m)
+                EXERCES.add((m.carte, m.effet))
             if e.genre == "activation_carte" and f.est_magie and f.race in ("Normal", "Quick-Play"):
                 if self.instance_en(m.lieu, m.carte) is not None:
                     self.pas.append(Pas("resoudre", f"{m.carte} va au Cimetière après résolution"))
@@ -1138,6 +1150,7 @@ class Partie:
             raise Illegal("aucune zone Monstre principale libre")
         self.pas.append(Pas("declarer", f"Invocation Spéciale par procédure : {nom}"))
         self.consommer_limites(e, ("main", None), nom)
+        EXERCES.add((nom, e.numero))
         pos = self.choisir(Decision("choisir", "position", [Option("attaque"), Option("defense")]))
         self.invoquer_specialement("main", nom, None, self.cases_monstre_libres()[0], pos.valeur)
         self.pas.append(Pas("enchainer", "fenêtre adverse après l'invocation : aucune réponse (pilote)"))

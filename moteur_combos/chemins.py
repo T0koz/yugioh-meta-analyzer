@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "moteur-combos"
 DECK_SOURCE = DOCS / "deck-branded-source.json"
 TESTS_YAML = DOCS / "tests-branded.yaml"
+SITUATIONS_J1 = DOCS / "situations-j1.yaml"   # lot C2 : situations écrites par l'agent, à faire jouer à l'oracle
 POINTS_DE_REGLE = DOCS / "points-de-regle-a-valider.md"
 SCHEMA_SQL = Path(__file__).resolve().parent / "schema.sql"
 COMBOS_DB = ROOT / "data" / "combos.db"

@@ -132,9 +132,13 @@ def test_harnais_de_bout_en_bout(tmp_path):
 
     con = sqlite3.connect(tmp_path / "combos.db")
     assert con.execute("SELECT COUNT(*) FROM cb_test_situation").fetchone()[0] == 72
-    assert con.execute("SELECT COUNT(*) FROM cb_card WHERE status = 'non_traitee'").fetchone()[0] == 40
+    # Lot C2 : les 37 cartes du pilote sont formalisées et chaque effet du pilote est exercé par un test ; seules
+    # les 8 cartes du Side Deck restent non traitées.
+    assert con.execute("SELECT COUNT(*) FROM cb_card WHERE status = 'non_traitee'").fetchone()[0] == 8
     assert dict(con.execute("SELECT status, COUNT(*) FROM cb_card WHERE status <> 'non_traitee' GROUP BY status")
-                .fetchall()) == {"formalisee": 4, "brouillon": 1}
+                .fetchall()) == {"formalisee": 37}
+    assert [i for i, st, _ in rapport.lignes_j1 if st != "verifie"] == []
+    assert all(all(v.values()) for v in rapport.couverture.values())
     orphelins = con.execute("SELECT COUNT(*) FROM cb_test_situation t LEFT JOIN cb_state s"
                             " ON s.state_id = t.start_state WHERE s.state_id IS NULL").fetchone()[0]
     assert orphelins == 0

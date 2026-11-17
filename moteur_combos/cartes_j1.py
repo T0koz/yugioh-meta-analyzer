@@ -1084,7 +1084,7 @@ SANCTIFIRE_F = Formalisation(
                and p.race_de(inst) == "Spellcaster"),
     interdit_materiel_fusion=True,
     effets=(
-        Effet(1, "restriction", ("terrain",), (), resolution=HORS_PERIMETRE,
+        Effet(1, "restriction", ("terrain",), (), resolution=_continu,
               note="Ne sert pas de matériel de Fusion (codé : `interdit_materiel_fusion`, R24). L'adversaire ne peut "
                    "pas la cibler : hors pilote."),
         Effet(2, "rapide", ("terrain",), (("par_nom_effet", SANCTIFIRE),), vitesse=2,
@@ -1676,7 +1676,7 @@ def _titan_fin(p, m):
 TITAN_F = Formalisation(
     nom=TITAN, text_sha256="e8f39520db29a990d909b184c5b3dfc217f432b03549fbe239b89a6ac3435aa8",
     materiels=(None, _titan_mat),
-    insensible=_titan_insensible,
+    insensible=_titan_insensible, effet_insensible=2,
     bonus_atk=lambda p, inst: 100 * int(next((m.valeur for m in inst.modifications if m.champ == "niveaux_materiaux"), "0")),
     effets=(
         Effet(1, "restriction", ("terrain",), (), resolution=_continu,

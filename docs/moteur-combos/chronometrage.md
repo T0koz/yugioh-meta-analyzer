@@ -172,3 +172,24 @@ sont comptés.
   suit la lecture ; l'indépendance vient de l'oracle (sur les verdicts) et de la relecture (clause par clause).
 - **La couverture d'effets est l'indicateur utile** : le YAML, écrit pour les points de règle, n'exerçait que 29 des 57
   effets ; sans la mesure, 28 effets auraient été déclarés « formalisés » sans avoir jamais tourné.
+
+## TOK-86 / TOK-118, l'oracle rejoue J1 du 18 novembre 2026 (lot C2 bis)
+
+Heures relevées avec `date` et les dates de modification des scénarios du lanceur (premier essai 02:50:20, dernier
+03:04:21) ; le début de la lecture (≈ 02:45) n'a pas été relevé à l'instant. Temps d'horloge d'un agent ; la relecture
+humaine des réponses n'est pas comptée.
+
+| # | Étape | Début | Fin | Durée (agent) | Produit | Temps humain de validation |
+|---|---|---|---|---|---|---|
+| 1 | Lecture du brief, de `reponses-oracle.md`, des situations J1 et du lanceur du lot 17 | ≈ 02:45 | 02:50 | ≈ 5 min | — | — |
+| 2 | Extension du lanceur (listes complètes, Attributs, zones, position), 30 situations J1 jouées | 02:50 | ≈ 03:01 | ≈ 11 min | 30 réponses | — |
+| 3 | Points N01 à N13 (essais dédiés : N02, N05, N09 bis, N11, N12, N13), R22 sous `FIRSTTRIGGER` | 03:01 | 03:04 | ≈ 4 min | 13 réponses | — |
+| 4 | Comparaison des textes OCG / TCG (45 cartes), rédaction de la section J1 de `reponses-oracle.md`, ce journal | 03:04 | ≈ 03:10 | ≈ 6 min | section § 7 | relecture des désaccords (N09, N04) : à mesurer |
+| | **Total** | ≈ 02:45 | ≈ 03:10 | **≈ 25 min** | 30 situations, 13 points | |
+
+**Enseignements pour les estimations** :
+- **Le coût de l'oracle est l'écriture des états de départ**, pas le passage : une situation sur trois a demandé de
+  jouer réellement des actions préalables (`Mirrorjade` et `Titaniklad` pour N09, historique d'Invocation, cartes
+  « envoyées ce tour »). Un lanceur qui lit l'état (ATK, Attributs, position) aurait évité trois essais indirects.
+- **Les deux seuls vrais écarts viennent de listes de choix**, pas de légalité : le cœur laisse choisir un monstre
+  insensible et refuse de déclarer l'Attribut actuel. Comparer **les listes proposées**, pas seulement le verdict.

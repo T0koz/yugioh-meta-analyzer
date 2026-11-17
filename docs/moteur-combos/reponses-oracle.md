@@ -4,6 +4,9 @@
 avec un seul **désaccord franc (R23)** et trois nuances. Rien de Project Ignis n'est dans ce dépôt : ce fichier ne
 contient que des résultats (données), jamais du code du cœur, d'un script de carte ou de la base de cartes.
 
+> **Suite du 18/11 (lot C2 bis) : voir la section « J1 (18/11) » en fin de fichier (§ 7)** : les 30 situations J1 et
+> les points N01 à N13, avec un désaccord ferme (N09, `Titaniklad` / `Mirrorjade`).
+
 > Principe d'indépendance (décision du 16/11) : l'oracle ne doit être lu par aucune session qui code le moteur.
 > Ce fichier donne les **réponses** (« l'action est-elle légale ? », « que propose le cœur ? »), pas l'implémentation.
 > Une session de moteur peut lire ce fichier comme elle lit les réponses du juge ; elle ne doit pas aller lire
@@ -143,3 +146,131 @@ Tout est dans `~/code/oracle-ignis/` (non versionné). Reconstruire : `premake5 
 ocgcoreshared` dans `ygopro-core/build`. Les scénarios sont des scripts courts dans `lanceur/` (un fichier par groupe de
 points ; `RESULTATS.txt` en garde le résumé). Si le cœur ou les scripts sont mis à jour, rejouer au moins R08, R22,
 R27 (b), R34 : ce sont les points qui n'avaient qu'un avis humain.
+
+---
+
+# J1 (18/11) — l'oracle rejoue les 30 situations J1 et les points N01 à N13 (lot C2 bis)
+
+**Statut : les 30 situations J1 et les 13 points N ont une réponse** (un seul « non testable » : N12, hors pilote). Même
+installation, mêmes réglages que le lot 17 (Master Rule 5 + `DUEL_TCG_SEGOC_NONPUBLIC`, tour 1, nous commençons, terrain
+adverse vide sauf mention). Même principe : ce fichier ne contient que des résultats ; rien du cœur, des scripts de
+cartes ni de la base de cartes n'est dans ce dépôt, et aucune session du moteur ne doit lire `~/code/oracle-ignis/`.
+La session qui a joué ces situations n'a pas lu le code du moteur (`moteur_combos/`) : elle a joué les actions de
+`situations-j1.yaml` et de `situations-pour-oracle.md`, puis comparé les listes.
+
+**Bilan** : sur 30 situations, **27 en accord franc**, **1 désaccord (J26, N09)**, **1 accord partiel (J07 : verdict
+juste, caractère « obligatoire » contredit, cas R23 déjà connu)**, **1 réponse à une question ouverte (J30, N01)**.
+Sur les 13 points N : **9 confirmés** (N02, N03, N05, N06, N07, N08, N10, N11, N13), **1 répondu « non »**
+(N01, que la formalisation laissait « non couvert »), **2 contredits en tout ou partie** (N09 ferme, N04 en seconde
+moitié), **1 non testable** (N12). **Effets du pilote dont un chemin contredit l'oracle : 2 fermes** (`Titaniklad`
+effet 2 et `Mirrorjade` effet 1, une seule règle commune, N09), **3 litigieux** (`Aeon` effet 2, `Mixousia` effets 1
+et 3 : N04, seconde moitié), **1 tranché par le texte TCG** (`Incredible Ecclesia` effet 3 : R23).
+
+## 7.1 Désaccords et écarts (à lire d'abord)
+
+| N° | Lecture de la formalisation | Oracle | Cause probable et ce que ça change |
+|---|---|---|---|
+| **N09 / J26** (désaccord ferme) | Un effet **sans cible** qui « choisit » à la résolution ne propose pas un monstre insensible (`Titaniklad` après son Invocation Fusion, `Dogma` avec un « Ecclesia » au Cimetière) | **Le monstre insensible est proposé et peut être choisi ; l'effet est alors sans effet sur lui.** `Mirrorjade` (envoyer `Albion`, bannir 1 monstre du terrain) liste `Cartesia`, `Mirrorjade` et `Titaniklad` ; en choisissant `Titaniklad` (réellement Invoqué par Fusion, `Mirrorjade` réellement Invoquée de l'Extra Deck), aucun bannissement n'a lieu, l'effet se termine normalement. Même résultat avec `Dogma` insensible (liste : `Mirrorjade`, `Dogma` ; choisie, `Dogma` reste). Témoin : choisir `Cartesia` la bannit. | **Cause : la formalisation retire le monstre de la liste ; le cœur le laisse choisir et applique l'insensibilité au résultat.** Texte TCG et texte de l'oracle identiques sur ce point (« unaffected by the activated effects of any other monsters Special Summoned from the Extra Deck », « unaffected by other cards' effects »). Conséquence pour le moteur : la liste de choix doit contenir le monstre insensible ; la protection s'applique ensuite (aucun déplacement). Le coût du choix change : un joueur peut « gaspiller » l'effet en visant un monstre insensible. Non testé : `Luluwalilith` effet 1 et `Aeon` effet 1, qui suivent probablement la même règle. |
+| **N04, seconde moitié** (J17, J18, J19 ; litige) | « Attribut actuel : permis » (on peut déclarer l'Attribut que le monstre a déjà) | **Non.** `Aeon` : l'Attribut déclarable exclut tout Attribut que **tous** les autres monstres ont déjà (avec `Aluber` seul, DARK est absent de la liste ; avec `Aluber` DARK et `Cartesia` LUMIÈRE, tous les Attributs sont déclarables). `Mixousia` : l'Attribut actuel de la cible (DARK pour `Aluber`) est refusé (essai de DARK : « RETRY »), et celui de `Mixousia` elle-même au Cimetière aussi (DARK absent). `Aeon` seule sur le terrain : effet non proposé (aucun autre monstre). | **Cause probable : restriction de script**, pas de texte : le texte TCG de `Aeon` et de `Mixousia` n'interdit pas de déclarer l'Attribut actuel. Le choix de la formalisation tient donc par le texte (précédent R23 : le texte TCG fait foi), mais l'oracle ne le confirme pas. Sans conséquence de jeu (déclarer un Attribut déjà porté est une action sans effet) ; ça ne change qu'une liste de choix. **Première moitié (DIVIN) : confirmée**, l'oracle propose DIVIN dans les trois cas. |
+| **R23 / J07** (déjà connu, accord partiel) | `Incredible Ecclesia` effet 3 : obligatoire (lecture : fin de tour illégale sans le résoudre) | **Facultatif** : le cœur propose l'effet à la Phase de Fin dans une liste non forcée, on peut passer et le tour se termine. Il se résout bien quand on l'active (la carte revient en main). | **Cause : le texte OCG de l'oracle** (« You can add this card… », mention « texte non officiel, fonctionnement OCG »). Le texte TCG de la base du dépôt n'a pas « You can » : l'oracle ne peut pas trancher pour le TCG. Le verdict de J07 (« légal ») est confirmé ; la partie « obligatoire » reste **non validée par l'oracle**. |
+| **N12** | `Albion` (Cimetière) : « les 2 monstres des zones centrales » = la zone centrale de chaque joueur | **Non testable** : l'effet n'a été proposé dans **aucune** des 8 configurations essayées (2 Zones Monstre Extra chez nous + zone centrale chez nous et chez l'adversaire ; + une zone non centrale ; plateau plein des deux côtés ; Zone Monstre Extra droite côté adverse ; zones 0 et 4, 1 et 3, 2 et 3, 1-2-3). | Cause non identifiée (peut-être une condition du script que les états posés ne remplissent pas ; je n'ai pas lu le script). Hors pilote : sans conséquence pour J1. |
+
+Aucun autre écart. Les valeurs d'ATK ne sont **pas** observables par le lanceur (pas de requête d'état dans le
+lanceur) : J14 (+500 ATK), J24 (`Dogma` à 3500), J25 (`Titaniklad` à 3700) sont en accord sur la **légalité, les
+listes et les déplacements de cartes**, pas sur les valeurs numériques.
+
+## 7.2 Les 30 situations J1
+
+Colonne « liste » = ce que propose le cœur (noms distincts ; le cœur liste une ligne par exemplaire). « Accord » =
+même verdict **et** même liste que `situations-j1.yaml`.
+
+| Id | Effet | Ce que fait le cœur (liste, état d'arrivée) | Verdict |
+|---|---|---|---|
+| J01 | `Rindbrumm` 1 | `Rindbrumm` annule l'effet d'`EDD` (« chaîne désactivée ») ; question « renvoyer un monstre » : non ; `EDD` reste, rien n'est Invoqué. | accord |
+| J02 | `EDD` 1 | `EDD` banni (coût de l'effet) ; liste d'Invocation : `Tri-Brigade Springans Kitt`, `Tri-Brigade Mercourier`, `The Golden Swordsoul`, `Springans Kitt`, `Incredible Ecclesia`, `Guiding Quem`, `Fallen of the White Dragon`, `Fallen of Albaz`, `Blazing Cartesia` = les 9 du YAML. | accord |
+| J03 | `EDD` 1 | À la Phase de Fin, `EDD` revient en **zone principale** (le cœur refuse les Zones Monstre Extra, même libres), **dans la position qu'elle avait** (ATK→ATK, DEF→DEF, testé). **N05 confirmé.** | accord |
+| J04 | `EDD` 2 | Du Cimetière : cibles `Titaniklad` (Cimetière) puis `Aluber` (terrain) ; `Aluber` → Deck, `Titaniklad` et `EDD` → Extra Deck. | accord |
+| J05 | `Cartesia` 3 | Après envoi de `Titaniklad` par `Nadir Servant`, la Phase de Fin propose `Blazing Cartesia` (Cimetière) et `Titaniklad` ; `Cartesia` retourne en main. | accord |
+| J06 | `Branded in High Spirits` 2 | Même situation : proposée avec `Titaniklad` ; retourne en main. | accord |
+| J07 | `Incredible Ecclesia` 3 | Proposée à la Phase de Fin avec `Titaniklad` ; retourne en main ; **liste non forcée** (R23). Les deux effets de Phase de Fin sont deux chaînes. | **accord partiel** (« légal » oui, « obligatoire » non : voir 7.1) |
+| J08 | `Incredible Ecclesia` 1 | Hors pilote. L'adversaire a 1 monstre, nous 0 : `Incredible Ecclesia` est dans la liste des **Invocations Spéciales**, **sans chaîne** (aucun maillon). **R15 confirmé.** | accord |
+| J09 | `Cocatorium` 1 | Tribut de `Springans Kitt` (liste de tribut : `Springans Kitt` seul) ; `Cocatorium` Invoquée Spécialement, sans chaîne de déclencheur. | accord |
+| J10 | `Cocatorium` 1 | Puis `Super Polymerization` (`Ash Blossom` défaussée) : liste de Fusions `Sprind`, `Rindbrumm` ; matériels `Cocatorium` + `Fallen of Albaz` : **`Cocatorium` est bannie** (jamais au Cimetière) ; `Albaz` au Cimetière ; `Rindbrumm` Invoquée. **N06 confirmé.** | accord |
+| J11 | `Ghost Ogre` 1 | `Guiding Quem` Invoquée Normalement, son effet 1 activé ; `Ghost Ogre` (main) chaînée : `Quem` détruite, `Ogre` au Cimetière ; l'effet de `Quem` **se résout quand même** (liste du Deck, un monstre envoyé). **N07 confirmé.** | accord |
+| J12 | `TFTV` 1 | Extra Deck proposé (monstres qui mentionnent `Albaz`) : `Titaniklad`, `The Three Champions of Swordsoul`, `Dogma`, `Sprind`, `Rindbrumm`, `Mirrorjade`, `EDD`, `Albion` ; cible `Aluber` (seule carte face visible) détruite. | accord |
+| J13 | `TFTV` 2 | `Incredible Ecclesia` au Cimetière : le choix d'effet est unique (le 1ᵉʳ demande une carte face visible sur le terrain) ; cibles : `Incredible Ecclesia`, `Aluber` ; `Aluber` Invoquée Spécialement, son effet proposé. | accord |
+| J14 | `Luluwalilith` 1 | `Nadir Servant` envoie `Titaniklad` : `Luluwalilith` est proposée à la fin de la chaîne (question « activer »), puis « annuler un effet : oui/non ». Avec `Quem` en plus (`Quem` 2ᵉ effet, `Albaz` au Cimetière), les deux sont dans **une seule liste**. +500 ATK : non observable. | accord (ATK non lue) |
+| J15 | `Luluwalilith` 2 | `Luluwalilith` détruite par `TFTV`, Phase de Fin : `Luluwalilith` et `Titaniklad` proposées ; liste d'Invocation : `Incredible Ecclesia`, `Guiding Quem`, `Dogmatika Ecclesia`, `Blazing Cartesia` = les 4 du YAML. | accord |
+| J16 | `Aeon` 1 | Fusions proposées avec `Granguignol` + `Rindbrumm` : `Predaplant Dragostapelia`, `Mixousia`, `Hyperinvoked Aeon` ; `Aeon` Invoquée ; effet : « jusqu'à 2 », liste = `Aeon`, `Super Polymerization`, `Granguignol` (Cimetière), `Rindbrumm` (Cimetière), `Ash Blossom` ; **`Granguignol` du Cimetière est bannissable**. | accord |
+| J17 | `Aeon` 2 | LUMIÈRE déclarable (légal) ; `Aluber` (DARK) change d'Attribut (non lu). Nuance N04 (7.1). | accord (+ N04) |
+| J18 | `Mixousia` 1 | Cibles : `Mixousia` et `Aluber` (elle peut se cibler) ; EAU déclarable. Nuance N04. | accord (+ N04) |
+| J19 | `Mixousia` 3 | Du Cimetière : LUMIÈRE déclarable. Nuance N04. | accord (+ N04) |
+| J20 | `Sprind` 1 | `Sprind` M1 → colonne 2 ; « détruire ? : oui » : `Rindbrumm` en Zone Monstre Extra gauche → Cimetière. Même résultat colonne 4 / Zone Monstre Extra droite. Colonne différente : épargnée. **N03 confirmé** (voir § 7.3). | accord |
+| J21 | `Sprind` 2 | `Sprind` détruite par `TFTV`, Phase de Fin : `Sprind` et `Titaniklad` proposées ; liste : `Tri-Brigade Springans Kitt`, `Springans Kitt`, `Fallen of the White Dragon`, `Fallen of Albaz` = les 4 du YAML. | accord |
+| J22 | `Dogma` 2 | `Cartesia` (effet rapide) : Fusions `Dogma`, `Mixousia`, `Granguignol`, `Albion` ; `Dogma` avec `Albaz` + `Cartesia` + `Aluber` ; son effet : liste de Cimetière `Albaz`, `Cartesia`, `Aluber` (« jusqu'à 2 ») ; `Albaz` mélangeable. | accord |
+| J23 | `Dogma` 3 | `Dogma` détruite par `TFTV`, Phase de Fin : liste `Tri-Brigade Springans Kitt`, `Tri-Brigade Mercourier`, `The Fallen & The Virtuous`, `Guiding Quem`, `Dogmatika Ecclesia` = les 5 du YAML. | accord |
+| J24 | `Dogma` 1 | `TFTV` cible `Dogma` (proposée comme cible) avec `Incredible Ecclesia` au Cimetière : `Dogma` **reste** sur le terrain (aucun déplacement). 3500 ATK non lu. **N08 confirmé.** | accord (ATK non lue) |
+| J25 | `Titaniklad` 1 | `Super Polymerization` : liste `Titaniklad`, `Predaplant Dragostapelia`, `Mixousia`, `Mirrorjade`, `Albion` ; `Titaniklad` avec `Albaz` + `Granguignol` Invoquée. 3700 ATK non lu. | accord (ATK non lue) |
+| J26 | `Titaniklad` 2 | Voir N09 (7.1) : `Titaniklad` est **proposée** à `Mirrorjade`, choisie, **non bannie**. | **désaccord** |
+| J27 | `Three Champions` 1 | Synchro (`Incredible Ecclesia` Syntoniseur + `Aluber`) ; liste de recherche : `Incredible Ecclesia` (Deck et Cimetière), `Guiding Quem`, `Dogmatika Ecclesia`, `Blazing Cartesia` = les 4 du YAML. | accord |
+| J28 | `Three Champions` 2 | Cible `Aluber` (elle peut aussi se cibler) ; avec `Albaz` au Cimetière, « détruire ? » est proposé, `Aluber` détruit ; sans `Albaz` ni « Ecclesia » au Cimetière, pas de destruction. | accord |
+| J29 | `Branded Opening` 2 | `TFTV` cible `Rindbrumm` ; à la résolution : « bannir `Branded Opening` à la place ? » ; oui : `Branded Opening` bannie, `Rindbrumm` reste. **N10 confirmé** (contre sa propre `TFTV`). | accord |
+| J30 | — | Synchro de `Luluwalilith` (`Quem` Syntoniseur + `Dogmatika Ecclesia` + `Aluber`) : **aucun déclenchement** (ni question d'activation, ni liste), le tour reprend la main. **N01 : non.** | répond à la question (la formalisation : « non couvert ») |
+
+## 7.3 Les points N01 à N13
+
+| N° | Question | Réponse de l'oracle | Situation | Confiance |
+|---|---|---|---|---|
+| N01 | `Luluwalilith` se déclenche-t-elle sur sa propre sortie de l'Extra Deck ? | **Non.** Rien n'est proposé après son Invocation Synchro. Elle se déclenche bien sur la sortie d'**une autre** carte (J14). | J30, J14 | moyenne (comportement de script) |
+| N02 | `Branded Opening` activable sans monstre « Despia » dans le Deck ? `Dogmatika Ecclesia` sans carte « Dogmatika » à chercher ? | **Non aux deux.** `Branded Opening` absente des activations (3 `Aluber` et `Quem` au Cimetière ; témoin : activable avec eux dans le Deck). L'effet de recherche de `Dogmatika Ecclesia` n'est pas proposé sans `Quem` ni `TFTV` dans le Deck (témoin : proposé, liste `TFTV` ×3 + `Quem`). **R01 appliqué aux deux parties : confirmé.** | essais dédiés | forte |
+| N03 | `Sprind` peut-elle bouger depuis la Zone Monstre Extra ? La destruction « dans sa colonne » touche-t-elle la Zone Monstre Extra des colonnes 2 et 4 ? | **Oui aux deux.** Effet proposé avec `Sprind` en Zone Monstre Extra (destinations : zones principales libres). Colonne 2 → la carte en Zone Monstre Extra gauche est détruite ; colonne 4 → celle de droite ; colonne 2 avec la carte à droite → épargnée. | J20 | forte |
+| N04 | Peut-on déclarer DIVIN ? l'Attribut actuel ? | **DIVIN : oui** (proposé pour `Aeon` et `Mixousia`, sur le terrain et au Cimetière). **Attribut actuel : non** (voir 7.1 : restriction de script, litige avec le texte TCG). | J17, J18, J19 | forte (DIVIN) / moyenne (actuel) |
+| N05 | `EDD` revient dans quelle zone, quelle position ? | **Zone principale** (jamais une Zone Monstre Extra, même libre), **position conservée** (ATK ou DEF). | J03 | forte |
+| N06 | `Cocatorium` matériel de Fusion : bannie ? | **Oui**, bannie (pas au Cimetière). | J10 | forte |
+| N07 | L'effet d'un monstre se résout-il s'il est détruit en réponse ? | **Oui.** | J11 | forte |
+| N08 | Peut-on cibler un monstre insensible avec `TFTV` ? | **Oui**, il est proposé comme cible ; il reste, la destruction ne s'applique pas. | J24 | forte |
+| N09 | Un effet sans cible qui « choisit » peut-il choisir un monstre insensible ? | **Oui, il est proposé et choisissable ; l'effet n'a aucun effet sur lui.** Contredit la formalisation (7.1). | J26 + essai `Dogma` | forte |
+| N10 | Le remplacement de `Branded Opening` vaut-il contre sa propre carte ? | **Oui.** | J29 | forte |
+| N11 | `Mulcharmy Fuwalos` : une 2ᵉ copie est-elle « l'autre effet Mulcharmy » ? | **Oui** : la 2ᵉ copie reste activable, la 3ᵉ ne l'est plus (au plus 2 effets « Mulcharmy » par tour). `Ash Blossom` n'est pas « Mulcharmy ». | essais dédiés (3 `Fuwalos` en main) | forte |
+| N12 | `Albion` (Cimetière) : « les 2 zones centrales » = celle de chaque joueur ? | **Non testable** (voir 7.1). | — | — |
+| N13 | `The Golden Swordsoul` se déclenche-t-elle sur son propre bannissement ? | **Non.** Après son activation (qui la bannit en coût), la liste suivante ne contient plus que `Tri-Brigade Mercourier`. Les deux déclencheurs de départ (`Golden Swordsoul`, `Mercourier`) sont dans une **seule liste**. | variante de T62 | forte |
+
+**R22** (déclencheurs simultanés), rejoué sous `DUEL_TCG_SEGOC_FIRSTTRIGGER` sur J14 (`Luluwalilith` + `Quem`) et J21
+(`Titaniklad` + `Sprind`) : **même liste unique que sous le réglage par défaut**, rien de nouveau (tous les déclencheurs
+y sont facultatifs). La différence du lot 17 (T45) demande des déclencheurs de natures différentes.
+
+## 7.4 Texte de l'oracle différent du texte TCG (comparaison faite sur les 45 cartes du deck et du pilote)
+
+34 cartes ont un texte **identique** (espaces et sauts de ligne mis à part) dans la base de l'oracle et dans celle du
+dépôt. 11 diffèrent ; classement par effet sur J1 :
+
+- **Sens différent (OCG), concerne J1** : `Incredible Ecclesia` (« You can add » contre « Add », mention « texte non
+  officiel », R23, J07) ; `Mirrorjade` (2ᵉ effet : « If your opponent makes this Fusion Summoned card … leave the field »
+  contre « leaves the field because of an opponent's card », texte non officiel ; le 1ᵉʳ effet, seul exercé, est
+  identique) ; `Predaplant Dragostapelia` (2ᵉ effet, texte non officiel ; hors pilote).
+- **Formulation seule (même sens)** : `Branded Fusion` (« Fusion Material » / « material », « Special Summon monsters from
+  the Extra Deck » / « Special Summon from the Extra Deck »), `Gold Sarcophagus` (« 2nd » / « second »), `Albion` (« central »
+  / « center »), `Ash Blossom`, `Mistaken Arrest`, `Harpie's Feather Duster`, `Titaniklad` (l'ordre « "Dogmatika" monster or
+  "Fallen of Albaz" » est inversé, même contenu), `The Three Champions of Swordsoul` (« if an "Ecclesia" monster or "Fallen of
+  Albaz" is in your GY » / « if you have an "Ecclesia" monster or "Fallen of Albaz" in your GY », même sens).
+- **Défaut de la base du dépôt (observation, hors du périmètre de ce lot)** : le texte `cards` de `The Three Champions
+  of Swordsoul` se termine par « You can only use each effect of "The Three Brave Swordsouls" once per turn » (nom
+  d'une autre carte, probablement le nom de la carte d'origine OCG traduit). Un moteur qui rattache la limite d'un effet
+  au nom écrit dans le texte pourrait mal la compter ; à vérifier côté moteur.
+
+## 7.5 Réglages, méthode, limites de ce passage
+
+- **Mêmes réglages que le lot 17** (cœur `1e3bcfd`, scripts `ed5ed45b`, base `a40b0ef`) ; déterministe (graine fixe, pas de
+  mélange). Un passage par situation. Les listes d'actions de `situations-j1.yaml` ont été comparées aux listes du cœur :
+  identiques sur J02, J13, J15, J21, J23, J27 (et sur l'effet de recherche de `Dogmatika Ecclesia`, N02).
+- **États de départ** : les monstres « Invocation Fusion / Synchro » sont **posés** par le lanceur (sans historique
+  d'Invocation) sauf quand l'historique compte. J26 : `Mirrorjade` est réellement Invoquée par Fusion
+  (effet rapide de `Cartesia`) et `Titaniklad` réellement Invoquée par `Super Polymerization` ; sans cela l'insensibilité
+  de `Titaniklad` ne s'applique pas à un monstre simplement posé. Les cartes « envoyées ce tour » sont réellement
+  envoyées (`Nadir Servant`, `TFTV`).
+- **Lanceur étendu** (hors dépôt) : décodage des déclarations d'Attribut, choix de zone de déplacement, listes de choix
+  affichées en entier, position des cartes déplacées. **Pas de requête d'état** : les ATK courants ne sont pas lus.
+- **Un seul oracle** : les scripts de cartes sont écrits par la communauté. Un accord est un indice fort, pas une preuve.
+  Les confiances « moyenne » ci-dessus désignent un comportement qui dépend d'un script plutôt que du cœur.
+- **Ce que ce passage ne couvre pas** : les valeurs d'ATK, les situations non reproduites faute de scénario (aucune
+  parmi J01 à J30), et N12.

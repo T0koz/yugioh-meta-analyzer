@@ -206,6 +206,22 @@ Collaboratrice data scientist qui pousse sur `main` sans revue, dépôt public :
 Projet distinct (`docs/moteur-combos/`), pas de code de moteur. `scripts/fetch_new_cards.py` ajoute les cartes absentes sans réécrire les existantes ; garde de nom obligatoire avant tout insert dans `cards`.
 → détail complet : `docs/journal/moteur-combos.md`
 
+**Lot 18, fondations du moteur (2026-11-18, branche `claude/lot18-fondations-moteur-dab1df`, non fusionnée)** : paquet
+`moteur_combos/` (état, schéma, chargement du deck, harnais), base à part `data/combos.db` (jamais `yugioh.db`, lue en
+`mode=ro`). Commande : `python scripts/combos_harnais.py` (`--detail`). 72 départs construits (48 complets, 24 avec
+mémoire en texte libre), classement 54 « règles confirmées » / 6 « un seul avis » / 12 « non exécutable sans règles ».
+**Aucune règle de jeu codée.** Horloge de la règle d'arrêt ouverte : J2 avant le 13/01/2027 (décision 0053).
+- **Isolement de l'oracle** (TOK-86, AGPL) : ne jamais lire son code ni `~/code/oracle-ignis/` ; seul
+  `docs/moteur-combos/reponses-oracle.md` (données) est lisible.
+- **Le texte des cartes vit dans `combos.db`** (copie locale, ignorée par Git) ; un texte changé remet la carte à
+  `non_traitee` (errata). Le dépôt ne garde que `text_sha256`.
+- **Le statut d'un point de règle est lu dans `points-de-regle-a-valider.md`** : changer la colonne « Relecture 1 » ou
+  « Confiance » change le classement. R27 se précise en R27a / R27b dans `moteur_combos/classement.py`.
+- Tests : `python -m pytest moteur_combos/tests` (branché dans `check.py` quand `moteur_combos/` ou les fichiers du jeu
+  de tests changent ; les tests qui lisent les textes demandent `yugioh.db`, sinon « ignorés »).
+→ détail : `docs/moteur-combos/definitions-et-schema.md` (§ 2 mis à jour, § 3), décisions par défaut :
+`docs/planning/2026-11-18/decisions-prises.md`
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree

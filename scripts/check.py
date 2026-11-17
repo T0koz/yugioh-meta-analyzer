@@ -21,6 +21,7 @@ ici, ils sont lancés d'un coup, et seulement ceux qui concernent ce qui a chang
 | Backtest du Ban Radar              | scoring modifié (base requise)             | non : à lire, pas de seuil défini |
 | Tests visuels du front             | seulement avec --visuel (≈ 45 s, réseau)   | oui       |
 | Mots interdits dans les textes     | frontend/src/ modifié, ou --all            | non (lot 16 : bloquant une fois les textes appliqués) |
+| Moteur de combos (pytest)          | moteur_combos/ ou tests du moteur modifiés | oui       |
 
 Bibliothèque standard uniquement : le script tourne sans venv (GitHub Actions, hook).
 Les étapes qui demandent une base ou `node_modules` absents sont **ignorées et signalées**,
@@ -389,6 +390,31 @@ def check_copy(report: Report) -> None:
         report.ok(summary)
 
 
+COMBOS_FILES = ("moteur_combos/", "scripts/combos_", "docs/moteur-combos/tests-branded.yaml",
+                "docs/moteur-combos/deck-branded-source.json", "docs/moteur-combos/points-de-regle-a-valider.md")
+
+
+def check_combos(report: Report) -> None:
+    """Moteur de combos (lot 18) : structures, schéma combos.db, chargement du deck, 72 départs, classement.
+    Les tests qui lisent les textes des cartes demandent yugioh.db (lecture seule) : ignorés sans elle."""
+    report.step("Moteur de combos : tests pytest (moteur_combos/tests)")
+    db = YUGIOH_DB if YUGIOH_DB.exists() else main_checkout() / "data" / YUGIOH_DB.name
+    res = run([python_bin(), "-m", "pytest", "moteur_combos/tests", "-q", "-p", "no:cacheprovider", "-rs"],
+              env={"YGO_DB_PATH": str(db)})
+    output = res.stdout + res.stderr
+    if res.returncode and "No module named" in output:
+        module = re.search(r"No module named '?([\w.]+)", output)
+        report.skip("moteur de combos", f"module Python manquant ({module.group(1) if module else '?'}) → "
+                    ".venv/bin/pip install pytest pyyaml")
+    elif res.returncode:
+        report.fail("tests du moteur de combos", output)
+    else:
+        resume = [line for line in res.stdout.strip().splitlines() if " passed" in line]
+        report.ok(resume[-1].strip("= ") if resume else "pytest vert")
+        if "skipped" in res.stdout:
+            print(f"  ⚠ tests ignorés (base de référence absente : {db})")
+
+
 def check_visual(report: Report) -> None:
     """Sur demande seulement : ≈ 45 s, et le build télécharge les polices (réseau requis)."""
     report.step("Tests visuels du front (45 captures comparées aux références)")
@@ -460,6 +486,8 @@ def main() -> int:
         check_backend(report)
     if mode != "ci" and (args.all or BAN_RADAR_FILES & files):
         check_backtest(report)
+    if mode != "ci" and (args.all or touches(*COMBOS_FILES)):
+        check_combos(report)
     if args.all or touches("frontend/src/", "scripts/check_copy.py"):
         check_copy(report)  # 0,3 s, bibliothèque standard : tourne aussi en CI
     check_garde_fou(report)  # 0,2 s : toujours lancé

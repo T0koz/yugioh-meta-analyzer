@@ -75,3 +75,20 @@ formalisation : elle remet en cause les listes exactes des tests existants.
 | Étape | durée (agent) | produit |
 |---|---|---|
 | Installation de l'oracle | ≈ 10 min, arrêtée | échec : cœur hors organisation officielle, `premake5` et Lua absents ; voir `reponses-oracle.md` |
+
+## Session du 18 novembre 2026 — lot 18, fondations du moteur (TOK-85)
+
+| # | Étape | Début | Fin | Durée (agent) | Produit | Temps humain de validation |
+|---|---|---|---|---|---|---|
+| 12 | Lecture du brief, de `CLAUDE.md`, `context.md` et des 6 documents du moteur ; contrôle des 45 empreintes de texte | 01:14 | ≈ 01:20 | ≈ 6 min | rien d'écrit ; 45 empreintes identiques | — |
+| 13 | Report de la relecture dans `definitions-et-schema.md` (D3 entre-deux, trois formes de limite, Cimetière, limite de 3, cible, boucle) | ≈ 01:20 | ≈ 01:23 | ≈ 3 min | § 1, 2.1 à 2.6 mis à jour | à mesurer (Thomas) |
+| 14 | Schéma SQL, modèle de l'état, chargement du deck, départs, classement, harnais | ≈ 01:23 | 01:27 | ≈ 4 min (premier lancement du harnais vert) | `moteur_combos/` (7 modules), `scripts/combos_harnais.py` | — |
+| 15 | Tests `pytest` (46), branchement dans `check.py`, § 3 du document, décisions par défaut, `context.md`, `BACKLOG.md` | 01:27 | 01:31 | ≈ 4 min | 4 fichiers de tests, `decisions-prises.md` | à mesurer (formulaire du 18/11) |
+| 16 | Relecture du schéma par l'agent `gardien-donnees` (en parallèle de l'étape 15) | ≈ 01:30 | ≈ 01:33 | ≈ 3 min | 3 défauts bloquants, ≈ 15 mineurs | — |
+| 17 | Corrections (garde-fou, migrations, `copy_index`, `CHECK`, index, errata des effets), 4 tests de plus, `check.py` complet | ≈ 01:33 | 01:37 | ≈ 4 min | 50 tests verts, `check.py` vert sans étape ignorée | — |
+| | **Total de la session** | 01:14 | ≈ 01:38 | **≈ 24 min** | 72 tests classés (54 / 6 / 12), 0 règle de jeu | |
+
+**Leçon** : la relecture par un second agent a trouvé 3 défauts bloquants en 3 minutes, dont un garde-fou
+contournable (disque insensible à la casse : `Yugioh.db` est le même fichier que `yugioh.db`). Le coût d'une
+relecture est faible devant celui d'une écriture accidentelle dans la base de référence.
+

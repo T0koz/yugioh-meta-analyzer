@@ -158,7 +158,7 @@ Livrables : `docs/collaboration/`, `scripts/check.py`, `.githooks/pre-push`, `.g
 | TOK-90 | Tranche 0 : un combo Branded de bout en bout | 🔜 Todo, lot C1 de la file (après TOK-117) | 🔴 Urgent |
 | TOK-89 | Trouver un juge humain qui connaît le jeu | 🟡 Relecture 1 faite le 17/11 (joueur de tournoi, non arbitre, Google Form + entretien) : 32 points sur 34 confirmés, R22 contesté (probable malentendu), R34 complété ; D3 révisée (« entre-deux », 18/11), D1 maintenue malgré l'absence de `Lubellion` — `docs/moteur-combos/reponses-juge-2026-11-17.md`. Relecteur plus disponible : R22 levé par cohérence avec R23 ; R08, R27 (b), R34 n'ont qu'un avis (prochain relecteur ou oracle TOK-86) | 🔴 High |
 | TOK-88 | Journal de chronométrage des étapes | 🟡 Ouvert — `docs/moteur-combos/chronometrage.md` (3 sessions d'agent le 2026-11-16, validation humaine non mesurée) | 🟢 Low |
-| TOK-117 | Fondations du moteur (schéma, chargement des decks, harnais de tests) | 🏗️ Lot 18, lancé le 18/11 (`claude/moteur-18-11`) | 🔴 Urgent |
+| TOK-117 | Fondations du moteur (schéma, chargement des decks, harnais de tests) | 🟡 Livré le 18/11 (lot 18, fusionné dans `claude/moteur-18-11`) : `moteur_combos/`, `data/combos.db` (ignorée), harnais `python scripts/combos_harnais.py` (72 tests classés : 54 confirmés / 6 un seul avis / 12 sans point relu), 50 tests pytest, aucune règle de jeu ; 12 décisions par défaut à valider (`docs/planning/2026-11-18/decisions-prises.md`) | 🔴 Urgent |
 | TOK-118 | J1 : formaliser les 37 cartes du pilote, taux d'erreur chiffré | 🔜 Lot C2 | 🔴 High |
 | TOK-119 | J2 : retrouver seul les combos des guides publics (échéance de la règle d'arrêt : 13/01/2027) | 🔜 Lot C3 | 🔴 High |
 

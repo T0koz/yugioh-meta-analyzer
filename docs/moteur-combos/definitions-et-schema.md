@@ -1,12 +1,19 @@
 # Moteur de combos — définitions formelles et schéma de données (TOK-85)
 
-> **Statut : choix techniques arbitrés le 16 novembre 2026 (D1 à D8 bis), points de règle non validés.**
+> **Statut : choix techniques arbitrés le 16 novembre 2026 (D1 à D8 bis), validés par Thomas le 17/11 (D3 révisée
+> le 18/11) ; points de règle relus une fois le 17/11 (32 confirmés sur 34, un seul relecteur, non arbitre).**
 > Part des définitions du § 4 de [`decisions-2026-11-16.md`](decisions-2026-11-16.md) et les précise.
 > **Sources utilisées** : textes des cartes de la table `cards` (YGOPRODeck), règles officielles de
 > Konami citées de mémoire (livret de règles, non relu en ligne pendant cette session), decklists de
 > la base. **Aucun script de simulateur n'a été consulté** (condition d'indépendance, § 6 des décisions).
 > **Limite** : je ne suis pas un juge. Tout point de règle marqué ⚖ est à soumettre à un juge humain
 > (TOK-89). La liste complète est dans [`points-de-regle-a-valider.md`](points-de-regle-a-valider.md).
+>
+> **Mise à jour du 18 novembre 2026 (lot 18)** : report de la relecture 1 du 17/11
+> ([`reponses-juge-2026-11-17.md`](reponses-juge-2026-11-17.md)) et de D3 révisée (« entre-deux ») ; schéma
+> implémenté dans `moteur_combos/schema.sql` (base à part `data/combos.db`, ignorée par Git). Les passages
+> modifiés portent la mention **(relecture 1)** ou **(lot 18)**. Aucune règle de jeu n'est codée : la
+> consommation des limites, les verrous et la légalité restent à la tranche 0 (TOK-90).
 
 Les exemples viennent du deck source du jeu de tests (voir
 [`jeu-de-tests-branded.md`](jeu-de-tests-branded.md)), et les numéros `T..` renvoient à ses situations.
@@ -25,7 +32,7 @@ Les exemples viennent du deck source du jeu de tests (voir
 | Chaîne | Pile d'effets activés en réponse les uns aux autres. Elle se résout en ordre inverse (le dernier activé s'applique en premier). |
 | Vitesse | 1 : effets lents (ne répondent à rien). 2 : effets rapides (répondent). 3 : pièges de contre. |
 | Coût / effet | Dans un texte, ce qui précède « ; » est le coût (payé à l'activation, jamais remboursé). Ce qui suit est l'effet. Ce qui précède « : » est la condition d'activation. |
-| « Une fois par tour » | Deux formes : *par nom* (« You can only use this effect of "X" once per turn » : vaut pour toutes les copies) et *par exemplaire* (« Once per turn » : vaut pour cette carte-là tant qu'elle reste sur le terrain). |
+| « Une fois par tour » | **Trois formes (relecture 1)** : *par nom de carte* (« You can only activate 1 "X" per turn » : une seule activation de la carte X, toutes copies confondues) ; *par effet et par nom* (« You can only use this effect of "X" once per turn », ou « each effect of "X" » : chaque effet de X une fois, toutes copies confondues, une autre copie peut encore utiliser un **autre** effet) ; *par exemplaire* (« Once per turn » : vaut pour cette carte-là). Les textes du deck ajoutent deux variantes, enregistrées à part : « You can only use 1 "X" effect per turn, and only once that turn » (un seul effet de X, tous effets confondus : `Aluber`, `Branded in High Spirits`, `Hyperinvoked Aeon`) et « You can only Special Summon "X" once per turn this way » (`Incredible Ecclesia`). Voir § 2.1 D. |
 | Verrou | Restriction qui dure tout le tour (« you cannot Special Summon from the Extra Deck, except Fusion Monsters »). |
 
 ---
@@ -58,14 +65,16 @@ consommés) est nécessaire mais **pas suffisante**. Les textes Branded obligent
 | Main | multi-ensemble | L'ordre n'a pas de sens en jeu. |
 | Deck | multi-ensemble **+ segments ordonnés connus** (dessus, dessous) | Après une recherche, le deck est mélangé : l'ordre disparaît. Mais `Springans Kitt` pose une carte **au-dessous** du deck : cette position est connue jusqu'au prochain mélange. |
 | Extra Deck | multi-ensemble | |
-| Zones Monstre | 5 principales + 2 Extra, **indexées** | La position compte pour `Sprind the Irondash Dragon` (colonne) et `Albion the Sanctifire Dragon` (zones centrales). Voir décision D3. |
-| Zones Magie/Piège, Terrain | indexées | |
-| Cimetière | multi-ensemble | ⚖ Aucune carte du pilote ne lit l'ordre du Cimetière ; à revoir si une carte le fait. |
+| Zones Monstre | 5 principales par joueur (`M1` à `M5`, colonnes 1 à 5) + 2 **Zones Monstre Extra** (`ZME_G`, `ZME_D`), **toujours indexées** | **D3 révisée, « entre-deux » (relecture 1, Thomas le 18/11)** : l'état porte **toujours la case exacte** de chaque monstre. Les deux Zones Monstre Extra sont **communes aux deux joueurs** : elles appartiennent au terrain, pas au joueur, et chaque occupant porte son contrôleur. Géométrie enregistrée : `ZME_G` est dans la colonne 2, `ZME_D` dans la colonne 4 (vues depuis le joueur 0). Le relecteur a infirmé l'hypothèse « placer n'importe où » : la Zone Monstre Extra et les colonnes comptent, y compris pour des cartes adverses. Voir § 2.2 (option de placement) et D3. |
+| Zones Magie/Piège, Terrain | indexées (`S1` à `S5`, colonnes 1 à 5, et `TERRAIN`) | |
+| Cimetière | multi-ensemble | **Confirmé (relecture 1)** : l'ordre du Cimetière ne sert qu'à l'arbitre pour retracer la partie ; aucune carte connue du relecteur ne le lit. L'historique des transitions (`cb_transition`, `cb_step`) suffit à retracer l'ordre. À revoir si une carte modélisée lit l'ordre. |
 | Bannies | multi-ensemble, face visible ou cachée | |
 
 **C. Attributs de chaque exemplaire de carte** (une « instance », pas un nom)
 
-- position (Attaque, Défense, face cachée), compteurs ;
+- position (Attaque, Défense, face cachée), compteurs ; **case exacte** quand la carte est sur le terrain (D3 révisée, lot 18) ;
+- **« Once per turn » déjà consommés par cet exemplaire** (forme *par exemplaire*, relecture 1) : c'est un attribut de
+  l'exemplaire, pas de la mémoire du tour, puisqu'une autre copie garde le sien ;
 - **comment et quand elle est arrivée** : posée ce tour ou non, par Invocation Normale, Spéciale, Fusion, Synchro ; venue de l'Extra Deck ou non ;
 - **« correctement invoquée »** (oui/non) : un monstre de l'Extra Deck envoyé au Cimetière sans avoir été invoqué ne peut pas en être rappelé. Ce drapeau suit la carte au Cimetière et chez les bannies ;
 - **« envoyée au Cimetière ce tour »** (plusieurs effets de Phase de Fin le lisent : `Titaniklad`, `Sprind`, `The Dragon that Devours the Dogma`, `Despian Luluwalilith`) ;
@@ -77,13 +86,24 @@ consommés) est nécessaire mais **pas suffisante**. Les textes Branded obligent
 
 | Élément | Exemple Branded qui l'impose |
 |---|---|
-| « Une fois par tour » par nom, déjà consommés | `Aluber` : un seul des deux effets, une fois (T04). |
-| Cartes dont le nom a déjà été activé ce tour | « You can only activate 1 "Branded Fusion" per turn » (T14), `Nadir Servant` (T21). |
+| « Une fois par tour » **par effet et par nom**, déjà consommés | « You can only use this effect of "Guiding Quem" once per turn » : clé (nom, n° d'effet) ; une autre copie de `Quem` peut encore utiliser l'**autre** effet (T24). |
+| « Une fois par tour » **par nom, tous effets confondus** (variante) | `Aluber` : un seul des deux effets, une fois (T04). Clé : le nom seul. |
+| Cartes dont le nom a déjà été **activé** ce tour (*par nom de carte*) | « You can only activate 1 "Branded Fusion" per turn » (T14), `Nadir Servant` (T21). Clé : le nom. |
+| Invocations « this way » déjà faites (variante) | « You can only Special Summon "Incredible Ecclesia" once per turn this way ». Clé : le nom. |
 | Verrous actifs | `Nadir Servant` : plus aucune Invocation Spéciale depuis l'Extra Deck (T20). |
 | **Historique d'invocations depuis l'Extra Deck** | `Branded Fusion` : « the turn you activate this card » interdit de l'activer si une Synchro a **déjà** été invoquée ce tour (T12). Le passé rend l'action illégale après coup. |
 | Événements du tour | « if a Fusion Monster(s) was sent to your GY this turn » (`Blazing Cartesia`, `Incredible Ecclesia`, `Branded in High Spirits`). |
 | Effets différés | `Gold Sarcophagus` : « during your second Standby Phase after activation » ; `Ecclesia and the Dark Dragon` revient à la Phase de Fin. Ils traversent les tours. |
 | Effets « appliqués ce tour » | `Mulcharmy Fuwalos`. |
+
+**Enregistrement des limites (lot 18).** Une limite consommée s'écrit `(forme, nom, effet)` : `forme` parmi
+`activation_par_nom`, `par_nom_effet`, `par_nom_carte`, `invocation_par_nom` (mémoire du tour, clé sur le **nom
+imprimé** de la carte cité par la clause), ou `par_exemplaire` (attribut de l'exemplaire, bloc C) ; `effet` est le
+numéro de l'effet pour `par_nom_effet` et vide sinon. Le relecteur a confirmé qu'une limite est **consommée dès
+l'activation** (question ouverte 1), mais **quand** et **par quoi** elle est consommée relève de la tranche 0 : le
+lot 18 ne fait que la structure. Le harnais vérifie que chaque clause « per turn » des textes du deck tombe dans
+l'une de ces cinq formes (une seule anomalie : `The Three Champions of Swordsoul` cite « The Three Brave
+Swordsouls », voir `jeu-de-tests-branded.md` § 1).
 
 **Ce que l'état ne contient pas** : le chemin suivi (il est dans les transitions), le jugement sur
 la qualité du plateau, et les informations cachées de l'adversaire (réservées, § 2.5).
@@ -117,6 +137,7 @@ Le § 4 cite « invoquer, activer, choisir une cible ». Liste complète des dé
 | Compléter une activation | payer le **coût** (quelle carte défausser, envoyer, bannir), choisir les **cibles**. |
 | Répondre | enchaîner un effet (ou passer). |
 | Compléter une résolution | choisir les matériels, la carte cherchée, la zone d'arrivée, l'option (« ajouter à la main **ou** invoquer »), appliquer ou non un « then you can ». |
+| Placer (D3 révisée, relecture 1) | la **case d'arrivée** d'un monstre ou d'une Magie/Piège. À chaque Invocation **depuis l'Extra Deck**, le choix « Zone Monstre Extra » / « zone principale » est une **option de l'action** : deux décisions distinctes, donc deux transitions. Un monstre Invoqué depuis le Cimetière, les bannies, la main ou le Deck ne peut **pas** aller en Zone Monstre Extra (confirmé par le relecteur, question ouverte 4). Les **colonnes** (laquelle des cases principales) ne sont énumérées que si une carte du deck lit la position (`Sprind the Irondash Dragon`, `Albion the Sanctifire Dragon` : liste déclarée dans `moteur_combos/modele.py`) ; sinon la première case libre est prise. Dans tous les cas, la case réellement occupée est **enregistrée** dans l'état et sur le plateau final. |
 | Ordonner | l'ordre de plusieurs effets déclenchés en même temps. |
 | Subir le hasard | pioche : ce n'est pas une décision du joueur, c'est une **branche aléatoire** (une par carte possible), étiquetée comme condition (§ 2.4). |
 
@@ -158,7 +179,10 @@ canonique est l'écriture normalisée de l'état :
 1. les exemplaires d'une même carte sont **interchangeables** quand tous leurs attributs (bloc C)
    sont égaux : on ne distingue pas le 1er `Aluber` du 2e ;
 2. les multi-ensembles sont triés (par identifiant de carte puis par attributs) ;
-3. les zones indexées gardent leur index (voir D3 pour une simplification possible) ;
+3. les zones indexées gardent leur index : deux plateaux qui ne diffèrent que par la case d'un monstre sont
+   **deux états** (D3 révisée : la case exacte compte, la Zone Monstre Extra et les colonnes sont lues par des
+   cartes adverses). L'élagage possible ne vient pas de l'équivalence mais du nombre d'options de placement
+   (§ 2.2, « Placer ») ;
 4. le deck s'écrit « multi-ensemble + segments connus » ;
 5. la mémoire du tour est écrite en entier, triée.
 
@@ -210,9 +234,28 @@ l'arête est enregistrée (marquée « retour ») et le nœud n'est pas ré-expl
 des compteurs…) n'est pas détectée par l'égalité d'états : c'est la profondeur maximale qui la coupe,
 et le résultat est alors « tronqué ». Cela tranche la partie « boucles » de la question ouverte n° 6.
 
+**d. Boucles signalées par le relecteur (relecture 1, lot 18).** Le relecteur prévient que Branded peut
+« tourner » longtemps sans rien construire. Deux cas, deux motifs :
+
+- `retour_etat_connu` : l'état d'arrivée a déjà été atteint **par un autre chemin** (fusion de deux branches du
+  graphe). Ce n'est pas une boucle, c'est une équivalence ; le chemin n'est pas ré-exploré ;
+- `boucle` : l'état d'arrivée est déjà sur **le chemin courant** (un ancêtre). Le combo reviendrait en arrière ;
+  la branche est coupée et l'arête gardée pour l'audit.
+
+Une boucle qui change l'état à chaque tour reste coupée par la profondeur (`tronque_profondeur`, point c). Seule
+la structure est livrée au lot 18 (valeur autorisée du motif) ; la détection est l'algorithme d'exploration.
+
+**e. Cible d'exploration (relecture 1, lot 18).** Le relecteur recommande de donner au moteur le **plateau
+final visé** plutôt que d'énumérer tous les plateaux. Une cible est une liste de conditions sur le plateau final
+(« telle carte dans telle zone, au moins N exemplaires », zone `terrain`, `main`, `cimetiere`, `bannies`), avec une
+description lisible. Elle est rattachée à une exploration (`cb_run.target_id`, table `cb_target`) ; une branche
+qui l'atteint s'arrête avec le motif `cible_atteinte`. Sans cible, l'exploration reste exhaustive (à filtres et
+profondeur près). Ce que « atteindre » veut dire exactement (égalité ou inclusion) est laissé à l'algorithme
+d'exploration ; le lot 18 enregistre les conditions telles qu'écrites.
+
 **Motifs d'arrêt enregistrés** : `fin_forcee`, `fin_volontaire`, `tronque_profondeur`,
-`retour_etat_connu`, `non_couvert` (une carte non formalisée intervient, § 3.4), `hors_perimetre`
-(Phase de Combat, tour adverse : réservés).
+`retour_etat_connu`, `boucle` (lot 18), `cible_atteinte` (lot 18), `non_couvert` (une carte non formalisée
+intervient, § 3.4), `hors_perimetre` (Phase de Combat, tour adverse : réservés).
 
 **Tests sur des exemples Branded**
 
@@ -237,17 +280,40 @@ et le résultat est alors « tronqué ». Cela tranche la partie « boucles » d
 - **Information cachée.** La main et le deck adverses sont dans l'état, avec un drapeau « connu /
   inconnu » par zone. Le pilote les laisse « inconnu ».
 
+### 2.6 Validité d'un deck (relecture 1, lot 18)
+
+Contrôle fait au chargement, avant toute exploration. C'est un contrôle de **construction de deck**, pas une
+règle de déroulement du tour.
+
+- Main Deck de 40 à 60 cartes, Extra Deck de 0 à 15.
+- **Au plus 3 exemplaires par nom, « always treated as » compris** (ajout du relecteur sur R03) : `Fallen of
+  Albaz` (×1) et `Fallen of the White Dragon` (×2, « always treated as "Fallen of Albaz" ») partagent la même
+  limite, d'où 1 + 2 = 3 dans la liste. Le compte se fait sur le **groupe de noms** : nom imprimé plus les noms
+  donnés par une clause « always treated as "X" » (sans « card » derrière). Une clause « always treated as a
+  "X" card » donne un **archétype**, pas un nom, et n'entre pas dans ce compte. Main, Extra et Side Deck comptent
+  ensemble.
+- Limite de la banlist (`ban_tcg` lu dans `deck-branded-source.json`, statut au jour de l'extraction) : Forbidden
+  0, Limited 1, Semi-Limited 2, **par nom imprimé** (⚖ l'extension de la banlist aux noms « always treated as »
+  n'est pas vérifiée ; elle ne change rien pour ce deck).
+
+Le deck du pilote passe ces contrôles (`python scripts/combos_harnais.py`).
+
 ---
 
 ## 3. Schéma de données
 
-Proposition en SQLite, comme le reste du projet. Préfixe `cb_` (combos) pour ne rien mêler aux
-tables de méta. **Rien n'est créé** : c'est un schéma sur papier, à implémenter en tranche 0 (TOK-90).
+**Implémenté au lot 18 (18/11)** dans une base à part, `data/combos.db` (ignorée par Git, jamais dans `yugioh.db`).
+La **source de vérité est `moteur_combos/schema.sql`** : le DDL n'est plus recopié ici, pour éviter qu'il diverge.
+Préfixe `cb_` (combos) pour ne rien mêler aux tables de méta. Version du schéma : `PRAGMA user_version` (1).
+Les structures Python correspondantes (état, exemplaire, mémoire du tour, cible) sont dans
+`moteur_combos/modele.py` ; le chargement du deck dans `moteur_combos/deck.py` ; le harnais dans
+`moteur_combos/harnais.py` (commande : `python scripts/combos_harnais.py`).
 
 ### 3.1 Vue d'ensemble
 
 ```
-cb_card ──< cb_effect            texte découpé en effets, avec statut de formalisation
+cb_card ──< cb_effect ──< cb_effect_limit       texte figé, effets, limites « par tour » (5 formes)
+   │  └──< cb_card_name_tag                       noms et archétypes (nom imprimé, « always treated as »)
    │
    └──< cb_step_card >── cb_step ──> cb_transition ──> cb_state (départ, arrivée)
                               │            │
@@ -255,172 +321,37 @@ cb_card ──< cb_effect            texte découpé en effets, avec statut de f
                               │            └──< cb_relation            (dérivée)
                               └──< cb_window                             (interruption réservée)
 
-cb_run ──< cb_transition         une exploration : deck, main de départ, paramètres
+cb_deck ──< cb_deck_card >── cb_card             liste source (main, extra, side)
+cb_run ──< cb_transition          une exploration : deck, état de départ, cible, paramètres
+cb_run >── cb_target              plateau final visé (relecture 1)
 cb_run ──< cb_combo ──< cb_combo_step >── cb_transition
+cb_test_situation >── cb_state    les 72 situations du jeu de tests, leur départ et leur classe
 ```
 
-### 3.2 Tables
+### 3.2 Tables, et ce qui a changé depuis la version sur papier du 16/11
 
-```sql
--- Cartes : pointe vers cards.id, fige le texte utilisé (errata, question ouverte n° 6).
-CREATE TABLE cb_card (
-    card_id        INTEGER PRIMARY KEY,          -- = cards.id (YGOPRODeck)
-    name           TEXT NOT NULL,                -- nom imprimé
-    text_sha256    TEXT,                         -- empreinte du texte formalisé
-    text_fetched   TEXT,                         -- date de lecture du texte
-    text_source    TEXT NOT NULL DEFAULT 'ygoprodeck',
-    status         TEXT NOT NULL CHECK (status IN
-        ('non_traitee','brouillon','formalisee','verifiee','non_formalisable')),
-    status_reason  TEXT,                         -- ex. « texte absent de la source »
-    verified_by    TEXT,                         -- 'oracle', 'juge', 'oracle+juge'
-    updated_at     TEXT NOT NULL
-);
+| Table | Rôle | Changement au lot 18 |
+|---|---|---|
+| `cb_card` | une carte, texte figé et empreinte | + `text` (copie locale, la base n'est pas versionnée : le texte appartient à Konami), caractéristiques (`frame_type`, `attribute`, `race`, `level`, `atk`, `def`), `reads_position` (D3). `text_sha256` obligatoire. Un texte changé remet le statut à `non_traitee` (errata) ; un statut n'est jamais rétrogradé autrement. |
+| `cb_card_name_tag` | noms portés et archétypes | + colonne `kind` (`nom` / `archetype`) : « always treated as "X" » donne un **nom** (limite de 3, § 2.6), « always treated as a "X" card » un **archétype**. `origin` : `nom_imprime` / `traite_comme`. |
+| `cb_effect` | un effet découpé dans le texte | la colonne `limit_scope` est remplacée par la table `cb_effect_limit` (un effet peut porter plusieurs limites). Vide au lot 18. |
+| `cb_effect_limit` | **nouvelle** : limites « une fois par tour » | forme parmi `activation_par_nom`, `par_nom_effet`, `par_nom_carte`, `invocation_par_nom`, `par_exemplaire` (§ 1 et § 2.1 D) ; `name_key` = nom cité par la clause (il peut différer du nom imprimé : `The Three Champions of Swordsoul`). |
+| `cb_deck`, `cb_deck_card` | **nouvelles** : la liste source | empreinte du fichier `deck-branded-source.json`, zone, nombre, statut de banlist au jour de l'extraction. |
+| `cb_state` | états, adressés par l'empreinte de leur forme canonique | + `CHECK` sur la phase, le joueur, la longueur de l'empreinte. Un état n'est jamais modifié (`INSERT OR IGNORE`). |
+| `cb_target` | **nouvelle** : cible d'exploration | conditions en JSON (`zone`, `carte`, `minimum`), § 2.4 e. |
+| `cb_run` | une exploration | + `target_id` (cible, facultative), `columns_enumerated` (D3 révisée), `deck_ref` relié à `cb_deck`, obligatoire en mode `decklist`. |
+| `cb_transition`, `cb_combo` | transitions et combos | `stop_reason` contrôlé : + `boucle`, `cible_atteinte` (§ 2.4 d, e). |
+| `cb_step` | pas élémentaires | + type `placer` et colonne `option` (choix Zone Monstre Extra / zone principale, D3 révisée). |
+| `cb_step_card` | cartes nommées par un pas | + `to_cell` (case exacte d'arrivée : `M1`-`M5`, `ZME_G`, `ZME_D`, `S1`-`S5`, `TERRAIN`). |
+| `cb_window`, `cb_condition`, `cb_transition_condition`, `cb_relation`, `cb_combo_step` | inchangées sur le fond | `CHECK` ajoutés sur les valeurs fermées. |
+| `cb_test_situation` | **nouvelle** : harnais | une ligne par situation du YAML : empreinte du fichier, points de règle (R27 précisé en R27a / R27b), classe, état de départ, départ complet ou non, faits en texte libre, verdict attendu, statut (`verifie`, `en_attente_tranche_0`, `depart_invalide`, `echec`). |
 
--- Appartenance à un archétype : calculée depuis le NOM et les clauses « always treated as »,
--- jamais depuis cards.archetype (voir § 3.5).
-CREATE TABLE cb_card_name_tag (
-    card_id   INTEGER NOT NULL REFERENCES cb_card(card_id),
-    tag       TEXT NOT NULL,                     -- 'Dogmatika', 'Despia', 'Fallen of Albaz'…
-    origin    TEXT NOT NULL CHECK (origin IN ('nom','traite_comme')),
-    PRIMARY KEY (card_id, tag)
-);
-
--- Un effet = un morceau du texte, avec sa forme formelle.
-CREATE TABLE cb_effect (
-    effect_id      INTEGER PRIMARY KEY,
-    card_id        INTEGER NOT NULL REFERENCES cb_card(card_id),
-    position       INTEGER NOT NULL,             -- 1er, 2e… effet du texte
-    kind           TEXT NOT NULL CHECK (kind IN
-        ('invocation_inherente','declenche','ignition','rapide','continu',
-         'activation_carte','condition_invocation','restriction')),
-    speed          INTEGER,                      -- 1, 2, 3 ; NULL si pas d'activation
-    optional       INTEGER NOT NULL,             -- 1 « You can », 0 obligatoire
-    timing         TEXT CHECK (timing IN ('if','when') OR timing IS NULL),
-    limit_scope    TEXT CHECK (limit_scope IN
-        ('aucune','par_nom_effet','par_nom_carte','par_exemplaire','activation_par_nom')),
-    text_span      TEXT NOT NULL,                -- extrait exact du texte officiel
-    formal_json    TEXT,                         -- condition, coût, cibles, résolution, verrous
-    status         TEXT NOT NULL,                -- mêmes valeurs que cb_card.status
-    UNIQUE (card_id, position)
-);
-
--- Une exploration : ce qu'on a demandé au moteur.
-CREATE TABLE cb_run (
-    run_id         INTEGER PRIMARY KEY,
-    mode           TEXT NOT NULL CHECK (mode IN ('absolu','decklist')),
-    deck_ref       TEXT,                         -- tournament_decks.id en mode decklist
-    start_state    TEXT NOT NULL REFERENCES cb_state(state_id),
-    max_depth      INTEGER NOT NULL,
-    filters_json   TEXT NOT NULL,                -- filtres d'exploration déclarés (décision D4)
-    rules_version  TEXT NOT NULL,                -- version du livret + banlist
-    engine_version TEXT NOT NULL,
-    complete       INTEGER NOT NULL,             -- 0 si au moins un état tronqué ou non couvert
-    started_at     TEXT NOT NULL
-);
-
--- États : identifiés par l'empreinte de leur forme canonique (§ 2.3).
-CREATE TABLE cb_state (
-    state_id       TEXT PRIMARY KEY,             -- SHA-256 de canonical_json
-    canonical_json TEXT NOT NULL,                -- blocs A, B, C, D
-    turn           INTEGER NOT NULL,
-    active_player  INTEGER NOT NULL,             -- 0 = nous, 1 = adversaire
-    phase          TEXT NOT NULL,
-    is_stable      INTEGER NOT NULL,
-    board_id       TEXT                          -- empreinte du « plateau final » (affichage)
-);
-
--- Transitions : d'un état stable à un état stable.
-CREATE TABLE cb_transition (
-    transition_id  INTEGER PRIMARY KEY,
-    run_id         INTEGER NOT NULL REFERENCES cb_run(run_id),
-    from_state     TEXT NOT NULL REFERENCES cb_state(state_id),
-    to_state       TEXT NOT NULL REFERENCES cb_state(state_id),
-    action_type    TEXT NOT NULL,                -- 'invocation_normale','activation','phase'…
-    actor_card_id  INTEGER REFERENCES cb_card(card_id),   -- la carte « jouée »
-    actor_effect   INTEGER REFERENCES cb_effect(effect_id),
-    is_random      INTEGER NOT NULL DEFAULT 0,   -- branche de hasard (pioche)
-    stop_reason    TEXT,                         -- § 2.4, NULL si la ligne continue
-    verified       INTEGER NOT NULL              -- 0 si une carte impliquée n'est pas 'verifiee'
-);
-CREATE INDEX idx_cb_transition_from ON cb_transition (run_id, from_state);
-CREATE INDEX idx_cb_transition_actor ON cb_transition (actor_card_id);
-
--- Pas : les décisions élémentaires à l'intérieur d'une transition (niveau oracle).
-CREATE TABLE cb_step (
-    step_id        INTEGER PRIMARY KEY,
-    transition_id  INTEGER NOT NULL REFERENCES cb_transition(transition_id),
-    position       INTEGER NOT NULL,
-    step_type      TEXT NOT NULL,                -- 'declarer','cout','cible','enchainer',
-                                                 -- 'resoudre','choisir','ordonner','hasard'
-    chain_link     INTEGER,                      -- maillon de chaîne, NULL hors chaîne
-    effect_id      INTEGER REFERENCES cb_effect(effect_id),
-    UNIQUE (transition_id, position)
-);
-
--- Toutes les cartes qu'un pas nomme, avec leur rôle. C'est la table des requêtes.
-CREATE TABLE cb_step_card (
-    step_id    INTEGER NOT NULL REFERENCES cb_step(step_id),
-    card_id    INTEGER NOT NULL REFERENCES cb_card(card_id),
-    role       TEXT NOT NULL CHECK (role IN
-        ('acteur','cout','materiel','cible','choisie','deplacee','revelee','condition')),
-    from_zone  TEXT,
-    to_zone    TEXT,
-    PRIMARY KEY (step_id, card_id, role)
-);
-CREATE INDEX idx_cb_step_card_card ON cb_step_card (card_id);
-
--- Fenêtres d'interruption adverse : réservées, vides de réponses dans le pilote.
-CREATE TABLE cb_window (
-    window_id   INTEGER PRIMARY KEY,
-    step_id     INTEGER NOT NULL REFERENCES cb_step(step_id),
-    window_type TEXT NOT NULL,                   -- 'reponse_activation','reponse_invocation'
-    response    TEXT NOT NULL DEFAULT 'aucune'   -- plus tard : carte adverse enchaînée
-);
-
--- Conditions : rattachées aux étapes, hors du combo (décision du § 4).
-CREATE TABLE cb_condition (
-    condition_id INTEGER PRIMARY KEY,
-    kind         TEXT NOT NULL CHECK (kind IN
-        ('etat','hasard','adverse','verrou_absent','limite_disponible','zone_libre','hypothese')),
-    expression   TEXT NOT NULL,                  -- forme lisible et formelle
-    UNIQUE (kind, expression)
-);
-CREATE TABLE cb_transition_condition (
-    transition_id INTEGER NOT NULL REFERENCES cb_transition(transition_id),
-    condition_id  INTEGER NOT NULL REFERENCES cb_condition(condition_id),
-    PRIMARY KEY (transition_id, condition_id)
-);
-
--- Relations entre deux cartes : les quatre familles, dérivées des pas.
-CREATE TABLE cb_relation (
-    relation_id   INTEGER PRIMARY KEY,
-    transition_id INTEGER NOT NULL REFERENCES cb_transition(transition_id),
-    source_card   INTEGER NOT NULL REFERENCES cb_card(card_id),   -- celle qui agit
-    target_card   INTEGER NOT NULL REFERENCES cb_card(card_id),   -- celle qui subit
-    family        TEXT NOT NULL CHECK (family IN
-        ('deplace','materiel_ou_cout','conditionne','interagit_adverse')),
-    detail        TEXT                            -- 'deck→main', 'materiel de fusion', …
-);
-CREATE INDEX idx_cb_relation_pair ON cb_relation (source_card, target_card, family);
-
--- Combos : un chemin, enregistré dans son ordre réel.
-CREATE TABLE cb_combo (
-    combo_id     INTEGER PRIMARY KEY,
-    run_id       INTEGER NOT NULL REFERENCES cb_run(run_id),
-    final_state  TEXT NOT NULL REFERENCES cb_state(state_id),
-    length       INTEGER NOT NULL,
-    label        TEXT NOT NULL CHECK (label IN ('demontre','non_verifie')),
-    stop_reason  TEXT NOT NULL
-);
-CREATE TABLE cb_combo_step (
-    combo_id      INTEGER NOT NULL REFERENCES cb_combo(combo_id),
-    position      INTEGER NOT NULL,
-    transition_id INTEGER NOT NULL REFERENCES cb_transition(transition_id),
-    actor_card_id INTEGER REFERENCES cb_card(card_id),   -- recopié pour les requêtes
-    PRIMARY KEY (combo_id, position)
-);
-CREATE INDEX idx_cb_combo_step_actor ON cb_combo_step (actor_card_id, combo_id, position);
-```
+**Forme canonique de l'état** (`Etat.forme_canonique()`) : blocs A (cadre), B (zones des deux joueurs, cases exactes,
+Zones Monstre Extra communes avec leur contrôleur), C (attributs dans chaque exemplaire), D (mémoire du tour). Les
+multi-ensembles sont triés, les exemplaires égaux se confondent. Ce qui n'est pas encore formalisé (mémoire décrite
+en phrases dans le YAML, annotations non reconnues) est gardé **en texte libre dans l'état** : il compte dans
+l'empreinte, pour ne jamais confondre deux états qui pourraient différer (D7). Deux situations écrites pareil
+donnent le même état (T08 et T09 : 72 situations, 66 états distincts).
 
 ### 3.3 Les quatre familles de relations, sur des cas Branded
 
@@ -522,11 +453,12 @@ transitions traversent un changement de tour (colonne `turn` de l'état).
 
 | N° | Question | Position |
 |---|---|---|
-| 1 | Qui juge ? | **Reste ouverte.** Ce document produit la matière à juger : 34 points de règle listés dans `points-de-regle-a-valider.md`. |
+| 1 | Qui juge ? | **Avancée** : un joueur de tournoi (non arbitre) a relu les 34 points le 17/11 (32 confirmés, R22 levé par cohérence, R34 complété). R08, R27 (b) et R34 n'ont qu'un avis : prochain relecteur ou oracle (TOK-86). |
 | 2 | Budget | Reste ouverte. Le chronométrage de cette session donne un premier point de calibrage. |
 | 3 | L'oracle liste-t-il toutes les actions légales ? | **Reste ouverte, et devient bloquante** : le niveau « pas » (§ 2.2) suppose qu'on puisse comparer une liste d'actions légales, pas seulement un résultat. Si l'oracle ne la donne pas, la comparaison se fera au niveau « transition » (états d'arrivée), moins fine. |
 | 4, 5 | Banc sur Mac, rulings TCG/OCG | Non traitées (TOK-86). |
-| 6 | Boucles | **Tranchée** (§ 2.4 c). |
+| 6 | Boucles | **Tranchée** (§ 2.4 c), précisée au lot 18 : motif `boucle` distinct de `retour_etat_connu`, et cible d'exploration (§ 2.4 d, e). |
+| — | Ordre du Cimetière, colonnes, Zone Monstre Extra (questions hors tests de `points-de-regle-a-valider.md`) | **Tranchées par la relecture 1** : Cimetière en multi-ensemble ; colonnes et Zone Monstre Extra comptent (D3 révisée, § 2.1 B et § 2.2). |
 | 6 | Textes à une date passée | **Préparée, pas tranchée** : `cb_card.text_sha256` et `text_fetched` détectent un errata ; la source de textes anciens reste à trouver. |
 | 6 | Textes OCG | Hors périmètre, non traitée. |
 | 7 | Hypothèse de Winston | **Fausse telle quelle, vraie sous une forme restreinte**, voir ci-dessous. |

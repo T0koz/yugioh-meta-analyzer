@@ -751,6 +751,22 @@ restent. **Référence non recalculée** : formulaire « Jalon 4 — TOK-136 ».
   `build_serving_db.py`, puis réécrire `SITE_FACTS.banTop25` et `graphCommunities`.
 → détail complet : `docs/journal/graphe-recalcul-tok-136.md`
 
+### ⏱ Fenêtre du backtest : decks connus à la coupure (TOK-137, jalon n°4, 2026-11-18, même branche, non fusionnée)
+
+`build_ban_radar.backtest_lists(..., require_uploaded=False)` : à `True`, la fenêtre (date du tournoi) exige aussi la
+mise en ligne avant la coupure (`--backtest --connus-a-la-coupure`). Défaut inchangé, rien d'affiché ne change. Mesuré :
+2,5 % des decks retirés ; top 25 TCG 29 → 32, OCG 41 → 45 ; rang médian OCG meilleur que les staples sur 9 listes
+(p = 0,021) au lieu de 8 ; références 84/889 → 81/877 et 19/1236 → 19/1226. Formulaire « Jalon 4 — TOK-137 ».
+- **Le backtest actuel était pessimiste, pas optimiste** : les decks publiés après la coupure sont joués en fin de
+  fenêtre (OCG : après la publication du contenu de la liste) et jouent déjà moins les cartes visées. Ne pas présenter
+  l'écart comme un gain du radar.
+- `created` = date du tournoi, `uploaded` = mise en ligne (5,5 jours plus tard en moyenne) ; une coupure « connue à
+  la date X » filtre sur `uploaded`. Le classement du jour n'a pas de coupure : jamais `require_uploaded` dans `build`
+  pour lui.
+- Si le défaut change, la phrase de significativité du verdict (`ban-verdict.ts`) devient fausse (deux écarts OCG à
+  p = 0,021) : formulation au formulaire.
+→ détail complet : `docs/journal/fenetre-backtest-tok-137.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

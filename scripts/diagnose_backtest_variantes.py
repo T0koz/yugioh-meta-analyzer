@@ -14,7 +14,8 @@ part des decks, rang moyen en cas d'égalité) ; les sommes par format sont cell
 Sorties (dans `<dossier>/<label>/`) : `listes.csv` (une ligne par liste retenue), `classement.csv` (classement
 `ban_radar` TCG du jour, celui qu'écrirait `build_ban_radar.py`), `resume.txt`.
 
-Options du backtest passées telles quelles à `backtest_lists` : `--fenetre` (TOK-137).
+Option du backtest passée à `backtest_lists` : `--connus-a-la-coupure` (TOK-137, `require_uploaded=True` : seulement
+les decks mis en ligne avant la coupure).
 """
 from __future__ import annotations
 
@@ -112,6 +113,8 @@ def main() -> int:
     ap.add_argument("--out", type=Path)
     ap.add_argument("--label", default="mesure")
     ap.add_argument("--compare", nargs=2, type=Path, metavar=("A", "B"))
+    ap.add_argument("--connus-a-la-coupure", action="store_true",
+                    help="backtest sur les seuls decks mis en ligne avant la coupure (TOK-137)")
     a = ap.parse_args()
     if a.compare:
         compare(*a.compare)
@@ -119,7 +122,7 @@ def main() -> int:
     if not (a.db and a.out):
         ap.error("--db et --out requis (ou --compare)")
     conn = sqlite3.connect(f"file:{a.db}?mode=ro", uri=True, timeout=60)
-    kw = {}
+    kw = {"require_uploaded": True} if a.connus_a_la_coupure else {}
     lists = measure(conn, **kw)
     rank = ranking_today(conn)
     d = a.out / a.label

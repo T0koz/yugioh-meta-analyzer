@@ -75,8 +75,15 @@ def risk_label(score: float) -> str:
     return next(label for threshold, label in RISK_BANDS if score >= threshold)
 
 
-def load_usage(conn: sqlite3.Connection, as_of: str, fmt: str) -> pd.DataFrame:
-    """Une ligne par (carte, deck) sur la fenêtre glissante, decks légaux du format."""
+def load_usage(conn: sqlite3.Connection, as_of: str, fmt: str, require_uploaded: bool = False) -> pd.DataFrame:
+    """Une ligne par (carte, deck) sur la fenêtre glissante, decks légaux du format.
+
+    La fenêtre porte sur la date du tournoi (`created`). `require_uploaded` (TOK-137) exige en plus que le deck soit
+    mis en ligne avant la coupure (`uploaded`, même comparaison de chaînes que `created`) : sans lui, 2,5 % des decks
+    des fenêtres du backtest n'étaient pas encore connus le jour de la coupure (mesure TOK-120). Défaut False :
+    comportement d'avant, celui du classement servi, de `--backtest` et de l'onglet Historique.
+    """
+    uploaded = "AND td.uploaded <= :as_of" if require_uploaded else ""
     return pd.read_sql_query(
         f"""
         SELECT dc.card_name, dc.amount, td.id AS deck_id, td.archetype,
@@ -86,6 +93,7 @@ def load_usage(conn: sqlite3.Connection, as_of: str, fmt: str) -> pd.DataFrame:
         WHERE td.ocg = :ocg AND td.id IN (SELECT deck_id FROM deck_legality WHERE legal = 1)
           AND td.created <= :as_of
           AND td.created >= date(:as_of, '-{WINDOW_MONTHS} months')
+          {uploaded}
         """,
         conn,
         params={"as_of": as_of, "ocg": 1 if fmt == "OCG" else 0},
@@ -191,8 +199,8 @@ def banlist_events(conn: sqlite3.Connection, fmt: str) -> list[tuple[str, str, l
     return events
 
 
-def build(conn: sqlite3.Connection, as_of: str, fmt: str = "TCG") -> pd.DataFrame:
-    usage = load_usage(conn, as_of, fmt)
+def build(conn: sqlite3.Connection, as_of: str, fmt: str = "TCG", require_uploaded: bool = False) -> pd.DataFrame:
+    usage = load_usage(conn, as_of, fmt, require_uploaded)
     if usage.empty:
         raise SystemExit(f"Aucun deck {fmt} sur la fenêtre se terminant le {as_of}")
 
@@ -250,7 +258,8 @@ def build(conn: sqlite3.Connection, as_of: str, fmt: str = "TCG") -> pd.DataFram
     return df.sort_values("ban_risk_score", ascending=False).reset_index()
 
 
-def backtest_lists(conn: sqlite3.Connection, fmt: str, as_of_override: dict[str, str] | None = None):
+def backtest_lists(conn: sqlite3.Connection, fmt: str, as_of_override: dict[str, str] | None = None,
+                   require_uploaded: bool = False):
     """Rejoue le score la veille de chaque banlist du format, liste par liste.
 
     Produit un dict par liste. Une liste écartée (fenêtre sous
@@ -263,17 +272,21 @@ def backtest_lists(conn: sqlite3.Connection, fmt: str, as_of_override: dict[str,
     `as_of_override` (lot 21, TOK-121) : {date d'entrée en vigueur: date de coupure} pour classer à une autre
     date que « la veille de l'entrée en vigueur » (ex. la veille de l'annonce). Sans lui, comportement inchangé :
     le backtest affiché et la table servie n'utilisent jamais ce paramètre.
+
+    `require_uploaded` (TOK-137) : ne garder que les decks mis en ligne avant la coupure (voir `load_usage`), pour
+    le seuil de `BACKTEST_MIN_DECKS` comme pour le classement. Défaut False : chiffres de référence inchangés tant
+    que le formulaire TOK-137 n'est pas rempli.
     """
     for as_of, effective, hits in banlist_events(conn, fmt):
         if as_of_override and effective in as_of_override:
             as_of = as_of_override[effective]
-        usage_decks = load_usage(conn, as_of, fmt).deck_id.nunique()
+        usage_decks = load_usage(conn, as_of, fmt, require_uploaded).deck_id.nunique()
         if usage_decks < BACKTEST_MIN_DECKS or len(hits) < BACKTEST_MIN_HITS:
             yield {"format": fmt, "as_of": as_of, "effective": effective, "hits": hits,
                    "n_decks": usage_decks, "retained": False}
             continue
 
-        df = build(conn, as_of, fmt).set_index("card_name")
+        df = build(conn, as_of, fmt, require_uploaded).set_index("card_name")
         ranked = [(h, df.index.get_loc(h) + 1) for h in hits if h in df.index]
         missing = [h for h in hits if h not in df.index]
         yield {"format": fmt, "as_of": as_of, "effective": effective, "hits": hits,
@@ -281,7 +294,7 @@ def backtest_lists(conn: sqlite3.Connection, fmt: str, as_of_override: dict[str,
                "ranked": ranked, "missing": missing}
 
 
-def backtest(conn: sqlite3.Connection, formats: tuple[str, ...] = ("TCG", "OCG")) -> None:
+def backtest(conn: sqlite3.Connection, formats: tuple[str, ...] = ("TCG", "OCG"), require_uploaded: bool = False) -> None:
     """Rejoue le score la veille de chaque banlist et situe les cartes touchées.
 
     Les listes sont lues depuis `banlist_history` plutôt que codées en dur :
@@ -291,7 +304,7 @@ def backtest(conn: sqlite3.Connection, formats: tuple[str, ...] = ("TCG", "OCG")
         print(f"\n{'=' * 66}\n{fmt}\n{'=' * 66}")
         skipped = []
 
-        for result in backtest_lists(conn, fmt):
+        for result in backtest_lists(conn, fmt, require_uploaded=require_uploaded):
             effective, usage_decks, hits = result["effective"], result["n_decks"], result["hits"]
             if not result["retained"]:
                 skipped.append((effective, usage_decks, len(hits)))
@@ -331,14 +344,18 @@ def main() -> None:
                         help="Format noté (défaut : tcg — c'est lui que sert l'API)")
     parser.add_argument("--dry-run", action="store_true", help="Affiche le top 25 sans écrire")
     parser.add_argument("--backtest", action="store_true", help="Rejoue les banlists passées")
+    parser.add_argument("--connus-a-la-coupure", action="store_true",
+                        help="Avec --backtest : seulement les decks mis en ligne avant la coupure (TOK-137, mesure)")
     args = parser.parse_args()
 
     conn = sqlite3.connect(DB)
     fmt = args.format.upper()
 
     if args.backtest:
-        backtest(conn)
+        backtest(conn, require_uploaded=args.connus_a_la_coupure)
         return
+    if args.connus_a_la_coupure:
+        raise SystemExit("--connus-a-la-coupure ne vaut qu'avec --backtest (le classement du jour n'a pas de coupure)")
 
     as_of = args.as_of or conn.execute(
         "SELECT MAX(created) FROM tournament_decks WHERE ocg = ?",

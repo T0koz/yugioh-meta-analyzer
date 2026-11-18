@@ -614,3 +614,49 @@ Commentaire libre :
 [ ] Le retirer dès maintenant (changement de scoring : backtest et formulaire dédiés)
 Commentaire libre :
 ```
+
+## Jalon 4 — TOK-137 : fenêtre du backtest limitée aux decks connus à la coupure
+
+Journal : `docs/journal/fenetre-backtest-tok-137.md`. Paramètre `require_uploaded` (défaut `False`) dans
+`build_ban_radar.backtest_lists` ; rien d'affiché ne change. Relu par `data-scientist-ygo` (chiffres retrouvés,
+mécanisme vérifié).
+
+Effet mesuré (20 listes) : 2,5 % des decks retirés (0,1 à 7,8 % par liste, aucune liste sous 600 decks) ; top 25 TCG
+29 → 32 (staples 16), OCG 41 → 45 (staples 18 → 17) ; rang médian meilleur que les staples : TCG 3 → 3, OCG 8 → 9
+(p = 0,021) ; écart OCG par liste −0,44 point d'univers [−0,76 ; −0,18], TCG nul. Références : TCG 2026-05-18 84/889 →
+81/877, OCG 2026-07-01 19/1236 → 19/1226. Les decks retirés sont joués en fin de fenêtre, en OCG surtout après la
+publication du contenu de la liste : **l'ancienne mesure était pessimiste ; ce n'est pas une amélioration du radar**.
+Avec TOK-136 en plus : TCG 32/16, 7 mieux / 1 moins bien, 3 ; OCG 44/17, 9 / 1, 9.
+
+Décidé par défaut (à confirmer) :
+- sens du filtre : le brief disait « filtrer sur la date du tournoi (aujourd'hui sur la mise en ligne) » ; le code
+  faisait l'inverse (fenêtre sur la date du tournoi, fuite par la mise en ligne, constat de TOK-120). Correctif dans le
+  sens du constat : date du tournoi dans la fenêtre ET mise en ligne avant la coupure ;
+- le classement du jour (`ban_radar` servi) n'est pas concerné (pas de coupure : sa date est le dernier deck).
+
+```
+1. Fenêtre du backtest (`backtest_lists`, `--backtest`, onglet Historique)
+[x] Adopter « connus à la coupure » comme défaut du backtest (passer `require_uploaded` à True par défaut dans
+    `backtest_lists` et `backtest` seulement ; le classement du jour reste tel quel), sur le principe, pas pour le gain
+[ ] Garder la fenêtre actuelle et documenter la fuite
+[ ] Attendre une mesure combinée avec la coupure « contenu » (TOK-121) avant de changer le défaut
+Commentaire libre :
+
+2. Si oui : ordre avec TOK-136
+[x] Une seule mise à jour du site avec les deux tickets : recalcul du graphe, défaut changé, `build_ban_history.py`,
+    `build_serving_db.py`, puis `SITE_FACTS.banTop25` réécrit avec les chiffres combinés (TCG radar 32, staples 16,
+    better 7, worse 1, medianBetter 3 ; OCG radar 44, staples 17, better 9, worse 1, medianBetter 9)
+[ ] Deux mises à jour séparées
+Commentaire libre :
+
+3. Phrase de significativité du verdict (`frontend/src/lib/ban-verdict.ts`, « significance »)
+[x] « Avec 10 listes par format, seuls les écarts en OCG (top 25 et rang médian, 9 listes sur 10 chacun) dépassent ce
+    que le hasard produit couramment ; aucun ne le fait si l'on tient compte des quatre comparaisons. »
+[ ] Autre formulation (à écrire)
+Commentaire libre :
+
+4. Chiffres de référence cités dans `context.md` et `CLAUDE.md` (84/889, 19/1236)
+[x] Les remplacer par 81/877 et 19/1226 au même commit que le changement de défaut (avec TOK-136 : à remesurer)
+[ ] Garder les deux séries côte à côte pendant un mois
+Commentaire libre :
+```

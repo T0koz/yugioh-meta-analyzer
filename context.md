@@ -674,6 +674,20 @@ L'exemple Kewl Tune de l'accueil lit `GET /archetypes/kewl-tune` (`history` en T
 - Nouvelle fixture de test visuel : `kewl-tune` ajouté à `ARCHETYPES` dans `scripts/visual_tests.py`.
 → détail complet : `docs/journal/parts-ocg-servies-tok-116.md`
 
+### 🔍 Vérification des données du 18/11 (TOK-133, Jalon 3, 2026-11-18, branche `claude/jalon-3-entretien-vitrine-280593`, non fusionnée)
+
+Rapport seul, lecture seule : `docs/planning/fond/2026-11-18-donnees.md`. 20 tables servies identiques entre `yugioh.db`
+et `serving.db` (schéma et empreinte des lignes) ; fraîcheur par `check_freshness.py --sans-journal` (aucune périmée
+hors tolérances) ; bornes respectées (parts, scores, prix, exemplaires).
+- **13 cartes jouées n'ont pas de fiche dans `cards`** (`Bystial Druiswurm`, 4 974 decks ; 4 `Artmage …` ; `Empire of
+  Endymion` contre `Endymion Empire`…) : sans image ni lien, mais le score du Ban Radar n'est pas touché (statut lu dans
+  `banlist_history`). Proposé : table de correspondance des noms et contrôle « cartes jouées sans fiche ».
+- **`cards.ban_tcg` est figé au 13/06** comme `views_week` (12 désaccords avec la banlist en vigueur) : le site lit
+  `banlist_history`, mais `evaluate_prediction.py` et `combos_extract_deck.py` lisent encore `cards.ban_tcg`.
+- 116 cartes sans illustration carrée chez YGOPRODeck (4 affichées) ; 40 decks à moins de 40 cartes de Main Deck.
+- `build_serving_db.py --check` ouvre `data/yugioh.db` du checkout : dans un worktree, passer par un lien ou par
+  `check_coverage` sur une connexion `mode=ro`.
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

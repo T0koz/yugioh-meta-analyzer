@@ -1,8 +1,31 @@
-# J2 — le moteur retrouve-t-il seul les combos des guides ? (lot C3, TOK-119)
+# J2 — le moteur retrouve-t-il seul les combos des guides ? (lot C3, TOK-119 ; lot J2 plein, TOK-140)
 
-> **18/11/2026**, agent du lot C3 (Opus), branche `claude/c3-j2-exploration-ff7592`. Rien n'est poussé ni fusionné.
-> Commande : `python scripts/combos_j2.py` (≈ 12 min avec les budgets ci-dessous ; `--sans-ecriture` pour ne rien
-> écrire). Combos relevés : [`combos-guides.md`](combos-guides.md). Méthode du taux : avis de `data-scientist-ygo`.
+> **18/11/2026.** § 0 et § 8 : **lot J2 plein** (jalon n°5, branche `claude/jalon-5-moteur-j2-plein-53a6ad`), 10 combos,
+> **verdict en attente de l'oracle (jalon n°6)**. § 1 à § 7 : lot C3 (agent Opus, branche
+> `claude/c3-j2-exploration-ff7592`), inchangés. Rien n'est poussé. Commande : `python scripts/combos_j2.py` (options
+> du passage long au § 8.6) ; export pour l'oracle : `python scripts/combos_export_oracle.py <sortie.json>`.
+
+## 0. Lot J2 plein (TOK-140, jalon n°5) : protocole écrit avant le passage long
+
+> Écrit et commité **avant** le passage à budget long (avis `data-scientist-ygo` du 18/11). Les résultats viendront
+> au § 8 ; ce paragraphe ne change plus.
+
+- **Combos** : G1-G5 (lot C3, mis au point en les connaissant : combos de développement) et G6-G10 (figés par le commit
+  TOK-139 `f19f864` avant toute exécution : **seul test hors échantillon**). Deux lignes séparées, le total sur 10 vient
+  en second.
+- **Condition principale (déclarée au lot C3, inchangée)** : parcours en largeur sans cible, 60 s, profondeur 16, filtres
+  D4 ; « retrouvé » = cible remplie **et** jalons en sous-suite ; pour G6-G10, cible évaluée sur un état d'où le tour
+  peut se terminer. Trois issues par combo : retrouvé / plateau atteint par un autre chemin / non trouvé.
+- **G6 compte tel que figé** (cible inatteignable, erreur de transcription) dans le chiffre principal ; le résultat après
+  la correction `73cc104` (une condition retirée, cible plus facile) est donné à côté, jamais seul.
+- **Secondaires** : recherche dirigée vers la cible (120 s) ; joueur au hasard (60 s, test exact apparié) ; base naïve
+  plus forte : largeur **sans** les filtres D4 (60 s) ; main réelle de 5 cartes (à part).
+- **Passage long, exploratoire, décidé après avoir vu les échecs de G7, G8, G10 en 120 s** : recherche dirigée, 900 s
+  de budget, sur **les 10 combos et G6 figé**, un processus par combo (plusieurs cœurs), même code, même cible, mêmes
+  jalons ; on rapporte le palier (60, 120, 900 s), les états explorés et le temps CPU. **Aucune heuristique guidée par
+  les jalons** : elle ne mesurerait plus « seul » (hors J2).
+- Accélération du code : mémoïsation exacte de la clé de tri de l'empreinte d'état (×1,24 mesuré sur G8, mêmes
+  empreintes, test `test_multi_memoise_identique`).
 
 ## 1. En bref
 
@@ -154,3 +177,113 @@ C3 — Performance
 [x] Seulement si les combos de J2 plein dépassent 8 transitions (les budgets actuels suffisent jusque-là)
 Commentaire libre :
 ```
+
+## 8. Lot J2 plein (TOK-140) : résultats du 18/11
+
+### 8.1 En bref
+
+| Mesure (condition principale du § 0 : largeur sans cible, 60 s) | G1-G5 (développement) | G6-G10 (figés, hors échantillon) | Total sur 10 |
+|---|---|---|---|
+| **Retrouvés tel que figé** (G6 compté manqué) | **4 sur 5** [37,6 ; 96,4] | **1 sur 5** [3,6 ; 62,4] | **5 sur 10** [23,7 ; 76,3] |
+| Retrouvés, G6 après correction (cible plus facile, jamais seul) | 4 sur 5 | 2 sur 5 [11,8 ; 76,9] | 6 sur 10 [31,3 ; 83,2] |
+| Recherche dirigée vers la cible, 120 s (G6 figé / corrigé) | 5 sur 5 | 2 / 3 sur 5 | 7 / 8 sur 10 |
+| Recherche dirigée, 900 s (passage long, exploratoire) | 5 sur 5 | 3 / 4 sur 5 (+ G7) | 8 / 9 sur 10 |
+| Joueur au hasard, 60 s (séquence au moins une fois) | 1 sur 5 (G5 : 3 parties sur 1 016) | 1 sur 5 (G9 : 2 sur 10 296) | 2 sur 10 |
+| Base naïve plus forte : largeur **sans** les filtres D4, 60 s | 0 sur 5 (plateau seul : G1, G4, G5) | 0 sur 5 (plateau seul : G6) | 0 sur 10 [0 ; 27,8] |
+| Recherche guidée par la solution (jalons du guide, **hors J2**) | — | G7, G8, G10 : séquences jouables dans le moteur | — |
+
+Intervalles de Wilson à 95 % entre crochets. Écrire « sur ces 10 combos », jamais « taux de réussite du moteur » : guides
+choisis par commodité (pages lisibles en texte), 10 pseudonymes sur une seule source (masterduelmeta), lignes qui se
+recopient en partie (6 combos sur 10 passent par `Ecclesia and the Dark Dragon`) : le n efficace est inférieur à 10.
+
+**Tests exacts appariés (McNemar)** sur les 10 combos, condition principale : contre le joueur au hasard, 3 combos
+retrouvés par le moteur seul et aucun par le hasard seul, p = 0,25 (4 contre 0, p = 0,125 avec G6 corrigé) ; contre
+la largeur sans filtres, 5 contre 0, p = 0,06. **Aucun écart n'est démontré à n = 10** : le hasard est une base faible,
+mais 10 combos appariés ne suffisent pas à le prouver.
+
+### 8.2 Combo par combo
+
+« Tr. » : transitions de la séquence trouvée. ✓ séquence (cible **et** jalons) ; ◐ plateau atteint par un autre
+chemin, sans les jalons ; ✗ rien. Secondes de machine chargée (4 à 6 processus en parallèle) : comparer les états.
+
+| Combo | Tr. | Largeur 60 s | Dirigée 120 s | Dirigée 900 s | Guidée (hors J2) | Hasard 60 s | Sans filtres 60 s |
+|---|---|---|---|---|---|---|---|
+| G1 Nadir seule | 5 | ✓ 10 704 états | ✓ 298 | ✓ | — | 0 / 947 | ◐ |
+| G2 White → EDD → Granguignol | 8 | ✗ (temps) | ✓ 11 849 | ✓ | — | 0 / 3 053 | ✗ |
+| G3 White → Quem → Three Champions | 6 | ✓ 19 853 | ✓ 33 455 | ✓ | — | 0 / 3 297 | ✗ |
+| G4 White → Dogmatika Ecclesia | 5 | ✓ 13 123 | ✓ 552 | ✓ | — | 0 / 926 | ◐ |
+| G5 Nadir seule, sous Droll | 4 | ✓ 3 959 | ✓ 174 | ✓ | — | **3** / 1 016 | ◐ |
+| **G6 Branded Fusion, figé** | — | ✗ | ✗ | ✗ **épuisé** (33 958 états, exploration complète) | — | 0 | ✗ |
+| G6 corrigé | 7 | ✓ 3 929 | ✓ 401 | ✓ | — | 0 / 246 | ◐ |
+| G7 Aluber + Fuwalos → Mirrorjade | 11 | ✗ (temps) | ◐ | ✓ **219,6 s**, 150 683 états | ✓ 6 236 | 0 / 1 272 | ✗ |
+| G8 Aluber + Albaz | 11 | ✗ (temps) | ✓ 73 446 (56,8 s) | ✓ | ✓ 454 | 0 / 1 419 | ✗ |
+| G9 Gold Sarcophagus | 6 | ✓ 6 524 | ✓ 880 | ✓ | — | **2** / 10 296 | ✗ |
+| G10 Aluber + White → Granguignol | 9 | ✗ (temps) | ◐ | ◐ 1 080 607 états (temps) | ✓ 93 095 (67,6 s) | 0 / 1 132 | ✗ |
+
+Les nombres d'états de G1-G5 sont **identiques** à ceux du lot C3 (même code d'exploration, résultat déterministe) :
+seules les secondes changent avec la charge de la machine.
+
+**Ce qui fait échouer** : la longueur. Le parcours en largeur ne dépasse pas 6 transitions en 60 s (facteur 3 à 4 par
+transition) ; les quatre combos manqués en largeur ont 8 à 11 transitions. G10 manqué même en 900 s mais **jouable**
+(recherche guidée : 67,6 s) : limite de recherche, pas désaccord de règle. **Aucun manque n'est dû à une règle ou à une
+carte non couverte** (0 branche « non couvert » sur tous les passages).
+
+### 8.3 Main réelle de 5 cartes (à part du chiffre principal)
+
+La main du guide + les cartes de réponse qu'un combo « à une carte » retire du jeu (Ash Blossom, Ghost Ogre). Dirigée
+120 s : **7 sur 10** séquences (G1-G6, G9 ; G8 et G10 plateau seul, G7 rien) ; largeur 60 s : **5 sur 10** (G1, G3,
+G5, G6, G9). **Ce que fait le moteur des cartes de réponse** : il ne les active jamais (filtre D4) ; une seule fois il
+s'en sert comme matériel (G3, dirigée : `Ghost Ogre` matériel de Synchro, séquence de 7 transitions au lieu de 6) ;
+ailleurs elles restent en main. Les cinq mains tirées au hasard du lot C3 (graine 20261118) redonnent les mêmes ordres
+de grandeur (9 199 à 30 144 états en 60 s, profondeur 3 à 6, 0 non couvert).
+
+### 8.4 Écarts entre les séquences trouvées et les guides
+
+- **G7** : mêmes jalons, autres matériaux. `Ecclesia and the Dark Dragon` = `Aluber` + `The Golden Swordsoul` (guide :
+  White + Golden Swordsoul) ; `The Golden Swordsoul` Invoque `Cartesia` du Deck ; `The Three Champions of Swordsoul` =
+  White + Cartesia (guide : Incredible Ecclesia + Aluber) ; `Quem` ramène White. En 120 s, le moteur atteint le plateau
+  de G7 par un chemin plus court **sans** `The Golden Swordsoul` (Kitt ramène Incredible Ecclesia) : à faire juger par
+  l'oracle (règle mal codée, ou ligne réelle ? piste J3).
+- **G8** : mêmes actions, coûts permutés : `Branded in High Spirits` envoie `Titaniklad`, White paie `Rindbrumm`,
+  `Granguignol` envoie `Dogma`, `The Fallen & The Virtuous` paie `Albion the Sanctifire Dragon` ; `Quem` ramène `Cartesia`.
+- **G10** (recherche guidée) : `Aluber` cherche `Branded Fusion` (substitution déclarée de `Branded in Red`),
+  `Granguignol` envoie `Albion the Sanctifire Dragon` (substitution de `Lubellion`).
+- G6, G9 : séquences conformes au guide (substitution d'`Albion the Branded Dragon` par `Albion the Sanctifire Dragon`).
+
+### 8.5 Erreurs trouvées pendant le lot (toutes signalées)
+
+1. **Transcription de G6** (document figé) : « Cocatorium au Cimetière » ; corrigé par le commit séparé `73cc104`.
+   Une cible erronée sur cinq : les autres cibles sont à faire vérifier par l'oracle aussi (avis `data-scientist-ygo`).
+2. **Traduction du jalon (10) de G8** (code, pas le document) : « une carte arrive du Cimetière » comptait le solde net du
+   terrain, masqué par la destruction de `The Fallen & The Virtuous` dans la même transition ; jalon impossible. Corrigé
+   (`Mouvement(None, …)` : au moins un nom arrive), test ajouté, G8 rejoué en entier. Avant la correction : plateau
+   seul en 120 s et en 900 s (892 060 états) ; après : séquence en 56,8 s.
+3. **Borne de 200 000 états** (réglage par défaut, absente du protocole écrit) : elle avait arrêté G8 et G10 vers 130 à
+   165 s du passage long. Relancés avec la borne levée (3 millions), 900 s pleines ; mémoire ≤ 1 Go par processus.
+
+### 8.6 Passage long et accélération
+
+`python scripts/combos_j2.py --guides G7 --secondes 900 --sans-largeur --sans-hasard --sans-main-reelle --mains 0
+--max-etats 3000000 --largeur-sans-filtres --largeur 60` (un processus par combo, 3 à 6 cœurs) ; `--avec-g6-fige` ajoute
+G6 tel que figé ; `--guidee` lance le diagnostic guidé par la solution (hors J2). Mémoïsation exacte de la clé de tri de
+l'empreinte : ×1,24 (375 → 460 états/s sur G8, mêmes empreintes). Débit observé : 700 à 1 230 états par seconde de
+temps CPU selon le combo.
+
+### 8.7 Réserves (en plus de celles du § 5)
+
+1. **Le chiffre hors échantillon est 1 sur 5** (G9) : c'est le seul résultat qui ne dépend d'aucune décision prise après
+   avoir vu les données. Le reste (G6 corrigé, 900 s, recherche guidée) est exploratoire.
+2. **Le résultat dépend de la longueur des combos choisis** : de 4 à 7 transitions, la largeur les retrouve tous (6 sur
+   6, G6 corrigé compris) ; de 8 à 11 transitions, aucun (0 sur 4).
+3. **Aucune séquence n'est vérifiée** : 23 séquences distinctes exportées pour l'oracle (`sequences-pour-oracle.md`) ;
+   tant qu'il ne les a pas rejouées, ce sont des candidates. Cartes `formalisee`, aucune `verifiee`.
+4. **Jalons traduits par la session qui exécute** : le texte des jalons est figé avant exécution, leur traduction en
+   code a été écrite ensuite (et corrigée une fois, § 8.5 point 2). L'oracle doit rejouer les séquences, pas les jalons.
+5. Charge machine variable (3 à 6 explorations en parallèle) : les secondes ne se comparent pas d'un passage à l'autre.
+
+### 8.8 Verdict
+
+**J2 : en attente de l'oracle, jalon n°6.** Horloge de la règle d'arrêt (13/01/2027) maintenue. Ce que le lot établit
+côté moteur : les combos de 4 à 7 transitions sont retrouvés seuls ; les combos de 9 à 11 transitions sont jouables
+dans le moteur (G7, G8, G10) mais ne sont retrouvés qu'avec une cible (G8 en 120 s, G7 en 900 s) ou un guidage (G10).
+

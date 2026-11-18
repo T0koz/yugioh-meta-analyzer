@@ -271,6 +271,30 @@ formulaire : `docs/moteur-combos/j2-rapport.md`.
   (actions clés du guide, en sous-suite) font la différence.
 - ≈ 1 200 états/s, facteur 3 à 4 par transition : le parcours en largeur ne dépasse pas 6 transitions en 60 s.
 
+**Jalon n°5, J2 plein côté moteur (TOK-139, TOK-140, TOK-141, 2026-11-18, branche `claude/jalon-5-moteur-j2-plein-53a6ad`,
+non fusionnée)** : cadre de la décision 0055 (plus de juge humain ; validation par l'oracle au jalon n°6, session isolée).
+5 combos de plus (G6-G10, masterduelmeta, mai-septembre 2026) transcrits **avant** toute lecture du code et figés
+(`combos-guides.md` § 5, commit `f19f864`, empreinte `89fa2326…`) ; 10 combos exécutés. Condition principale (largeur
+sans cible, 60 s) : G1-G5 **4 sur 5**, G6-G10 **1 sur 5** tel que figé (2 sur 5 G6 corrigé) ; dirigée 120 s 7 sur 10
+(8 corrigé) ; 900 s 8 sur 10 (9) ; hasard 2 sur 10 ; largeur sans filtres D4 0 sur 10 ; aucun écart démontré (McNemar,
+p ≥ 0,06). 23 séquences exportées pour l'oracle (`sequences-pour-oracle.md`, `scripts/combos_export_oracle.py`).
+**Verdict J2 : en attente de l'oracle.** 7 questions résiduelles préparées, non envoyées (`questions-residuelles.md`).
+Échantillon J1 pour l'oracle (TOK-143) : `echantillon-j1.md` (20 effets tirés, 57 effets et les situations jouées
+qui les exercent ; 0 jamais exercé, 3 seulement en partie : `Garura` 2, `Springans Kitt` 2, `Titaniklad` 3).
+Rapport : `j2-rapport.md` § 0 (protocole commité avant le passage long) et § 8.
+- **La longueur décide** : de 4 à 7 transitions, la largeur retrouve tout (6 sur 6) ; de 8 à 11, rien (0 sur 4). G10
+  (9 transitions) n'est pas retrouvé en 900 s (1,08 million d'états) mais il est jouable : la recherche guidée par les
+  jalons (`--guidee`, diagnostic **hors J2**) le trouve en 67 s.
+- **Une cible de guide transcrite peut être fausse** : G6 demandait « Cocatorium au Cimetière » (banni en quittant le
+  terrain) ; la cible figée est **prouvée inatteignable** (exploration épuisée). Correction par commit séparé
+  (`73cc104`), G6 compté manqué dans le chiffre principal (avis `data-scientist-ygo`).
+- **Un jalon « une carte quelconque arrive » ne se lit jamais sur un solde de zone** : une destruction dans la même
+  transition le masque (bug du jalon 10 de G8, trouvé et corrigé, `Mouvement(None, …)`).
+- **`explorer` a une borne de 200 000 états par défaut** : un budget « 900 s » sans `--max-etats` s'arrête avant. Mémoire
+  ≤ 1 Go par processus à 1 million d'états.
+- Mémoïsation exacte de la clé de tri de l'empreinte (`modele._cle_tri`) : ×1,24, mêmes empreintes. Pour G6-G10, la
+  cible s'évalue sur un état d'où le tour peut se terminer (`ComboGuide.accepteur(cat)`, pas `accepter`).
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree

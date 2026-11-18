@@ -67,8 +67,11 @@ VIEWS_FROZEN_SHARE = 0.5   # au-delà de 50 % de vues identiques à l'instantan�
 
 # Défauts connus (motif « table:contrôle » → ticket, expiration, raison). Jamais pour une table absente ou vide.
 KNOWN_STALE = {
-    "card_graph_metrics:graphe": ("TOK-136", "2026-12-31", "graphe du notebook 03, hors refresh_all.py"),
-    "graph_communities:graphe": ("TOK-136", "2026-12-31", "graphe du notebook 03, hors refresh_all.py"),
+    # TOK-136 : `build_graph_metrics.py` recalcule les deux tables, mais son étape de `refresh_all.py` attend le
+    # formulaire (`PENDING_FORM`) : tant que la référence n'est pas recalculée, retirer la tolérance ferait échouer
+    # le contrôle du lundi. À retirer dans le même commit que l'étape de `PENDING_FORM`.
+    "card_graph_metrics:graphe": ("TOK-136", "2026-12-31", "build_graph_metrics.py en attente du formulaire TOK-136"),
+    "graph_communities:graphe": ("TOK-136", "2026-12-31", "build_graph_metrics.py en attente du formulaire TOK-136"),
     "early_card_signals:vues": ("ticket à créer", "2026-12-31",
                                 "views_week figée au 13/06 : fetch_new_cards.py ajoute sans rafraîchir"),
 }
@@ -226,7 +229,7 @@ def rule_graph_metrics(ctx: Context, table: str) -> Result:
     return ctx.res(table, "graphe", OK if have == nodes else STALE,
                    f"non datée ; {len(have)} nœuds contre {len(nodes)} dans le graphe de card_cooccurrence "
                    f"(jaccard ≥ {EDGE_MIN_JACCARD}, ≥ {EDGE_MIN_COOC} decks), {len(nodes & have)} en commun "
-                   "(notebook 03, hors refresh_all.py)")
+                   "(build_graph_metrics.py)")
 
 
 def rule_communities(ctx: Context, table: str) -> Result:
@@ -236,7 +239,7 @@ def rule_communities(ctx: Context, table: str) -> Result:
         return Result(table, UNDATED, f"non datée ; {n} cartes réparties, card_cooccurrence absente pour comparer")
     return ctx.res(table, "graphe", OK if n == len(nodes) else STALE,
                    f"non datée ; {n} cartes réparties en communautés contre {len(nodes)} nœuds dans le graphe "
-                   "de card_cooccurrence (notebook 03, hors refresh_all.py)")
+                   "de card_cooccurrence (build_graph_metrics.py)")
 
 
 def snapshot_date() -> dt.date | None:

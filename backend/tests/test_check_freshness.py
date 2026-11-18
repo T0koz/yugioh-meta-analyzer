@@ -243,3 +243,6 @@ def test_constants_match_their_sources():
     bridge = (SCRIPTS / "bridge_date.py").read_text()
     assert float(re.search(r"EDGE_MIN_JACCARD = ([\d.]+)", bridge).group(1)) == cf.EDGE_MIN_JACCARD
     assert int(re.search(r"EDGE_MIN_COOC = (\d+)", bridge).group(1)) == cf.EDGE_MIN_COOC
+    graph = (SCRIPTS / "build_graph_metrics.py").read_text()   # TOK-136 : le producteur des deux tables
+    assert float(re.search(r"EDGE_MIN_JACCARD = ([\d.]+)", graph).group(1)) == cf.EDGE_MIN_JACCARD
+    assert int(re.search(r"EDGE_MIN_COOC = (\d+)", graph).group(1)) == cf.EDGE_MIN_COOC

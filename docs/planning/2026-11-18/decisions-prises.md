@@ -567,3 +567,50 @@ Commentaire libre :
 [ ] Le déplacer dans `notebooks/archive/`
 Commentaire libre :
 ```
+
+## Jalon 4 — TOK-136 : recalcul de `card_graph_metrics` et `graph_communities`
+
+Journal : `docs/journal/graphe-recalcul-tok-136.md`. Script `scripts/build_graph_metrics.py` (notebook 03 en script),
+mesuré sur une copie de la base de référence (référence intacte). Relu par `data-scientist-ygo` (chiffres retrouvés,
+recommande le recalcul) et `gardien-donnees` (écriture rendue atomique après sa relecture).
+
+Effet mesuré : 663 → 1 402 nœuds, 63 → 151 communautés (32 de 2 cartes) ; backtest : rangs médians ±8 (TCG 2026-05-18
+84 → 86/889, OCG 2026-07-01 19 → 19), top 25 inchangés (TCG 29 contre 16, OCG 41 contre 18), listes OCG où le rang
+médian bat les staples 8 → 7, listes TCG où le top 25 bat les staples 6 → 7 ; classement du jour : Spearman 0,998,
+10 premiers identiques, 24 des 25 premiers, 15 libellés de risque changés ; page du graphe : 48 des 150 nœuds restent.
+Fuite connue (TOK-120) : le critère pont du backtest lit le graphe du jour pour les 20 listes ; après recalcul, elle
+touche plus de cartes (237 au lieu de 176 avec un pont non nul), effet mesuré ≤ 8 rangs.
+
+Décidé par défaut (à confirmer) :
+- étape `graph_metrics` ajoutée à `refresh_all.py` mais **verrouillée** (`PENDING_FORM`) : le job du lundi tourne
+  depuis le dépôt principal, sur la branche d'intégration ; sans verrou, la fusion recalculerait la référence ;
+- tolérance de `check_freshness.py` pour les deux tables **gardée** (la retirer ferait échouer le contrôle du lundi
+  tant que la référence n'est pas recalculée) ;
+- communautés : même algorithme que le notebook (Clauset-Newman-Moore, sans hasard), arêtes triées pour un résultat
+  reproductible ; pas de seuil de taille pour l'affichage.
+
+```
+1. Recalculer le graphe sur la base de référence
+[x] Oui, maintenant : retirer `graph_metrics` de `PENDING_FORM` et les deux tolérances de `check_freshness.py`
+    (un commit), puis lancer la séquence du compte rendu (graphe, ban_radar, ban_history, serving)
+[ ] Oui, mais seulement au prochain changement de poids du Ban Radar (le pont serait retiré au même moment)
+[ ] Non : garder la table de 663 nœuds (tolérance jusqu'au 31/12, à reconduire)
+Commentaire libre :
+
+2. Verdict de l'onglet Historique (`SITE_FACTS.banTop25`, `frontend/src/lib/ban-verdict.ts`) après recalcul
+[x] Réécrire les chiffres : OCG `medianBetter` 8 → 7, TCG `better` 6 → 7 ; la phrase reste vraie telle quelle
+    (« en OCG, il fait mieux sur les deux mesures », 7 sur 10 ; seul l'écart de top 25 OCG reste démontré, p = 0,021)
+[ ] Laisser le verdict masqué (`verdictMatches` faux) jusqu'au prochain diagnostic
+Commentaire libre :
+
+3. Chiffre « 63 communautés » (accueil, `/methode`, `SITE_FACTS.graphCommunities`)
+[x] Passer à 151 communautés sur 1 402 cartes, au même commit que le recalcul (retirer la mention « graphe non
+    recalculé » si le formulaire TOK-82 point 4 l'a ajoutée)
+[ ] Compter seulement les communautés d'au moins 3 cartes (119)
+Commentaire libre :
+
+4. Critère « pont » du Ban Radar (5 % du score, poids estimé négatif en rangs, fuite non datable, TOK-120 et TOK-132)
+[x] Ne rien changer maintenant ; le retirer au prochain changement de poids, avec backtest et formulaire
+[ ] Le retirer dès maintenant (changement de scoring : backtest et formulaire dédiés)
+Commentaire libre :
+```

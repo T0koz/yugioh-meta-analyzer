@@ -731,6 +731,26 @@ n'écrit rien, aucune correction.
   ou non dans le classement de la veille) et la table `ban_backtest_lists` (`banTop25`).
 → détail complet : `docs/journal/chiffres-vitrine-tok-82.md`
 
+### 🕸 Graphe des cartes recalculé (TOK-136, jalon n°4, 2026-11-18, branche `claude/jalon-4-graphe-backtest-vues-e1f982`, non fusionnée)
+
+`scripts/build_graph_metrics.py` : notebook 03 en script (`card_graph_metrics`, `graph_communities` depuis
+`card_cooccurrence`, intermédiarité exacte, communautés reproductibles, même schéma). Mesuré sur une copie : 663 → 1 402
+nœuds, 63 → 151 communautés ; backtest presque inchangé (rangs médians ±8, TCG 2026-05-18 84 → 86/889, OCG 2026-07-01
+19 → 19, top 25 inchangés) mais `verdictMatches` décroche (OCG `medianBetter` 8 → 7) ; page du graphe : 48 des 150 nœuds
+restent. **Référence non recalculée** : formulaire « Jalon 4 — TOK-136 ».
+- **`refresh_all.PENDING_FORM`** : une étape qui change une table affichée y reste tant que son formulaire n'est pas
+  rempli (le job du lundi tourne depuis le dépôt principal, qui suit la branche d'intégration : fusionner vaudrait
+  accepter). Accepter = retirer le nom de `PENDING_FORM` et la tolérance de `check_freshness.py` dans le même commit
+  (test `test_pending_form_steps_are_skipped_and_tolerated`).
+- **sqlite3 (Python 3.13, mode par défaut) valide `DROP`/`CREATE` hors de la transaction de `with conn`** : toute
+  écriture qui remplace des tables doit ouvrir avec `isolation_level=None` et faire `BEGIN IMMEDIATE` … `COMMIT` /
+  `ROLLBACK` (défaut trouvé par `gardien-donnees`).
+- **Le critère pont du backtest lit le graphe du jour pour toutes les listes** (fuite TOK-120) ; le recalcul l'étend
+  (237 cartes de l'univers avec un pont non nul au lieu de 176). Effet mesuré ≤ 8 rangs.
+- Après acceptation, dans l'ordre : `build_graph_metrics.py`, `build_ban_radar.py`, `build_ban_history.py`,
+  `build_serving_db.py`, puis réécrire `SITE_FACTS.banTop25` et `graphCommunities`.
+→ détail complet : `docs/journal/graphe-recalcul-tok-136.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

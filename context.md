@@ -767,6 +767,25 @@ mise en ligne avant la coupure (`--backtest --connus-a-la-coupure`). Défaut inc
   p = 0,021) : formulation au formulaire.
 → détail complet : `docs/journal/fenetre-backtest-tok-137.md`
 
+### 👁 Vues de la semaine rafraîchies et datées (TOK-138, jalon n°4, 2026-11-18, même branche, non fusionnée)
+
+`scripts/fetch_card_views.py` : met à jour `cards.views_week` seule (par id, garde de nom, carte renumérotée rattrapée
+par le nom si une seule candidate) et archive chaque relevé dans la table nouvelle `card_views_snapshots`
+(`snapshot_date`, hors `SERVED_TABLES`). Étape `card_views` de `refresh_all.py`, après `fetch_new_cards`, verrouillée
+(`PENDING_FORM`) et non bloquante (`NON_BLOCKING`, nouveau). Mesuré sur une copie : 13 853 vues sur 14 084 changent ;
+signal précoce Spearman 0,90 (14 des 20 premières restent) ; signal boutique Spearman 0,995, aucun libellé changé.
+**Référence non relevée** : formulaire « Jalon 4 — TOK-138 ».
+- **YGOPRODeck renumérote des cartes** (Odd-Eyes Pendulum Dragon 16178681 → 16178683 au 18/11) : une jointure par id
+  seule garde à jamais l'ancienne valeur ; rattraper par le nom quand une seule carte de `cards` manque à l'API.
+- **Le notebook 10 lit aussi `views_week`** (force boutique × log des vues) : toute retouche des vues se mesure sur
+  `early_card_signals` ET sur `ocg_archetype_scores` / `boutique_alerts`.
+- **Un notebook exécuté par `nbconvert` tourne dans son propre dossier** : `os.getcwd()/../data/yugioh.db` vise le
+  checkout du notebook, et `sqlite3.connect` y crée une base vide si elle manque. Pour le lancer sur une copie, copier
+  le notebook dans un dossier `<x>/notebooks/` avec `<x>/data/yugioh.db`.
+- La fraîcheur des vues se date sur la table servie (`early_card_signals`), pas sur `cards`.
+- Le backtest des vues (TOK-129) devient possible à partir du premier relevé archivé, pas avant.
+→ détail complet : `docs/journal/views-week-tok-138.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

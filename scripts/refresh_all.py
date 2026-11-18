@@ -16,7 +16,7 @@ notebooks qui doivent rester exécutables de haut en bas (c'est donc aussi un te
 Exception : le notebook 11 (signal précoce) a été extrait dans `scripts/build_early_signals.py` au lot 20
 (ticket A1 de l'audit de rigueur) ; il n'écrit plus en base, il n'y a donc qu'une source.
 
-Ordre (dépendances) : fetch_new_cards → 02 → graph_metrics (TOK-136, lit card_cooccurrence ; avant ban_radar, qui lit
+Ordre (dépendances) : fetch_new_cards → card_views (TOK-138, même API, avant early_signals qui lit les vues) → 02 → graph_metrics (TOK-136, lit card_cooccurrence ; avant ban_radar, qui lit
 l'intermédiarité) → 04 (meta_scores) → banlist_features → 05 (prédictions) →
 10 (alertes boutique) → buy_signals → early_signals (signal précoce) → ban_radar → card_impact
 → archetype_profiles (même fenêtre que la tier list, donc après 04) → log_predictions → build_serving_db --check → download_card_images (incrémental) → banlist_announcements (réseau).
@@ -42,6 +42,10 @@ STEPS = [
     # Cartes sorties depuis le dernier chargement (TOK-92) : ajoute seulement, ne réécrit rien. Pas
     # `fetch_cards.py` : il n'écrit qu'un JSON ; le rafraîchissement complet est `init_db.py`, qui écrase views_week.
     ("fetch_new_cards", SC("scripts/fetch_new_cards.py")),
+    # TOK-138 : vues de la semaine rafraîchies et archivées par date (card_views_snapshots). Juste après
+    # fetch_new_cards (même API, même mode de panne : une API indisponible arrête déjà la chaîne ici) et avant
+    # early_signals, qui lit cards.views_week. Pas dans refresh_decks.py : son verrou de formulaire est ici.
+    ("card_views", SC("scripts/fetch_card_views.py")),
     ("02_cooccurrence", NB("02_cooccurrence")),
     # TOK-136 : notebook 03 en script (intermédiarité exacte, communautés reproductibles), après 02 dont il lit les
     # paires, avant ban_radar (critère « pont ») et build_serving_db (page du graphe, simulateur).
@@ -72,7 +76,13 @@ STEPS = [
 # Formulaires : docs/planning/2026-11-18/decisions-prises.md (jalon n°4).
 PENDING_FORM = {
     "graph_metrics": "TOK-136",
+    "card_views": "TOK-138",
 }
+
+# Étapes dont l'échec ne doit pas arrêter la chaîne (relecture gardien-donnees, TOK-138) : elles sont journalisées
+# en « ⚠ » (relevées par refresh_decks.py comme avertissements) et l'aval tourne avec les valeurs précédentes. Une
+# panne de l'API YGOPRODeck ne doit pas empêcher la mise à jour du site pour des vues (35 % d'une seule table).
+NON_BLOCKING = {"card_views"}
 
 
 def run(name, kind, target) -> bool:
@@ -113,6 +123,9 @@ def main() -> int:
             print(f"[{name}] non lancé : en attente du formulaire {PENDING_FORM[name]}", flush=True)
             continue
         if not run(name, kind, target):
+            if name in NON_BLOCKING:
+                print(f"⚠ [{name}] en échec, non bloquant : la chaîne continue avec les valeurs précédentes", flush=True)
+                continue
             return 1
     print("Chaîne complète OK.")
     return 0

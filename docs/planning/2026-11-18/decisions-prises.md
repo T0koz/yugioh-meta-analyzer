@@ -660,3 +660,43 @@ Commentaire libre :
 [ ] Garder les deux séries côte à côte pendant un mois
 Commentaire libre :
 ```
+
+## Jalon 4 — TOK-138 : vues de la semaine rafraîchies et archivées par date
+
+Journal : `docs/journal/views-week-tok-138.md`. Script `scripts/fetch_card_views.py` (met à jour `cards.views_week`
+seule, garde de nom, cartes renumérotées rattrapées par le nom, table nouvelle `card_views_snapshots`, une transaction),
+testé sur une copie avec un vrai relevé de l'API le 18/11 (référence intacte). Relu par `gardien-donnees` (5
+corrections, toutes appliquées).
+
+Effet mesuré : 13 853 vues sur 14 084 changent (juin → novembre). Signal précoce (263 cartes) : Spearman des rangs
+0,90, 14 des 20 premières cartes restent, top 20 avec 3 cartes Unchained de plus et 4 Dark Time Wizard de moins.
+Signal boutique (notebook 10) : Spearman 0,995, aucun libellé Fort / Modéré / Faible changé, mêmes 3 archétypes.
+
+Décidé par défaut (à confirmer) :
+- étape `card_views` dans `refresh_all.py` (après `fetch_new_cards`, même API, avant `early_signals`), verrouillée par
+  `PENDING_FORM` et **non bloquante** (`NON_BLOCKING`, nouveau) ;
+- tolérance `early_card_signals:vues` gardée (rattachée à TOK-138) ; le contrôle date les vues servies par le dernier
+  relevé archivé ;
+- l'instantané du 13/06 (`data/raw/cards.json`) n'est pas versé dans l'archive.
+
+```
+1. Rafraîchir les vues chaque lundi (déverrouiller l'étape `card_views`)
+[x] Oui : retirer `card_views` de `PENDING_FORM` et la tolérance `early_card_signals:vues` de `check_freshness.py`
+    (un commit), puis lancer la séquence du compte rendu sur la référence
+[ ] Oui, mais archiver seulement (table `card_views_snapshots`) sans toucher à `cards.views_week` tant que le critère
+    « vues » du signal précoce n'est pas revu (TOK-129)
+[ ] Non
+Commentaire libre :
+
+2. Premier point ancien dans l'archive
+[ ] Verser l'instantané `data/raw/cards.json` dans `card_views_snapshots` à la date de son commit (2026-06-13), avec
+    une colonne `source` pour le distinguer
+[x] Non : l'archive commence au premier relevé ; l'instantané reste dans Git et dans la première sauvegarde
+Commentaire libre :
+
+3. `fetch_new_cards` est bloquante dans `refresh_all.py` (une panne de l'API arrête la chaîne et `serving`), alors que
+   `refresh_decks.py` la déclare non bloquante
+[x] Ticket à part : l'ajouter à `NON_BLOCKING` de `refresh_all.py` (avis `gardien-donnees`)
+[ ] Laisser tel quel
+Commentaire libre :
+```

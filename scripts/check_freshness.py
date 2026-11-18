@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import html
 import json
 import os
 import re
@@ -72,8 +73,10 @@ KNOWN_STALE = {
     # le contrôle du lundi. À retirer dans le même commit que l'étape de `PENDING_FORM`.
     "card_graph_metrics:graphe": ("TOK-136", "2026-12-31", "build_graph_metrics.py en attente du formulaire TOK-136"),
     "graph_communities:graphe": ("TOK-136", "2026-12-31", "build_graph_metrics.py en attente du formulaire TOK-136"),
-    "early_card_signals:vues": ("ticket à créer", "2026-12-31",
-                                "views_week figée au 13/06 : fetch_new_cards.py ajoute sans rafraîchir"),
+    # TOK-138 : `fetch_card_views.py` rafraîchit les vues et les date (`card_views_snapshots`), mais son étape de
+    # `refresh_all.py` attend le formulaire (`PENDING_FORM`) : même règle que pour le graphe.
+    "early_card_signals:vues": ("TOK-138", "2026-12-31",
+                                "views_week figée au 13/06 : fetch_card_views.py en attente du formulaire TOK-138"),
 }
 
 # Graphe du notebook 03, mêmes seuils que `scripts/bridge_date.py` (test d'alignement dans backend/tests).
@@ -253,10 +256,14 @@ def snapshot_date() -> dt.date | None:
 
 
 def views_age(ctx: Context, table: str) -> Result:
-    """Âge de `views_week`. Aucune date en base : on compare les vues de `cards` à l'instantané suivi par Git.
-    Les vues servies sont celles d'`early_card_signals` (copiées depuis `cards` par build_early_signals.py)."""
+    """Âge de `views_week`. Les vues servies sont celles d'`early_card_signals` (copiées depuis `cards` par
+    build_early_signals.py). Date : le dernier relevé de `card_views_snapshots` (TOK-138, base de référence) si les
+    vues de `cards` en viennent ; à défaut, l'instantané `data/raw/cards.json` suivi par Git."""
     if "cards" not in ctx.tables:
         return Result(table, SKIPPED, "vues : table cards absente pour comparer")
+    dated = views_age_from_snapshots(ctx, table)
+    if dated is not None:
+        return dated
     if ctx.snapshot is None or not ctx.snapshot.exists():
         return Result(table, UNDATED, "vues non datées (instantané data/raw/cards.json absent)")
     snap_day = snapshot_date()
@@ -276,6 +283,39 @@ def views_age(ctx: Context, table: str) -> Result:
     return ctx.res(table, "vues", OK if age <= VIEWS_MAX_DAYS else STALE,
                    f"vues (cards.views_week) identiques à l'instantané du {snap_day} pour {same} cartes sur "
                    f"{len(known)} ({share:.0%}) : {age} j (seuil {VIEWS_MAX_DAYS} j)")
+
+
+def views_age_from_snapshots(ctx: Context, table: str) -> Result | None:
+    """Vues datées par le dernier relevé archivé (TOK-138). None si l'archive manque ou si `cards` n'en vient pas."""
+    if "card_views_snapshots" not in ctx.ref_tables:
+        return None
+    last = ctx.ref.execute("SELECT MAX(snapshot_date) FROM card_views_snapshots").fetchone()[0]
+    snap_day = parse_day(last)
+    if snap_day is None:
+        return None
+    rows = ctx.ref.execute("SELECT card_name, views_week FROM card_views_snapshots WHERE snapshot_date = ?", (last,))
+    snap = {clean_name(n): v for n, v in rows}
+    # On date ce qui est servi : les vues de la table contrôlée (early_card_signals), à défaut celles de cards. Si
+    # build_early_signals.py a échoué après le relevé, les vues servies ne sont pas celles du relevé : pas de date ici.
+    cols = {r[1] for r in ctx.conn.execute(f'PRAGMA table_info("{table}")')}
+    source = table if {"card_name", "views_week"} <= cols else "cards"
+    name_col = "card_name" if source == table else "name"
+    served = ctx.conn.execute(f'SELECT {name_col}, views_week FROM "{source}" WHERE views_week IS NOT NULL').fetchall()
+    known = [(clean_name(n), v) for n, v in served if clean_name(n) in snap]
+    if not known:
+        return None
+    same = sum(1 for n, v in known if snap[n] == v)
+    share = same / len(known)
+    if share < VIEWS_FROZEN_SHARE:
+        return None   # les vues servies ne viennent pas du dernier relevé : on retombe sur l'instantané Git
+    age = (ctx.today - snap_day).days
+    return ctx.res(table, "vues", OK if age <= VIEWS_MAX_DAYS else STALE,
+                   f"vues ({source}.views_week) égales au relevé du {snap_day} (card_views_snapshots) pour {same} "
+                   f"cartes sur {len(known)} ({share:.0%}) : {age} j (seuil {VIEWS_MAX_DAYS} j)")
+
+
+def clean_name(name: str) -> str:
+    return html.unescape(name or "").replace("<", "").replace(">", "")
 
 
 def rule_cards(ctx: Context, table: str) -> Result:

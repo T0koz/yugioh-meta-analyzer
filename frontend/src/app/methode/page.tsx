@@ -408,8 +408,12 @@ export default async function MethodePage() {
                 ? `Rang parmi les ${rule.population} archétypes OCG suivis : Fort jusqu’au rang ${rule.strong_max_rank}, Modéré jusqu’au rang ${rule.moderate_max_rank}. Seuils provisoires.`
                 : "Rang parmi les archétypes OCG suivis. Seuils provisoires.",
             },
-            { term: "Arrivée en TCG", text: "Période où 8 archétypes sur 10 sont arrivés en TCG par le passé : 75 à 202 jours après le premier deck OCG, mesurée sur 1 897 cartes sorties de 2022 à 2025." },
-            { term: "Limites", text: "Rien n’est encore échu pour juger les signaux actuels ; la fenêtre d’arrivée n’a pas été vérifiée sur des cas nouveaux." },
+            { term: "Arrivée en TCG", text: `De 75 à 202 jours après le premier deck OCG : délai de 8 cartes sur 10 parmi les ${fmtNum(SITE_FACTS.arrivalWindowCards)} cartes sorties en OCG de 2022 à 2025 puis en TCG. La mesure porte sur des cartes, pas sur des archétypes, et ignore les cartes jamais sorties en TCG.` },
+            {
+              term: "Couverture vérifiée",
+              text: `Fenêtre estimée sur les cartes de 2022-2023, puis appliquée aux cartes suivantes : elle contient le délai de ${SITE_FACTS.arrivalCoverage.map((c) => `${c.pct} % des ${fmtNum(c.cards)} cartes de ${c.year}`).join(" et ")}, et non 80 %.`,
+            },
+            { term: "Limites", text: "Rien n’est encore échu pour juger les signaux actuels." },
           ]}
         />
         <Validation title="Lien entre OCG et TCG">

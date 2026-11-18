@@ -15,6 +15,15 @@ export const SITE_FACTS = {
   ocgTcgArchetypes: 105,
   // Le signal est à peu près constant de 2 à 6 mois : « 4 mois » était un artefact du choix du max.
   ocgTcgLagRange: "2 à 6 mois",
+  // Fenêtre d'arrivée OCG → TCG (notebook 10, P10-P90 = 75-202 jours sur 1 897 cartes 2022-2025 sorties en
+  // TCG). Couverture hors échantillon (audit de rigueur, A2, recalculée au lot 20 le 2026-11-18) : P10-P90
+  // estimés sur les cartes sorties en OCG en 2022-2023 (n = 1 078, 89 à 202 jours), appliqués aux cartes de
+  // 2024 et de 2025. Mesure par carte, parmi les cartes déjà sorties en TCG seulement (biais du survivant).
+  arrivalWindowCards: 1_897,
+  arrivalCoverage: [
+    { year: 2024, pct: 67, cards: 367 },
+    { year: 2025, pct: 62, cards: 470 },
+  ] as const,
   // Non recalculé depuis le rafraîchissement : ne pas afficher de date de fraîcheur.
   graphCommunities: 63,
   // Ban Radar rejoué la veille des 10 banlists TCG du backtest (2024-04-15 au
@@ -37,3 +46,7 @@ export const SITE_FACTS = {
     { format: "OCG", period: "avril 2024 à octobre 2026", periodFrom: "d’avril 2024 à octobre 2026", lists: 10, radar: 41, staples: 18, better: 9, worse: 1, medianBetter: 8 },
   ],
 };
+
+// « 62 à 67 % » : couverture hors échantillon de la fenêtre d'arrivée, à écrire partout où la fenêtre s'affiche.
+const coverage = SITE_FACTS.arrivalCoverage.map((c) => c.pct);
+export const ARRIVAL_COVERAGE_RANGE = `${Math.min(...coverage)} à ${Math.max(...coverage)} %`;

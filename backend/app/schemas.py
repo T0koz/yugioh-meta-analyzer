@@ -20,12 +20,21 @@ class TierEntry(BaseModel):
     image_url: Optional[str] = None
 
 
+class TierThreshold(BaseModel):
+    tier: str
+    share: float  # part minimale des decks de la fenêtre
+
+
 class TierListResponse(BaseModel):
     data: list[TierEntry]
     # Fenêtre de calcul : mois « AAAA-MM » du premier et du dernier mois cumulés.
     window_start: str
     window_end: str
     n_decks: int
+    # Lot 20 (A8) : seuils de tier (app/tiering.py) pour que le front marque « à la limite » un archétype
+    # dont l'intervalle de Wilson (calculé côté front, lib/wilson.ts) chevauche un seuil.
+    tier_thresholds: list[TierThreshold] = []
+    tier_min_decks: Optional[int] = None
 
 
 class EvolutionPoint(BaseModel):

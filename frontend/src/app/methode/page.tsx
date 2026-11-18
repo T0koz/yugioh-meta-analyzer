@@ -253,7 +253,8 @@ export default async function MethodePage() {
           items={[
             { term: "Ce que mesure", text: "La part des decks de tournoi TCG de la fenêtre qui jouent chaque archétype, et l’écart avec la fenêtre précédente." },
             { term: "Seuils", text: "T0 dès 40 % des decks, T1 dès 15 %, T2 dès 7 %, T3 dès 3 %, Rogue en dessous ou sous 5 decks. Seuils ronds, fixés à la main." },
-            { term: "Tendance", text: "Affichée seulement si l’écart avec la fenêtre précédente dépasse le bruit d’échantillonnage, testé archétype par archétype." },
+            { term: "Tendance", text: "Écart avec la fenêtre précédente testé archétype par archétype, puis corrigé pour le nombre de tests : en moyenne, au plus 5 % des tendances affichées seraient dues au hasard. Contrôle approché : les parts d’une même fenêtre sont liées entre elles, un effet faible vérifié par simulation." },
+            { term: "À la limite", text: "Tier marqué « limite » quand l’intervalle à 95 % de la part contient un seuil : avec d’autres decks, l’archétype pourrait passer au tier d’à côté." },
             { term: "Limites", text: "La fenêtre courante compte quelques centaines de decks : un archétype à 2 % repose sur une dizaine de listes." },
           ]}
         />

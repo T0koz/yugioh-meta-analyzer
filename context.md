@@ -295,6 +295,24 @@ Rapport : `j2-rapport.md` § 0 (protocole commité avant le passage long) et § 
 - Mémoïsation exacte de la clé de tri de l'empreinte (`modele._cle_tri`) : ×1,24, mêmes empreintes. Pour G6-G10, la
   cible s'évalue sur un état d'où le tour peut se terminer (`ComboGuide.accepteur(cat)`, pas `accepter`).
 
+**Jalon n°6, l'oracle rejoue J2 et l'échantillon J1 (TOK-142, TOK-143, 2026-11-18, branche
+`claude/jalon-6-oracle-j1-j2-ddcca5`, non fusionnée)** : session isolée (ni `moteur_combos/` ni `scripts/combos_*.py`
+lus). **J2 : 23 séquences sur 23 en accord avec l'oracle** (149 pas légaux, mêmes déplacements pas par pas, même
+plateau ; aucun premier pas en désaccord ; 4 témoins négatifs détectés ; mêmes résultats sous MR5 seul et
+`FIRSTTRIGGER`). **J1 : 86 situations écrites depuis le texte TCG et figées avant de jouer** (`situations-echantillon-j1.yaml`,
+commit `59ef481`, sha256 `c3b49e76…`), 85 jouées, 1 non testable (E18) ; le jalon n°7 exécutera le moteur dessus.
+Réponses : `reponses-oracle.md` § 8 et § 9.
+- **Retour d'`Ecclesia and the Dark Dragon` (J2-a)** : chez l'oracle, effet obligatoire de la liste de Phase de Fin
+  dont le joueur choisit le moment ; joué en dernier, mêmes cartes mais autres zones (G8.1, G8.2). Le moteur l'applique
+  au passage en Phase de Fin : une seule option là où l'oracle en a plusieurs.
+- **Le lanceur de l'oracle rapprochait les noms par l'alias** (`WHITE` a pour alias `ALBAZ`) : un choix « ALBAZ » pouvait
+  jouer WHITE. Corrigé pour ce passage ; les passages des lots 17 et C2 bis utilisaient l'ancienne recherche.
+- **`Ash Blossom` en main est un matériel de Fusion** pour `Cartesia` (main ou terrain) : trois lectures écrites avant
+  de jouer l'avaient oublié (E05, E08, E08b). Toute situation de Fusion « main ou terrain » doit compter les cartes de
+  réponse en main.
+- Le lanceur sait maintenant lire l'ATK (requête d'état du cœur) ; il ne sait pas donner un historique d'invocation à
+  un monstre adverse (E18 non testable). Banc : `~/code/oracle-ignis/lanceur/jalon6/` (hors dépôt).
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree

@@ -4,6 +4,9 @@
 avec un seul **désaccord franc (R23)** et trois nuances. Rien de Project Ignis n'est dans ce dépôt : ce fichier ne
 contient que des résultats (données), jamais du code du cœur, d'un script de carte ou de la base de cartes.
 
+> **Jalon n°6 (18/11) : sections « J2 (18/11) » (§ 8, séquences du jalon n°5, TOK-142) et « J1 échantillon » (§ 9,
+> TOK-143) en fin de fichier.**
+
 > **Suite du 18/11 (lot C2 bis) : voir la section « J1 (18/11) » en fin de fichier (§ 7)** : les 30 situations J1 et
 > les points N01 à N13, avec un désaccord ferme (N09, `Titaniklad` / `Mirrorjade`).
 
@@ -274,3 +277,255 @@ dépôt. 11 diffèrent ; classement par effet sur J1 :
   Les confiances « moyenne » ci-dessus désignent un comportement qui dépend d'un script plutôt que du cœur.
 - **Ce que ce passage ne couvre pas** : les valeurs d'ATK, les situations non reproduites faute de scénario (aucune
   parmi J01 à J30), et N12.
+
+---
+
+# J2 (18/11) — l'oracle rejoue pas à pas les 23 séquences du jalon n°5 (TOK-142, jalon n°6)
+
+**Statut : 23 séquences sur 23 en accord avec l'oracle.** Chaque action (149 pas en tout) est dans la liste que propose
+le cœur à son moment, chaque choix écrit est parmi les candidats du cœur, les déplacements de cartes sont les mêmes pas
+par pas, et le plateau final est le même (terrain avec les zones, main, Cimetière, bannies). **Aucun premier pas en
+désaccord.** Aucun cas où le texte OCG de la base de l'oracle change un verdict. Une différence de modèle à signaler
+(retour d'`Ecclesia and the Dark Dragon` en Phase de Fin, ci-dessous), sans effet sur les 23 plateaux.
+
+Même installation et mêmes réglages que les passages précédents (cœur `1e3bcfd`, scripts `ed5ed45b`, base `a40b0ef` ;
+Master Rule 5 + `DUEL_TCG_SEGOC_NONPUBLIC`, tour 1, nous commençons, adversaire sans carte). La session qui a joué ces
+séquences n'a lu ni `moteur_combos/` ni `scripts/combos_*.py` : elle n'a lu que `sequences-pour-oracle.md` (langage
+des règles). Rien de Project Ignis n'entre dans le dépôt.
+
+## 8.1 Désaccords et différences de modèle (à lire d'abord)
+
+**Aucun désaccord de légalité, de choix, de déplacement ni de plateau.**
+
+| N° | Ce qu'écrivent les séquences | Oracle | Ce que ça change |
+|---|---|---|---|
+| **J2-a** (différence de modèle) | `Ecclesia and the Dark Dragon`, bannie « jusqu'à la Phase de Fin », **revient au passage** en Phase de Fin, avant tout autre effet (8 séquences : G2.1, G2.2, G7.1, G8.1, G8.2, G9.1, G9.2, G10.1) | Le retour est un **effet obligatoire placé dans la liste des effets de Phase de Fin** (avec `Titaniklad`, `Blazing Cartesia`, `Incredible Ecclesia`, `Dogma`…) ; **le joueur choisit quand le jouer** parmi eux (le banc joue chaque effet de Phase de Fin dans sa propre chaîne). Joué en premier, il donne exactement les déplacements et le plateau des séquences (8 sur 8). | **Aucun écart sur les 23 plateaux** (le banc joue le retour en premier, ordre que l'oracle accepte). Mais l'oracle permet aussi de le jouer **après** les autres : au premier passage du banc (retour joué en dernier), G8.1 et G8.2 finissaient avec les mêmes cartes **dans d'autres zones** (`Quem` zone 1, `Cartesia` zone 2, `Ecclesia and the Dark Dragon` zone 3, au lieu de 2, 3, 1). Le moteur ne propose donc qu'un ordre parmi plusieurs : liste d'options plus courte que celle de l'oracle, sans conséquence sur les cartes, avec conséquence sur les zones (pertinent pour `Sprind`, colonnes). À trancher côté moteur (jalon n°7). |
+
+Autres constats, **sans désaccord** :
+- **Décisions à une seule option non écrites** : `The Golden Swordsoul` ramène `Incredible Ecclesia` (seul candidat, G2.1,
+  G2.2) ; `Branded in High Spirits` envoie `Rindbrumm` (seul candidat, G7.1). Le cœur pose bien la question, avec un
+  seul candidat, celui de la séquence. Conforme à la règle du moteur (une décision à une option n'est pas écrite).
+- **Coûts sur soi-même** : `Incredible Ecclesia` se Sacrifie et `The Golden Swordsoul` se bannit sans que le cœur demande
+  de choisir (3 séquences chacun) ; le choix écrit « coût : sacrifier / bannir X » n'est pas une question chez l'oracle.
+- **Effets facultatifs que le cœur propose et que les séquences n'utilisent pas** (refusés par le banc) : 3ᵉ effet de
+  `The Dragon that Devours the Dogma` en Phase de Fin (G1.1 à G1.4, après le dernier pas), 3ᵉ effet de `Blazing
+  Cartesia` (G5.1 à G5.4, G8.1, G8.2, G9.1, G9.2), réponses `Ash Blossom` / `Ghost Ogre` des mains réelles,
+  `Rindbrumm` au Cimetière (G8). Ce ne sont pas des désaccords ; ils indiquent au jalon n°7 des options que la liste du
+  moteur doit contenir à ces moments.
+- **Déclencheurs simultanés** : G7.1 (`The Golden Swordsoul` maillon 1, `Guiding Quem` maillon 2) et G7.1 étape 7
+  (`Quem` effet 2, puis `Three Champions` effet 1) : ordre accepté par le cœur, aussi sous `DUEL_TCG_SEGOC_FIRSTTRIGGER`.
+
+## 8.2 Les 23 séquences
+
+« Pas » = actions numérotées de la séquence. « Premier désaccord » = premier pas où l'oracle refuse l'action ou un choix,
+ou produit d'autres déplacements. Toutes les séquences ont été jouées jusqu'au bout.
+
+| Séquence | Pas | Légaux | Premier désaccord | Plateau final | Notes |
+|---|---|---|---|---|---|
+| G1.1 | 5 | 5 | aucun | identique | — |
+| G1.2 | 5 | 5 | aucun | identique | — |
+| G1.3 | 5 | 5 | aucun | identique | main réelle (`Ash`, `Ghost Ogre` non activés) |
+| G1.4 | 5 | 5 | aucun | identique | main réelle |
+| G2.1 | 8 | 8 | aucun | identique | J2-a ; choix unique (`Incredible Ecclesia` par `Golden Swordsoul`) |
+| G2.2 | 8 | 8 | aucun | identique | J2-a ; choix unique ; main réelle |
+| G3.1 | 6 | 6 | aucun | identique | — |
+| G3.2 | 7 | 7 | aucun | identique | `Ghost Ogre` de la main comme matériel de `Granguignol` : accepté ; « détruire ? » de `Three Champions` : oui |
+| G3.3 | 6 | 6 | aucun | identique | main réelle |
+| G4.1 | 5 | 5 | aucun | identique | — |
+| G4.2 | 5 | 5 | aucun | identique | main réelle |
+| G5.1 | 4 | 4 | aucun | identique | `Titaniklad` proposé par une question oui/non (seul effet de Phase de Fin) |
+| G5.2 | 4 | 4 | aucun | identique | idem |
+| G5.3 | 4 | 4 | aucun | identique | idem ; main réelle |
+| G5.4 | 4 | 4 | aucun | identique | idem ; main réelle |
+| G6.1 | 7 | 7 | aucun | identique | `Cocatorium` détruite par `TFTV` : bannie (comme écrit) |
+| G6.2 | 7 | 7 | aucun | identique | main réelle |
+| G7.1 | 11 | 11 | aucun | identique | J2-a ; choix unique (`Rindbrumm` par `High Spirits`) ; révélation de `Mulcharmy Fuwalos` acceptée |
+| G8.1 | 11 | 11 | aucun | identique | J2-a (zones différentes si le retour est joué en dernier, voir 8.1) |
+| G8.2 | 11 | 11 | aucun | identique | J2-a, idem |
+| G9.1 | 6 | 6 | aucun | identique | J2-a |
+| G9.2 | 6 | 6 | aucun | identique | J2-a ; main réelle |
+| G10.1 | 9 | 9 | aucun | identique | J2-a |
+| **Total** | **149** | **149** | **0** | **23 / 23** | |
+
+**Compte** : 23 séquences jouées, 0 non testable, 0 désaccord ; 1 différence de modèle (J2-a, 8 séquences concernées).
+
+## 8.3 Texte de l'oracle différent du texte TCG
+
+Cartes des séquences dont le texte de la base de l'oracle diffère (relevé du § 7.4) : `Incredible Ecclesia` (3ᵉ effet,
+« You can add » contre « Add », R23) est activée dans 8 séquences (G2.1, G2.2, G7.1, G8.1, G8.2, G9.1, G9.2, G10.1) :
+le verdict ne dépend pas du caractère obligatoire, puisque l'effet est joué. Aucune séquence ne termine son tour avec
+cet effet disponible et non joué. `Mirrorjade` (G7.1) : seul son Invocation Fusion est jouée, son 2ᵉ effet (texte
+différent) n'est pas exercé. **0 cas de texte OCG ≠ TCG qui change un verdict.**
+
+## 8.4 Méthode, contrôles, limites
+
+- **Traduction automatique** de `sequences-pour-oracle.md` en consignes (lanceur hors dépôt, `~/code/oracle-ignis/lanceur/jalon6/`) :
+  action numérotée → activation (filtrée par l'emplacement « depuis : … »), Invocation Normale, Invocation Synchro ou
+  passage en Phase de Fin ; « choix : activer l'effet déclenché » → choix dans la liste de chaîne ou réponse « oui » ;
+  « choix / envoi / coût / cible / fusion / matériaux » → choix parmi les candidats du cœur ; « option », « appliquer »,
+  « détruire » → réponse correspondante. Position Attaque ; plus basse zone libre, Zone Monstre Extra gauche pour un
+  monstre de l'Extra Deck. La convention « Zone Monstre principale k » = zone k−1 du cœur est **ma supposition** ;
+  elle donne les mêmes zones sur les 23 plateaux.
+- **Comparé** : présence de chaque action dans la liste du cœur ; présence de chaque carte choisie parmi les candidats ;
+  déplacements pas par pas (carte, origine, destination, relevés des messages `MOVE` du cœur) ; plateau final.
+- **Replis déclarés** : (1) choix pris dans les déplacements écrits quand la séquence n'écrit pas la décision (3 cas,
+  listés en 8.1, tous à candidat unique) ; (2) choix unique ; (3) retour d'`Ecclesia and the Dark Dragon` joué en
+  premier quand la séquence l'écrit au passage en Phase de Fin (8 séquences).
+- **Témoins négatifs** (le banc sait-il dire non ?) : coût de `Fallen of the White Dragon` remplacé par `Garura` (ne
+  mentionne pas `Albaz`) → refusé ; `Dogmatika Ecclesia` retirée du Deck (G4.1) → choix impossible ; étapes 3 et 4 de
+  G10.1 inversées → Invocation Synchro absente de la liste ; G5.1 sans son étape 2 → plateau différent. **4 sur 4 détectés.**
+  Limite du repli (1) : une séquence qui écrirait un mauvais choix **et** le déplacement correspondant au bon choix ne
+  serait pas vue ; les 3 choix concernés ont été vérifiés un par un (candidat unique).
+- **Réglages** : rejoué sous Master Rule 5 seul et sous Master Rule 5 + `DUEL_TCG_SEGOC_FIRSTTRIGGER` : **23 sur 23** dans les deux cas.
+- **Limites** : un seul oracle (scripts communautaires) ; adversaire sans carte, donc aucune réponse adverse testée ;
+  ATK non lus ; zones comparées sous la convention ci-dessus ; un passage par séquence (cœur déterministe).
+
+---
+
+# J1 échantillon (18/11) — l'oracle joue les 86 situations des 20 effets tirés (TOK-143, jalon n°6)
+
+**Statut : 85 situations jouées sur 86, 1 non testable (E18).** Les situations sont dans
+`situations-echantillon-j1.yaml`, écrites à partir du texte TCG **avant** de jouer et figées par le commit `59ef481`
+(sha256 `c3b49e76d98042c81da5f619c6a03ce9df2f67bd9c0b3588e42706fa95865515`). Ce passage **ne compare pas au moteur**
+(la session de l'oracle ne le lit pas) : il donne, pour chaque situation, ce que propose le cœur. Le jalon n°7
+exécutera le moteur sur les mêmes situations et comptera les accords (unité : l'effet). Mêmes réglages que § 8.
+
+## 9.1 À lire d'abord
+
+- **Non testable (1)** : **E18** (`DECCLESIA` effet 2, monstre de l'Extra Deck **chez l'adversaire**). Le cœur exige
+  que le monstre ait été réellement Invoqué depuis l'Extra Deck ; le lanceur sait poser un monstre adverse, pas lui
+  donner un historique d'invocation (témoin : un `RIND` posé **chez nous** ne remplit pas non plus la condition ; un
+  `RIND` réellement Invoqué par `BFUSION` la remplit). La moitié « l'un ou l'autre côté » de cette clause reste sans
+  réponse de l'oracle.
+- **Trois situations où la réponse de l'oracle diffère de la lecture écrite avant de jouer** (champ `attendu`, qui
+  n'est pas la référence) : E05, E08, E08b. Cause unique : `Ash Blossom` **en main** est un matériel de Fusion permis
+  pour `CARTESIA` (« monstres de la main ou du terrain »), ce que la lecture avait oublié. E05 : `DOGMA` est proposée
+  (`ALBAZ` + `CARTESIA` LUMIÈRE + `ASH` monstre à effet) ; E08 : `MIXOUSIA` est proposée (Magicien + `ASH` Zombie) ;
+  E08b : l'effet est **proposé** (`MIXOUSIA` avec `CARTESIA` + `ASH`), alors que la clause visée (matériel du
+  Cimetière exclu) supposait l'effet impossible. Variante **hors fichier**, déclarée : sans `ASH` en main, l'effet
+  n'est pas proposé (le Cimetière ne fournit pas de matériel). Le jalon n°7 compare le moteur à la réponse de
+  l'oracle, pas à la lecture.
+- **E85** : `CHAMPIONS` (effet 2) peut **cibler** `TITAN` insensible, mais le cœur ne pose **pas** la question
+  « détruire ? » : l'effet ne s'applique pas du tout à `TITAN` (ni annulation, ni destruction). À comparer tel quel
+  (un moteur qui poserait la question proposerait une décision de plus que l'oracle).
+- **Texte OCG ≠ TCG** : aucune des 20 clauses jouées ne porte sur un passage dont le texte diffère (relevé du § 7.4 :
+  `Titaniklad`, `Three Champions`, `Gold Sarcophagus` diffèrent par la forme seulement ; `Mirrorjade` et
+  `Incredible Ecclesia` par le sens, sur des effets non tirés). **0 cas.** Rappel : le texte TCG de la base du dépôt
+  nomme « The Three Brave Swordsouls » dans la limite de `CHAMPIONS` ; l'oracle applique la limite à la carte (E78).
+- **Clauses non exerçables** (déclarées dans l'en-tête du fichier, sans situation) : limites par tour de `GARURA/2`,
+  `MERC/2`, `TITAN/3`, `CHAMPIONS/1` (un exemplaire), bannissement face cachée et limite de `GSWORD/2`, « 3 matériels
+  ou plus » d'`AEON/1`.
+
+## 9.2 Ce que propose le cœur, situation par situation
+
+« proposé » / « non proposé » : l'action ou l'effet figure ou non dans la liste du cœur. Listes : noms distincts, ×n
+pour plusieurs exemplaires. ATK lus par une requête d'état du cœur (nouvelle dans le lanceur, voir 9.3).
+
+| Id | Effet | Réponse de l'oracle |
+|---|---|---|
+| E01 | ALUBER/1 | proposé ; liste : TFTV×3, BHIGH, BOPENING, BFUSION |
+| E02 | ALUBER/1 | proposé après l'Invocation Spéciale en Défense ; liste : TFTV×3, BFUSION, BHIGH |
+| E03 | ALUBER/1 | non proposé |
+| E04 | ALUBER/1 | non proposé (2e copie) |
+| E05 | CARTESIA/2 | proposé ; Fusions : DOGMA×2, MIXOUSIA, GRANG, SANCTIFIRE ; matériels de GRANG : ALBAZ (main), CARTESIA (terrain), ASH exclue |
+| E06 | CARTESIA/2 | proposé en réponse à l'effet d'ALUBER (maillon 2) |
+| E07 | CARTESIA/2 | non proposé : à la Phase de Fin, seul TITAN (question oui/non), aucune fenêtre avec CARTESIA |
+| E08 | CARTESIA/2 | proposé ; Fusions : MIXOUSIA, GRANG ; GARURA absente |
+| E08b | CARTESIA/2 | **proposé** (MIXOUSIA avec CARTESIA + ASH) ; variante sans ASH : non proposé |
+| E09 | CARTESIA/2 | non proposé (2e copie) |
+| E10 | BFUSION/1 | proposé ; Fusions : RIND, SANCTIFIRE ; matériels pris dans le Deck (ALBAZ, COCA) |
+| E11 | BFUSION/1 | proposé ; matériels de la main, du terrain et du Deck ; SANCTIFIRE avec ALBAZ (main) + CARTESIA (terrain) |
+| E12 | BFUSION/1 | Fusions : RIND, SANCTIFIRE ; DOGMA absente |
+| E13 | BFUSION/1 | EDD (et CHAMPIONS) proposées avant, absentes après |
+| E14 | BFUSION/1 | non proposé après l'Invocation Synchro |
+| E15 | BFUSION/1 | 2e copie non proposée |
+| E16 | BFUSION/1 | non proposé |
+| E17 | DECCLESIA/2 | proposé ; DECCLESIA Invoquée |
+| E18 | DECCLESIA/2 | **non testable** (voir 9.1) |
+| E19 | DECCLESIA/2 | non proposé |
+| E20 | DECCLESIA/2 | non proposé |
+| E21 | DECCLESIA/2 | 2e copie non proposée |
+| E22 | GARURA/2 | proposé (question oui/non après NADIR) ; 1 carte piochée |
+| E23 | GARURA/2 | proposé après la Fusion de MIRROR |
+| E24 | NADIR/1 | proposé ; envoyables : les 15 de l'Extra Deck ; ajoutables : QUEM, WHITE×2, ALBAZ, DECCLESIA |
+| E25 | NADIR/1 | ajoutables : QUEM, DECCLESIA |
+| E26 | NADIR/1 | ALBAZ du Cimetière dans la liste |
+| E27 | NADIR/1 | non proposé |
+| E28 | NADIR/1 | CARTESIA proposée en réponse (maillon 2), GRANG Invoquée, NADIR se résout ensuite |
+| E29 | NADIR/1 | EDD proposée avant, absente après |
+| E30 | NADIR/1 | 2e copie non proposée |
+| E31 | SPOLY/1 | non proposé |
+| E32 | SPOLY/1 | proposé ; Fusion : RIND seule ; SKITT adverse proposé comme matériel, envoyé au Cimetière adverse |
+| E33 | SPOLY/1 | non proposé |
+| E34 | SPOLY/1 | proposé ; aucune fenêtre de réponse après l'activation (BOPENING jamais proposée) |
+| E35 | SPOLY/1 | proposé en réponse à l'effet d'ALUBER |
+| E36 | GSWORD/2 | proposé (même liste que MERC) ; Invocables : CARTESIA (main) |
+| E37 | GSWORD/2 | proposé depuis le terrain ; Invocables : DECCLESIA (Cimetière) |
+| E38 | GSWORD/2 | non proposé (seul MERC) |
+| E39 | GSWORD/2 | non proposé après le bannissement de BOPENING |
+| E40 | TITAN/3 | proposé ; liste : ALBAZ, WHITE×2, QUEM ; option « ajouter » |
+| E41 | TITAN/3 | option « Invoquer Spécialement » ; QUEM Invoqué |
+| E42 | TITAN/3 | non proposé |
+| E43 | TITAN/3 | non proposé |
+| E44 | MERC/2 | proposé ; liste : ALBAZ, WHITE×2, CARTESIA×2, QUEM, IECCLESIA×2, SKITT, TBKITT, GSWORD ; DECCLESIA et MERC absentes |
+| E45 | MERC/2 | proposé ; même liste |
+| E46 | BOPENING/2 | question proposée ; RIND reste, BOPENING bannie |
+| E47 | BOPENING/2 | question proposée, refusée : RIND détruit, BOPENING reste |
+| E48 | BOPENING/2 | pas de question ; ALUBER détruit |
+| E49 | BOPENING/2 | pas de question ; RIND adverse détruit |
+| E50 | BOPENING/2 | question proposée (après le 1er effet de BOPENING ce tour) |
+| E51 | BHIGH/2 | proposé ; liste de Phase de Fin : BHIGH, TITAN |
+| E52 | BHIGH/2 | non proposé |
+| E53 | BHIGH/2 | non proposé |
+| E54 | BHIGH/2 | non proposé (seul DOGMA à la Phase de Fin) |
+| E55 | LULU/1 | proposé ; question « annuler ? » : non ; LULU 3000, ALUBER 2300 |
+| E56 | LULU/1 | cibles d'annulation : LULU, ALUBER |
+| E57 | LULU/1 | proposé (même liste que GRANG) ; LULU 3000, GRANG 3000 |
+| E58 | LULU/1 | non proposé |
+| E59 | LULU/1 | non proposé |
+| E60 | LULU/2 | proposé ; liste : DECCLESIA, IECCLESIA×2, CARTESIA×2, QUEM |
+| E61 | LULU/2 | CARTESIA de la main dans la liste et Invoquée |
+| E62 | LULU/2 | non proposé (seul TITAN) |
+| E63 | OGRE/1 | proposé ; QUEM détruit ; l'effet de QUEM se résout (ALBAZ envoyé) |
+| E64 | OGRE/1 | proposé depuis le terrain ; ALUBER détruit ; l'effet d'ALUBER se résout |
+| E65 | OGRE/1 | non proposé (seule ASH en réponse) |
+| E66 | OGRE/1 | non proposé (aucune fenêtre de réponse) |
+| E67 | OGRE/1 | 2e copie non proposée |
+| E68 | AEON/1 | proposé ; bannissables : AEON (terrain), SPOLY, GRANG, RIND, ASH (Cimetière) ; au moins 1, au plus 2 |
+| E69 | AEON/1 | 1 carte acceptée |
+| E70 | AEON/1 | 2e effet non proposé |
+| E71 | CHAMPIONS/1 | proposé ; liste : IECCLESIA, QUEM, DECCLESIA, CARTESIA×2 (Deck), IECCLESIA (Cimetière) |
+| E72 | CHAMPIONS/1 | CARTESIA du Cimetière |
+| E73 | CHAMPIONS/1 | non proposé après la résurrection par TFTV (CHAMPIONS est une cible de TFTV) |
+| E74 | CHAMPIONS/2 | cibles : CHAMPIONS, ALUBER ; question « détruire ? » ; ALUBER détruit |
+| E75 | CHAMPIONS/2 | question refusée ; ALUBER reste |
+| E76 | CHAMPIONS/2 | pas de question ; ALUBER reste |
+| E77 | CHAMPIONS/2 | question proposée (WHITE au Cimetière) |
+| E78 | CHAMPIONS/2 | 2e activation non proposée |
+| E79 | TITAN/1 | TITAN 3700 ; Fusions proposées : TITAN, DRAGOSTAPELIA, MIXOUSIA, MIRROR, SANCTIFIRE |
+| E80 | TITAN/1 | TITAN 3700 |
+| E81 | TITAN/1 | TITAN 2500 |
+| E82 | TITAN/2 | TITAN proposé à MIRROR, choisi, reste sur le terrain (3700) |
+| E83 | TITAN/2 | TITAN banni |
+| E84 | TITAN/2 | TITAN détruit |
+| E85 | TITAN/2 | TITAN ciblable par CHAMPIONS ; pas de question « détruire ? » ; TITAN reste |
+
+**Compte** : 86 situations, **85 jouées**, **1 non testable** (E18), **0 cas de texte OCG ≠ TCG** qui change une
+réponse. Les 20 effets ont tous au moins 2 situations jouées. Lecture écrite avant de jouer et réponse de l'oracle :
+82 accords sur 85 (écarts E05, E08, E08b, une seule cause).
+
+## 9.3 Méthode et limites
+
+- Chaque situation est jouée par un scénario court (lanceur hors dépôt, `~/code/oracle-ignis/lanceur/jalon6/`) qui place
+  le départ, joue l'action et relève les listes de choix, les fenêtres de chaîne et les déplacements (`MOVE`). « Posé »
+  = placé sans historique d'invocation ; quand l'historique compte (DECCLESIA/2, CHAMPIONS/1, TITAN/1 et 2), il est
+  produit en jouant réellement l'invocation.
+- **Correctif du lanceur** : la recherche de carte par nom du lanceur rapprochait aussi par l'**alias** de la base ;
+  `Fallen of the White Dragon` ayant `Fallen of Albaz` pour alias, un choix « ALBAZ » pouvait prendre WHITE. Corrigé pour
+  ce passage (rapprochement par nom exact) et pour le § 8. **Les passages précédents (lots 17 et C2 bis) utilisaient
+  l'ancienne recherche** : leurs listes (relevées sur les noms réels) ne sont pas en cause, mais un choix « ALBAZ » a pu
+  y jouer WHITE. Les deux cartes ont le même texte de jeu pour l'essentiel (WHITE est traité comme ALBAZ) ; aucune
+  réponse publiée n'en dépend à ma connaissance, à revérifier si un point litigieux porte sur ce choix.
+- **Requête d'état ajoutée** (ATK des monstres sur le terrain) : les valeurs d'ATK de LULU/1 et TITAN/1 sont lues dans
+  le cœur, ce que les passages précédents ne faisaient pas.
+- Un seul oracle ; adversaire passif (aucune réponse adverse) ; un passage par situation (cœur déterministe).

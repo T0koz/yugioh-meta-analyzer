@@ -85,6 +85,10 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | Lot 21 (TOK-121) | Comment mesurer sans changer le backtest affiché ? | Paramètre optionnel `as_of_override` de `backtest_lists` (défaut inchangé) et option `--annonces` de `diagnose_ban_radar.py` (le diagnostic TOK-115 n'est pas relancé par défaut). | Le brief interdit de changer le comportement par défaut ; une seule fonction de backtest (pas de copie). |
 | Lot 21 (TOK-121) | Relecture `data-scientist-ygo` de la mesure. | Pas de fuite ; 60 tests du signe, aucun ne survit à Bonferroni (≈ 0,0008) ; le p = 0,008 du top 25 TCG (`contenu+borne`) ne se cite pas seul ; placebo manquant, à demander à la collaboratrice. Formulation retenue dans le journal. | Fenêtres de 6 mois qui se recouvrent, 10 listes par format : exploratoire. |
 | Lot 21 | Temps passé. | ≈ 40 min de session, dont ≈ 15 min d'attente réseau (Yugipedia, 170 pages à 0,5 s, deux relances après des réponses vides) ; deux relectures de sous-agents. | Note demandée par le brief. |
+| Lot 22 (TOK-120) | `statsmodels.ConditionalLogit` déborde en récursion sur des listes de ≈ 1 000 cartes. | Vraisemblance conditionnelle de Breslow (softmax par liste), vectorisée, vérifiée contre la vraisemblance exacte (récurrence en log, départ à zéro) : poids à ±0,01. | k/n ≈ 1 % : l'écart à l'exacte est d'ordre k/n ; la vérification est dans le script. |
+| Lot 22 (TOK-120) | À quelle date de coupure appliquer la règle d'adoption ? | Aux deux (veille de l'entrée en vigueur, veille du contenu `content_date` du lot 21), adoption seulement si les deux passent ; candidats (`rangs_poids_ecrits`, `clogit_rangs`) et règle figés avant la première exécution. | La plus prudente ; le brief demande d'utiliser les dates du lot 21 sans abandonner la référence TOK-115. |
+| Lot 22 (TOK-120) | Pont daté : intermédiarité échantillonnée (500 sources, sans graine, notebook 03) ou exacte ? `weight = jaccard` lu comme une distance ? | Exacte ; `weight = jaccard` gardé tel quel (déclaré). | Reproductible ; dater le critère, pas en changer la définition. |
+| Lot 22 (TOK-120) | Relecture `data-scientist-ygo`. | Méthode et chiffres validés (règle d'adoption recalculée, rang médian TCG 2026-05-18 refait de zéro : 36/889) ; recommandation A ; pont à retirer au prochain changement de poids ; deux suites signalées (`card_graph_metrics` périmée, `load_usage` filtre `created` et non `uploaded` : 925 decks sur 36 917 mis en ligne après la coupure). | Corrections appliquées : vérification de Breslow partie de zéro, colonne `n_train_lists_tcg_ocg`. |
 
 ## Formulaire
 
@@ -266,6 +270,33 @@ Lot 21 (TOK-121) — suite de la mesure
 [ ] Ajouter tout de suite un placebo et un test par blocs (nouveau lot de méthode)
 [ ] Abandonner (effet trop petit pour justifier plus de travail)
 Commentaire libre :
+Lot 22 (TOK-120) — poids du Ban Radar après les rangs centiles et le logit conditionnel
+[x] A. Ne rien changer. La règle figée n'est pas remplie : le logit conditionnel sur les rangs la remplit à la veille de l'entrée en vigueur, pas à la veille du contenu (OCG : mieux que les poids actuels sur 3 listes sur 7, top 25 32 contre 33) ; aucun candidat ne bat les staples de façon démontrée (TCG : −0,15 à −0,27 point, 5 listes sur 7, p = 0,45)
+[ ] B. Rangs centiles avec les poids écrits (meilleur que les poids actuels en TCG sur 7 listes sur 7, p = 0,016 ; moins bien que les staples en TCG, +0,7 point)
+[ ] C. Rangs centiles avec les poids du logit conditionnel (0,29 / 0,20 / 0,17 / 0,16 / 0,12 / −0,05)
+Commentaire libre :
+
+Lot 22 (TOK-120) — suivi des candidats
+[x] Relancer `diagnose_ban_radar.py --rangs` (deux coupures) à chaque nouvelle banlist et prolonger le tableau « listes postérieures au calage » (3 listes aujourd'hui)
+[ ] En plus, journaliser les classements B et C dans `prediction_log` pour les dater par un tiers (ticket, Thomas seul lance `log_predictions.py`)
+Commentaire libre :
+
+Lot 22 (TOK-120) — critère `bridge`
+[x] Le retirer au prochain changement de poids, sans le recalculer par date (poids estimé −0,05 [−0,10 ; −0,01] ; pont daté seul AUC 0,52 en TCG ; retirer ne change rien de mesurable)
+[ ] Le remplacer par le pont daté (`bridge_date.py`) au prochain changement de poids
+[ ] Le retirer maintenant (changement de `WEIGHTS`, `--backtest`, Historique recalculé)
+Commentaire libre :
+
+Lot 22 (TOK-120) — `card_graph_metrics` périmée (663 nœuds, le graphe actuel en a 1 402 ; lue par le Ban Radar et par la « fragmentation » du simulateur)
+[x] Ticket : refaire la table dans la chaîne du lundi (script daté issu de `bridge_date.py`, à la place du notebook 03), en déclarant l'intermédiarité exacte
+[ ] La laisser en l'état jusqu'au retrait du pont
+Commentaire libre :
+
+Lot 22 (TOK-120) — fenêtre du backtest filtrée sur la date du tournoi (`created`) et non de mise en ligne (`uploaded`) : 925 decks sur 36 917 (2,5 %) connus après la coupure, surtout dans le critère « tendance »
+[x] Ticket dédié : filtrer aussi sur `uploaded ≤ coupure` dans `load_usage` (change `--backtest` et l'Historique : formulaire avant application)
+[ ] Laisser tel quel, déclaré dans le journal
+Commentaire libre :
+
 ```
 
 ## Linear : jalons glissants 1-2-3 (18/11, décision de Thomas, note 0054)

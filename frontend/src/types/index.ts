@@ -345,6 +345,10 @@ export interface ArchetypeResponse {
   /** null si aucun deck dans la fenêtre courante de la tier list. */
   tcg: ArchetypeTcg | null;
   history: ArchetypeMonth[];
+  /** Même chose en OCG (TOK-116) ; vide si l'archétype n'y apparaît pas. */
+  ocg_history: ArchetypeMonth[];
+  /** Date de calcul de la chaîne OCG ; null si inconnue (base de service antérieure à TOK-116). */
+  ocg_history_computed_at: string | null;
   key_cards: { data: ArchetypeKeyCard[]; as_of: string; n_decks_window: number } | null;
   ocg: { share: number; decks: number; computed_at: string | null } | null;
   boutique: {

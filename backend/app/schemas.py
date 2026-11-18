@@ -391,6 +391,10 @@ class ArchetypeResponse(BaseModel):
     tcg: Optional[ArchetypeTcg] = None
     # Un point par mois, du premier mois où l'archétype apparaît au dernier mois de la base.
     history: list[ArchetypeMonth] = []
+    # Même chose en OCG (`meta_scores_ocg`, TOK-116) ; vide si l'archétype n'y apparaît pas.
+    ocg_history: list[ArchetypeMonth] = []
+    # Date de calcul de la chaîne OCG (`ocg_archetype_scores.computed_at`, notebook 10) ; NULL si inconnue.
+    ocg_history_computed_at: Optional[str] = None
     # NULL si aucune carte suivie n'a cet archétype pour deck d'attache.
     key_cards: Optional[ArchetypeKeyCards] = None
     ocg: Optional[ArchetypeOcg] = None

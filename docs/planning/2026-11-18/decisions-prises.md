@@ -483,3 +483,31 @@ Si « oui » : notebook 05 → `python scripts/build_prediction_intervals.py --w
 ajouter `meta_prediction_intervals` à SERVED_TABLES (et une règle dans check_freshness.py) → `build_serving_db.py` →
 build avec NEXT_PUBLIC_PREDICTION_INTERVALS=1.
 ```
+
+## Jalon 2 — TOK-116 : parts OCG mensuelles servies par l'API
+
+Journal : `docs/journal/parts-ocg-servies-tok-116.md`. `meta_scores_ocg` ajoutée à `SERVED_TABLES` ; `GET
+/archetypes/{slug}` sert `ocg_history` et `ocg_history_computed_at` ; l'accueil lit `GET /archetypes/kewl-tune` au lieu
+de `proof-data.ts` figé. Valeurs dessinées identiques au relevé du 16/11 (16 mois × 2 formats, 0 écart), 51 captures
+identiques. Rien d'autre ne change à l'écran.
+
+Décidé par défaut (à confirmer) :
+- date affichée = `MAX(computed_at)` d'`ocg_archetype_scores` (notebook 10, juste après le notebook 04) :
+  `meta_scores_ocg` n'a pas de date, et lui en ajouter une ne serait pas additif ;
+- fenêtre fixe août 2025 → novembre 2026 (les textes nomment ses mois) ;
+- sans données complètes, la section n'est pas rendue (pas de repli sur des chiffres figés) ;
+- champ ajouté à `GET /archetypes/{slug}` plutôt qu'un endpoint nouveau.
+
+```
+1. Légende du graphique : « Incertitude non dessinée : les effectifs mensuels n'ont pas été relevés avec cette
+   série figée » est devenue inexacte (les effectifs sont servis)
+[x] Remplacer par « Incertitude non dessinée : effectifs mensuels de 145 à 574 decks en OCG », chiffres tirés de l'API
+[ ] Dessiner la bande de Wilson à 95 % comme sur /evolution (charte, lot 15)
+[ ] Laisser tel quel
+Commentaire libre :
+
+2. Fenêtre de l'exemple
+[x] Garder la fenêtre fixe (août 2025 → novembre 2026) et les textes actuels
+[ ] Fenêtre glissante (16 derniers mois), textes calculés depuis les données
+Commentaire libre :
+```

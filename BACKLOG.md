@@ -57,8 +57,10 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 | — | _4 tickets terminés (TOK-95 à 98) : voir l’archive_ | | |
 
-- **TOK-116** (🔜 Backlog, 🟠 Medium, créé le 2026-11-17) : servir les parts OCG mensuelles par l'API pour remplacer
-  les données figées de l'accueil (`lib/proof-data.ts`, décision 0041).
+- **TOK-116** (🟡 Livré le 2026-11-18 sur `claude/jalon-2-survie-intervalles-ocg-af6a73`, Jalon 2, non fusionnée) : parts OCG
+  mensuelles servies (`meta_scores_ocg` dans `SERVED_TABLES`, `ocg_history` dans `GET /archetypes/{slug}`), accueil branché
+  sur l'API, valeurs identiques au relevé figé, 51 captures inchangées. Reste : `build_serving_db.py` sur la référence,
+  formulaire Jalon 2 (légende devenue inexacte) — `docs/journal/parts-ocg-servies-tok-116.md`.
 - Suites hors chantier : `log_predictions.py` journalise la fausse date comme `target_date` ; le notebook 10 ne
   filtre pas les archétypes déjà en TCG ; `/meta/evolution` choisit son top 15 sur un mois à petits effectifs.
 

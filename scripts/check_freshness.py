@@ -339,6 +339,8 @@ RULES = {
     "meta_predictions": lambda c, t: worst(t, computed(c, t),
                                            month_lag(c, t, f'SELECT MAX(data_month) FROM "{t}"', label="mois des données")),
     "meta_scores": lambda c, t: month_lag(c, t, f'SELECT MAX(month) FROM "{t}"', label="dernier mois"),
+    # TOK-116 : parts OCG mensuelles (notebook 04), comparées au dernier deck OCG.
+    "meta_scores_ocg": lambda c, t: month_lag(c, t, f'SELECT MAX(month) FROM "{t}"', fmt="OCG", label="dernier mois"),
     "meta_tier_list": lambda c, t: day_age(c, t, f'SELECT MAX(scraped_at) FROM "{t}"', "relevée"),
     "ocg_archetype_scores": computed,
 }

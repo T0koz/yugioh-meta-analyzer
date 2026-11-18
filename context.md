@@ -660,6 +660,20 @@ existe, `/predictions` ne les dessine qu'avec `NEXT_PUBLIC_PREDICTION_INTERVALS=
   (effet 0,11 point en moyenne, négligeable pour les intervalles, à corriger à part).
 → détail complet : `docs/journal/intervalles-tok-131.md`
 
+### 🗾 Parts OCG mensuelles servies (TOK-116, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+L'exemple Kewl Tune de l'accueil lit `GET /archetypes/kewl-tune` (`history` en TCG, `ocg_history` en OCG,
+`ocg_history_computed_at`) au lieu des données figées de `proof-data.ts` (décision 0041). `meta_scores_ocg` est dans
+`SERVED_TABLES` (règle de fraîcheur ajoutée). Valeurs identiques au relevé du 16/11, 51 captures inchangées.
+- **Après fusion : `python scripts/build_serving_db.py`** sur la référence. Sans cela, `test_home_example_has_both_series`
+  échoue sur `serving.db` et l'accueil n'affiche pas la section (rendu volontairement absent plutôt que partiel).
+- **Une table lue par un routeur doit y être nommée en clair** (« FROM meta_scores_ocg ») : `build_serving_db.py --check`
+  et `check_freshness.py` repèrent les tables par expression régulière, une requête construite par f-string leur échappe.
+- **Fenêtre fixe** (août 2025 → novembre 2026) : les textes de l'accueil nomment ses mois et ses pics ; un recalcul qui
+  déplacerait un pic ne serait vu par aucun test.
+- Nouvelle fixture de test visuel : `kewl-tune` ajouté à `ARCHETYPES` dans `scripts/visual_tests.py`.
+→ détail complet : `docs/journal/parts-ocg-servies-tok-116.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le
@@ -690,7 +704,7 @@ décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ;
   A1 à A8 de l'audit). Le lot 17 (TOK-86) est prêt aussi : `premake` 5.0.0 et `lua@5.4`
   installés le 17/11 (`/opt/homebrew/opt/lua@5.4`, non liée ; le cœur demande Lua 5.3 ou 5.4, pas la 5.5 de `brew install lua`).
 - **Encore en attente de Thomas** : lots de correctifs de la revue de code (rapport de la tâche de fond).
-- **TOK-116** : servir les parts OCG mensuelles par l'API, pour retirer les données figées de l'accueil (`lib/proof-data.ts`).
+- **TOK-116** : livré au Jalon 2 (parts OCG servies, `build_serving_db.py` à relancer après fusion).
 - **Push de `main` par Thomas** (fusion faite le 17/11, `check.py --all --visuel` vert) ; supprimer les worktrees et les branches de lots fusionnées.
 - **TOK-35** : relier le projet Vercel depuis la racine du dépôt, créer le compte Cloudflare R2, premier déploiement de prévisualisation (`docs/deploiement.md`).
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109), protection de `main`.

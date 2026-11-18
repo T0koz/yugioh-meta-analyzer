@@ -40,6 +40,7 @@ SCHEMA = {
     "graph_communities": ("community_id, n_cards", [(0, 3), (1, 1)]),
     "meta_predictions": ("archetype, data_month, computed_at", [("X", "2026-10", "2026-11-16")]),
     "meta_scores": ("month, archetype", [("2026-11", "X")]),
+    "meta_scores_ocg": ("month, archetype", [("2026-11", "X")]),
     "meta_tier_list": ("archetype, scraped_at", [("X", "2026-11-17")]),
     "ocg_archetype_scores": ("archetype, computed_at", [("X", "2026-11-16")]),
     "tournament_decks": ("id, created, ocg", [("d1", "2026-11-14T10:00:00.000Z", 0), ("d2", "2026-11-13T10:00:00.000Z", 1)]),
@@ -97,6 +98,8 @@ def test_as_of_lagging_behind_last_deck_is_stale():
 def test_monthly_table_two_months_behind_is_stale():
     assert statuses(build(meta_scores=[("2026-09", "X")]))["meta_scores"] == cf.STALE
     assert statuses(build(meta_scores=[("2026-10", "X")]))["meta_scores"] == cf.OK
+    assert statuses(build(meta_scores_ocg=[("2026-09", "X")]))["meta_scores_ocg"] == cf.STALE
+    assert statuses(build(meta_scores_ocg=[("2026-10", "X")]))["meta_scores_ocg"] == cf.OK
 
 
 def test_graph_tables_must_match_cooccurrence_graph():

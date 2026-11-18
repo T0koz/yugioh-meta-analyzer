@@ -49,6 +49,8 @@ SERVED_TABLES = [
     "graph_communities",
     "meta_predictions",
     "meta_scores",
+    # TOK-116 : parts OCG mensuelles (notebook 04), servies par GET /archetypes/{slug} (graphique de l'accueil).
+    "meta_scores_ocg",
     "meta_tier_list",
     "ocg_archetype_scores",
 ]

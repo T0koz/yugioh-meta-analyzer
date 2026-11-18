@@ -278,7 +278,7 @@ non fusionnée)** : cadre de la décision 0055 (plus de juge humain ; validation
 sans cible, 60 s) : G1-G5 **4 sur 5**, G6-G10 **1 sur 5** tel que figé (2 sur 5 G6 corrigé) ; dirigée 120 s 7 sur 10
 (8 corrigé) ; 900 s 8 sur 10 (9) ; hasard 2 sur 10 ; largeur sans filtres D4 0 sur 10 ; aucun écart démontré (McNemar,
 p ≥ 0,06). 23 séquences exportées pour l'oracle (`sequences-pour-oracle.md`, `scripts/combos_export_oracle.py`).
-**Verdict J2 : en attente de l'oracle.**
+**Verdict J2 : en attente de l'oracle.** 7 questions résiduelles préparées, non envoyées (`questions-residuelles.md`).
 Rapport : `j2-rapport.md` § 0 (protocole commité avant le passage long) et § 8.
 - **La longueur décide** : de 4 à 7 transitions, la largeur retrouve tout (6 sur 6) ; de 8 à 11, rien (0 sur 4). G10
   (9 transitions) n'est pas retrouvé en 900 s (1,08 million d'états) mais il est jouable : la recherche guidée par les

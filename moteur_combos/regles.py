@@ -297,6 +297,10 @@ class Partie:
 
     def instance_en(self, lieu: tuple[str, str | None], nom: str) -> Instance | None:
         zone, cellule = lieu
+        if zone == "terrain_adverse":
+            return next((i for c, i in self.monstres(1) + [x for x in self.etat.joueurs[1].cases
+                                                          if x[0] not in CELLULES_MONSTRE]
+                         if c == cellule and i.carte == nom), None)
         if zone == "terrain":
             for c, i in self.monstres() + [(c, i) for c, i in self.j.cases if c not in CELLULES_MONSTRE]:
                 if c == cellule and i.carte == nom:
@@ -326,7 +330,21 @@ class Partie:
         return next((c for c in ZONES_MONSTRE_EXTRA if c not in prises), None)
 
     def retirer(self, zone: str, nom: str, cellule: str | None = None) -> Instance:
-        """Retire un exemplaire (les copies égales sont interchangeables)."""
+        """Retire un exemplaire (les copies égales sont interchangeables). « terrain_adverse » : une carte du terrain
+        de l'adversaire (jalon n°7 : matériel de `Super Polymerization`, cible de `The Fallen & The Virtuous`)."""
+        if zone == "terrain_adverse":
+            for o in self.etat.zones_monstre_extra:
+                if o.cellule == cellule and o.instance.carte == nom and o.controleur == 1:
+                    self.etat = replace(self.etat, zones_monstre_extra=tuple(
+                        x for x in self.etat.zones_monstre_extra if x is not o))
+                    return o.instance
+            adv = self.etat.joueurs[1]
+            for c, i in adv.cases:
+                if c == cellule and i.carte == nom:
+                    self.etat = replace(self.etat, joueurs=(self.etat.joueurs[0], replace(
+                        adv, cases=tuple(x for x in adv.cases if x[0] != c))))
+                    return i
+            raise ErreurScript(f"{nom} absent de la case adverse {cellule}")
         j = self.j
         if zone == "terrain":
             for o in self.etat.zones_monstre_extra:
@@ -386,6 +404,9 @@ class Partie:
             self.etat = replace(self.etat, memoire=replace(m, evenements=m.evenements | {cle}))
 
     def envoyer_cimetiere(self, zone: str, nom: str, cellule: str | None, role: str, comme: str) -> None:
+        if zone == "terrain_adverse":
+            self._envoyer_cimetiere_adverse(nom, cellule, role, comme)
+            return
         self.exiger_declaree(nom, f"envoyée au Cimetière ({comme}) : ses effets déclenchés sont inconnus")
         ancienne = self.retirer(zone, nom, cellule)
         f = self.fiche(nom)
@@ -404,6 +425,18 @@ class Partie:
             self.evenements.append(Evenement("quitte_extra", nom, "cimetiere"))
         self.pas[-1].cartes.append((nom, role, zone, "cimetiere", None))
 
+    def _envoyer_cimetiere_adverse(self, nom: str, cellule: str | None, role: str, comme: str) -> None:
+        """Une carte de l'adversaire va dans **son** Cimetière (jalon n°7, E32, E49). Ses effets déclenchés ne sont pas
+        joués (le pilote ne joue pas pour l'adversaire) : aucun événement n'est émis, une note le dit."""
+        ancienne = self.retirer("terrain_adverse", nom, cellule)
+        if self._quitte_terrain_bannie("terrain", ancienne):
+            raise NonCouvert(f"{nom} (adverse) : bannie en quittant le terrain, non codé")
+        adv = self.etat.joueurs[1]
+        inst = Instance(carte=nom, proprietaire=ancienne.proprietaire, envoyee_cimetiere_ce_tour=True)
+        self.etat = replace(self.etat, joueurs=(self.etat.joueurs[0], replace(adv, cimetiere=adv.cimetiere + (inst,))))
+        self.notes.append(f"{nom} (adverse) → Cimetière de l'adversaire ({comme}) ; ses effets déclenchés ne sont pas joués")
+        self.pas[-1].cartes.append((nom, role, "terrain_adverse", "cimetiere_adverse", None))
+
     def _bannir_instance(self, zone: str, nom: str, ancienne: Instance, face: str, role: str, comme: str) -> None:
         f = self.fiche(nom)
         correcte = ancienne.correctement_invoquee if (f.est_extra and zone in ("terrain", "cimetiere")) else (
@@ -421,9 +454,14 @@ class Partie:
         ancienne = self.retirer(zone, nom, cellule)
         self._bannir_instance(zone, nom, ancienne, face, role, comme)
 
-    def detruire(self, nom: str, cellule: str, role: str, source: str) -> None:
+    def detruire(self, nom: str, cellule: str, role: str, source: str, adverse: bool = False) -> None:
         """Destruction par un effet : la carte va au Cimetière (ou est bannie, Cocatorium). `Branded Opening`
-        (effet 2) peut remplacer la destruction d'un monstre Fusion du joueur (effet de remplacement)."""
+        (effet 2) peut remplacer la destruction d'un monstre Fusion du joueur (effet de remplacement). `adverse` :
+        carte de l'adversaire, sans remplacement (« a Fusion Monster you control », jalon n°7, E49)."""
+        if adverse:
+            self.pas.append(Pas("resoudre", f"{nom} (adverse) détruite ({source})"))
+            self._envoyer_cimetiere_adverse(nom, cellule, role, "detruite")
+            return
         self.exiger_declaree(nom, "détruite : ses effets sont inconnus")
         inst = self.instance_en(("terrain", cellule), nom)
         f = self.fiche(nom)

@@ -61,8 +61,11 @@ def main(argv=None) -> int:
         (ea, na), (eb, nb) = r[f"{nom}_strates"]
         print(f"\n{nom} : {k}/{n} effets en erreur ({k / n:.1%}), Wilson 95 % [{lo:.1%} ; {hi:.1%}] ; "
               f"strate a {ea}/{na}, strate b {eb}/{nb}, pondéré {r[f'{nom}_pondere']:.1%}")
-    print(f"\nJ1 (borne haute ≤ 20 %) : principal {'atteint' if r['j1_atteint'] else 'non atteint'}, "
-          f"pessimiste {'atteint' if r['j1_atteint_pessimiste'] else 'non atteint'}")
+    print(f"\nCritère J1 appliqué au moteur courant (borne haute ≤ 20 %) : principal "
+          f"{'rempli' if r['j1_atteint'] else 'non rempli'}, pessimiste "
+          f"{'rempli' if r['j1_atteint_pessimiste'] else 'non rempli'}. Le taux de J1 est celui du moteur mesuré "
+          "(commit 2902df8, j1-rapport.md § 9) ; sur un moteur corrigé en voyant ces situations, ce chiffre n'est "
+          "pas une mesure.")
     print(f"Situations : {sum(c.issue == 'accord' for c in comps)} accords, "
           f"{sum(c.issue == 'desaccord' for c in comps)} désaccords, "
           f"{sum(c.issue == 'non_tranche' for c in comps)} non tranchées, sur {len(comps)}")

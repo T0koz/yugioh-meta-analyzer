@@ -499,7 +499,7 @@ def e32(c):
     if not c.tenter(SPOLY):
         return {"propose": False, "fusions": set(), "skitt_adverse_materiel": False, "skitt_cimetiere_adverse": False}
     c.jouer(act(SPOLY), ("cout", f"défausser {ASH}"), ("fusion", RIND),
-            ("materiaux", M((ALBAZ, "terrain"), (SKITT, "terrain adverse"))))
+            ("materiaux", M((ALBAZ, "terrain"), (SKITT, "terrain_adverse"))))
     mats = {x for o in c.options("materiaux") for x in o.split(" + ")}
     return {"propose": True, "fusions": c.noms("fusion"), "skitt_adverse_materiel": any(x.startswith(SKITT) for x in mats),
             "skitt_cimetiere_adverse": "cimetiere" in c.ou(SKITT, 1)}
@@ -606,7 +606,7 @@ def e48(c):
 
 def e49(c):
     try:
-        c.jouer(act(TFTV, 1), ("cout", TITAN), ("cible", f"{RIND} (M1)"))
+        c.jouer(act(TFTV, 1), ("cout", TITAN), ("cible", f"{RIND} (M1 adverse)"))
     except EtapeRefusee as exc:
         c.refus = exc.decl
         return {"question": c.dec("remplacement") is not None, "rind_adverse_detruit": False,

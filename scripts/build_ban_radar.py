@@ -42,7 +42,11 @@ MAX_COPIES = 3
 # c'est une staple générique.
 GENERIC_CONCENTRATION_THRESHOLD = 0.5
 
-# Somme = 1.0. Testés à ±0.10 sans changer le classement des cartes touchées.
+# Somme = 1.0. Réglage posé à la main le 2026-08-14 (backtest de deux listes), jamais estimé : déclaré
+# comme tel sur /methode (audit de rigueur, A7). Seules 3 listes du backtest sont postérieures au calage.
+# Le classement y est sensible (relecture TOK-115, I2, 20 listes, top 25 TCG / rang médian TCG,
+# référence 30 / 81) : ubiquity −0,10 → 23 / 91,5 ; ubiquity +0,10 → 35 / 73,5 ; momentum +0,10 → 21 / 137,8.
+# L'ancien commentaire (« testés à ±0.10 sans changer le classement ») était faux.
 WEIGHTS = {
     "ubiquity": 0.30,     # part des decks du format qui jouent la carte
     "carrier": 0.25,      # pièce de moteur d'un archétype qui pèse dans la méta

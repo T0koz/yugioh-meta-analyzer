@@ -225,20 +225,25 @@ export default async function MethodePage() {
       <Section id="seuils" title="Seuils et leur origine">
         <div className="mt-5">
           <SimpleTable
-            caption="Seuils appliqués sur le site et leur origine"
-            head={["Seuil", "Valeur", "Origine"]}
+            caption="Seuils et poids appliqués sur le site, leur origine et leur date"
+            head={["Réglage", "Valeur", "Origine"]}
             rows={[
-              ["Mois atténué dans les séries", `moins de ${WEAK_MONTH_DECKS} decks`, "à 100 decks, une part de 10 % est connue à ±6 points près"],
-              ["Fiche de composition d’un archétype", "8 listes", "9 à 13 % d’étiquettes instables à 8 listes, 19 à 24 % à 5"],
-              ["Banlist retenue dans le backtest", "600 decks", "mesure du 14 août 2026 : la seule liste sous ce volume (OCG d’avril 2026, 416 decks à l’époque) tombait au niveau du hasard"],
-              ["Archétype classé Rogue", "moins de 5 decks", "pas de part ni de tendance lisible en dessous"],
-              ["Libellé boutique Fort / Modéré", rule ? `rang ${rule.strong_max_rank} / rang ${rule.moderate_max_rank} sur ${rule.population}` : "10 % / 25 % des archétypes", "premiers 10 % et 25 % ; provisoires, non validés hors échantillon"],
+              ["Mois atténué dans les séries", `moins de ${WEAK_MONTH_DECKS} decks`, "fixé à la main le 17 novembre 2026, d’après une mesure : à 100 decks, une part de 10 % est connue à ±6 points près"],
+              ["Fiche de composition d’un archétype", "8 listes", "fixé à la main le 16 novembre 2026, d’après une mesure : 9 à 13 % d’étiquettes instables à 8 listes, 19 à 24 % à 5"],
+              ["Carte de base / d’appoint (Decks)", "80 % / 20 % des listes", "fixés à la main le 16 novembre 2026 : seuils ronds ; 80 % donne un cœur de deck plausible, ce n’est pas un optimum"],
+              ["Seuils de tier", "T0 40 %, T1 15 %, T2 7 %, T3 3 % des decks", "fixés à la main le 16 novembre 2026 : seuils ronds, conventionnels ; un classement descriptif, sans validation"],
+              ["Archétype classé Rogue", "moins de 5 decks", "fixé à la main le 16 novembre 2026 : pas de part ni de tendance lisible en dessous"],
+              ["Poids du Ban Radar", "part des decks 30 %, porteur 25 %, exemplaires 20 %, restriction 10 %, élan 10 %, pont 5 %", "fixés à la main le 14 août 2026, pas estimés sur les données ; 3 des 20 banlists rejouées sont postérieures à ce réglage ; le classement y est sensible"],
+              ["Banlist retenue dans le backtest", "600 decks", "fixé à la main le 14 août 2026, d’après une mesure : la seule liste sous ce volume (OCG d’avril 2026, 416 decks à l’époque) tombait au niveau du hasard"],
+              ["Libellé boutique Fort / Modéré", rule ? `rang ${rule.strong_max_rank} / rang ${rule.moderate_max_rank} sur ${rule.population}` : "10 % / 25 % des archétypes", "fixés à la main le 16 novembre 2026 : premiers 10 % et 25 % ; provisoires, non validés hors échantillon"],
+              ["Signaux précoces", "vues 35 %, texte 35 %, OCG 30 % ; sortie TCG depuis moins de 168 jours ; moins de 3 % des decks sur 90 jours", "fixés à la main (notebook de juin 2026, filtres ajoutés le 18 novembre 2026) ; jamais validés"],
+              ["Direction des prédictions", "écart dessiné d’au moins 0,3 point", "fixé à la main, repris du modèle de prévision (seuil sur la variation complète, ramené à l’échelle dessinée)"],
             ]}
           />
           <DataFooter
             source="documentation du projet et calculs des scripts"
-            date="seuils en vigueur au 17 novembre 2026"
-            uncertainty="les seuils de 8 listes et 600 decks viennent de mesures ; ceux du libellé boutique n’ont pas pu être validés (une seule série datée)"
+            date="réglages en vigueur au 18 novembre 2026"
+            uncertainty="aucun de ces réglages n’est estimé sur les données ni validé hors échantillon ; ceux de 100 decks, 8 listes et 600 decks s’appuient sur une mesure"
           />
         </div>
       </Section>
@@ -247,7 +252,7 @@ export default async function MethodePage() {
         <Facts
           items={[
             { term: "Ce que mesure", text: "La part des decks de tournoi TCG de la fenêtre qui jouent chaque archétype, et l’écart avec la fenêtre précédente." },
-            { term: "Seuils", text: "T0 dès 40 % des decks, T1 dès 15 %, T2 dès 7 %, T3 dès 3 %, Rogue en dessous ou sous 5 decks." },
+            { term: "Seuils", text: "T0 dès 40 % des decks, T1 dès 15 %, T2 dès 7 %, T3 dès 3 %, Rogue en dessous ou sous 5 decks. Seuils ronds, fixés à la main." },
             { term: "Tendance", text: "Affichée seulement si l’écart avec la fenêtre précédente dépasse le bruit d’échantillonnage, testé archétype par archétype." },
             { term: "Limites", text: "La fenêtre courante compte quelques centaines de decks : un archétype à 2 % repose sur une dizaine de listes." },
           ]}
@@ -270,7 +275,7 @@ export default async function MethodePage() {
         <Facts
           items={[
             { term: "Ce que mesure", text: "Pour chaque archétype, la part de ses listes qui jouent chaque carte, et le nombre médian d’exemplaires." },
-            { term: "Seuils", text: "Carte de base dans au moins 80 % des listes, d’appoint dans au moins 20 % ; fiche à partir de 8 listes." },
+            { term: "Seuils", text: "Carte de base dans au moins 80 % des listes, d’appoint dans au moins 20 % (seuils ronds, fixés à la main) ; fiche à partir de 8 listes." },
             { term: "Fenêtre", text: "La même que la tier list : les effectifs des deux pages sont égaux." },
             { term: "Limites", text: "Pas d’intervalle affiché : à 8 listes il serait trop large pour être lu ; chaque part est donnée avec son effectif." },
           ]}
@@ -370,6 +375,7 @@ export default async function MethodePage() {
             { term: "Ce que mesure", text: "La ressemblance de chaque carte avec le profil des cartes déjà touchées par Konami, sur six critères." },
             { term: "Critères", text: "Part des decks, archétype porteur, exemplaires joués, restriction en cours, élan sur 3 mois, position de pont." },
             { term: "Fenêtre", text: "Les 6 derniers mois de decks de tournoi TCG." },
+            { term: "Poids", text: "Fixés à la main le 14 août 2026, pas estimés sur les données. 3 des 20 banlists rejouées sont postérieures à ce réglage ; les autres étaient connues au moment du réglage." },
             { term: "Limites", text: "Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe." },
             { term: "Résultat", text: BAN_VERDICT.measures },
           ]}

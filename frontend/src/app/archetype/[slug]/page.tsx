@@ -372,7 +372,7 @@ export default async function ArchetypePage({ params }: Params) {
                       <TableRow className="hover:bg-transparent">
                         <TableHead>Carte</TableHead>
                         <TableHead className="text-right">Ordre dans le lot</TableHead>
-                        <TableHead className="text-right">Prix CM</TableHead>
+                        <TableHead className="text-right">Prix Cardmarket</TableHead>
                         <TableHead>Banlist TCG</TableHead>
                       </TableRow>
                     </TableHeader>

@@ -24,7 +24,7 @@ import type { BuyLabel } from "@/types";
 
 export const metadata: Metadata = pageMetadata({
   title: "Accueil",
-  absoluteTitle: "YGO Meta · La méta OCG précède la méta TCG de 2 à 6 mois",
+  absoluteTitle: "YGO Meta · Méta Yu-Gi-Oh! TCG et OCG",
   description:
     "Méta Yu-Gi-Oh! TCG et OCG mesurée sur 23 948 decklists de tournoi : corrélation OCG → TCG de 0,53, signaux boutique, risque de ban, méthode et limites.",
   path: "/",
@@ -46,17 +46,14 @@ const LABEL_TONE: Record<BuyLabel, "strong" | "outline" | "neutral"> = { Fort: "
 // période et une source, sinon elle n'est pas écrite. Le graphique explique, le
 // texte annote.
 
-// Mots du titre, révélés un par un (CSS .home-word). L'accent porte sur la mesure.
+// Mots du titre, révélés un par un (CSS .home-word). Titre neutre (lot 16, décision de Thomas
+// du 17/11) : il nomme ce que couvre le site ; le graphique OCG / TCG fait la démonstration.
 const TITLE: { word: string; accent?: boolean }[] = [
-  { word: "La" },
-  { word: "méta" },
-  { word: "OCG" },
-  { word: "précède" },
-  { word: "la" },
-  { word: "méta" },
-  { word: "TCG" },
-  { word: "de" },
-  ...SITE_FACTS.ocgTcgLagRange.split(" ").map((word) => ({ word, accent: true })),
+  { word: "Méta" },
+  { word: "Yu-Gi-Oh!" },
+  { word: "TCG", accent: true },
+  { word: "et", accent: true },
+  { word: "OCG", accent: true },
 ];
 
 // Éventail : [rang dans la tier list, position --k, profondeur --z, ordre de distribution --n].
@@ -69,8 +66,6 @@ const FAN_SLOTS = [
 ] as const;
 
 const fmtRank = (rank: number) => (rank === 1 ? "1er" : `${rank}ᵉ`);
-const shortDate = (iso: string) =>
-  new Date(`${iso}T00:00:00`).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 
 const ALSO = [
   { href: "/tier-list", label: "Tier list" },
@@ -122,7 +117,7 @@ export default async function Home() {
           <div className={WRAP}>
             <div className="grid items-center gap-2 min-[900px]:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] min-[900px]:gap-10">
               <div>
-                <Eyebrow className="enter home-pulse">Méta Yu-Gi-Oh! · données au {fmtDate(radar.as_of)}</Eyebrow>
+                <Eyebrow className="enter home-pulse">YGO Meta · données au {fmtDate(radar.as_of)}</Eyebrow>
                 <h1 className="mt-5 text-[clamp(38px,5.6vw,80px)] leading-[0.98] font-medium tracking-[-0.05em] text-balance">
                   {TITLE.map(({ word, accent }, i) => (
                     <span key={i}>
@@ -244,7 +239,7 @@ export default async function Home() {
             <h2 id="h-outils" className={`mt-[18px] max-w-[18ch] ${H2}`}>
               {`Trois outils sur `}
               <Em>{fmtNum(SITE_FACTS.decklists)}</Em>
-              {` decklists de tournoi.`}
+              {` decklists de tournoi, mai 2023 à novembre 2026.`}
             </h2>
           </Reveal>
 
@@ -454,46 +449,54 @@ export default async function Home() {
             </Reveal>
 
             <Reveal className="min-w-0 min-[900px]:col-span-2">
-              <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">Ban Radar rejoué sur les banlists passées</h3>
+              <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">
+                {`Ban Radar rejoué sur ${SITE_FACTS.banBacktestTotalLists} banlists passées`}
+              </h3>
               <p className="mt-4 max-w-[70ch] text-[15px] text-soft">
-                Rang médian, dans le classement calculé la veille de la banlist, des cartes ensuite restreintes. Trait
-                vertical : rang attendu au hasard (milieu du classement).
+                {`Cartes ensuite restreintes parmi les 25 premières du classement calculé la veille de chaque banlist, sur ${SITE_FACTS.banTop25[0].lists * 25} places par format (${SITE_FACTS.banTop25[0].lists} listes), comparées au classement par part des decks.`}
               </p>
               <div className="mt-5 overflow-x-auto">
                 <table className="w-full min-w-[520px] border-collapse text-left text-[15px]">
-                  <caption className="sr-only">Rang médian des cartes touchées, pour quatre banlists rejouées</caption>
+                  <caption className="sr-only">Cartes touchées dans le top 25 de la veille, Ban Radar et part des decks, par format</caption>
                   <thead>
                     <tr className="font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">
-                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 font-normal">Banlist</th>
-                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 font-normal">Rang médian des cartes touchées</th>
-                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 text-right font-normal">Au hasard</th>
-                      <th scope="col" className="border-b border-line-2 py-2.5 text-right font-normal">Cartes classées</th>
+                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 font-normal">Format</th>
+                      <th scope="col" className="border-b border-line-2 py-2.5 pr-4 font-normal">Cartes touchées dans le top 25</th>
+                      <th scope="col" className="border-b border-line-2 py-2.5 text-right font-normal">Listes où le Ban Radar fait mieux</th>
                     </tr>
                   </thead>
                   <tbody className="tabular-nums">
-                    {SITE_FACTS.banBacktest.map((row) => {
-                      const chance = row.universe / 2;
+                    {SITE_FACTS.banTop25.map((row) => {
+                      // Barres recalibrées sur le maximum du tableau (charte : la barre se lit avant le chiffre).
+                      const max = Math.max(...SITE_FACTS.banTop25.map((r) => r.radar));
+                      const ties = row.lists - row.better - row.worse;
                       return (
-                        <tr key={row.format + row.date}>
-                          <th scope="row" className="border-b border-line py-3 pr-4 font-normal whitespace-nowrap">
+                        <tr key={row.format}>
+                          <th scope="row" className="border-b border-line py-3 pr-4 align-top font-normal whitespace-nowrap">
                             <span className="mr-2 font-mono text-[11px] text-muted-text">{row.format}</span>
-                            {shortDate(row.date)}
+                            <span className="block text-[13px] text-muted-text">{row.period}</span>
                           </th>
                           <td className="border-b border-line py-3 pr-4">
-                            <span className="flex items-center gap-3">
-                              <b className="w-[3ch] text-right font-medium">{row.medianRank}</b>
-                              {/* Position du rang médian dans le classement ; le trait marque le hasard (milieu). */}
-                              <span aria-hidden className="relative h-1 max-w-[320px] flex-1 rounded-[2px] bg-ink-4">
-                                <span className="absolute inset-y-[-3px] left-1/2 w-px bg-line-2" />
-                                <span
-                                  className="fill-in absolute inset-y-0 left-0 rounded-[2px] bg-signal"
-                                  style={{ width: `${(row.medianRank / row.universe) * 100}%` }}
-                                />
+                            {[
+                              { label: "Ban Radar", value: row.radar, tone: "bg-signal" },
+                              { label: "Part des decks", value: row.staples, tone: "bg-muted-text" },
+                            ].map((bar) => (
+                              <span key={bar.label} className="flex items-center gap-3 py-0.5">
+                                <span className="w-[14ch] shrink-0 text-[13px] text-muted-text">{bar.label}</span>
+                                <b className="w-[3ch] text-right font-medium">{bar.value}</b>
+                                <span aria-hidden className="relative h-1 max-w-[240px] flex-1 rounded-[2px] bg-ink-4">
+                                  <span
+                                    className={`fill-in absolute inset-y-0 left-0 rounded-[2px] ${bar.tone}`}
+                                    style={{ width: `${(bar.value / max) * 100}%` }}
+                                  />
+                                </span>
                               </span>
-                            </span>
+                            ))}
                           </td>
-                          <td className="border-b border-line py-3 pr-4 text-right text-muted-text">≈ {fmtNum(chance)}</td>
-                          <td className="border-b border-line py-3 text-right text-muted-text">{fmtNum(row.universe)}</td>
+                          <td className="border-b border-line py-3 text-right align-top text-muted-text">
+                            {`${row.better} sur ${row.lists}`}
+                            <span className="block text-[13px]">{`${row.worse} moins bien${ties ? `, ${ties} ${ties > 1 ? "égalités" : "égalité"}` : ""}`}</span>
+                          </td>
                         </tr>
                       );
                     })}
@@ -501,10 +504,14 @@ export default async function Home() {
                 </table>
               </div>
               <p className="mt-4 max-w-[70ch] text-[15px] text-soft">
-                {`Top 10 du radar sur ${SITE_FACTS.banBacktestLists} banlists TCG (avril 2024 à octobre 2026) : ${SITE_FACTS.banTop10HitsArchetype} places sur 100 suivies d’une restriction pour les pièces d’archétype, ${SITE_FACTS.banTop10HitsGeneric} sur 100 pour les staples génériques.`}
+                {`Rang médian de l’ensemble des cartes touchées meilleur que celui de la part des decks sur ${SITE_FACTS.banTop25[0].medianBetter} listes TCG sur ${SITE_FACTS.banTop25[0].lists}, ${SITE_FACTS.banTop25[1].medianBetter} listes OCG sur ${SITE_FACTS.banTop25[1].lists}. Avec ${SITE_FACTS.banTop25[0].lists} listes par format, seul l’écart de top 25 en OCG dépasse ce que le hasard produit couramment.`}
               </p>
               <p className={`mt-3 ${SOURCE}`}>
-                {`Source : backtest du ${fmtDate(SITE_FACTS.banBacktestDate)}, ${SITE_FACTS.banBacktest.length} des ${SITE_FACTS.banBacktestTotalLists} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026. Trait : milieu du classement ; la bande du hasard à 90 % est dans l’historique du Ban Center.`}
+                {`Source : backtest du ${fmtDate(SITE_FACTS.banBacktestDate)}, ${SITE_FACTS.banBacktestTotalLists} listes rejouées (10 TCG, 10 OCG), banlists Yugipedia. Poids du score réglés sur la liste TCG de mai 2026. Liste par liste : `}
+                <Link href="/ban?tab=historique" className="text-signal underline-offset-4 hover:underline">
+                  historique du Ban Center
+                </Link>
+                .
               </p>
             </Reveal>
           </div>

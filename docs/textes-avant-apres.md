@@ -1,7 +1,36 @@
 # Textes du site : avant / après (lot 16)
 
-Lot 16, première moitié (2026-11-17, branche `claude/lot16-reecriture-textes-9d97ee`). **Aucun texte du site n’est
-modifié dans ce lot** : ce document est à valider par Thomas, l’application vient dans une session suivante.
+Lot 16, première moitié (2026-11-17, branche `claude/lot16-reecriture-textes-9d97ee`) : relevé et propositions.
+**Seconde moitié (2026-11-18, branche `claude/lot16-application-textes-8896be`) : appliquée.** Chaque ligne T et B
+marquée ✅ est dans `frontend/src/`.
+
+## 0. Application (2026-11-18)
+
+Réponses de Thomas au formulaire (17/11, 11 h 43, `docs/planning/2026-11-17/decisions-prises.md`, ligne « Lot 16 ») ;
+elles priment sur les cases cochées du § 1, restées telles que proposées le 17/11 :
+1. T01 à T43 appliquées, sans page refusée ni exception.
+2. **Titre de l’accueil neutre, « Méta Yu-Gi-Oh! TCG et OCG »** (h1, titre de partage, image de partage) : remplace les
+   propositions de T02, T03 et T04 ; T01 (texte alternatif de l’image) reprend ce titre puis la phrase de corrélation
+   proposée. Le graphique OCG / TCG fait la démonstration.
+3. B01 à B28 appliquées, alignées sur le verdict TOK-115 validé le 17/11 (point 5 du formulaire de
+   `docs/journal/ban-radar-tcg-diagnostic.md`) ; plus aucun emplacement « en attente du diagnostic TOK-115 ».
+4. `scripts/check_copy.py` bloquant (`--strict` dans `scripts/check.py`) : 853 textes lus, 0 occurrence.
+
+Écarts au tableau, décidés par défaut (détail : `docs/planning/2026-11-18/decisions-prises.md`, lignes « Lot 16 ») :
+- T18 : l’API ne sert pas le nombre total de cartes notées → « Cartes TCG notées de 0 à 100 sur six critères, d’après
+  {n_decks} decks de tournoi des 6 derniers mois ; les 50 premières sont affichées. »
+- B02 à B09 (accueil) : le tableau de 4 listes devient un tableau de 2 lignes (TCG, OCG : cartes touchées dans le top 25,
+  Ban Radar contre part des decks, en barres ; listes où le Ban Radar fait mieux), suivi du rang médian et de la phrase
+  sur le hasard ; lien vers l’onglet Historique dans la source. Chiffres figés dans `SITE_FACTS.banTop25`, relevés dans
+  `ban_backtest_lists` (backtest du 16/11).
+- B12, B23, B25 : texte du verdict validé (point 5 TOK-115), écrit une seule fois dans `lib/ban-verdict.ts` ; dans
+  l’onglet Historique, il ne s’affiche que si les listes servies donnent encore les mêmes sommes. Sur `/methode`, les
+  mesures vont dans « Résultat » (section Ban Radar) et la phrase sur le hasard dans « Lecture » (section historique).
+- B24, B27 : « 30 avec, 28 sans » (diagnostic, égalités départagées autrement : 30 contre les 29 affichés) devient « le
+  retirer change de 2 le nombre de cartes touchées dans le top 25 TCG ».
+- B18 : phrase laissée dans l’encart ; la légende en ligne existe déjà sous la première carte (`CriteriaLegend`).
+- Accueil : surtitre « Méta Yu-Gi-Oh! · données au … » → « YGO Meta · données au … » (sinon il répète le titre neutre) ;
+  surtitre de l’image de partage « YGO Meta · decklists de tournoi ».
 
 Références : `docs/charte-ton-et-explication.md` (validée le 17/11, formulaire §8), consigne de ton du 16/11
 (`docs/planning/2026-11-17/regles.md`), brief `docs/planning/sprint-3/13-reecriture-textes.md`. Vocabulaire des joueurs
@@ -102,28 +131,16 @@ Commentaire libre : ............................................................
 9. **T30 Simulateur, titre** : « Et si Konami la bannissait ? » → « Le graphe de co-occurrences sans une carte. »
 10. **T38 à T42 Erreur et 404** : « réessaie », « Voir la tier list », jeux de mots → constats courts, sans impératif.
 
-## 3. Sortie actuelle du script de mots interdits
+## 3. Sortie du script de mots interdits
 
-`python scripts/check_copy.py` (non bloquant dans `check.py` pour l’instant, `--strict` pour le rendre bloquant) :
+Avant application (17/11) : 13 occurrences (promesse 4, question 4, superlatif 3, appel à l’action 2), toutes couvertes
+par une ligne T ou B. Après application (18/11), `python scripts/check_copy.py --strict` :
 
 ```
-  app/ban/BanRadarView.tsx:119  [promesse] « Qui sera »  —  Qui sera banni ensuite ?
-  app/ban/BanRadarView.tsx:119  [question] « ? »  —  Qui sera banni ensuite ?
-  app/ban/BanRadarView.tsx:134  [question] « ? »  —  Comment lire ce score ?
-  app/ban/BanRadarView.tsx:159  [superlatif] « trustent »  —  Les staples génériques trustent le haut du classement complet parce qu’elles sont jouées partout à 3 exempl…
-  app/ban/BanSimulatorView.tsx:50  [question] « ? »  —  Et si Konami la bannissait ?
-  app/ban/CardImpactView.tsx:68  [question] « ? »  —  Comment lire ce score ?
-  app/ban/CardImpactView.tsx:83  [superlatif] « trustent »  —  Les staples génériques trustent le haut du classement parce qu’elles sont jouées par le plus d’archétypes à…
-  app/early-signals/page.tsx:40  [promesse] « qui montent »  —  Les cartes qui montent avant la méta.
-  app/error.tsx:30  [appel à l'action] « réessaie »  —  L’API n’a pas répondu ou a renvoyé une erreur. Le reste du site n’est pas touché : réessaie dans un instant.
-  app/evolution/page.tsx:34  [promesse] « Qui monte »  —  Qui monte, qui s’efface .
-  app/not-found.tsx:24  [appel à l'action] « Voir la »  —  Voir la tier list
-  app/predictions/page.tsx:45  [promesse] « mois prochain »  —  La méta du mois prochain .
-  lib/ban-criteria.ts:8  [superlatif] « indispensable »  —  La carte est indispensable à un archétype qui pèse dans la méta.
-Textes lus : 848 ; occurrences : 13 (promesse 4, question 4, superlatif 3, appel à l'action 2)
+Textes lus : 853 ; occurrences : 0 (aucune)
 ```
 
-Toutes ces occurrences ont une proposition dans le tableau (T et B). Règles du script, tirées de la charte §1 et §5 :
+Règles du script, tirées de la charte §1 et §5 :
 appels à l’action et impératifs (« regarde », « essaie », « découvre », « voir la », « réessaie », « agir »…), conseils
 (« à surveiller », « à croiser »), promesses (« avant la méta », « qui montent », « qui sera », « mois prochain »,
 « garanti »…), superlatifs et termes forts non mesurés (« meilleur » employé seul, « indispensable », « puissant »,
@@ -131,7 +148,7 @@ appels à l’action et impératifs (« regarde », « essaie », « découvre �
 notations de formule et noms de variables (`≥`, `α`, `snake_case`, « Ridge », « Jaccard », `x = y`…). Un faux positif se
 déclare dans `ALLOW`, jamais en affaiblissant une règle.
 
-## 4. Textes du Ban Radar en attente du formulaire TOK-115
+## 4. Textes du Ban Radar qui jugent le score (appliqués le 18/11)
 
 Ces textes jugent la qualité du score. Ils attendent la décision de Thomas sur le diagnostic
 (`docs/journal/ban-radar-tcg-diagnostic.md`) et sa relecture (`docs/journal/ban-radar-tcg-relecture.md`, verdict
@@ -142,34 +159,34 @@ ajouté ici parce qu’il présente 4 listes choisies sur 20 comme lecture du sc
 
 | # | Page | Fichier:ligne | Texte actuel | Pourquoi en attente | Formulation proposée (tirée de la relecture) |
 |---|---|---|---|---|---|
-| B01 | Accueil | `app/page.tsx:457` | Ban Radar rejoué sur les banlists passées | titre du même bloc | « Ban Radar rejoué sur 20 banlists passées » |
-| B02 | Accueil | `app/page.tsx:459` | Rang médian, dans le classement calculé la veille de la banlist, des cartes ensuite restreintes. Trait vertical : rang attendu au hasard (milieu du classement). | bloc « Ban Radar rejoué » de l’accueil : il montre 4 listes sur 20 choisies, et en tire une lecture de la qualité du score (non listé dans le brief, ajouté ici par prudence) | Remplacer le tableau de 4 listes par le bilan par format, tiré de la relecture TOK-115 : « Top 25 de la veille, 10 banlists TCG d’avril 2024 à octobre 2026 : 29 cartes touchées sur 250 places, contre 16 pour le classement par part des decks. » + même ligne OCG (41 contre 18). Lien vers l’onglet Historique. |
-| B03 | Accueil | `app/page.tsx:464` | Rang médian des cartes touchées, pour quatre banlists rejouées | légende du même tableau | supprimée avec le tableau de 4 listes |
-| B04 | Accueil | `app/page.tsx:467` | Banlist | en-têtes du tableau de 4 listes (Banlist, Rang médian…, Au hasard, Cartes classées) | supprimés avec le tableau |
-| B05 | Accueil | `app/page.tsx:468` | Rang médian des cartes touchées | en-tête du tableau de 4 listes | supprimé avec le tableau |
-| B06 | Accueil | `app/page.tsx:469` | Au hasard | en-tête du tableau de 4 listes | supprimé avec le tableau |
-| B07 | Accueil | `app/page.tsx:470` | Cartes classées | en-tête du tableau de 4 listes | supprimé avec le tableau |
-| B08 | Accueil | `app/page.tsx:504` | Top 10 du radar sur {…} banlists TCG (avril 2024 à octobre 2026) : {…} places sur 100 suivies d’une restriction pour les pièces d’archétype, {…} sur 100 pour les staples génériques. | comparaison top 10 pièces d’archétype / staples : chiffres exacts, mais présentée comme une preuve du score | remplacée par la ligne top 25 ci-dessus (même source, comparée à la base staples comme le demande la relecture) |
-| B09 | Accueil | `app/page.tsx:507` | Source : backtest du {…}, {…} des {…} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026. Trait : milieu du classement ; la bande du hasard à 90 % est dans l’historique du Ban Center. | pied du même bloc | « Source : backtest du 16 novembre 2026, 20 listes rejouées (10 TCG, 10 OCG), banlists Yugipedia. Poids du score réglés sur la liste TCG de mai 2026. » |
-| B10 | Ban Radar | `app/ban/BanRadarView.tsx:134` | Comment lire ce score ? | libellé de l’encart : question ; l’encart entier juge la qualité du score | « Lecture du score » (le libellé suit l’encart) |
-| B11 | Ban Radar | `app/ban/BanRadarView.tsx:136` | C’est un score de risque , pas une probabilité : il classe les cartes par ressemblance au profil de celles que Konami a historiquement touchées. Il ne dit pas « X % de chances d’être bannie ». | 1er paragraphe : définition (risque, pas probabilité) ; conforme sur le fond, mais dans l’encart en attente | « Score de risque, pas une probabilité : il classe les cartes par ressemblance au profil des cartes déjà touchées par Konami. » (la phrase « X % de chances » disparaît : elle répète la précédente) |
-| B12 | Ban Radar | `app/ban/BanRadarView.tsx:140` | Rejoué la veille des banlists passées (listes dont la fenêtre compte au moins 600 decks : dix en TCG, dix en OCG) : | liste de 3 résultats choisis et paragraphe de backtest : la charte §6 ex. 8 veut un graphique, la relecture TOK-115 un verdict avec effectifs | Remplacer la liste par le verdict de la relecture, adapté à la charte : « Sur les 10 banlists TCG d’avril 2024 à octobre 2026, 29 cartes touchées dans le top 25 de la veille (sur 250 places), contre 16 pour le classement par part des decks ; écart non établi (6 listes pour, 1 contre, 3 égalités). Rang médian meilleur sur 3 listes sur 10. En OCG : 41 contre 18 (9 listes sur 10), rang médian meilleur sur 8 listes sur 10. » + lien vers l’onglet Historique. |
-| B13 | Ban Radar | `app/ban/BanRadarView.tsx:143` | TCG, 18 mai 2026 : rang médian 84 sur 889 cartes notées pour les cartes réellement touchées (le hasard donnerait environ 445). | élément de la liste de 3 résultats | supprimé (remplacé par le verdict ci-dessus) |
-| B14 | Ban Radar | `app/ban/BanRadarView.tsx:147` | OCG, 1er juillet 2026 : rang médian 19 sur 1 236. Le score n’a jamais été calibré sur l’OCG : c’est un test hors distribution, et il y réussit mieux qu’en TCG. | élément de la liste ; « il y réussit mieux » : jugement | supprimé (remplacé par le verdict ci-dessus) |
-| B15 | Ban Radar | `app/ban/BanRadarView.tsx:151` | TCG, 21 septembre et 19 octobre 2026 : les deux listes les plus récentes sont mauvaises (rang médian 206 sur 981, puis 308 sur 905, proche du hasard). Le haut du classement tient, mais la liste d’octobre touche 43 cartes dont beaucoup de marginales, et le méta Genesys, exclu des données, échappe au score. | élément de la liste ; « mauvaises », « le haut du classement tient » : jugements | supprimé ; les deux listes restent visibles et annotées dans l’onglet Historique |
-| B16 | Ban Radar | `app/ban/BanRadarView.tsx:157` | Résultats mitigés selon les listes : c’est encourageant, ce n’est pas une validation. | verdict sans mesure (« encourageant ») | supprimé (le verdict chiffré le remplace) |
-| B17 | Ban Radar | `app/ban/BanRadarView.tsx:159` | Les staples génériques trustent le haut du classement complet parce qu’elles sont jouées partout à 3 exemplaires, mais Konami frappe surtout les pièces de moteur des decks qui gagnent. La page s’ouvre donc sur les « Pièces d’archétype » ; les staples ont leur propre vue. | « trustent » : terme fort non mesuré ; « Konami frappe surtout les pièces de moteur » : affirmation sans chiffre ici | « Sur les 10 banlists TCG rejouées, 6 des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre 19 pour les pièces d’archétype : la page s’ouvre sur les pièces d’archétype. » |
-| B18 | Ban Radar | `app/ban/BanRadarView.tsx:163` | La barre sous chaque carte décompose le score : un segment par critère, en points sur 100. | légende de la barre, conforme ; dans l’encart en attente | inchangé, déplacé au-dessus de la liste (légende en ligne, charte §2.4) |
-| B19 | Ban Radar | `app/ban/BanRadarView.tsx:181` | Un score élevé ne suffit pas pour une staple | titre d’encadré qui juge le score sur un sous-ensemble | « Staples génériques et restrictions » |
-| B20 | Ban Radar | `app/ban/BanRadarView.tsx:183` | Sur les {…} dernières banlists TCG rejouées, {…} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre {…} sur 100 pour les pièces d’archétype. Ash Blossom, première à chaque fois, n’a jamais été touchée. | chiffres exacts ; « Ash Blossom, première à chaque fois, n’a jamais été touchée » sans période | « … contre {19} sur 100 pour les pièces d’archétype. Ash Blossom, première des staples sur les 10 listes, n’a été touchée par aucune. » |
-| B21 | Historique | `app/ban/BanHistoryView.tsx:284` | Rang médian meilleur que le hasard | en-tête du bilan : comparaison mesurée | conforme, inchangé (en attente avec le bilan) |
-| B22 | Historique | `app/ban/BanHistoryView.tsx:285` | Meilleur que les staples | en-tête du bilan : comparaison mesurée | conforme, inchangé (en attente avec le bilan) |
-| B23 | Historique | `app/ban/BanHistoryView.tsx:501` | chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort ; lecture en attente du diagnostic TOK-115 | pied du bilan : emplacement du verdict, laissé vide par consigne de Thomas | « chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort » + ligne de lecture : « Top 25 TCG : 29 cartes touchées sur 250 places contre 16 pour les staples, écart non établi (6 listes pour, 1 contre, 3 égalités) ; OCG : 41 contre 18, 9 listes sur 10. » |
-| B24 | Historique | `app/ban/BanHistoryView.tsx:554` | Pour chaque liste, le score est recalculé avec les seules decklists des 6 mois qui précèdent son entrée en vigueur. Une carte compte comme touchée quand son statut se durcit (illimitée vers semi-limitée, limitée ou interdite, et ainsi de suite). | bloc Méthode : la relecture (I6) demande une ligne sur le critère « pont », calculé sur le graphe actuel | texte inchangé + « Le critère « pont » vient du graphe de co-occurrences actuel, pas de celui de la veille ; son effet mesuré est négligeable (top 25 TCG : 30 cartes avec, 28 sans). » |
-| B25 | Méthode | `app/methode/page.tsx:367` | Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe. | section Ban Radar de /methode : limite conforme ; la section attend le verdict | inchangé + ligne « Résultat » (verdict de la relecture TOK-115, mêmes chiffres que l’onglet Historique) |
-| B26 | Méthode | `app/methode/page.tsx:372` | Ban Radar contre l’historique | titre de section, conforme | conforme, inchangé (en attente avec la section) |
-| B27 | Méthode | `app/methode/page.tsx:375` | Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures. | section « Ban Radar contre l’historique » : la relecture (I6) demande la réserve sur le critère « pont » | texte inchangé + « Exception : le critère « pont » vient du graphe actuel ; effet mesuré négligeable (top 25 TCG : 30 avec, 28 sans). » |
-| B28 | Méthode | `app/methode/page.tsx:381` | Rang médian des cartes touchées, liste par liste | titre de la figure, conforme | conforme, inchangé (en attente avec la section) |
+| B01 ✅ | Accueil | `app/page.tsx:457` | Ban Radar rejoué sur les banlists passées | titre du même bloc | « Ban Radar rejoué sur 20 banlists passées » |
+| B02 ✅ | Accueil | `app/page.tsx:459` | Rang médian, dans le classement calculé la veille de la banlist, des cartes ensuite restreintes. Trait vertical : rang attendu au hasard (milieu du classement). | bloc « Ban Radar rejoué » de l’accueil : il montre 4 listes sur 20 choisies, et en tire une lecture de la qualité du score (non listé dans le brief, ajouté ici par prudence) | Remplacer le tableau de 4 listes par le bilan par format, tiré de la relecture TOK-115 : « Top 25 de la veille, 10 banlists TCG d’avril 2024 à octobre 2026 : 29 cartes touchées sur 250 places, contre 16 pour le classement par part des decks. » + même ligne OCG (41 contre 18). Lien vers l’onglet Historique. |
+| B03 ✅ | Accueil | `app/page.tsx:464` | Rang médian des cartes touchées, pour quatre banlists rejouées | légende du même tableau | supprimée avec le tableau de 4 listes |
+| B04 ✅ | Accueil | `app/page.tsx:467` | Banlist | en-têtes du tableau de 4 listes (Banlist, Rang médian…, Au hasard, Cartes classées) | supprimés avec le tableau |
+| B05 ✅ | Accueil | `app/page.tsx:468` | Rang médian des cartes touchées | en-tête du tableau de 4 listes | supprimé avec le tableau |
+| B06 ✅ | Accueil | `app/page.tsx:469` | Au hasard | en-tête du tableau de 4 listes | supprimé avec le tableau |
+| B07 ✅ | Accueil | `app/page.tsx:470` | Cartes classées | en-tête du tableau de 4 listes | supprimé avec le tableau |
+| B08 ✅ | Accueil | `app/page.tsx:504` | Top 10 du radar sur {…} banlists TCG (avril 2024 à octobre 2026) : {…} places sur 100 suivies d’une restriction pour les pièces d’archétype, {…} sur 100 pour les staples génériques. | comparaison top 10 pièces d’archétype / staples : chiffres exacts, mais présentée comme une preuve du score | remplacée par la ligne top 25 ci-dessus (même source, comparée à la base staples comme le demande la relecture) |
+| B09 ✅ | Accueil | `app/page.tsx:507` | Source : backtest du {…}, {…} des {…} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026. Trait : milieu du classement ; la bande du hasard à 90 % est dans l’historique du Ban Center. | pied du même bloc | « Source : backtest du 16 novembre 2026, 20 listes rejouées (10 TCG, 10 OCG), banlists Yugipedia. Poids du score réglés sur la liste TCG de mai 2026. » |
+| B10 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:134` | Comment lire ce score ? | libellé de l’encart : question ; l’encart entier juge la qualité du score | « Lecture du score » (le libellé suit l’encart) |
+| B11 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:136` | C’est un score de risque , pas une probabilité : il classe les cartes par ressemblance au profil de celles que Konami a historiquement touchées. Il ne dit pas « X % de chances d’être bannie ». | 1er paragraphe : définition (risque, pas probabilité) ; conforme sur le fond, mais dans l’encart en attente | « Score de risque, pas une probabilité : il classe les cartes par ressemblance au profil des cartes déjà touchées par Konami. » (la phrase « X % de chances » disparaît : elle répète la précédente) |
+| B12 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:140` | Rejoué la veille des banlists passées (listes dont la fenêtre compte au moins 600 decks : dix en TCG, dix en OCG) : | liste de 3 résultats choisis et paragraphe de backtest : la charte §6 ex. 8 veut un graphique, la relecture TOK-115 un verdict avec effectifs | Remplacer la liste par le verdict de la relecture, adapté à la charte : « Sur les 10 banlists TCG d’avril 2024 à octobre 2026, 29 cartes touchées dans le top 25 de la veille (sur 250 places), contre 16 pour le classement par part des decks ; écart non établi (6 listes pour, 1 contre, 3 égalités). Rang médian meilleur sur 3 listes sur 10. En OCG : 41 contre 18 (9 listes sur 10), rang médian meilleur sur 8 listes sur 10. » + lien vers l’onglet Historique. |
+| B13 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:143` | TCG, 18 mai 2026 : rang médian 84 sur 889 cartes notées pour les cartes réellement touchées (le hasard donnerait environ 445). | élément de la liste de 3 résultats | supprimé (remplacé par le verdict ci-dessus) |
+| B14 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:147` | OCG, 1er juillet 2026 : rang médian 19 sur 1 236. Le score n’a jamais été calibré sur l’OCG : c’est un test hors distribution, et il y réussit mieux qu’en TCG. | élément de la liste ; « il y réussit mieux » : jugement | supprimé (remplacé par le verdict ci-dessus) |
+| B15 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:151` | TCG, 21 septembre et 19 octobre 2026 : les deux listes les plus récentes sont mauvaises (rang médian 206 sur 981, puis 308 sur 905, proche du hasard). Le haut du classement tient, mais la liste d’octobre touche 43 cartes dont beaucoup de marginales, et le méta Genesys, exclu des données, échappe au score. | élément de la liste ; « mauvaises », « le haut du classement tient » : jugements | supprimé ; les deux listes restent visibles et annotées dans l’onglet Historique |
+| B16 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:157` | Résultats mitigés selon les listes : c’est encourageant, ce n’est pas une validation. | verdict sans mesure (« encourageant ») | supprimé (le verdict chiffré le remplace) |
+| B17 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:159` | Les staples génériques trustent le haut du classement complet parce qu’elles sont jouées partout à 3 exemplaires, mais Konami frappe surtout les pièces de moteur des decks qui gagnent. La page s’ouvre donc sur les « Pièces d’archétype » ; les staples ont leur propre vue. | « trustent » : terme fort non mesuré ; « Konami frappe surtout les pièces de moteur » : affirmation sans chiffre ici | « Sur les 10 banlists TCG rejouées, 6 des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre 19 pour les pièces d’archétype : la page s’ouvre sur les pièces d’archétype. » |
+| B18 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:163` | La barre sous chaque carte décompose le score : un segment par critère, en points sur 100. | légende de la barre, conforme ; dans l’encart en attente | inchangé, déplacé au-dessus de la liste (légende en ligne, charte §2.4) |
+| B19 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:181` | Un score élevé ne suffit pas pour une staple | titre d’encadré qui juge le score sur un sous-ensemble | « Staples génériques et restrictions » |
+| B20 ✅ | Ban Radar | `app/ban/BanRadarView.tsx:183` | Sur les {…} dernières banlists TCG rejouées, {…} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre {…} sur 100 pour les pièces d’archétype. Ash Blossom, première à chaque fois, n’a jamais été touchée. | chiffres exacts ; « Ash Blossom, première à chaque fois, n’a jamais été touchée » sans période | « … contre {19} sur 100 pour les pièces d’archétype. Ash Blossom, première des staples sur les 10 listes, n’a été touchée par aucune. » |
+| B21 ✅ | Historique | `app/ban/BanHistoryView.tsx:284` | Rang médian meilleur que le hasard | en-tête du bilan : comparaison mesurée | conforme, inchangé (en attente avec le bilan) |
+| B22 ✅ | Historique | `app/ban/BanHistoryView.tsx:285` | Meilleur que les staples | en-tête du bilan : comparaison mesurée | conforme, inchangé (en attente avec le bilan) |
+| B23 ✅ | Historique | `app/ban/BanHistoryView.tsx:501` | chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort ; lecture en attente du diagnostic TOK-115 | pied du bilan : emplacement du verdict, laissé vide par consigne de Thomas | « chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort » + ligne de lecture : « Top 25 TCG : 29 cartes touchées sur 250 places contre 16 pour les staples, écart non établi (6 listes pour, 1 contre, 3 égalités) ; OCG : 41 contre 18, 9 listes sur 10. » |
+| B24 ✅ | Historique | `app/ban/BanHistoryView.tsx:554` | Pour chaque liste, le score est recalculé avec les seules decklists des 6 mois qui précèdent son entrée en vigueur. Une carte compte comme touchée quand son statut se durcit (illimitée vers semi-limitée, limitée ou interdite, et ainsi de suite). | bloc Méthode : la relecture (I6) demande une ligne sur le critère « pont », calculé sur le graphe actuel | texte inchangé + « Le critère « pont » vient du graphe de co-occurrences actuel, pas de celui de la veille ; son effet mesuré est négligeable (top 25 TCG : 30 cartes avec, 28 sans). » |
+| B25 ✅ | Méthode | `app/methode/page.tsx:367` | Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe. | section Ban Radar de /methode : limite conforme ; la section attend le verdict | inchangé + ligne « Résultat » (verdict de la relecture TOK-115, mêmes chiffres que l’onglet Historique) |
+| B26 ✅ | Méthode | `app/methode/page.tsx:372` | Ban Radar contre l’historique | titre de section, conforme | conforme, inchangé (en attente avec la section) |
+| B27 ✅ | Méthode | `app/methode/page.tsx:375` | Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures. | section « Ban Radar contre l’historique » : la relecture (I6) demande la réserve sur le critère « pont » | texte inchangé + « Exception : le critère « pont » vient du graphe actuel ; effet mesuré négligeable (top 25 TCG : 30 avec, 28 sans). » |
+| B28 ✅ | Méthode | `app/methode/page.tsx:381` | Rang médian des cartes touchées, liste par liste | titre de la figure, conforme | conforme, inchangé (en attente avec la section) |
 
 ## 5. Tableau complet, page par page
 
@@ -185,12 +202,12 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/opengraph-image.tsx:11` | Corrélation OCG, TCG {…} plus tard | conforme | conforme, inchangé |
 | — | `app/opengraph-image.tsx:12` | IC 95 % : {…} · {…} archétypes | conforme | conforme, inchangé |
 | — | `app/opengraph-image.tsx:16` | Source : {…} | conforme | conforme, inchangé |
-| T01 | `app/opengraph-image.tsx:19` | YGO Meta. La méta OCG précède la méta TCG de {…} : corrélation {…}, {…}. {…}, {…}. | texte alternatif de l’image : même affirmation | « YGO Meta. Corrélation {0,53} entre le score OCG d’un archétype et son score TCG {2 à 6 mois} plus tard, {IC 95 % : 0,43 à 0,59}, {105 archétypes}. » |
+| T01 ✅ | `app/opengraph-image.tsx:19` | YGO Meta. La méta OCG précède la méta TCG de {…} : corrélation {…}, {…}. {…}, {…}. | texte alternatif de l’image : même affirmation | « YGO Meta. Corrélation {0,53} entre le score OCG d’un archétype et son score TCG {2 à 6 mois} plus tard, {IC 95 % : 0,43 à 0,59}, {105 archétypes}. » |
 | — | `app/opengraph-image.tsx:25` | Méta Yu-Gi-Oh! · TCG et OCG | conforme | conforme, inchangé |
-| T02 | `app/opengraph-image.tsx:26` | La méta OCG précède la méta TCG de {…} | image de partage : même affirmation que le titre | « La méta OCG comparée à la méta TCG {2 à 6 mois} plus tard » |
-| T03 | `app/page.tsx:27` | YGO Meta · La méta OCG précède la méta TCG de 2 à 6 mois | titre de partage : affirmation plus forte que la mesure (une corrélation de 0,53 ne montre pas une antériorité) ; la charte veut une description de ce que montre la page | « YGO Meta · Méta OCG et méta TCG, 2 à 6 mois d’écart » |
+| T02 ✅ | `app/opengraph-image.tsx:26` | La méta OCG précède la méta TCG de {…} | image de partage : même affirmation que le titre | « La méta OCG comparée à la méta TCG {2 à 6 mois} plus tard » |
+| T03 ✅ | `app/page.tsx:27` | YGO Meta · La méta OCG précède la méta TCG de 2 à 6 mois | titre de partage : affirmation plus forte que la mesure (une corrélation de 0,53 ne montre pas une antériorité) ; la charte veut une description de ce que montre la page | « YGO Meta · Méta OCG et méta TCG, 2 à 6 mois d’écart » |
 | — | `app/page.tsx:29` | Méta Yu-Gi-Oh! TCG et OCG mesurée sur 23 948 decklists de tournoi : corrélation OCG → TCG de 0,53, signaux boutique, risque de ban, méthode et limites. | conforme | conforme, inchangé |
-| T04 | `app/page.tsx:45` | La méta OCG précède la méta TCG de 2 à 6 mois. (tableau TITLE, mots révélés un à un) | titre (h1, mots révélés un à un) : même affirmation que le titre de partage | « La méta OCG, comparée à la méta TCG *2 à 6 mois* plus tard. » (mot en `<Em>` : « 2 à 6 mois », tiré de `SITE_FACTS.ocgTcgLagRange`) |
+| T04 ✅ | `app/page.tsx:45` | La méta OCG précède la méta TCG de 2 à 6 mois. (tableau TITLE, mots révélés un à un) | titre (h1, mots révélés un à un) : même affirmation que le titre de partage | « La méta OCG, comparée à la méta TCG *2 à 6 mois* plus tard. » (mot en `<Em>` : « 2 à 6 mois », tiré de `SITE_FACTS.ocgTcgLagRange`) |
 | — | `app/page.tsx:76` | Tier list | conforme | conforme, inchangé |
 | — | `app/page.tsx:77` | Évolution | conforme | conforme, inchangé |
 | — | `app/page.tsx:78` | Prédictions | conforme | conforme, inchangé |
@@ -215,7 +232,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/page.tsx:231` | Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists yugiohmeta.com, relevé du | conforme | conforme, inchangé |
 | — | `app/page.tsx:232` | . Incertitude non dessinée : les effectifs mensuels n’ont pas été relevés avec cette série figée. | conforme | conforme, inchangé |
 | — | `app/page.tsx:243` | Outils | conforme | conforme, inchangé |
-| T05 | `app/page.tsx:245` | Trois outils sur | titre de section : mesure et source présentes, période absente | « Trois outils sur *23 948* decklists de tournoi, mai 2023 à novembre 2026. » |
+| T05 ✅ | `app/page.tsx:245` | Trois outils sur | titre de section : mesure et source présentes, période absente | « Trois outils sur *23 948* decklists de tournoi, mai 2023 à novembre 2026. » |
 | — | `app/page.tsx:247` | decklists de tournoi. | conforme | conforme, inchangé |
 | — | `app/page.tsx:255` | Signal boutique | conforme | conforme, inchangé |
 | — | `app/page.tsx:264` | archétypes OCG | conforme | conforme, inchangé |
@@ -242,15 +259,15 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/page.tsx:447` | Corrélation entre le score d’un archétype en OCG et son score en TCG {…} plus tard, sur {…} archétypes. | conforme | conforme, inchangé |
 | — | `app/page.tsx:450` | Libellés Fort, Modéré, Faible des signaux boutique : seuils provisoires, non validés hors échantillon. Premières prédictions datées à échéance en mars 2027. | conforme | conforme, inchangé |
 | — | `app/page.tsx:453` | Source : méta TCG et OCG mensuelles, calcul du | conforme | conforme, inchangé |
-| B01 | `app/page.tsx:457` | Ban Radar rejoué sur les banlists passées | **en attente du formulaire TOK-115** — titre du même bloc | voir § « Textes du Ban Radar en attente » |
-| B02 | `app/page.tsx:459` | Rang médian, dans le classement calculé la veille de la banlist, des cartes ensuite restreintes. Trait vertical : rang attendu au hasard (milieu du classement). | **en attente du formulaire TOK-115** — bloc « Ban Radar rejoué » de l’accueil : il montre 4 listes sur 20 choisies, et en tire une lecture de la qualité du score (non listé dans le brief, ajouté ici par prudence) | voir § « Textes du Ban Radar en attente » |
-| B03 | `app/page.tsx:464` | Rang médian des cartes touchées, pour quatre banlists rejouées | **en attente du formulaire TOK-115** — légende du même tableau | voir § « Textes du Ban Radar en attente » |
-| B04 | `app/page.tsx:467` | Banlist | **en attente du formulaire TOK-115** — en-têtes du tableau de 4 listes (Banlist, Rang médian…, Au hasard, Cartes classées) | voir § « Textes du Ban Radar en attente » |
-| B05 | `app/page.tsx:468` | Rang médian des cartes touchées | **en attente du formulaire TOK-115** — en-tête du tableau de 4 listes | voir § « Textes du Ban Radar en attente » |
-| B06 | `app/page.tsx:469` | Au hasard | **en attente du formulaire TOK-115** — en-tête du tableau de 4 listes | voir § « Textes du Ban Radar en attente » |
-| B07 | `app/page.tsx:470` | Cartes classées | **en attente du formulaire TOK-115** — en-tête du tableau de 4 listes | voir § « Textes du Ban Radar en attente » |
-| B08 | `app/page.tsx:504` | Top 10 du radar sur {…} banlists TCG (avril 2024 à octobre 2026) : {…} places sur 100 suivies d’une restriction pour les pièces d’archétype, {…} sur 100 pour les staples génériques. | **en attente du formulaire TOK-115** — comparaison top 10 pièces d’archétype / staples : chiffres exacts, mais présentée comme une preuve du score | voir § « Textes du Ban Radar en attente » |
-| B09 | `app/page.tsx:507` | Source : backtest du {…}, {…} des {…} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026. Trait : milieu du classement ; la bande du hasard à 90 % est dans l’historique du Ban Center. | **en attente du formulaire TOK-115** — pied du même bloc | voir § « Textes du Ban Radar en attente » |
+| B01 ✅ | `app/page.tsx:457` | Ban Radar rejoué sur les banlists passées | **en attente du formulaire TOK-115** — titre du même bloc | voir § « Textes du Ban Radar en attente » |
+| B02 ✅ | `app/page.tsx:459` | Rang médian, dans le classement calculé la veille de la banlist, des cartes ensuite restreintes. Trait vertical : rang attendu au hasard (milieu du classement). | **en attente du formulaire TOK-115** — bloc « Ban Radar rejoué » de l’accueil : il montre 4 listes sur 20 choisies, et en tire une lecture de la qualité du score (non listé dans le brief, ajouté ici par prudence) | voir § « Textes du Ban Radar en attente » |
+| B03 ✅ | `app/page.tsx:464` | Rang médian des cartes touchées, pour quatre banlists rejouées | **en attente du formulaire TOK-115** — légende du même tableau | voir § « Textes du Ban Radar en attente » |
+| B04 ✅ | `app/page.tsx:467` | Banlist | **en attente du formulaire TOK-115** — en-têtes du tableau de 4 listes (Banlist, Rang médian…, Au hasard, Cartes classées) | voir § « Textes du Ban Radar en attente » |
+| B05 ✅ | `app/page.tsx:468` | Rang médian des cartes touchées | **en attente du formulaire TOK-115** — en-tête du tableau de 4 listes | voir § « Textes du Ban Radar en attente » |
+| B06 ✅ | `app/page.tsx:469` | Au hasard | **en attente du formulaire TOK-115** — en-tête du tableau de 4 listes | voir § « Textes du Ban Radar en attente » |
+| B07 ✅ | `app/page.tsx:470` | Cartes classées | **en attente du formulaire TOK-115** — en-tête du tableau de 4 listes | voir § « Textes du Ban Radar en attente » |
+| B08 ✅ | `app/page.tsx:504` | Top 10 du radar sur {…} banlists TCG (avril 2024 à octobre 2026) : {…} places sur 100 suivies d’une restriction pour les pièces d’archétype, {…} sur 100 pour les staples génériques. | **en attente du formulaire TOK-115** — comparaison top 10 pièces d’archétype / staples : chiffres exacts, mais présentée comme une preuve du score | voir § « Textes du Ban Radar en attente » |
+| B09 ✅ | `app/page.tsx:507` | Source : backtest du {…}, {…} des {…} listes rejouées (les deux de référence et les deux plus récentes en TCG). Poids du score réglés sur la liste TCG de mai 2026. Trait : milieu du classement ; la bande du hasard à 90 % est dans l’historique du Ban Center. | **en attente du formulaire TOK-115** — pied du même bloc | voir § « Textes du Ban Radar en attente » |
 | — | `components/home/constellation.tsx:39` | Schéma : trois amas de cartes reliés entre eux par deux cartes pont, en orange. | conforme | conforme, inchangé |
 | — | `components/home/constellation.tsx:95` | Archétype {…} | conforme | conforme, inchangé |
 | — | `components/home/constellation.tsx:111` | PONT | conforme | conforme, inchangé |
@@ -278,14 +295,14 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/tier-list/page.tsx:18` | fenêtre courante | conforme | conforme, inchangé |
 | — | `app/tier-list/page.tsx:20` | Tier list TCG | conforme | conforme, inchangé |
 | — | `app/tier-list/page.tsx:41` | Tier list · TCG · {…} · {…} decks | conforme | conforme, inchangé |
-| T06 | `app/tier-list/page.tsx:44` | Ce que joue la méta, maintenant . | titre : « maintenant » ne dit ni la période ni ce que montre la page | « Les archétypes TCG classés par *part* des decks de tournoi. » |
-| T07 | `app/tier-list/page.tsx:49` | Classement calculé sur nos decklists de tournoi TCG. Tier | intro : possessif « nos », aucune mesure ni période | « {n} archétypes classés sur {n_decks} decklists de tournoi TCG, {période} (yugiohmeta.com). Tier ⓘ selon la part des decks, tendance par rapport à la fenêtre précédente. » Exemple : « … sur 396 decklists de tournoi TCG, {période} … » (n et période servis par `/meta/tier-list`) |
+| T06 ✅ | `app/tier-list/page.tsx:44` | Ce que joue la méta, maintenant . | titre : « maintenant » ne dit ni la période ni ce que montre la page | « Les archétypes TCG classés par *part* des decks de tournoi. » |
+| T07 ✅ | `app/tier-list/page.tsx:49` | Classement calculé sur nos decklists de tournoi TCG. Tier | intro : possessif « nos », aucune mesure ni période | « {n} archétypes classés sur {n_decks} decklists de tournoi TCG, {période} (yugiohmeta.com). Tier ⓘ selon la part des decks, tendance par rapport à la fenêtre précédente. » Exemple : « … sur 396 decklists de tournoi TCG, {période} … » (n et période servis par `/meta/tier-list`) |
 | — | `app/tier-list/page.tsx:50` | Niveau de l’archétype selon la part des decks de tournoi qui le jouent. | conforme | conforme, inchangé |
-| T08 | `app/tier-list/page.tsx:51` | selon la part de méta, tendance par rapport à la période précédente. | suite de l’intro (même phrase) | voir la ligne précédente |
-| T09 | `app/tier-list/page.tsx:57` | Decklists analysées | chiffre de vitrine (23 948, TCG et OCG, mai 2023 à novembre 2026) placé au-dessus d’un classement calculé sur la seule fenêtre TCG : l’effectif ne correspond pas à la page | « Decks de la fenêtre » : {n_decks} (exemple : 396) |
-| T10 | `app/tier-list/page.tsx:58` | Cartes suivies | chiffre sans rapport avec le classement des archétypes | « Archétypes classés » : {n} |
-| T11 | `app/tier-list/page.tsx:59` | Corrélation OCG → TCG | mesure de la page Boutique / accueil, sans effectif ni intervalle ici | supprimé de cette page (reste sur l’accueil avec son IC 95 %) |
-| T12 | `app/tier-list/page.tsx:60` | Fenêtre du signal sur le TCG | libellé obscur (« fenêtre du signal ») pour « 2 à 6 mois », hors sujet sur cette page | supprimé de cette page (sur l’accueil : « Écart OCG → TCG ») |
+| T08 ✅ | `app/tier-list/page.tsx:51` | selon la part de méta, tendance par rapport à la période précédente. | suite de l’intro (même phrase) | voir la ligne précédente |
+| T09 ✅ | `app/tier-list/page.tsx:57` | Decklists analysées | chiffre de vitrine (23 948, TCG et OCG, mai 2023 à novembre 2026) placé au-dessus d’un classement calculé sur la seule fenêtre TCG : l’effectif ne correspond pas à la page | « Decks de la fenêtre » : {n_decks} (exemple : 396) |
+| T10 ✅ | `app/tier-list/page.tsx:58` | Cartes suivies | chiffre sans rapport avec le classement des archétypes | « Archétypes classés » : {n} |
+| T11 ✅ | `app/tier-list/page.tsx:59` | Corrélation OCG → TCG | mesure de la page Boutique / accueil, sans effectif ni intervalle ici | supprimé de cette page (reste sur l’accueil avec son IC 95 %) |
+| T12 ✅ | `app/tier-list/page.tsx:60` | Fenêtre du signal sur le TCG | libellé obscur (« fenêtre du signal ») pour « 2 à 6 mois », hors sujet sur cette page | supprimé de cette page (sur l’accueil : « Écart OCG → TCG ») |
 | — | `app/tier-list/page.tsx:67` | decklists de tournoi TCG, yugiohmeta.com | conforme | conforme, inchangé |
 | — | `app/tier-list/page.tsx:70` | barre : intervalle à 95 % de la part, point : part observée ; tendance affichée seulement si l’écart dépasse le bruit d’échantillonnage | conforme | conforme, inchangé |
 | — | `app/tier-list/page.tsx:73` | Tier : T0 à partir de 40 % des decks de la fenêtre, T1 à partir de 15 %, T2 à partir de 7 %, T3 à partir de 3 % ; Rogue en dessous ou sous 5 decks. | conforme | conforme, inchangé |
@@ -325,7 +342,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/evolution/page.tsx:17` | Évolution de la méta | conforme | conforme, inchangé |
 | — | `app/evolution/page.tsx:18` | Part mensuelle des decks de tournoi des {…} premiers archétypes Yu-Gi-Oh! TCG{…}, avec intervalle à 95 %. Source : decklists de tournoi, {…}. | conforme | conforme, inchangé |
 | — | `app/evolution/page.tsx:31` | Méta · Évolution | conforme | conforme, inchangé |
-| T13 | `app/evolution/page.tsx:34` | Qui monte, qui s’efface . | titre : tournure de récit (« qui monte ») sans description de ce que montre la page | « Part mensuelle des decks de tournoi, *archétype* par archétype. » |
+| T13 ✅ | `app/evolution/page.tsx:34` | Qui monte, qui s’efface . | titre : tournure de récit (« qui monte ») sans description de ce que montre la page | « Part mensuelle des decks de tournoi, *archétype* par archétype. » |
 | — | `app/evolution/page.tsx:37` | Part mensuelle des decks de tournoi TCG des {…} premiers archétypes{…}, quatre séries au plus. | conforme | conforme, inchangé |
 | — | `app/evolution/page.tsx:37` | de {…} | conforme | conforme, inchangé |
 
@@ -353,7 +370,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/predictions/page.tsx:36` | dernier mois | conforme | conforme, inchangé |
 | — | `app/predictions/page.tsx:37` | mois suivant | conforme | conforme, inchangé |
 | — | `app/predictions/page.tsx:42` | Méta · Prédictions | conforme | conforme, inchangé |
-| T14 | `app/predictions/page.tsx:45` | La méta du mois prochain . | titre : promesse (« la méta du mois prochain ») ; charte §6, exemple 2 | « Le score de chaque archétype, *prévu* pour le mois suivant. » |
+| T14 ✅ | `app/predictions/page.tsx:45` | La méta du mois prochain . | titre : promesse (« la méta du mois prochain ») ; charte §6, exemple 2 | « Le score de chaque archétype, *prévu* pour le mois suivant. » |
 | — | `app/predictions/page.tsx:50` | Score méta ×100 de | conforme | conforme, inchangé |
 | — | `app/predictions/page.tsx:52` | Prévision | conforme | conforme, inchangé |
 | — | `app/predictions/page.tsx:53` | Valeur attendue si la situation récente se prolonge, en ramenant les écarts vers la moyenne. | conforme | conforme, inchangé |
@@ -380,9 +397,9 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 
 | # | Fichier:ligne | Texte actuel | Problème | Proposition |
 |---|---|---|---|---|
-| T15 | `app/ban/kind-filter.tsx:11` | Cartes rattachées à un deck précis | infobulle du filtre : la règle (au moins 50 %) n’est pas dite | « Au moins la moitié des decks qui la jouent sont d’un même archétype » |
+| T15 ✅ | `app/ban/kind-filter.tsx:11` | Cartes rattachées à un deck précis | infobulle du filtre : la règle (au moins 50 %) n’est pas dite | « Au moins la moitié des decks qui la jouent sont d’un même archétype » |
 | — | `app/ban/kind-filter.tsx:11` | Pièces d'archétype | conforme | conforme, inchangé |
-| T16 | `app/ban/kind-filter.tsx:12` | Cartes jouées un peu partout | infobulle du filtre : « un peu partout » au lieu de la règle appliquée (moins de 50 % des decks dans un même archétype) | « Moins de la moitié des decks qui la jouent sont d’un même archétype » |
+| T16 ✅ | `app/ban/kind-filter.tsx:12` | Cartes jouées un peu partout | infobulle du filtre : « un peu partout » au lieu de la règle appliquée (moins de 50 % des decks dans un même archétype) | « Moins de la moitié des decks qui la jouent sont d’un même archétype » |
 | — | `app/ban/kind-filter.tsx:12` | Staples génériques | conforme | conforme, inchangé |
 | — | `app/ban/kind-filter.tsx:13` | Toutes les cartes notées | conforme | conforme, inchangé |
 | — | `app/ban/loading.tsx:15` | Chargement des données… | conforme | conforme, inchangé |
@@ -409,33 +426,33 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 |---|---|---|---|---|
 | — | `app/ban/BanRadarView.tsx:81` | Générique | conforme | conforme, inchangé |
 | — | `app/ban/BanRadarView.tsx:116` | Ban Center · Radar | conforme | conforme, inchangé |
-| T17 | `app/ban/BanRadarView.tsx:119` | Qui sera banni ensuite ? | titre : question et promesse (« qui sera banni ») ; charte §6, exemple 8 | « Les cartes qui ressemblent le plus aux cartes déjà *bannies*. » |
+| T17 ✅ | `app/ban/BanRadarView.tsx:119` | Qui sera banni ensuite ? | titre : question et promesse (« qui sera banni ») ; charte §6, exemple 8 | « Les cartes qui ressemblent le plus aux cartes déjà *bannies*. » |
 | — | `app/ban/BanRadarView.tsx:124` | Données au | conforme | conforme, inchangé |
 | — | `app/ban/BanRadarView.tsx:126` | decks · 6 mois | conforme | conforme, inchangé |
-| T18 | `app/ban/BanRadarView.tsx:129` | Les cartes les plus exposées à la prochaine banlist TCG, notées sur six critères. | intro : promesse (« les plus exposées à la prochaine banlist »), sans effectif ni période | « {n} cartes TCG notées de 0 à 100 sur six critères, d’après {n_decks} decks de tournoi des 6 derniers mois. » (n et n_decks servis par `/ban-radar`) |
-| B10 | `app/ban/BanRadarView.tsx:134` | Comment lire ce score ? | **en attente du formulaire TOK-115** — libellé de l’encart : question ; l’encart entier juge la qualité du score | voir § « Textes du Ban Radar en attente » |
+| T18 ✅ | `app/ban/BanRadarView.tsx:129` | Les cartes les plus exposées à la prochaine banlist TCG, notées sur six critères. | intro : promesse (« les plus exposées à la prochaine banlist »), sans effectif ni période | « {n} cartes TCG notées de 0 à 100 sur six critères, d’après {n_decks} decks de tournoi des 6 derniers mois. » (n et n_decks servis par `/ban-radar`) |
+| B10 ✅ | `app/ban/BanRadarView.tsx:134` | Comment lire ce score ? | **en attente du formulaire TOK-115** — libellé de l’encart : question ; l’encart entier juge la qualité du score | voir § « Textes du Ban Radar en attente » |
 | — | `app/ban/BanRadarView.tsx:134` | Lecture du score | conforme | conforme, inchangé |
-| B11 | `app/ban/BanRadarView.tsx:136` | C’est un score de risque , pas une probabilité : il classe les cartes par ressemblance au profil de celles que Konami a historiquement touchées. Il ne dit pas « X % de chances d’être bannie ». | **en attente du formulaire TOK-115** — 1er paragraphe : définition (risque, pas probabilité) ; conforme sur le fond, mais dans l’encart en attente | voir § « Textes du Ban Radar en attente » |
-| B12 | `app/ban/BanRadarView.tsx:140` | Rejoué la veille des banlists passées (listes dont la fenêtre compte au moins 600 decks : dix en TCG, dix en OCG) : | **en attente du formulaire TOK-115** — liste de 3 résultats choisis et paragraphe de backtest : la charte §6 ex. 8 veut un graphique, la relecture TOK-115 un verdict avec effectifs | voir § « Textes du Ban Radar en attente » |
-| B13 | `app/ban/BanRadarView.tsx:143` | TCG, 18 mai 2026 : rang médian 84 sur 889 cartes notées pour les cartes réellement touchées (le hasard donnerait environ 445). | **en attente du formulaire TOK-115** — élément de la liste de 3 résultats | voir § « Textes du Ban Radar en attente » |
-| B14 | `app/ban/BanRadarView.tsx:147` | OCG, 1er juillet 2026 : rang médian 19 sur 1 236. Le score n’a jamais été calibré sur l’OCG : c’est un test hors distribution, et il y réussit mieux qu’en TCG. | **en attente du formulaire TOK-115** — élément de la liste ; « il y réussit mieux » : jugement | voir § « Textes du Ban Radar en attente » |
-| B15 | `app/ban/BanRadarView.tsx:151` | TCG, 21 septembre et 19 octobre 2026 : les deux listes les plus récentes sont mauvaises (rang médian 206 sur 981, puis 308 sur 905, proche du hasard). Le haut du classement tient, mais la liste d’octobre touche 43 cartes dont beaucoup de marginales, et le méta Genesys, exclu des données, échappe au score. | **en attente du formulaire TOK-115** — élément de la liste ; « mauvaises », « le haut du classement tient » : jugements | voir § « Textes du Ban Radar en attente » |
-| B16 | `app/ban/BanRadarView.tsx:157` | Résultats mitigés selon les listes : c’est encourageant, ce n’est pas une validation. | **en attente du formulaire TOK-115** — verdict sans mesure (« encourageant ») | voir § « Textes du Ban Radar en attente » |
-| B17 | `app/ban/BanRadarView.tsx:159` | Les staples génériques trustent le haut du classement complet parce qu’elles sont jouées partout à 3 exemplaires, mais Konami frappe surtout les pièces de moteur des decks qui gagnent. La page s’ouvre donc sur les « Pièces d’archétype » ; les staples ont leur propre vue. | **en attente du formulaire TOK-115** — « trustent » : terme fort non mesuré ; « Konami frappe surtout les pièces de moteur » : affirmation sans chiffre ici | voir § « Textes du Ban Radar en attente » |
-| B18 | `app/ban/BanRadarView.tsx:163` | La barre sous chaque carte décompose le score : un segment par critère, en points sur 100. | **en attente du formulaire TOK-115** — légende de la barre, conforme ; dans l’encart en attente | voir § « Textes du Ban Radar en attente » |
+| B11 ✅ | `app/ban/BanRadarView.tsx:136` | C’est un score de risque , pas une probabilité : il classe les cartes par ressemblance au profil de celles que Konami a historiquement touchées. Il ne dit pas « X % de chances d’être bannie ». | **en attente du formulaire TOK-115** — 1er paragraphe : définition (risque, pas probabilité) ; conforme sur le fond, mais dans l’encart en attente | voir § « Textes du Ban Radar en attente » |
+| B12 ✅ | `app/ban/BanRadarView.tsx:140` | Rejoué la veille des banlists passées (listes dont la fenêtre compte au moins 600 decks : dix en TCG, dix en OCG) : | **en attente du formulaire TOK-115** — liste de 3 résultats choisis et paragraphe de backtest : la charte §6 ex. 8 veut un graphique, la relecture TOK-115 un verdict avec effectifs | voir § « Textes du Ban Radar en attente » |
+| B13 ✅ | `app/ban/BanRadarView.tsx:143` | TCG, 18 mai 2026 : rang médian 84 sur 889 cartes notées pour les cartes réellement touchées (le hasard donnerait environ 445). | **en attente du formulaire TOK-115** — élément de la liste de 3 résultats | voir § « Textes du Ban Radar en attente » |
+| B14 ✅ | `app/ban/BanRadarView.tsx:147` | OCG, 1er juillet 2026 : rang médian 19 sur 1 236. Le score n’a jamais été calibré sur l’OCG : c’est un test hors distribution, et il y réussit mieux qu’en TCG. | **en attente du formulaire TOK-115** — élément de la liste ; « il y réussit mieux » : jugement | voir § « Textes du Ban Radar en attente » |
+| B15 ✅ | `app/ban/BanRadarView.tsx:151` | TCG, 21 septembre et 19 octobre 2026 : les deux listes les plus récentes sont mauvaises (rang médian 206 sur 981, puis 308 sur 905, proche du hasard). Le haut du classement tient, mais la liste d’octobre touche 43 cartes dont beaucoup de marginales, et le méta Genesys, exclu des données, échappe au score. | **en attente du formulaire TOK-115** — élément de la liste ; « mauvaises », « le haut du classement tient » : jugements | voir § « Textes du Ban Radar en attente » |
+| B16 ✅ | `app/ban/BanRadarView.tsx:157` | Résultats mitigés selon les listes : c’est encourageant, ce n’est pas une validation. | **en attente du formulaire TOK-115** — verdict sans mesure (« encourageant ») | voir § « Textes du Ban Radar en attente » |
+| B17 ✅ | `app/ban/BanRadarView.tsx:159` | Les staples génériques trustent le haut du classement complet parce qu’elles sont jouées partout à 3 exemplaires, mais Konami frappe surtout les pièces de moteur des decks qui gagnent. La page s’ouvre donc sur les « Pièces d’archétype » ; les staples ont leur propre vue. | **en attente du formulaire TOK-115** — « trustent » : terme fort non mesuré ; « Konami frappe surtout les pièces de moteur » : affirmation sans chiffre ici | voir § « Textes du Ban Radar en attente » |
+| B18 ✅ | `app/ban/BanRadarView.tsx:163` | La barre sous chaque carte décompose le score : un segment par critère, en points sur 100. | **en attente du formulaire TOK-115** — légende de la barre, conforme ; dans l’encart en attente | voir § « Textes du Ban Radar en attente » |
 | — | `app/ban/BanRadarView.tsx:177` | Top {…} | conforme | conforme, inchangé |
-| B19 | `app/ban/BanRadarView.tsx:181` | Un score élevé ne suffit pas pour une staple | **en attente du formulaire TOK-115** — titre d’encadré qui juge le score sur un sous-ensemble | voir § « Textes du Ban Radar en attente » |
-| B20 | `app/ban/BanRadarView.tsx:183` | Sur les {…} dernières banlists TCG rejouées, {…} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre {…} sur 100 pour les pièces d’archétype. Ash Blossom, première à chaque fois, n’a jamais été touchée. | **en attente du formulaire TOK-115** — chiffres exacts ; « Ash Blossom, première à chaque fois, n’a jamais été touchée » sans période | voir § « Textes du Ban Radar en attente » |
+| B19 ✅ | `app/ban/BanRadarView.tsx:181` | Un score élevé ne suffit pas pour une staple | **en attente du formulaire TOK-115** — titre d’encadré qui juge le score sur un sous-ensemble | voir § « Textes du Ban Radar en attente » |
+| B20 ✅ | `app/ban/BanRadarView.tsx:183` | Sur les {…} dernières banlists TCG rejouées, {…} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre {…} sur 100 pour les pièces d’archétype. Ash Blossom, première à chaque fois, n’a jamais été touchée. | **en attente du formulaire TOK-115** — chiffres exacts ; « Ash Blossom, première à chaque fois, n’a jamais été touchée » sans période | voir § « Textes du Ban Radar en attente » |
 | — | `app/ban/BanRadarView.tsx:195` | decklists de tournoi TCG (yugiohmeta.com), banlists (Yugipedia) | conforme | conforme, inchangé |
 | — | `app/ban/BanRadarView.tsx:196` | au {…}, 6 mois glissants | conforme | conforme, inchangé |
 | — | `app/ban/BanRadarView.tsx:198` | aucun intervalle : un score de risque classe les cartes, ce n’est pas une probabilité ; sa fiabilité se lit dans l’onglet Historique | conforme | conforme, inchangé |
 | — | `app/ban/BanRadarView.tsx:201` | Le score rapproche chaque carte du profil des cartes déjà touchées par Konami, sur six critères ; la barre en donne la part de chacun. | conforme | conforme, inchangé |
 | — | `app/ban/BanRadarView.tsx:202` | Fenêtre : les 6 derniers mois de decks de tournoi TCG. | conforme | conforme, inchangé |
 | — | `lib/ban-criteria.ts:7` | Part des decks du format qui jouent la carte. | conforme | conforme, inchangé |
-| T19 | `lib/ban-criteria.ts:7` | Ubiquité | libellé de critère : mot savant (charte §1 : les mots du lecteur) | « Part des decks » |
-| T20 | `lib/ban-criteria.ts:8` | La carte est indispensable à un archétype qui pèse dans la méta. | définition du critère « Porteur » : « indispensable » non mesuré, ne dit pas ce qui est compté | « La carte est jouée par la plupart des decks d’un archétype qui pèse dans la méta. » |
-| T21 | `lib/ban-criteria.ts:9` | Nombre moyen d'exemplaires joués : une carte jouée à 3 peut être limitée, une carte déjà à 1 beaucoup moins. | définition + explication en deux temps ; libellé du critère « Copies » (anglicisme, le site dit « exemplaires ») | libellé « Exemplaires » ; définition « Nombre moyen d’exemplaires joués par deck (1 à 3). » |
-| T22 | `lib/ban-criteria.ts:10` | La carte est déjà limitée ou semi-limitée : Konami y revient souvent. | « souvent » : affirmation sans mesure dans une définition | « La carte est déjà limitée ou semi-limitée. » |
+| T19 ✅ | `lib/ban-criteria.ts:7` | Ubiquité | libellé de critère : mot savant (charte §1 : les mots du lecteur) | « Part des decks » |
+| T20 ✅ | `lib/ban-criteria.ts:8` | La carte est indispensable à un archétype qui pèse dans la méta. | définition du critère « Porteur » : « indispensable » non mesuré, ne dit pas ce qui est compté | « La carte est jouée par la plupart des decks d’un archétype qui pèse dans la méta. » |
+| T21 ✅ | `lib/ban-criteria.ts:9` | Nombre moyen d'exemplaires joués : une carte jouée à 3 peut être limitée, une carte déjà à 1 beaucoup moins. | définition + explication en deux temps ; libellé du critère « Copies » (anglicisme, le site dit « exemplaires ») | libellé « Exemplaires » ; définition « Nombre moyen d’exemplaires joués par deck (1 à 3). » |
+| T22 ✅ | `lib/ban-criteria.ts:10` | La carte est déjà limitée ou semi-limitée : Konami y revient souvent. | « souvent » : affirmation sans mesure dans une définition | « La carte est déjà limitée ou semi-limitée. » |
 | — | `lib/ban-criteria.ts:11` | Usage des 3 derniers mois comparé aux 3 précédents. | conforme | conforme, inchangé |
 | — | `lib/ban-criteria.ts:11` | Élan | libellé conforme | conforme, inchangé |
 | — | `lib/ban-criteria.ts:12` | La carte relie des groupes de cartes qui, sans elle, se jouent rarement ensemble. | conforme | conforme, inchangé |
@@ -465,8 +482,8 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/ban/BanHistoryView.tsx:222` | Rang médian | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:280` | Bilan des banlists rejouées, par format | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:283` | Format | conforme | conforme, inchangé |
-| B21 | `app/ban/BanHistoryView.tsx:284` | Rang médian meilleur que le hasard | **en attente du formulaire TOK-115** — en-tête du bilan : comparaison mesurée | voir § « Textes du Ban Radar en attente » |
-| B22 | `app/ban/BanHistoryView.tsx:285` | Meilleur que les staples | **en attente du formulaire TOK-115** — en-tête du bilan : comparaison mesurée | voir § « Textes du Ban Radar en attente » |
+| B21 ✅ | `app/ban/BanHistoryView.tsx:284` | Rang médian meilleur que le hasard | **en attente du formulaire TOK-115** — en-tête du bilan : comparaison mesurée | voir § « Textes du Ban Radar en attente » |
+| B22 ✅ | `app/ban/BanHistoryView.tsx:285` | Meilleur que les staples | **en attente du formulaire TOK-115** — en-tête du bilan : comparaison mesurée | voir § « Textes du Ban Radar en attente » |
 | — | `app/ban/BanHistoryView.tsx:286` | Top | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:287` | Top | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:297` | listes sur | conforme | conforme, inchangé |
@@ -503,7 +520,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/ban/BanHistoryView.tsx:482` | Historique non calculé sur cette base. | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:495` | Bilan par format | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:499` | calcul du {…}, listes du {…} au {…} | conforme | conforme, inchangé |
-| B23 | `app/ban/BanHistoryView.tsx:501` | chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort ; lecture en attente du diagnostic TOK-115 | **en attente du formulaire TOK-115** — pied du bilan : emplacement du verdict, laissé vide par consigne de Thomas | voir § « Textes du Ban Radar en attente » |
+| B23 ✅ | `app/ban/BanHistoryView.tsx:501` | chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort ; lecture en attente du diagnostic TOK-115 | **en attente du formulaire TOK-115** — pied du bilan : emplacement du verdict, laissé vide par consigne de Thomas | voir § « Textes du Ban Radar en attente » |
 | — | `app/ban/BanHistoryView.tsx:516` | classements reconstitués la veille de chaque liste, calcul du {…} | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:518` | bande grise : rangs médians que donneraient 90 % des tirages au sort | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:520` | position de gauche à droite : du premier au dernier du classement | conforme | conforme, inchangé |
@@ -511,7 +528,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/ban/BanHistoryView.tsx:526` | prévu et cartes touchées, liste par liste | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:529` | Listes {…} | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:551` | Méthode | conforme | conforme, inchangé |
-| B24 | `app/ban/BanHistoryView.tsx:554` | Pour chaque liste, le score est recalculé avec les seules decklists des 6 mois qui précèdent son entrée en vigueur. Une carte compte comme touchée quand son statut se durcit (illimitée vers semi-limitée, limitée ou interdite, et ainsi de suite). | **en attente du formulaire TOK-115** — bloc Méthode : la relecture (I6) demande une ligne sur le critère « pont », calculé sur le graphe actuel | voir § « Textes du Ban Radar en attente » |
+| B24 ✅ | `app/ban/BanHistoryView.tsx:554` | Pour chaque liste, le score est recalculé avec les seules decklists des 6 mois qui précèdent son entrée en vigueur. Une carte compte comme touchée quand son statut se durcit (illimitée vers semi-limitée, limitée ou interdite, et ainsi de suite). | **en attente du formulaire TOK-115** — bloc Méthode : la relecture (I6) demande une ligne sur le critère « pont », calculé sur le graphe actuel | voir § « Textes du Ban Radar en attente » |
 | — | `app/ban/BanHistoryView.tsx:559` | Une liste est écartée sous | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:559` | cartes touchées : en dessous, le classement ne se distingue pas du hasard. | conforme | conforme, inchangé |
 | — | `app/ban/BanHistoryView.tsx:563` | Les poids du score ont été choisis en août 2026 sur la liste TCG du 18 mai 2026. Seules les listes marquées « après calage » ( | conforme | conforme, inchangé |
@@ -526,17 +543,17 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/ban/CardImpactView.tsx:15` | Générique | conforme | conforme, inchangé |
 | — | `app/ban/CardImpactView.tsx:37` | Simuler le ban → | conforme | conforme, inchangé |
 | — | `app/ban/CardImpactView.tsx:50` | Ban Center · Cartes à impact | conforme | conforme, inchangé |
-| T23 | `app/ban/CardImpactView.tsx:53` | Les cartes qui tiennent la méta. | titre : image (« tiennent la méta ») sans mesure | « Les cartes jouées par le plus d’*archétypes* à la fois. » |
+| T23 ✅ | `app/ban/CardImpactView.tsx:53` | Les cartes qui tiennent la méta. | titre : image (« tiennent la méta ») sans mesure | « Les cartes jouées par le plus d’*archétypes* à la fois. » |
 | — | `app/ban/CardImpactView.tsx:58` | Données au | conforme | conforme, inchangé |
 | — | `app/ban/CardImpactView.tsx:60` | decks · 6 mois | conforme | conforme, inchangé |
-| T24 | `app/ban/CardImpactView.tsx:63` | Les cartes dont le retrait fragmenterait le plus la méta : combien d'archétypes et de decks une interdiction toucherait. | intro : conditionnel spéculatif (« fragmenterait », « toucherait »), sans effectif ni période | « Cartes TCG classées par nombre d’archétypes et de decks qui les jouent, sur {n_decks} decks de tournoi des 6 derniers mois. » |
-| T25 | `app/ban/CardImpactView.tsx:68` | Comment lire ce score ? | libellé d’encart : question | « Lecture du score » |
+| T24 ✅ | `app/ban/CardImpactView.tsx:63` | Les cartes dont le retrait fragmenterait le plus la méta : combien d'archétypes et de decks une interdiction toucherait. | intro : conditionnel spéculatif (« fragmenterait », « toucherait »), sans effectif ni période | « Cartes TCG classées par nombre d’archétypes et de decks qui les jouent, sur {n_decks} decks de tournoi des 6 derniers mois. » |
+| T25 ✅ | `app/ban/CardImpactView.tsx:68` | Comment lire ce score ? | libellé d’encart : question | « Lecture du score » |
 | — | `app/ban/CardImpactView.tsx:68` | Lecture du score | conforme | conforme, inchangé |
-| T26 | `app/ban/CardImpactView.tsx:70` | Ce n’est pas un score de risque de ban (voir l’onglet | « voir l’onglet … pour ça » : consigne, registre familier ; « si Konami retire cette carte demain » : scénario | « Score d’impact, distinct du score de risque du Ban Radar : nombre d’archétypes et de decks qui jouent la carte. » (lien « Ban Radar » gardé sur le nom) |
+| T26 ✅ | `app/ban/CardImpactView.tsx:70` | Ce n’est pas un score de risque de ban (voir l’onglet | « voir l’onglet … pour ça » : consigne, registre familier ; « si Konami retire cette carte demain » : scénario | « Score d’impact, distinct du score de risque du Ban Radar : nombre d’archétypes et de decks qui jouent la carte. » (lien « Ban Radar » gardé sur le nom) |
 | — | `app/ban/CardImpactView.tsx:72` | Ban Radar | conforme | conforme, inchangé |
-| T27 | `app/ban/CardImpactView.tsx:74` | pour ça) mais une mesure d’ impact : si Konami retire cette carte demain, combien d’archétypes et de decks sont concernés. | suite du même paragraphe | voir la ligne précédente |
-| T28 | `app/ban/CardImpactView.tsx:78` | Le score de pont grandit avec le nombre d’archétypes qui jouent la carte et, plus lentement, avec le nombre de decks. Une carte adoptée par beaucoup d’archétypes, en volume, est une pièce de connexion : la retirer touche plusieurs decks à la fois. | deuxième phrase (« pièce de connexion : la retirer touche plusieurs decks ») répète la première | « Le score de pont augmente avec le nombre d’archétypes qui jouent la carte et, plus lentement, avec le nombre de decks. » |
-| T29 | `app/ban/CardImpactView.tsx:83` | Les staples génériques trustent le haut du classement parce qu’elles sont jouées par le plus d’archétypes à la fois. Le filtre « Pièces d’archétype » isole les cartes rattachées à un deck précis. | « trustent » : terme fort non mesuré | « Les staples génériques occupent le haut du classement : ce sont les cartes jouées par le plus d’archétypes. Le filtre « Pièces d’archétype » isole les cartes rattachées à un deck précis. » |
+| T27 ✅ | `app/ban/CardImpactView.tsx:74` | pour ça) mais une mesure d’ impact : si Konami retire cette carte demain, combien d’archétypes et de decks sont concernés. | suite du même paragraphe | voir la ligne précédente |
+| T28 ✅ | `app/ban/CardImpactView.tsx:78` | Le score de pont grandit avec le nombre d’archétypes qui jouent la carte et, plus lentement, avec le nombre de decks. Une carte adoptée par beaucoup d’archétypes, en volume, est une pièce de connexion : la retirer touche plusieurs decks à la fois. | deuxième phrase (« pièce de connexion : la retirer touche plusieurs decks ») répète la première | « Le score de pont augmente avec le nombre d’archétypes qui jouent la carte et, plus lentement, avec le nombre de decks. » |
+| T29 ✅ | `app/ban/CardImpactView.tsx:83` | Les staples génériques trustent le haut du classement parce qu’elles sont jouées par le plus d’archétypes à la fois. Le filtre « Pièces d’archétype » isole les cartes rattachées à un deck précis. | « trustent » : terme fort non mesuré | « Les staples génériques occupent le haut du classement : ce sont les cartes jouées par le plus d’archétypes. Le filtre « Pièces d’archétype » isole les cartes rattachées à un deck précis. » |
 | — | `app/ban/CardImpactView.tsx:89` | Top {…} | conforme | conforme, inchangé |
 | — | `app/ban/CardImpactView.tsx:97` | decklists de tournoi TCG, yugiohmeta.com | conforme | conforme, inchangé |
 | — | `app/ban/CardImpactView.tsx:98` | au {…}, 6 mois glissants | conforme | conforme, inchangé |
@@ -549,7 +566,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | # | Fichier:ligne | Texte actuel | Problème | Proposition |
 |---|---|---|---|---|
 | — | `app/ban/BanSimulatorView.tsx:47` | Ban Center · Simulateur | conforme | conforme, inchangé |
-| T30 | `app/ban/BanSimulatorView.tsx:50` | Et si Konami la bannissait ? | titre : question, scénario | « Le graphe de co-occurrences *sans* une carte. » |
+| T30 ✅ | `app/ban/BanSimulatorView.tsx:50` | Et si Konami la bannissait ? | titre : question, scénario | « Le graphe de co-occurrences *sans* une carte. » |
 | — | `app/ban/BanSimulatorView.tsx:53` | Effet du retrait d’une carte sur le graphe de co-occurrences : archétypes touchés, position de pont, perte de cohésion. | conforme | conforme, inchangé |
 | — | `app/ban/BanSimulatorView.tsx:69` | Carte à simuler | conforme | conforme, inchangé |
 | — | `app/ban/BanSimulatorView.tsx:73` | Simulation… | conforme | conforme, inchangé |
@@ -560,8 +577,8 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/ban/BanSimulatorView.tsx:107` | Score de pont | conforme | conforme, inchangé |
 | — | `app/ban/BanSimulatorView.tsx:110` | Fragmentation · communauté inconnue | conforme | conforme, inchangé |
 | — | `app/ban/BanSimulatorView.tsx:110` | Fragmentation · communauté {…} | conforme | conforme, inchangé |
-| T31 | `app/ban/BanSimulatorView.tsx:112` | Archétypes impactés | « impactés » : anglicisme ; le reste de la page dit « touchés » | « Archétypes touchés » |
-| T32 | `app/ban/BanSimulatorView.tsx:118` | Archétypes impactés | « impactés » : anglicisme ; le reste de la page dit « touchés » | « Archétypes touchés » |
+| T31 ✅ | `app/ban/BanSimulatorView.tsx:112` | Archétypes impactés | « impactés » : anglicisme ; le reste de la page dit « touchés » | « Archétypes touchés » |
+| T32 ✅ | `app/ban/BanSimulatorView.tsx:118` | Archétypes impactés | « impactés » : anglicisme ; le reste de la page dit « touchés » | « Archétypes touchés » |
 | — | `app/ban/BanSimulatorView.tsx:130` | date de calcul non enregistrée dans la base servie | conforme | conforme, inchangé |
 | — | `app/ban/BanSimulatorView.tsx:131` | aucun intervalle : la simulation recalcule le graphe sans la carte, elle ne prévoit pas ce que joueraient les joueurs | conforme | conforme, inchangé |
 
@@ -649,8 +666,8 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/early-signals/page.tsx:17` | , calcul du {…} | conforme | conforme, inchangé |
 | — | `app/early-signals/page.tsx:19` | Signaux précoces | conforme | conforme, inchangé |
 | — | `app/early-signals/page.tsx:37` | Boutique · Signaux précoces | conforme | conforme, inchangé |
-| T33 | `app/early-signals/page.tsx:40` | Les cartes qui montent avant la méta. | titre : promesse (« qui montent avant la méta ») ; charte §6, exemple 7 | « Les cartes récentes et leur *place* dans les decks. » |
-| T34 | `app/early-signals/page.tsx:45` | Nouvelles cartes qui entrent dans la méta, repérées par leurs vues, leurs co-occurrences et le tier de leur archétype. Score | intro : promesse (« entrent dans la méta »), aucun effectif ni date | « {n} cartes récentes notées de 0 à 100, calcul du {date} : vues sur une semaine, présence dans les decks de tournoi, tier de l’archétype. Score ⓘ » (n et date servis par `/early-signals`) |
+| T33 ✅ | `app/early-signals/page.tsx:40` | Les cartes qui montent avant la méta. | titre : promesse (« qui montent avant la méta ») ; charte §6, exemple 7 | « Les cartes récentes et leur *place* dans les decks. » |
+| T34 ✅ | `app/early-signals/page.tsx:45` | Nouvelles cartes qui entrent dans la méta, repérées par leurs vues, leurs co-occurrences et le tier de leur archétype. Score | intro : promesse (« entrent dans la méta »), aucun effectif ni date | « {n} cartes récentes notées de 0 à 100, calcul du {date} : vues sur une semaine, présence dans les decks de tournoi, tier de l’archétype. Score ⓘ » (n et date servis par `/early-signals`) |
 | — | `app/early-signals/page.tsx:49` | Note de 0 à 100 : plus elle est haute, plus la carte est consultée et jouée avec les decks du moment. | conforme | conforme, inchangé |
 | — | `app/early-signals/page.tsx:58` | Carte | conforme | conforme, inchangé |
 | — | `app/early-signals/page.tsx:59` | Score | conforme | conforme, inchangé |
@@ -677,10 +694,10 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/graph/opengraph-image.tsx:10` | Graphe de synergies | conforme | conforme, inchangé |
 | — | `app/graph/opengraph-image.tsx:11` | Cartes souvent jouées dans les mêmes decks | conforme | conforme, inchangé |
 | — | `app/graph/page.tsx:16` | Graphe de synergies | conforme | conforme, inchangé |
-| T35 | `app/graph/page.tsx:17` | Graphe de co-occurrence des cartes Yu-Gi-Oh! : un lien relie deux cartes souvent jouées dans les mêmes decks de tournoi. Source : {…}, date de calcul non enregistrée. | description de partage : « souvent » au lieu du seuil mesuré | « Graphe de co-occurrence des cartes Yu-Gi-Oh! : un lien relie deux cartes jouées ensemble dans au moins 15 % des decks de tournoi qui jouent l’une ou l’autre. Source : {…}, date de calcul non enregistrée. » |
+| T35 ✅ | `app/graph/page.tsx:17` | Graphe de co-occurrence des cartes Yu-Gi-Oh! : un lien relie deux cartes souvent jouées dans les mêmes decks de tournoi. Source : {…}, date de calcul non enregistrée. | description de partage : « souvent » au lieu du seuil mesuré | « Graphe de co-occurrence des cartes Yu-Gi-Oh! : un lien relie deux cartes jouées ensemble dans au moins 15 % des decks de tournoi qui jouent l’une ou l’autre. Source : {…}, date de calcul non enregistrée. » |
 | — | `app/graph/page.tsx:29` | Graphe · Co-occurrences | conforme | conforme, inchangé |
 | — | `app/graph/page.tsx:32` | Les cartes qui se jouent ensemble . | conforme | conforme, inchangé |
-| T36 | `app/graph/page.tsx:35` | Les {…} cartes les plus connectées. Un lien relie deux cartes souvent jouées dans les mêmes decks. | « souvent jouées » : le seuil est mesuré (15 %), autant l’écrire | « Les {200} cartes les plus connectées. Un lien relie deux cartes jouées ensemble dans au moins 15 % des decks qui jouent l’une ou l’autre. » |
+| T36 ✅ | `app/graph/page.tsx:35` | Les {…} cartes les plus connectées. Un lien relie deux cartes souvent jouées dans les mêmes decks. | « souvent jouées » : le seuil est mesuré (15 %), autant l’écrire | « Les {200} cartes les plus connectées. Un lien relie deux cartes jouées ensemble dans au moins 15 % des decks qui jouent l’une ou l’autre. » |
 | — | `app/graph/page.tsx:40` | date de calcul non enregistrée dans la base servie | conforme | conforme, inchangé |
 | — | `app/graph/page.tsx:42` | pas d’intervalle : le graphe dessine des liens au-dessus d’un seuil, un lien proche du seuil peut apparaître ou disparaître d’un calcul à l’autre | conforme | conforme, inchangé |
 | — | `app/graph/page.tsx:45` | % jouent les deux. | conforme | conforme, inchangé |
@@ -876,7 +893,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/archetype/[slug]/page.tsx:370` | Cartes du signal boutique de | conforme | conforme, inchangé |
 | — | `app/archetype/[slug]/page.tsx:373` | Carte | conforme | conforme, inchangé |
 | — | `app/archetype/[slug]/page.tsx:374` | Ordre dans le lot | conforme | conforme, inchangé |
-| T37 | `app/archetype/[slug]/page.tsx:375` | Prix CM | abréviation « CM » inconnue d’un lecteur | « Prix Cardmarket » |
+| T37 ✅ | `app/archetype/[slug]/page.tsx:375` | Prix CM | abréviation « CM » inconnue d’un lecteur | « Prix Cardmarket » |
 | — | `app/archetype/[slug]/page.tsx:376` | Banlist TCG | conforme | conforme, inchangé |
 | — | `app/archetype/[slug]/page.tsx:412` | decklists OCG (yugiohmeta.com), vues et prix Cardmarket (YGOPRODeck) | conforme | conforme, inchangé |
 | — | `app/archetype/[slug]/page.tsx:413` | calcul du {…} | conforme | conforme, inchangé |
@@ -1016,13 +1033,13 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/methode/page.tsx:365` | Part des decks, archétype porteur, exemplaires joués, restriction en cours, élan sur 3 mois, position de pont. | conforme | conforme, inchangé |
 | — | `app/methode/page.tsx:366` | Fenêtre | conforme | conforme, inchangé |
 | — | `app/methode/page.tsx:366` | Les 6 derniers mois de decks de tournoi TCG. | conforme | conforme, inchangé |
-| B25 | `app/methode/page.tsx:367` | Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe. | **en attente du formulaire TOK-115** — section Ban Radar de /methode : limite conforme ; la section attend le verdict | voir § « Textes du Ban Radar en attente » |
-| B26 | `app/methode/page.tsx:372` | Ban Radar contre l’historique | **en attente du formulaire TOK-115** — titre de section, conforme | voir § « Textes du Ban Radar en attente » |
-| B27 | `app/methode/page.tsx:375` | Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures. | **en attente du formulaire TOK-115** — section « Ban Radar contre l’historique » : la relecture (I6) demande la réserve sur le critère « pont » | voir § « Textes du Ban Radar en attente » |
+| B25 ✅ | `app/methode/page.tsx:367` | Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe. | **en attente du formulaire TOK-115** — section Ban Radar de /methode : limite conforme ; la section attend le verdict | voir § « Textes du Ban Radar en attente » |
+| B26 ✅ | `app/methode/page.tsx:372` | Ban Radar contre l’historique | **en attente du formulaire TOK-115** — titre de section, conforme | voir § « Textes du Ban Radar en attente » |
+| B27 ✅ | `app/methode/page.tsx:375` | Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures. | **en attente du formulaire TOK-115** — section « Ban Radar contre l’historique » : la relecture (I6) demande la réserve sur le critère « pont » | voir § « Textes du Ban Radar en attente » |
 | — | `app/methode/page.tsx:376` | Rangs médians qu’on obtiendrait en tirant au sort autant de cartes : 90 % des tirages tombent dans la bande. | conforme | conforme, inchangé |
 | — | `app/methode/page.tsx:377` | Base de comparaison | conforme | conforme, inchangé |
 | — | `app/methode/page.tsx:377` | Classer simplement les cartes par part des decks (« staples les plus jouées »). | conforme | conforme, inchangé |
-| B28 | `app/methode/page.tsx:381` | Rang médian des cartes touchées, liste par liste | **en attente du formulaire TOK-115** — titre de la figure, conforme | voir § « Textes du Ban Radar en attente » |
+| B28 ✅ | `app/methode/page.tsx:381` | Rang médian des cartes touchées, liste par liste | **en attente du formulaire TOK-115** — titre de la figure, conforme | voir § « Textes du Ban Radar en attente » |
 | — | `app/methode/page.tsx:384` | decks de tournoi (yugiohmeta.com), banlists (Yugipedia) | conforme | conforme, inchangé |
 | — | `app/methode/page.tsx:385` | calcul du {…} | conforme | conforme, inchangé |
 | — | `app/methode/page.tsx:387` | barre pâle : 90 % des rangs médians d’un tirage au hasard ; point : rang médian des cartes touchées ; rang 1 à gauche | conforme | conforme, inchangé |
@@ -1071,8 +1088,8 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 |---|---|---|---|---|
 | — | `app/card-images/[...path]/route.ts:16` | Not found | réponse HTTP 404 d’une image, jamais lue par une personne | conforme, inchangé |
 | — | `app/card-images/[...path]/route.ts:24` | Not found | réponse HTTP 404 d’une image, jamais lue par une personne | conforme, inchangé |
-| T38 | `app/error.tsx:27` | Les données ne répondent pas. | titre : personnification (« les données ne répondent pas ») | « Données *indisponibles*. » |
-| T39 | `app/error.tsx:30` | L’API n’a pas répondu ou a renvoyé une erreur. Le reste du site n’est pas touché : réessaie dans un instant. | impératif et tutoiement (« réessaie ») ; le bouton « Réessayer » suffit | « L’API n’a pas répondu ou a renvoyé une erreur. Les autres pages ne sont pas touchées. » |
+| T38 ✅ | `app/error.tsx:27` | Les données ne répondent pas. | titre : personnification (« les données ne répondent pas ») | « Données *indisponibles*. » |
+| T39 ✅ | `app/error.tsx:30` | L’API n’a pas répondu ou a renvoyé une erreur. Le reste du site n’est pas touché : réessaie dans un instant. | impératif et tutoiement (« réessaie ») ; le bouton « Réessayer » suffit | « L’API n’a pas répondu ou a renvoyé une erreur. Les autres pages ne sont pas touchées. » |
 | — | `app/error.tsx:34` | Réessayer | conforme | conforme, inchangé |
 | — | `app/error.tsx:36` | Référence : | conforme | conforme, inchangé |
 | — | `app/layout.tsx:20` | YGO Meta · Analyse de la méta Yu-Gi-Oh! | conforme | conforme, inchangé |
@@ -1080,10 +1097,10 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `app/layout.tsx:24` | Analyse de la méta Yu-Gi-Oh! TCG et OCG à partir des decklists de tournoi : tier list, prédictions, risque de ban et signaux pour les boutiques. | conforme | conforme, inchangé |
 | — | `app/not-found.tsx:6` | Page introuvable | conforme | conforme, inchangé |
 | — | `app/not-found.tsx:12` | Erreur 404 | conforme | conforme, inchangé |
-| T40 | `app/not-found.tsx:15` | Cette page n’est pas dans le deck . | titre : jeu de mots, ne décrit pas la situation | « Page *introuvable*. » |
-| T41 | `app/not-found.tsx:18` | L’adresse est fausse ou la page a été déplacée. Les outils sont toujours là. | deuxième phrase sans information | « L’adresse est fausse ou la page a été déplacée. » |
+| T40 ✅ | `app/not-found.tsx:15` | Cette page n’est pas dans le deck . | titre : jeu de mots, ne décrit pas la situation | « Page *introuvable*. » |
+| T41 ✅ | `app/not-found.tsx:18` | L’adresse est fausse ou la page a été déplacée. Les outils sont toujours là. | deuxième phrase sans information | « L’adresse est fausse ou la page a été déplacée. » |
 | — | `app/not-found.tsx:22` | Retour à l’accueil | conforme | conforme, inchangé |
-| T42 | `app/not-found.tsx:24` | Voir la tier list | appel à l’action (« voir ») | « Tier list » |
+| T42 ✅ | `app/not-found.tsx:24` | Voir la tier list | appel à l’action (« voir ») | « Tier list » |
 | — | `components/ds/explain.tsx:48` | L{…} {…} | tracé SVG relevé par l’extracteur, pas un texte | conforme, inchangé |
 | — | `components/ds/explain.tsx:199` | Méthode | conforme | conforme, inchangé |
 | — | `components/ds/explain.tsx:204` | Détail dans la page Méthode | conforme | conforme, inchangé |
@@ -1109,7 +1126,7 @@ actuel (`{…}` = valeur dynamique), problème (règle de la charte enfreinte, o
 | — | `components/site-footer.tsx:9` | Évolution | conforme | conforme, inchangé |
 | — | `components/site-footer.tsx:10` | Prédictions | conforme | conforme, inchangé |
 | — | `components/site-footer.tsx:16` | Ban Radar | conforme | conforme, inchangé |
-| T43 | `components/site-footer.tsx:17` | Impact des cartes | lien du pied : l’onglet s’appelle « Cartes à impact » | « Cartes à impact » |
+| T43 ✅ | `components/site-footer.tsx:17` | Impact des cartes | lien du pied : l’onglet s’appelle « Cartes à impact » | « Cartes à impact » |
 | — | `components/site-footer.tsx:18` | Simulateur de ban | conforme | conforme, inchangé |
 | — | `components/site-footer.tsx:24` | Signaux boutique | conforme | conforme, inchangé |
 | — | `components/site-footer.tsx:25` | Signaux précoces | conforme | conforme, inchangé |

@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import { BAN_VERDICT, verdictMatches } from "@/lib/ban-verdict";
 import { fmtDate, fmtMonthShort, fmtNum, fmtRank } from "@/lib/format";
 import { CardArt } from "@/components/card-art";
 import { PillLink } from "@/components/ds/control";
@@ -275,41 +276,48 @@ function Summary({ lists, topN }: { lists: BanHistoryList[]; topN: number }) {
   });
   const cell = "border-t border-line px-3 py-3 text-right tabular-nums min-[760px]:px-4";
   return (
-    <div className="mt-2 overflow-x-auto rounded-[6px] border border-line">
-      <table className="w-full min-w-[560px] border-collapse text-[14px]">
-        <caption className="sr-only">Bilan des banlists rejouées, par format</caption>
-        <thead>
-          <tr className={HEAD}>
-            <th scope="col" className="px-3 py-2.5 text-left font-normal min-[760px]:px-4">Format</th>
-            <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Rang médian meilleur que le hasard</th>
-            <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Meilleur que les staples</th>
-            <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Top {topN} touché, Ban Radar</th>
-            <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Top {topN} touché, staples</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.format}>
-              <th scope="row" className="border-t border-line px-3 py-3 text-left font-medium min-[760px]:px-4">
-                {r.format}
-              </th>
-              <td className={cell}>
-                {fmtNum(r.chance)} <span className="text-muted-text">listes sur {fmtNum(r.n)}</span>
-              </td>
-              <td className={cell}>
-                {fmtNum(r.staples)} <span className="text-muted-text">sur {fmtNum(r.n)}</span>
-              </td>
-              <td className={cell}>
-                {fmtNum(r.topHits)} <span className="text-muted-text">places sur {fmtNum(r.places)}</span>
-              </td>
-              <td className={cell}>
-                {fmtNum(r.baselineTopHits)} <span className="text-muted-text">sur {fmtNum(r.places)}</span>
-              </td>
+    <>
+      <div className="mt-2 overflow-x-auto rounded-[6px] border border-line">
+        <table className="w-full min-w-[560px] border-collapse text-[14px]">
+          <caption className="sr-only">Bilan des banlists rejouées, par format</caption>
+          <thead>
+            <tr className={HEAD}>
+              <th scope="col" className="px-3 py-2.5 text-left font-normal min-[760px]:px-4">Format</th>
+              <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Rang médian meilleur que le hasard</th>
+              <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Meilleur que les staples</th>
+              <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Top {topN} touché, Ban Radar</th>
+              <th scope="col" className="px-3 py-2.5 text-right font-normal min-[760px]:px-4">Top {topN} touché, staples</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.format}>
+                <th scope="row" className="border-t border-line px-3 py-3 text-left font-medium min-[760px]:px-4">
+                  {r.format}
+                </th>
+                <td className={cell}>
+                  {fmtNum(r.chance)} <span className="text-muted-text">listes sur {fmtNum(r.n)}</span>
+                </td>
+                <td className={cell}>
+                  {fmtNum(r.staples)} <span className="text-muted-text">sur {fmtNum(r.n)}</span>
+                </td>
+                <td className={cell}>
+                  {fmtNum(r.topHits)} <span className="text-muted-text">places sur {fmtNum(r.places)}</span>
+                </td>
+                <td className={cell}>
+                  {fmtNum(r.baselineTopHits)} <span className="text-muted-text">sur {fmtNum(r.places)}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {verdictMatches(rows) && (
+        <p className="mt-4 max-w-[72ch] text-[15px] text-soft">
+          {`${BAN_VERDICT.measures} ${BAN_VERDICT.significance}`}
+        </p>
+      )}
+    </>
   );
 }
 
@@ -498,7 +506,7 @@ export async function BanHistoryView({ selected, tabs }: { selected: string | un
         source={SOURCE}
         date={`calcul du ${fmtDate(computed_at)}, listes du ${fmtDate(firstDate)} au ${fmtDate(lastDate)}`}
         sample={`${fmtNum(retained.length)} listes retenues ; le seuil de ${fmtNum(min_decks)} decks et ${fmtNum(min_hits)} cartes touchées en écarte ${fmtNum(lists.length - retained.length)}`}
-        uncertainty="chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort ; lecture en attente du diagnostic TOK-115"
+        uncertainty="chaque liste est comparée aux rangs que donneraient 90 % des tirages au sort"
       />
 
       {(["TCG", "OCG"] as const).map((format) => (
@@ -554,6 +562,10 @@ export async function BanHistoryView({ selected, tabs }: { selected: string | un
             Pour chaque liste, le score est recalculé avec les seules decklists des 6 mois qui précèdent son entrée en
             vigueur. Une carte compte comme touchée quand son statut se durcit (illimitée vers semi-limitée, limitée
             ou interdite, et ainsi de suite).
+          </p>
+          <p>
+            Le critère « pont » vient du graphe de co-occurrences actuel, pas de celui de la veille ; son effet mesuré
+            est négligeable : le retirer change de 2 le nombre de cartes touchées dans le top 25 TCG (250 places).
           </p>
           <p>
             Une liste est écartée sous {fmtNum(min_decks)} decks dans la fenêtre ou sous {fmtNum(min_hits)} cartes

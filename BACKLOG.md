@@ -109,12 +109,15 @@ d'annonce, verdict de la page Historique).
 
 ---
 
-## Lot 16 — Réécriture des textes selon la charte (file du 2026-11-17)
+## Lot 16 — Réécriture des textes selon la charte (file du 2026-11-17) ✅
 
 🟡 Première moitié livrée le 2026-11-17 sur `claude/lot16-reecriture-textes-9d97ee` (non fusionnée) : `docs/textes-avant-apres.md`
 (846 textes relevés : 775 conformes, 43 à changer, 28 en attente du formulaire TOK-115), formulaire de validation en tête,
 `scripts/check_copy.py` (mots interdits, branché dans `check.py` en avertissement). **Aucun texte du site modifié.** Reste :
 validation par Thomas, puis application et passage du script en bloquant (`--strict`).
+✅ Seconde moitié livrée le 2026-11-18 sur `claude/lot16-application-textes-8896be` (non fusionnée) : T01 à T43 et B01 à B28
+appliqués selon les réponses de Thomas du 17/11 (titre neutre « Méta Yu-Gi-Oh! TCG et OCG », verdict TOK-115), `check_copy.py`
+bloquant (0 occurrence), 35 captures régénérées — `docs/textes-avant-apres.md` § 0.
 
 ---
 

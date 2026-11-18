@@ -8,8 +8,8 @@ export type KindView = BanRadarKind | "all";
 // Partagé entre BanRadarView et CardImpactView : les deux notent les cartes
 // sur les mêmes critères et proposent le même filtre archétype/générique.
 const KIND_FILTERS: Record<KindView, { label: string; hint: string }> = {
-  archetype: { label: "Pièces d'archétype", hint: "Cartes rattachées à un deck précis" },
-  generic: { label: "Staples génériques", hint: "Cartes jouées un peu partout" },
+  archetype: { label: "Pièces d'archétype", hint: "Au moins la moitié des decks qui la jouent sont d’un même archétype" },
+  generic: { label: "Staples génériques", hint: "Moins de la moitié des decks qui la jouent sont d’un même archétype" },
   all: { label: "Tout", hint: "Toutes les cartes notées" },
 };
 

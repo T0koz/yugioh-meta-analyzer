@@ -23,16 +23,17 @@ export const SITE_FACTS = {
   banBacktestLists: 10,
   banTop10HitsGeneric: 6,
   banTop10HitsArchetype: 19,
-  // Backtest du Ban Radar du 2026-11-16 (decks légaux, `build_ban_radar.py --backtest`) :
-  // rang médian des cartes réellement touchées, dans un classement de `universe` cartes.
-  // 4 des 20 listes rejouées (10 TCG, 10 OCG) : les deux de référence et les deux TCG
-  // les plus récentes, qui sont mauvaises. Les poids ont été calés sur la liste de mai 2026.
+  // Backtest du Ban Radar du 2026-11-16 (decks légaux, `build_ban_history.py`, table
+  // `ban_backtest_lists`, 20 listes retenues) : cartes touchées dans le top 25 de la veille,
+  // pour le score (`top_n_hits`) et pour le classement par part des decks
+  // (`baseline_top_n_hits`), sommées sur les 10 listes de chaque format ; listes où le score
+  // fait mieux / moins bien ; listes où son rang médian est meilleur. Verdict TOK-115 validé
+  // le 17/11 (docs/journal/ban-radar-tcg-diagnostic.md). À recalculer à chaque banlist.
+  // `periodFrom` : la même période dans une phrase (« les 10 banlists TCG d’avril 2024… »).
   banBacktestDate: "2026-11-16",
   banBacktestTotalLists: 20,
-  banBacktest: [
-    { format: "TCG", date: "2026-05-18", medianRank: 84, universe: 889 },
-    { format: "OCG", date: "2026-07-01", medianRank: 19, universe: 1236 },
-    { format: "TCG", date: "2026-09-21", medianRank: 206, universe: 981 },
-    { format: "TCG", date: "2026-10-19", medianRank: 308, universe: 905 },
+  banTop25: [
+    { format: "TCG", period: "avril 2024 à octobre 2026", periodFrom: "d’avril 2024 à octobre 2026", lists: 10, radar: 29, staples: 16, better: 6, worse: 1, medianBetter: 3 },
+    { format: "OCG", period: "avril 2024 à octobre 2026", periodFrom: "d’avril 2024 à octobre 2026", lists: 10, radar: 41, staples: 18, better: 9, worse: 1, medianBetter: 8 },
   ],
 };

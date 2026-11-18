@@ -16,15 +16,17 @@ const FOOTER = [
   `Source : ${DECK_SOURCE}`,
 ];
 
-export const alt = `YGO Meta. La méta OCG précède la méta TCG de ${SITE_FACTS.ocgTcgLagRange} : corrélation ${R}, ${LEGEND[1]}. ${FOOTER[0]}, ${DECK_SOURCE}.`;
+const TITLE = "Méta Yu-Gi-Oh! TCG et OCG";
+
+export const alt = `YGO Meta. ${TITLE}. Corrélation ${R} entre le score OCG d’un archétype et son score TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, IC 95 % : ${CI}, ${SITE_FACTS.ocgTcgArchetypes} archétypes. ${FOOTER[0]}, ${DECK_SOURCE}.`;
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
 export default function Image() {
   return ogImage({
-    eyebrow: "Méta Yu-Gi-Oh! · TCG et OCG",
-    title: `La méta OCG précède la méta TCG de ${SITE_FACTS.ocgTcgLagRange}`,
-    emphasis: SITE_FACTS.ocgTcgLagRange,
+    eyebrow: "YGO Meta · decklists de tournoi",
+    title: TITLE,
+    emphasis: "TCG et OCG",
     figure: { value: R, legend: LEGEND },
     footer: FOOTER,
   });

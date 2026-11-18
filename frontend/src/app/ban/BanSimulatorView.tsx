@@ -47,7 +47,7 @@ export function BanSimulatorView({
         eyebrow="Ban Center · Simulateur"
         title={
           <>
-            Et si Konami la <Em>bannissait</Em> ?
+            Le graphe de <span className="whitespace-nowrap">co-occurrences</span> <Em>sans</Em> une carte.
           </>
         }
         intro="Effet du retrait d’une carte sur le graphe de co-occurrences : archétypes touchés, position de pont, perte de cohésion."
@@ -109,13 +109,13 @@ export function BanSimulatorView({
                 value: fmtPct(fragmentation * 100, 0),
                 label: community_id >= 0 ? `Fragmentation · communauté ${community_id}` : "Fragmentation · communauté inconnue",
               },
-              { value: fmtNum(result.affected_archetypes.length), label: "Archétypes impactés" },
+              { value: fmtNum(result.affected_archetypes.length), label: "Archétypes touchés" },
             ]}
           />
 
           {result.affected_archetypes.length > 0 && (
             <div className="mt-8">
-              <p className="mb-3 font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">Archétypes impactés</p>
+              <p className="mb-3 font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">Archétypes touchés</p>
               <div className="flex flex-wrap gap-2">
                 {result.affected_archetypes.map((arch) => (
                   <span key={arch} className="rounded-[4px] border border-line-2 px-2.5 py-1 font-mono text-[12px] text-soft">

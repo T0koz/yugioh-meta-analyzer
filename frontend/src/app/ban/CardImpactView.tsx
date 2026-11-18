@@ -50,7 +50,7 @@ export async function CardImpactView({ view, tabs }: { view: KindView; tabs: Rea
         eyebrow="Ban Center · Cartes à impact"
         title={
           <>
-            Les cartes qui <Em>tiennent</Em> la méta.
+            Les cartes jouées par le plus d’<Em>archétypes</Em> à la fois.
           </>
         }
         aside={
@@ -60,29 +60,27 @@ export async function CardImpactView({ view, tabs }: { view: KindView; tabs: Rea
             {fmtNum(n_decks_window)} decks · 6 mois
           </>
         }
-        intro="Les cartes dont le retrait fragmenterait le plus la méta : combien d'archétypes et de decks une interdiction toucherait."
+        intro={`Cartes TCG classées par nombre d’archétypes et de decks qui les jouent, sur ${fmtNum(n_decks_window)} decks de tournoi des 6 derniers mois.`}
       >
         {tabs}
       </PageHero>
 
-      <Explainer label="Comment lire ce score ?" title="Lecture du score">
+      <Explainer label="Lecture du score" title="Lecture du score">
         <p>
-          Ce n’est pas un score de risque de ban (voir l’onglet{" "}
+          Score d’<strong className="font-medium text-text">impact</strong>, distinct du score de risque du{" "}
           <Link href="/ban?tab=radar" className="text-signal underline-offset-4 hover:underline">
             Ban Radar
           </Link>{" "}
-          pour ça) mais une mesure d’<strong className="font-medium text-text">impact</strong> : si Konami retire
-          cette carte demain, combien d’archétypes et de decks sont concernés.
+          : nombre d’archétypes et de decks qui jouent la carte.
         </p>
         <p>
-          Le score de pont grandit avec le nombre d’archétypes qui jouent la carte et, plus lentement, avec le nombre
-          de decks. Une carte adoptée par beaucoup d’archétypes, en volume, est une pièce de connexion : la retirer
-          touche plusieurs decks à la fois.
+          Le score de pont augmente avec le nombre d’archétypes qui jouent la carte et, plus lentement, avec le nombre
+          de decks.
         </p>
         <p>
-          Les <strong className="font-medium text-text">staples génériques</strong> trustent le haut du classement parce
-          qu’elles sont jouées par le plus d’archétypes à la fois. Le filtre « Pièces d’archétype » isole
-          les cartes rattachées à un deck précis.
+          Les <strong className="font-medium text-text">staples génériques</strong> occupent le haut du classement : ce
+          sont les cartes jouées par le plus d’archétypes. Le filtre « Pièces d’archétype » isole les cartes
+          rattachées à un deck précis.
         </p>
       </Explainer>
 

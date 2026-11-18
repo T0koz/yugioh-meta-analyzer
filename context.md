@@ -688,6 +688,17 @@ hors tolérances) ; bornes respectées (parts, scores, prix, exemplaires).
 - `build_serving_db.py --check` ouvre `data/yugioh.db` du checkout : dans un worktree, passer par un lien ou par
   `check_coverage` sur une connexion `mode=ro`.
 
+### 📚 Documentation réalignée sur le code (TOK-134, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+`docs/api-contracts.md` (16 endpoints au lieu de 8, paramètres et champs réels), `docs/data-models.md` (effectifs du
+18/11, colonnes changées, 12 tables ajoutées), `docs/architecture.md`, `README.md`, `docs/ONBOARDING.md` (stack Next 16 /
+D3, chaîne `refresh_decks.py` / `refresh_all.py`, 20 tables servies, r ≈ 0,53 au lieu de 0,771). Écart par écart :
+`docs/planning/fond/2026-11-18-documentation.md`. Doc seulement.
+- **Écarts restés dans le code** (docstrings) : `check.py` dit les textes « non bloquants » (ils le sont depuis le
+  lot 16) et « 45 captures » (51) ; `build_serving_db.py` dit « 12 tables, ~9 Mo » (20, ~12 Mo).
+- Toute nouvelle route ou table : la ligne de `api-contracts.md` (tableau des endpoints) et la section de
+  `data-models.md` vont avec.
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

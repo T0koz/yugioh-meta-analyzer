@@ -38,7 +38,7 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 | Jalon | Tickets (charge) | Statut | Sessions |
 |---|---|---|---|
 | 1 (n°2) | TOK-130 fenêtre par survie (3, `sprint-4/24`), TOK-131 intervalles (2, `sprint-4/25`), TOK-116 parts OCG servies (2) | en cours depuis le 18/11 | session `jalon-2` (armée, démarrée au commit `jalon n°1 fini`) |
-| 2 (n°3) | TOK-133 données, TOK-134 doc, TOK-135 tests (1 chacun), TOK-82 chiffres de la vitrine (1) | en attente | à armer au prochain message de Thomas |
+| 2 (n°3) | TOK-133 données, TOK-134 doc, TOK-135 tests (1 chacun), TOK-82 chiffres de la vitrine (1) | armé le 18/11 | session `jalon-3` (attend `jalon n°2 fini` ; commit front de TOK-82 en dernier, fusionné seulement après formulaire) |
 | 3 (n°4) | TOK-136 `card_graph_metrics` (2), TOK-137 fenêtre du backtest (1), TOK-138 `views_week` (1) | composé le 18/11 | |
 
 Numérotation absolue (signal de fin = commit `jalon n°N fini`, décision 0054). Glissement Linear par renommage : « Fini n°N (date) ».
@@ -89,6 +89,7 @@ ce que contient déjà `claude/moteur-18-11` (lots 16, 17, 18, C1, C2, C2 bis, C
 | 15 (étape 2) + 15a bis | Demande explicite de Thomas (« go session avec le data scientist ») ; l'étape 2 attend une réponse de Thomas (attente passive) ; fichiers distincts | oui (deux sessions) |
 | 15 (étape 2) + 15a | Demande explicite de Thomas (17/11) : lancer 15a dès qu'un créneau se libère, deux sessions maximum ; l'étape 2 n'écrit pas le verdict de l'historique | oui (autorisation explicite, deux sessions) |
 | j1-tok129-93 + jalon-2 (18/11) | Demande de Thomas : sessions lancées sans l'attendre (décision 0054) ; jalon-2 attend passivement le commit `jalon n°1 fini` (Monitor), ne touche aucun fichier avant | oui (deux sessions, la seconde passive) |
+| jalon-2 + jalon-3 (18/11) | Armement d'avance (décision 0054, feu vert de Thomas) : jalon-3 attend passivement `jalon n°2 fini` (Monitor) | oui (deux sessions, la seconde passive) |
 
 Règle appliquée à partir du 17/11 (précision de Thomas) : un lot à la fois ; une deuxième session seulement pendant une attente longue et passive de la première, sur d'autres fichiers ; jamais plus de deux.
 

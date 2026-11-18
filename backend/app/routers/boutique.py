@@ -190,4 +190,17 @@ def get_early_signals(db: sqlite3.Connection = Depends(get_db)) -> EarlySignalsR
         for row in rows
     ]
     computed_at = latest_computed_at(db, "early_card_signals")
-    return EarlySignalsResponse(data=data, computed_at=computed_at)
+    cards_scored, text_signal_cards = db.execute(
+        "SELECT COUNT(*), SUM(signal_text > 0) FROM early_card_signals"
+    ).fetchone()
+    try:
+        as_of = db.execute("SELECT MAX(as_of) FROM early_card_signals").fetchone()[0]
+    except sqlite3.OperationalError:  # table calculée avant le lot 20 (notebook 11) : pas de date de référence
+        as_of = None
+    return EarlySignalsResponse(
+        data=data,
+        computed_at=computed_at,
+        as_of=as_of,
+        cards_scored=cards_scored,
+        text_signal_cards=text_signal_cards or 0,
+    )

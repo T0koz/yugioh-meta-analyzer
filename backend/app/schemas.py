@@ -146,6 +146,12 @@ class EarlySignal(BaseModel):
 class EarlySignalsResponse(BaseModel):
     data: list[EarlySignal]
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
+    # Lot 20 (A1) : date de référence du calcul (dernier deck TCG relevé). None sur une base antérieure.
+    as_of: Optional[str] = None
+    # Nombre de cartes notées (la réponse n'en sert que les 50 premières) et, parmi elles, celles dont
+    # la proximité de texte avec les cartes de la méta est positive (0 : le terme ne pèse rien).
+    cards_scored: Optional[int] = None
+    text_signal_cards: Optional[int] = None
 
 
 class CommunityImpact(BaseModel):

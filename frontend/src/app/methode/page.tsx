@@ -12,6 +12,7 @@ import { IntervalBar } from "@/components/ds/explain";
 import { DataFooter, Page, PageHero } from "@/components/ds/page";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { BanHistoryList } from "@/types";
+import { earlyTextNote } from "@/lib/early-signals";
 
 // Page Méthode (lot 15, charte « ton et explication » §4) : une section par outil,
 // dans l'ordre de la navigation ; sources, dates, seuils et leur origine, résultats
@@ -164,12 +165,13 @@ function BanTable({ lists }: { lists: BanHistoryList[] }) {
 }
 
 export default async function MethodePage() {
-  const [tierList, evolution, banHistory, boutique, prices] = await Promise.all([
+  const [tierList, evolution, banHistory, boutique, prices, early] = await Promise.all([
     api.tierList(),
     api.evolution(),
     api.banHistory(),
     api.boutiqueSignals(),
     api.boutiquePrices(),
+    api.earlySignals(),
   ]);
 
   const months = Object.entries(evolution.decks_by_month).sort(([a], [b]) => a.localeCompare(b));
@@ -458,9 +460,10 @@ export default async function MethodePage() {
       <Section id="signaux-precoces" title="Signaux précoces">
         <Facts
           items={[
-            { term: "Ce que mesure", text: "Une note de 0 à 100 qui réunit les vues d’une carte récente sur une semaine, sa présence dans les decks de la méta et le niveau de son archétype." },
+            { term: "Ce que mesure", text: "Une note de 0 à 100 qui réunit les vues d’une carte récente sur une semaine, la proximité de son texte avec celui des cartes des 20 archétypes de la méta récente, et le poids de son archétype en OCG. Les decks où la carte est jouée n’entrent pas dans la note." },
+            { term: "Cartes retenues", text: "Sorties en TCG dans les 168 jours qui précèdent le dernier deck relevé, ou pas encore sorties ; ni interdites ni limitées dans la banlist TCG en vigueur à cette date ; jouées dans moins de 3 % des decks TCG des 90 derniers jours (seuil du tier T3)." },
             { term: "Validation", text: "Aucune à ce jour : la note ordonne les cartes, elle n’a pas été confrontée à ce que les cartes sont devenues." },
-            { term: "Limites", text: "Les vues des cartes anciennes ne sont pas rafraîchies au même rythme que celles des cartes nouvelles." },
+            { term: "Limites", text: `${earlyTextNote(early) ?? ""} Les vues des cartes anciennes ne sont pas rafraîchies au même rythme que celles des cartes nouvelles.`.trim() },
           ]}
         />
       </Section>

@@ -51,7 +51,10 @@ META_MODEL = "blend-ridge-naive-tcg-pure-v2"
 BOUTIQUE_MODEL = "unreleased-cards-v3"
 # v3 (2026-11-16) : signal_ocg lu dans ocg_archetype_scores (notebook 10, staples et vues recalculées) et non
 # plus dans boutique_alerts. Effet mesuré : Spearman 0,9996 avec la v2, top 50 identique.
-EARLY_MODEL = "early-views-text-ocg-v3"
+# v4 (2026-11-18, lot 20, A1) : calcul déplacé dans scripts/build_early_signals.py ; date de référence = dernier deck
+# TCG ; banlist TCG en vigueur à cette date (Forbidden et Limited exclus) ; cartes sorties en TCG avant la fenêtre de
+# 168 jours et cartes jouées dans au moins 3 % des decks TCG des 90 derniers jours exclues.
+EARLY_MODEL = "early-views-text-ocg-v4"
 
 KEY = ("kind", "subject", "made_at", "model_version")
 COLUMNS = (

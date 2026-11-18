@@ -134,6 +134,12 @@ export interface EarlySignal {
 export interface EarlySignalsResponse {
   data: EarlySignal[];
   computed_at: string | null;
+  /** Date de référence du calcul : dernier deck TCG relevé (lot 20). Absente avant. */
+  as_of?: string | null;
+  /** Cartes notées (la réponse sert les 50 premières). */
+  cards_scored?: number | null;
+  /** Cartes notées dont la proximité de texte avec les cartes de la méta est positive. */
+  text_signal_cards?: number | null;
 }
 
 export interface BanSimResult {

@@ -8,14 +8,16 @@ Recalcule toute la chaîne dérivée dans le bon ordre (TOK-69).
 
 Choix de conception : les notebooks sont exécutés par `jupyter nbconvert --execute`
 (copie exécutée dans logs/executed/, le notebook versionné n'est pas réécrit) plutôt
-qu'extraits en scripts. Raison : les notebooks 02/04/05/10/11 pèsent ~68 000 caractères de
+qu'extraits en scripts. Raison : les notebooks 02/04/05/10 pèsent ~68 000 caractères de
 code ; les extraire créerait deux copies qui divergent (c'est déjà arrivé : banlist_features
 et boutique_buy_signals ont perdu leur producteur quand le notebook 09 a été remplacé par un
 script). Ici le notebook reste LA source ; le coût est un recalcul un peu plus lent et des
 notebooks qui doivent rester exécutables de haut en bas (c'est donc aussi un test).
+Exception : le notebook 11 (signal précoce) a été extrait dans `scripts/build_early_signals.py` au lot 20
+(ticket A1 de l'audit de rigueur) ; il n'écrit plus en base, il n'y a donc qu'une source.
 
 Ordre (dépendances) : fetch_new_cards → 02 → 04 (meta_scores) → banlist_features → 05 (prédictions) →
-10 (alertes boutique) → buy_signals → 11 (signal précoce) → ban_radar → card_impact
+10 (alertes boutique) → buy_signals → early_signals (signal précoce) → ban_radar → card_impact
 → archetype_profiles (même fenêtre que la tier list, donc après 04) → log_predictions → build_serving_db --check → download_card_images (incrémental).
 Un seul écrivain sur yugioh.db : tout est séquentiel, arrêt au premier échec.
 """
@@ -44,7 +46,8 @@ STEPS = [
     # Avant, le relevé n'était pris qu'au lancement de Streamlit (run.sh) : d'où les trous de 2026.
     ("snapshot_prices", SC("scripts/snapshot_prices.py")),
     ("boutique_prices", SC("scripts/build_boutique_price_history.py")),
-    ("11_early_card_signal", NB("11_early_card_signal")),
+    # Lot 20 (A1) : le calcul du notebook 11 vit dans ce script (banlist à date, référence = dernier deck).
+    ("early_signals", SC("scripts/build_early_signals.py")),
     ("ban_radar", SC("scripts/build_ban_radar.py")),
     ("card_impact", SC("scripts/build_card_impact.py")),
     ("archetype_profiles", SC("scripts/build_archetype_profiles.py")),

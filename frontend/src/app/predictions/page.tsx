@@ -42,7 +42,7 @@ export default async function PredictionsPage() {
         eyebrow="Méta · Prédictions"
         title={
           <>
-            La méta du mois <Em>prochain</Em>.
+            Le score de chaque archétype, <Em>prévu</Em> pour le mois suivant.
           </>
         }
         intro={

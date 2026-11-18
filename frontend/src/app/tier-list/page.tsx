@@ -3,7 +3,6 @@ import { api } from "@/lib/api";
 import { fmtMonthRange, fmtMonthShort, fmtNum } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
-import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { MethodNote } from "@/components/ds/explain";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -41,23 +40,21 @@ export default async function TierListPage() {
             eyebrow={`Tier list · TCG · ${period} · ${fmtNum(n_decks)} decks`}
             title={
               <>
-                Ce que joue la méta, <Em>maintenant</Em>.
+                Les archétypes TCG classés par <Em>part</Em> des decks de tournoi.
               </>
             }
             intro={
               <>
-                Classement calculé sur nos decklists de tournoi TCG. Tier
+                {`${fmtNum(data.length)} archétypes classés sur ${fmtNum(n_decks)} decklists de tournoi TCG, ${period} (${DECK_SOURCE}). Tier`}
                 <InfoTooltip term="Tier" text="Niveau de l’archétype selon la part des decks de tournoi qui le jouent." />{" "}
-                selon la part de méta, tendance par rapport à la période précédente.
+                selon la part des decks, tendance par rapport à la fenêtre précédente.
               </>
             }
           >
             <StatBand
               stats={[
-                { value: fmtNum(SITE_FACTS.decklists), label: "Decklists analysées" },
-                { value: fmtNum(SITE_FACTS.cardsTracked), label: "Cartes suivies" },
-                { value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 2), label: "Corrélation OCG → TCG" },
-                { value: SITE_FACTS.ocgTcgLagRange, label: "Fenêtre du signal sur le TCG" },
+                { value: fmtNum(n_decks), label: "Decks de la fenêtre" },
+                { value: fmtNum(data.length), label: "Archétypes classés" },
               ]}
             />
           </PageHero>

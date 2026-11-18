@@ -373,19 +373,16 @@ def check_garde_fou(report: Report) -> None:
 
 def check_copy(report: Report) -> None:
     """Charte « ton et explication » : appels à l'action, promesses, superlatifs, ponctuation,
-    formules (scripts/check_copy.py). Non bloquant tant que le lot 16 n'est pas appliqué :
-    passer `--strict` et `report.fail` ensuite."""
-    report.step("Textes du site : mots et tournures interdits par la charte (non bloquant)")
-    res = run([sys.executable, "scripts/check_copy.py"])
+    formules (scripts/check_copy.py). Bloquant depuis l'application des textes du lot 16
+    (décision de Thomas du 17/11) : un faux positif se déclare dans `ALLOW`, jamais en
+    affaiblissant une règle."""
+    report.step("Textes du site : mots et tournures interdits par la charte")
+    res = run([sys.executable, "scripts/check_copy.py", "--strict"])
     lines = res.stdout.strip().splitlines()
     summary = lines[-1] if lines else "aucune sortie"
     if res.returncode:
-        report.fail("check_copy.py", res.stdout + res.stderr)
-    elif len(lines) > 1:
-        print(f"  ⚠ avertissement (non bloquant) : {summary}")
-        for line in lines[:-1][:40]:
-            print(f"    {line.strip()}")
-        print("    → propositions dans docs/textes-avant-apres.md (lot 16)")
+        report.fail("check_copy.py", res.stdout + res.stderr
+                    + "\n    → corriger le texte selon docs/charte-ton-et-explication.md, ou déclarer un faux positif dans ALLOW")
     else:
         report.ok(summary)
 

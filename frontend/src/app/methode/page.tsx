@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 import { fmtDate, fmtMonthShort, fmtNum, fmtPct } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
+import { BAN_VERDICT } from "@/lib/ban-verdict";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { WEAK_MONTH_DECKS } from "@/lib/wilson";
 import { Em } from "@/components/ds/em";
@@ -365,6 +366,7 @@ export default async function MethodePage() {
             { term: "Critères", text: "Part des decks, archétype porteur, exemplaires joués, restriction en cours, élan sur 3 mois, position de pont." },
             { term: "Fenêtre", text: "Les 6 derniers mois de decks de tournoi TCG." },
             { term: "Limites", text: "Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe." },
+            { term: "Résultat", text: BAN_VERDICT.measures },
           ]}
         />
       </Section>
@@ -372,10 +374,10 @@ export default async function MethodePage() {
       <Section id="ban-historique" title="Ban Radar contre l’historique">
         <Facts
           items={[
-            { term: "Protocole", text: "Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures." },
+            { term: "Protocole", text: "Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures. Exception : le critère « pont » vient du graphe actuel ; effet mesuré négligeable (le retirer change de 2 le nombre de cartes touchées dans le top 25 TCG)." },
             { term: "Hasard", text: "Rangs médians qu’on obtiendrait en tirant au sort autant de cartes : 90 % des tirages tombent dans la bande." },
             { term: "Base de comparaison", text: "Classer simplement les cartes par part des decks (« staples les plus jouées »)." },
-            { term: "Lecture", text: "En attente du diagnostic du Ban Radar TCG (TOK-115)." },
+            { term: "Lecture", text: BAN_VERDICT.significance },
           ]}
         />
         <Validation title="Rang médian des cartes touchées, liste par liste">

@@ -12,16 +12,16 @@ export default function NotFound() {
         eyebrow="Erreur 404"
         title={
           <>
-            Cette page n’est pas dans le <Em>deck</Em>.
+            Page <Em>introuvable</Em>.
           </>
         }
-        intro="L’adresse est fausse ou la page a été déplacée. Les outils sont toujours là."
+        intro="L’adresse est fausse ou la page a été déplacée."
       >
         <div className="mt-7 flex flex-wrap gap-2.5">
           <ButtonLink href="/" variant="primary">
             Retour à l’accueil
           </ButtonLink>
-          <ButtonLink href="/tier-list">Voir la tier list</ButtonLink>
+          <ButtonLink href="/tier-list">Tier list</ButtonLink>
         </div>
       </PageHero>
     </Page>

@@ -37,13 +37,12 @@ export default async function EarlySignalsPage() {
           eyebrow="Boutique · Signaux précoces"
           title={
             <>
-              Les cartes qui montent <Em>avant</Em> la méta.
+              Les cartes récentes et leur <Em>place</Em> dans les decks.
             </>
           }
           intro={
             <>
-              Nouvelles cartes qui entrent dans la méta, repérées par leurs vues, leurs co-occurrences et le tier de
-              leur archétype. Score
+              {`${fmtNum(data.length)} cartes récentes notées de 0 à 100${computed_at ? `, calcul du ${fmtDate(computed_at)}` : ""} : vues sur une semaine, présence dans les decks de tournoi, tier de l’archétype. Score`}
               <InfoTooltip
                 term="Score"
                 text="Note de 0 à 100 : plus elle est haute, plus la carte est consultée et jouée avec les decks du moment."

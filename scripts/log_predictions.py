@@ -24,6 +24,14 @@ build_ban_radar.py), puis à committer :
 Idempotent : une prédiction déjà journalisée (même kind, sujet, date de calcul et
 version du modèle) est ignorée.
 
+Libellé boutique (lot 20, ticket A5 de l'audit de rigueur) : `predicted_label` des lignes
+`boutique_buy` et `boutique_signal` est le libellé AFFICHÉ (`signal_label` : Fort / Modéré / Faible,
+rang de l'archétype parmi les archétypes OCG, `backend/app/signal_label.py`), et `payload` porte
+`archetype_rank`, `rank_population`, `ocg_score`, `rank_computed_at`, `label_rule` et `label_source`
+(relecture data-scientist du lot 20). Avant, `boutique_buy` journalisait `buy_label` (libellé relatif
+au premier du lot, plus affiché) : il reste dans `payload` sous ce nom. Les lignes déjà écrites ne
+changent pas (append-only) ; le libellé affiché n'est journalisé qu'à partir du prochain recalcul.
+
 `provenance` : 'live' si la prédiction est journalisée au plus 1 jour après son calcul,
 'backfill' sinon. Une ligne 'backfill' prouve ce que le modèle disait à `made_at`
 seulement si on fait confiance à la date de calcul de la source ; seule une ligne
@@ -40,6 +48,9 @@ import sqlite3
 import sys
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
+sys.path.insert(0, os.path.join(ROOT, "backend"))
+from app.signal_label import MODERATE_TOP_SHARE, STRONG_TOP_SHARE, signal_label  # noqa: E402  (règle de GET /boutique/signals)
+
 DB_PATH = os.path.join(ROOT, "data", "yugioh.db")
 JSONL_PATH = os.path.join(ROOT, "data", "prediction_log.jsonl")
 BAN_SCRIPT = os.path.join(ROOT, "scripts", "build_ban_radar.py")
@@ -124,6 +135,39 @@ def ban_model_version():
     return "ban-radar-unknown"
 
 
+def ocg_labels(con):
+    """{archétype: SignalLabel} : libellé affiché par GET /boutique/signals (rang parmi les archétypes de
+    `ocg_archetype_scores`, classés sur `ocg_score`). Vide si la table manque : les lignes partent alors
+    sans libellé plutôt qu'avec un libellé que le site n'affiche pas."""
+    if not has_table(con, "ocg_archetype_scores"):
+        return {}, None
+    rows = [tuple(r) for r in con.execute(
+        "SELECT archetype, ocg_score, computed_at FROM ocg_archetype_scores WHERE ocg_score IS NOT NULL")]
+    values = [s for _, s, _ in rows]
+    population_date = max((d for _, _, d in rows if d), default=None)
+    return {a: (signal_label(s, values), s) for a, s, _ in rows}, population_date
+
+
+# Règle du libellé, écrite dans chaque ligne : les coupes sont provisoires et peuvent changer d'ici l'échéance.
+LABEL_RULE = (f"rang sur ocg_score parmi ocg_archetype_scores, Fort <= {STRONG_TOP_SHARE:.0%}, "
+              f"Modéré <= {MODERATE_TOP_SHARE:.0%}")
+
+
+def label_fields(labels, archetype):
+    """(libellé affiché, champs de payload). `rank_computed_at` : date de la population de rang, qui peut
+    différer de `made_at` si la journalisation est tardive (lignes backfill)."""
+    table, population_date = labels
+    lab, score = table.get(archetype, (None, None))
+    return (lab.label if lab else None, {
+        "label_source": "signal_label",
+        "archetype_rank": lab.rank if lab else None,
+        "rank_population": lab.population if lab else None,
+        "ocg_score": score,
+        "rank_computed_at": population_date,
+        "label_rule": LABEL_RULE,
+    })
+
+
 def rows_of(con, sql):
     con.row_factory = sqlite3.Row
     return [dict(r) for r in con.execute(sql)]
@@ -132,6 +176,7 @@ def rows_of(con, sql):
 def collect(con):
     """Lit l'état courant des tables sources. Retourne (entrées, tables_absentes)."""
     entries, missing = [], []
+    labels = ocg_labels(con)
 
     if has_table(con, "meta_predictions"):
         for r in rows_of(con, "SELECT * FROM meta_predictions"):
@@ -147,25 +192,29 @@ def collect(con):
 
     if has_table(con, "boutique_alerts"):
         for r in rows_of(con, "SELECT * FROM boutique_alerts"):
+            label, rank = label_fields(labels, r["archetype"])
             entries.append(dict(
                 kind="boutique_signal", subject=r["archetype"], made_at=r["computed_at"],
                 target_date=window_end_month(r),
-                predicted_value=r["alert_score"], baseline_value=None, predicted_label=None,
+                predicted_value=r["alert_score"], baseline_value=None, predicted_label=label,
                 model_version=BOUTIQUE_MODEL,
-                payload={k: r[k] for k in r if k not in ("archetype", "computed_at", "alert_score")},
+                payload={**{k: r[k] for k in r if k not in ("archetype", "computed_at", "alert_score")}, **rank},
             ))
     else:
         missing.append("boutique_alerts")
 
     if has_table(con, "boutique_buy_signals"):
         for r in rows_of(con, "SELECT * FROM boutique_buy_signals"):
+            label, rank = label_fields(labels, r["archetype"])
             entries.append(dict(
                 kind="boutique_buy", subject=f"{r['archetype']} | {r['card_name']}",
                 made_at=r["computed_at"], target_date=window_end_month(r),
                 predicted_value=r["buy_score_100"], baseline_value=r["cm_price"],
-                predicted_label=r["buy_label"], model_version=BOUTIQUE_MODEL,
-                payload={k: r[k] for k in r
-                         if k not in ("archetype", "card_name", "computed_at", "buy_score_100", "cm_price", "buy_label")},
+                predicted_label=label, model_version=BOUTIQUE_MODEL,
+                # buy_label (ancien libellé relatif, plus affiché) reste dans le payload.
+                payload={**{k: r[k] for k in r
+                            if k not in ("archetype", "card_name", "computed_at", "buy_score_100", "cm_price")},
+                         **rank},
             ))
     else:
         missing.append("boutique_buy_signals")

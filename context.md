@@ -714,6 +714,23 @@ de prix = `find_gaps`, libellés boutique, seuils du backtest), `test_build_serv
   (`check_same_thread=False`, `row_factory = sqlite3.Row`).
 → détail : `docs/planning/fond/2026-11-18-tests.md`
 
+### 🪧 Chiffres de vitrine remesurés (TOK-82, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+Chaque chiffre de `frontend/src/lib/site-facts.ts` remesuré sur la base de référence (lecture seule) : r = 0,53
+[0,43 ; 0,59] sur 105 archétypes (relancé avec `evaluate_prediction.py --part B`), « 2 à 6 mois », ρ 0,94, top 10
+6 contre 19, `banTop25` et 23 948 decklists **identiques**. Deux écarts affichés : cartes suivies 13 797 → 14 084 ; « légales
+à la date du tournoi » accolé aux 23 948 listes, dont 22 422 seulement sont légales (611 illégales, 915 Genesys).
+Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (Jalon 3 — TOK-82) ; le commit du front, **dernier de la
+branche**, applique les cases pré-cochées et ne se fusionne qu'après le formulaire. Notebook 11 : déjà marqué remplacé,
+n'écrit rien, aucune correction.
+- **Depuis TOK-80, « cible mélangée » et « TCG pur » donnent le même r** dans `evaluate_prediction.py` (`meta_scores`
+  est TCG pur) : la ligne « mélangée » de la sortie n'est plus un contrôle de contamination.
+- **Un total relevé n'est pas un total utilisé** : 23 948 listes relevées, 22 422 légales et seules comptées. Toute phrase
+  qui donne un effectif dit lequel.
+- Les chiffres du Ban Radar se remesurent avec `build_ban_radar.backtest_lists` (top 10 par type : `top_archetype` nul
+  ou non dans le classement de la veille) et la table `ban_backtest_lists` (`banTop25`).
+→ détail complet : `docs/journal/chiffres-vitrine-tok-82.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

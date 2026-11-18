@@ -731,6 +731,61 @@ n'écrit rien, aucune correction.
   ou non dans le classement de la veille) et la table `ban_backtest_lists` (`banTop25`).
 → détail complet : `docs/journal/chiffres-vitrine-tok-82.md`
 
+### 🕸 Graphe des cartes recalculé (TOK-136, jalon n°4, 2026-11-18, branche `claude/jalon-4-graphe-backtest-vues-e1f982`, non fusionnée)
+
+`scripts/build_graph_metrics.py` : notebook 03 en script (`card_graph_metrics`, `graph_communities` depuis
+`card_cooccurrence`, intermédiarité exacte, communautés reproductibles, même schéma). Mesuré sur une copie : 663 → 1 402
+nœuds, 63 → 151 communautés ; backtest presque inchangé (rangs médians ±8, TCG 2026-05-18 84 → 86/889, OCG 2026-07-01
+19 → 19, top 25 inchangés) mais `verdictMatches` décroche (OCG `medianBetter` 8 → 7) ; page du graphe : 48 des 150 nœuds
+restent. **Référence non recalculée** : formulaire « Jalon 4 — TOK-136 ».
+- **`refresh_all.PENDING_FORM`** : une étape qui change une table affichée y reste tant que son formulaire n'est pas
+  rempli (le job du lundi tourne depuis le dépôt principal, qui suit la branche d'intégration : fusionner vaudrait
+  accepter). Accepter = retirer le nom de `PENDING_FORM` et la tolérance de `check_freshness.py` dans le même commit
+  (test `test_pending_form_steps_are_skipped_and_tolerated`).
+- **sqlite3 (Python 3.13, mode par défaut) valide `DROP`/`CREATE` hors de la transaction de `with conn`** : toute
+  écriture qui remplace des tables doit ouvrir avec `isolation_level=None` et faire `BEGIN IMMEDIATE` … `COMMIT` /
+  `ROLLBACK` (défaut trouvé par `gardien-donnees`).
+- **Le critère pont du backtest lit le graphe du jour pour toutes les listes** (fuite TOK-120) ; le recalcul l'étend
+  (237 cartes de l'univers avec un pont non nul au lieu de 176). Effet mesuré ≤ 8 rangs.
+- Après acceptation, dans l'ordre : `build_graph_metrics.py`, `build_ban_radar.py`, `build_ban_history.py`,
+  `build_serving_db.py`, puis réécrire `SITE_FACTS.banTop25` et `graphCommunities`.
+→ détail complet : `docs/journal/graphe-recalcul-tok-136.md`
+
+### ⏱ Fenêtre du backtest : decks connus à la coupure (TOK-137, jalon n°4, 2026-11-18, même branche, non fusionnée)
+
+`build_ban_radar.backtest_lists(..., require_uploaded=False)` : à `True`, la fenêtre (date du tournoi) exige aussi la
+mise en ligne avant la coupure (`--backtest --connus-a-la-coupure`). Défaut inchangé, rien d'affiché ne change. Mesuré :
+2,5 % des decks retirés ; top 25 TCG 29 → 32, OCG 41 → 45 ; rang médian OCG meilleur que les staples sur 9 listes
+(p = 0,021) au lieu de 8 ; références 84/889 → 81/877 et 19/1236 → 19/1226. Formulaire « Jalon 4 — TOK-137 ».
+- **Le backtest actuel était pessimiste, pas optimiste** : les decks publiés après la coupure sont joués en fin de
+  fenêtre (OCG : après la publication du contenu de la liste) et jouent déjà moins les cartes visées. Ne pas présenter
+  l'écart comme un gain du radar.
+- `created` = date du tournoi, `uploaded` = mise en ligne (5,5 jours plus tard en moyenne) ; une coupure « connue à
+  la date X » filtre sur `uploaded`. Le classement du jour n'a pas de coupure : jamais `require_uploaded` dans `build`
+  pour lui.
+- Si le défaut change, la phrase de significativité du verdict (`ban-verdict.ts`) devient fausse (deux écarts OCG à
+  p = 0,021) : formulation au formulaire.
+→ détail complet : `docs/journal/fenetre-backtest-tok-137.md`
+
+### 👁 Vues de la semaine rafraîchies et datées (TOK-138, jalon n°4, 2026-11-18, même branche, non fusionnée)
+
+`scripts/fetch_card_views.py` : met à jour `cards.views_week` seule (par id, garde de nom, carte renumérotée rattrapée
+par le nom si une seule candidate) et archive chaque relevé dans la table nouvelle `card_views_snapshots`
+(`snapshot_date`, hors `SERVED_TABLES`). Étape `card_views` de `refresh_all.py`, après `fetch_new_cards`, verrouillée
+(`PENDING_FORM`) et non bloquante (`NON_BLOCKING`, nouveau). Mesuré sur une copie : 13 853 vues sur 14 084 changent ;
+signal précoce Spearman 0,90 (14 des 20 premières restent) ; signal boutique Spearman 0,995, aucun libellé changé.
+**Référence non relevée** : formulaire « Jalon 4 — TOK-138 ».
+- **YGOPRODeck renumérote des cartes** (Odd-Eyes Pendulum Dragon 16178681 → 16178683 au 18/11) : une jointure par id
+  seule garde à jamais l'ancienne valeur ; rattraper par le nom quand une seule carte de `cards` manque à l'API.
+- **Le notebook 10 lit aussi `views_week`** (force boutique × log des vues) : toute retouche des vues se mesure sur
+  `early_card_signals` ET sur `ocg_archetype_scores` / `boutique_alerts`.
+- **Un notebook exécuté par `nbconvert` tourne dans son propre dossier** : `os.getcwd()/../data/yugioh.db` vise le
+  checkout du notebook, et `sqlite3.connect` y crée une base vide si elle manque. Pour le lancer sur une copie, copier
+  le notebook dans un dossier `<x>/notebooks/` avec `<x>/data/yugioh.db`.
+- La fraîcheur des vues se date sur la table servie (`early_card_signals`), pas sur `cards`.
+- Le backtest des vues (TOK-129) devient possible à partir du premier relevé archivé, pas avant.
+→ détail complet : `docs/journal/views-week-tok-138.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

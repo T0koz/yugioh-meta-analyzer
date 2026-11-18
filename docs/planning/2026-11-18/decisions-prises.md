@@ -85,6 +85,13 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | Lot 21 (TOK-121) | Comment mesurer sans changer le backtest affiché ? | Paramètre optionnel `as_of_override` de `backtest_lists` (défaut inchangé) et option `--annonces` de `diagnose_ban_radar.py` (le diagnostic TOK-115 n'est pas relancé par défaut). | Le brief interdit de changer le comportement par défaut ; une seule fonction de backtest (pas de copie). |
 | Lot 21 (TOK-121) | Relecture `data-scientist-ygo` de la mesure. | Pas de fuite ; 60 tests du signe, aucun ne survit à Bonferroni (≈ 0,0008) ; le p = 0,008 du top 25 TCG (`contenu+borne`) ne se cite pas seul ; placebo manquant, à demander à la collaboratrice. Formulation retenue dans le journal. | Fenêtres de 6 mois qui se recouvrent, 10 listes par format : exploratoire. |
 | Lot 21 | Temps passé. | ≈ 40 min de session, dont ≈ 15 min d'attente réseau (Yugipedia, 170 pages à 0,5 s, deux relances après des réponses vides) ; deux relectures de sous-agents. | Note demandée par le brief. |
+| Lot 22 (TOK-120) | `statsmodels.ConditionalLogit` déborde en récursion sur des listes de ≈ 1 000 cartes. | Vraisemblance conditionnelle de Breslow (softmax par liste), vectorisée, vérifiée contre la vraisemblance exacte (récurrence en log, départ à zéro) : poids à ±0,01. | k/n ≈ 1 % : l'écart à l'exacte est d'ordre k/n ; la vérification est dans le script. |
+| Lot 22 (TOK-120) | À quelle date de coupure appliquer la règle d'adoption ? | Aux deux (veille de l'entrée en vigueur, veille du contenu `content_date` du lot 21), adoption seulement si les deux passent ; candidats (`rangs_poids_ecrits`, `clogit_rangs`) et règle figés avant la première exécution. | La plus prudente ; le brief demande d'utiliser les dates du lot 21 sans abandonner la référence TOK-115. |
+| Lot 22 (TOK-120) | Pont daté : intermédiarité échantillonnée (500 sources, sans graine, notebook 03) ou exacte ? `weight = jaccard` lu comme une distance ? | Exacte ; `weight = jaccard` gardé tel quel (déclaré). | Reproductible ; dater le critère, pas en changer la définition. |
+| Lot 22 (TOK-120) | Relecture `data-scientist-ygo`. | Méthode et chiffres validés (règle d'adoption recalculée, rang médian TCG 2026-05-18 refait de zéro : 36/889) ; recommandation A ; pont à retirer au prochain changement de poids ; deux suites signalées (`card_graph_metrics` périmée, `load_usage` filtre `created` et non `uploaded` : 925 decks sur 36 917 mis en ligne après la coupure). | Corrections appliquées : vérification de Breslow partie de zéro, colonne `n_train_lists_tcg_ocg`. |
+| Lot 26 (TOK-132) | Quelle mesure de l'« impact » d'un ban ? | Variation de la part cumulée des archétypes porteurs (≥ 50 % de leurs decks jouent la carte, archétypes ≥ 5 decks), 3 mois avant la coupure contre 3 mois après l'entrée en vigueur ; listes dont les 3 mois suivants sont complets (17 sur 20). | Mesure proposée par l'audit (§ 9) ; validée par Q1 (un ban la fait baisser). |
+| Lot 26 (TOK-132) | La règle de gain (Q3) ne fixait pas le sens attendu ; le « gain » du score de pont vient d'un coefficient de signe contraire à « Impact ». | Signe des coefficients ajouté après lecture (« Q3 bis », déclaré dans le script et le journal) ; c'est lui qui tranche : pas d'impact, une mesure de diffusion. | Ne pas cacher un résultat favorable sur la forme mais contraire au sens. Leçon : fixer le signe dans toute règle future. |
+| Lot 26 (TOK-132) | Relecture `data-scientist-ygo`. | Q1 à Q3 validés (effet −3,1 et coefficient +6,5 recalculés) ; Q4 refait en variation relative avec le filtre de 5 decks des deux côtés (la version en points favorisait la liste naïve) ; variante de Q1 sans contrôles contaminés ajoutée (effet −5,5 au lieu de −3,1). | Corrections appliquées avant le commit. |
 
 ## Formulaire
 
@@ -265,6 +272,49 @@ Lot 21 (TOK-121) — suite de la mesure
 [x] Relecture par la collaboratrice d'abord (dépendance entre listes, comparaisons multiples, placebo, choix des scénarios, dates de la table : `docs/journal/dates-annonce-banlists-tok-121.md` § 4), puis décider
 [ ] Ajouter tout de suite un placebo et un test par blocs (nouveau lot de méthode)
 [ ] Abandonner (effet trop petit pour justifier plus de travail)
+Commentaire libre :
+Lot 22 (TOK-120) — poids du Ban Radar après les rangs centiles et le logit conditionnel
+[x] A. Ne rien changer. La règle figée n'est pas remplie : le logit conditionnel sur les rangs la remplit à la veille de l'entrée en vigueur, pas à la veille du contenu (OCG : mieux que les poids actuels sur 3 listes sur 7, top 25 32 contre 33) ; aucun candidat ne bat les staples de façon démontrée (TCG : −0,15 à −0,27 point, 5 listes sur 7, p = 0,45)
+[ ] B. Rangs centiles avec les poids écrits (meilleur que les poids actuels en TCG sur 7 listes sur 7, p = 0,016 ; moins bien que les staples en TCG, +0,7 point)
+[ ] C. Rangs centiles avec les poids du logit conditionnel (0,29 / 0,20 / 0,17 / 0,16 / 0,12 / −0,05)
+Commentaire libre :
+
+Lot 22 (TOK-120) — suivi des candidats
+[x] Relancer `diagnose_ban_radar.py --rangs` (deux coupures) à chaque nouvelle banlist et prolonger le tableau « listes postérieures au calage » (3 listes aujourd'hui)
+[ ] En plus, journaliser les classements B et C dans `prediction_log` pour les dater par un tiers (ticket, Thomas seul lance `log_predictions.py`)
+Commentaire libre :
+
+Lot 22 (TOK-120) — critère `bridge`
+[x] Le retirer au prochain changement de poids, sans le recalculer par date (poids estimé −0,05 [−0,10 ; −0,01] ; pont daté seul AUC 0,52 en TCG ; retirer ne change rien de mesurable)
+[ ] Le remplacer par le pont daté (`bridge_date.py`) au prochain changement de poids
+[ ] Le retirer maintenant (changement de `WEIGHTS`, `--backtest`, Historique recalculé)
+Commentaire libre :
+
+Lot 22 (TOK-120) — `card_graph_metrics` périmée (663 nœuds, le graphe actuel en a 1 402 ; lue par le Ban Radar et par la « fragmentation » du simulateur)
+[x] Ticket : refaire la table dans la chaîne du lundi (script daté issu de `bridge_date.py`, à la place du notebook 03), en déclarant l'intermédiarité exacte
+[ ] La laisser en l'état jusqu'au retrait du pont
+Commentaire libre :
+
+Lot 22 (TOK-120) — fenêtre du backtest filtrée sur la date du tournoi (`created`) et non de mise en ligne (`uploaded`) : 925 decks sur 36 917 (2,5 %) connus après la coupure, surtout dans le critère « tendance »
+[x] Ticket dédié : filtrer aussi sur `uploaded ≤ coupure` dans `load_usage` (change `--backtest` et l'Historique : formulaire avant application)
+[ ] Laisser tel quel, déclaré dans le journal
+Commentaire libre :
+
+Lot 26 (TOK-132) — onglet « Impact » (score de pont `n_archetypes × log(1 + decks)`)
+[x] Renommer « Impact » en « Diffusion » et écrire ce que mesure la formule : à part des decks égale, plus le score est haut, MOINS les archétypes porteurs perdent après un ban (+6,5 points par écart type [+4,5 ; +8,6], 158 cartes, 17 listes)
+[ ] Garder « Impact » (non recommandé : contredit par la mesure)
+[ ] Retirer l'onglet
+Commentaire libre :
+
+Lot 26 (TOK-132) — simulateur de ban
+[x] Le décrire comme la position de la carte dans le graphe, sans prévision ; remplacer les « archétypes voisins » (31 % seulement sont des archétypes de deck, pas meilleurs qu'une liste naïve) par les archétypes de deck qui jouent la carte, avec leur effectif
+[ ] Retirer le simulateur
+[ ] Laisser tel quel (textes déjà conformes au calcul depuis A4)
+Commentaire libre :
+
+Lot 26 (TOK-132) — suite
+[x] Relecture de la collaboratrice (cible, contrôles de Q1, Q3 bis ajouté après lecture, Q4 relatif), puis lot de textes pour appliquer les deux choix ci-dessus
+[ ] Appliquer tout de suite les textes, relecture ensuite
 Commentaire libre :
 ```
 

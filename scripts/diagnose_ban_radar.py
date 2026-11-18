@@ -6,6 +6,7 @@ Lecture seule. N'écrit rien en base, ne modifie ni `WEIGHTS` ni le calcul du sc
     python scripts/diagnose_ban_radar.py                       # base du dépôt, sorties dans ./diagnostic_ban_radar
     python scripts/diagnose_ban_radar.py --db <chemin> --out <dossier>
     python scripts/diagnose_ban_radar.py --annonces --db <chemin> --out <dossier>   # lot 21 : veille de l'annonce
+    python scripts/diagnose_ban_radar.py --rangs [--coupure contenu] --db <chemin> --out <dossier>   # TOK-120
 
 Démarche (détail et lecture : docs/journal/ban-radar-tcg-diagnostic.md) :
 
@@ -519,6 +520,11 @@ def main() -> None:
     parser.add_argument("--annonces", action="store_true",
                         help="Lot 21 (TOK-121) : mesure seulement l'effet de classer la veille de l'annonce "
                              "(lit banlist_announcements ; le diagnostic TOK-115 n'est pas relancé)")
+    parser.add_argument("--rangs", action="store_true",
+                        help="TOK-120 : critères en rangs centiles par liste, logit conditionnel, pont daté "
+                             "(scripts/diagnose_ban_radar_rangs.py)")
+    parser.add_argument("--coupure", choices=["effective", "contenu"], default="effective",
+                        help="avec --rangs : veille de l'entrée en vigueur (défaut) ou veille du contenu (lot 21)")
     args = parser.parse_args()
     if not args.db.exists():
         raise SystemExit(f"Base absente : {args.db}")
@@ -530,6 +536,10 @@ def main() -> None:
     conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True, timeout=60)
     if args.annonces:
         announcement_effect(conn, args.out)
+        return
+    if args.rangs:
+        import diagnose_ban_radar_rangs  # noqa: PLC0415 (importe ce module : import tardif, sans cycle)
+        diagnose_ban_radar_rangs.run(conn, args.out, args.coupure)
         return
     data, lists = load_dataset(conn)
     data.to_csv(args.out / "dataset.csv", index=False)

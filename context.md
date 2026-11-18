@@ -564,6 +564,37 @@ ne survit à la correction ; **verdict de l'Historique inchangé**.
 - `build_ban_radar.backtest_lists(..., as_of_override)` : paramètre optionnel, défaut inchangé.
 → détail complet : `docs/journal/dates-annonce-banlists-tok-121.md`
 
+### 📐 Ban Radar en rangs et pont daté (TOK-120, lot 22, Jalon 1, 2026-11-18, branche `claude/j1-tok-120-132-ban-radar-pont-d32da4`, non fusionnée)
+
+Diagnostic seulement : `WEIGHTS` inchangés, `--backtest` identique (84/889, 19/1236), rien d'affiché ne change.
+`scripts/diagnose_ban_radar_rangs.py` (ou `diagnose_ban_radar.py --rangs [--coupure contenu]`, ≈ 1 min) : critères en rangs
+centiles par liste, logit conditionnel par liste (Breslow, vérifié contre l'exacte), pont daté (`scripts/bridge_date.py`).
+**Règle d'adoption non remplie** : le logit conditionnel sur les rangs la remplit à la veille de l'entrée en vigueur, pas à
+la veille du contenu (OCG 3/7 contre les poids actuels) ; contre les staples en TCG, égalité (−0,15 point, 5/7, p = 0,45).
+Recommandation A (ne rien changer), validée par `data-scientist-ygo`.
+- **En rangs centiles, les poids écrits deviennent les poids effectifs** (sauf « déjà restreinte », 93 % d'égalités à 0),
+  et les poids estimés sur les rangs sont proches des poids écrits (0,29 / 0,20 / 0,17 / 0,16 / 0,12) : le défaut du score
+  était l'échelle brute des critères, pas la valeur des poids. Le pont reçoit un poids négatif (−0,05 [−0,10 ; −0,01]).
+- **`card_graph_metrics` est périmée** (663 nœuds ; le graphe recalculé aujourd'hui en a 1 402, Spearman 0,31) : elle
+  alimente le critère `bridge` et la « fragmentation » du simulateur. `bridge_date.py` reproduit `card_cooccurrence` à
+  l'identique à la date du jour (10 741 paires).
+- **`load_usage` filtre sur `created`, pas `uploaded`** : 2,5 % des decks des fenêtres du backtest sont mis en ligne après
+  la coupure (surtout dans « tendance »). Correction = changement du backtest, au formulaire.
+- Toute règle d'adoption future : candidats et règle figés dans la docstring avant la première exécution, aux deux coupures.
+→ détail complet et formulaire : `docs/journal/ban-radar-rangs-tok-120.md`, `docs/planning/2026-11-18/decisions-prises.md` (lot 22)
+
+**Score de pont et simulateur contre les banlists (TOK-132, B3, lot 26, même branche)** : `scripts/diagnose_pont_simulateur.py`
+(≈ 4 min, lecture seule, rien d'affiché ne change). Mesure : variation de la part cumulée des archétypes porteurs (≥ 50 % de
+leurs decks jouent la carte), 3 mois avant / 3 mois après ; 17 listes, 158 cartes touchées. Un ban fait baisser ses
+porteurs (−3,1 points contre des cartes de même popularité, −5,5 sans contrôles contaminés). **Le score de pont
+(`card_impact`, onglet « Impact ») va dans le sens contraire** à part des decks égale (+6,5 [+4,5 ; +8,6]) : il mesure la
+diffusion d'une carte, dont le ban déplace le moins ses porteurs. Fragmentation du simulateur : bon sens, aucun gain hors
+échantillon ; « archétypes voisins » : 31 % seulement sont des archétypes de deck, pas meilleurs qu'une liste naïve.
+Formulaire : renommer « Impact » en « Diffusion », simulateur décrit sans prévision (non appliqué).
+- **Une règle de gain doit fixer le sens attendu** : ici le « gain » hors échantillon venait d'un coefficient de signe
+  contraire à l'affirmation testée (signe ajouté après lecture, déclaré).
+→ détail complet : `docs/journal/pont-simulateur-tok-132.md`, formulaire `docs/planning/2026-11-18/decisions-prises.md` (lot 26)
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

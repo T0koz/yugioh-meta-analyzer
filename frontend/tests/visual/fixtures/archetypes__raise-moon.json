@@ -9,6 +9,27 @@
  },
  "tcg": null,
  "history": [],
+ "ocg_history": [
+  {
+   "month": "2026-09",
+   "decks": 37,
+   "total_decks": 322,
+   "share": 0.11490683229813664
+  },
+  {
+   "month": "2026-10",
+   "decks": 39,
+   "total_decks": 377,
+   "share": 0.10344827586206896
+  },
+  {
+   "month": "2026-11",
+   "decks": 11,
+   "total_decks": 145,
+   "share": 0.07586206896551724
+  }
+ ],
+ "ocg_history_computed_at": "2026-11-16",
  "key_cards": null,
  "ocg": {
   "share": 0.08708708708708708,

@@ -12,6 +12,13 @@ import { MethodNote } from "@/components/ds/explain";
 import { TrendLabel } from "@/components/ds/tags";
 import { PredictionsChart } from "./PredictionsChart";
 
+// TOK-131 : intervalles de prévision par archétype, prêts mais non dessinés tant que Thomas n'a pas rendu le
+// formulaire (docs/planning/2026-11-18/decisions-prises.md, Jalon 2). Option de build : NEXT_PUBLIC_PREDICTION_INTERVALS=1.
+const INTERVALS_ENABLED = process.env.NEXT_PUBLIC_PREDICTION_INTERVALS === "1";
+// Couverture observée en validation (scripts/build_prediction_intervals.py, 2026-11-18) : 75,7 % sur 507 prévisions,
+// 68,3 % sur les 5 premiers archétypes du mois. À recalculer avant toute mise en ligne.
+const INTERVAL_COVERAGE_NOTE =
+  "fourchette visée à 80 % ; rejouée sur 24 mois (507 prévisions, novembre 2024 à octobre 2026), elle a contenu la valeur réalisée 3 fois sur 4, 2 fois sur 3 pour les 5 premiers archétypes du mois";
 
 /** « 2026-10 » → « 2026-11 ». */
 function nextMonth(yearMonth: string): string {
@@ -31,7 +38,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PredictionsPage() {
-  const { data, data_month, computed_at, direction_threshold } = await api.predictions();
+  const { data, data_month, computed_at, direction_threshold, interval_level } = await api.predictions();
+  // TOK-131 : intervalles dessinés seulement si l'option est posée ET servis par l'API (formulaire de Thomas).
+  const intervalLevel = INTERVALS_ENABLED ? (interval_level ?? null) : null;
   const rows = [...data].sort((a, b) => b.predicted - a.predicted);
   const observed = data_month ? fmtMonthShort(data_month) : "dernier mois";
   const target = data_month ? fmtMonthShort(nextMonth(data_month)) : "mois suivant";
@@ -62,12 +71,12 @@ export default async function PredictionsPage() {
         }
       />
 
-      <PredictionsChart rows={rows} observedLabel={observed} targetLabel={target} />
+      <PredictionsChart rows={rows} observedLabel={observed} targetLabel={target} intervalLevel={intervalLevel} />
       <DataFooter
         source="decklists de tournoi TCG, yugiohmeta.com"
         date={`observé ${observed}, prévu ${target}${partial ? " (mois en cours, partiel)" : ""}, calcul du ${computed_at ? fmtDate(computed_at) : "date inconnue"}`}
         sample={`${rows.length} archétypes`}
-        uncertainty="aucun intervalle par archétype : le modèle ne produit qu’une valeur ; son erreur moyenne est mesurée sur l’historique (page Méthode)"
+        uncertainty={intervalLevel != null ? INTERVAL_COVERAGE_NOTE : "aucun intervalle par archétype : le modèle ne produit qu’une valeur ; son erreur moyenne est mesurée sur l’historique (page Méthode)"}
       >
         anneau : observé ; point plein : prévu
         {direction_threshold != null &&

@@ -1,7 +1,8 @@
 """Page d'archétype (TOK-101) : tout ce que la base de service sait d'un archétype.
 
 Aucun calcul nouveau : la position vient de la tier list (mêmes règles), l'historique
-de `meta_scores`, les cartes de `ban_radar`, le signal boutique de `/boutique/signals`.
+de `meta_scores` (TCG) et `meta_scores_ocg` (OCG, TOK-116), les cartes de `ban_radar`,
+le signal boutique de `/boutique/signals`.
 """
 
 import re
@@ -73,20 +74,27 @@ def load_tcg(db: sqlite3.Connection, archetype: str) -> tuple[TierWindow | None,
     return window, None
 
 
-def load_history(db: sqlite3.Connection, archetype: str) -> list[ArchetypeMonth]:
-    # Un mois sans ligne pour l'archétype est un mois à 0 deck, pas un mois manquant :
-    # on part de tous les mois de la base à partir de sa première apparition.
-    rows = db.execute(
-        """
-        WITH months AS (SELECT month, MAX(total_decks) AS total FROM meta_scores GROUP BY month)
+def _history_sql(table: str) -> str:
+    return f"""
+        WITH months AS (SELECT month, MAX(total_decks) AS total FROM {table} GROUP BY month)
         SELECT m.month, m.total, COALESCE(s.deck_count, 0) AS decks
         FROM months m
-        LEFT JOIN meta_scores s ON s.month = m.month AND s.archetype = :a
-        WHERE m.month >= (SELECT MIN(month) FROM meta_scores WHERE archetype = :a)
+        LEFT JOIN {table} s ON s.month = m.month AND s.archetype = :a
+        WHERE m.month >= (SELECT MIN(month) FROM {table} WHERE archetype = :a)
         ORDER BY m.month
-        """,
-        {"a": archetype},
-    ).fetchall()
+        """
+
+
+# Noms de table écrits en clair : `build_serving_db.py --check` et `check_freshness.py` repèrent les tables
+# lues par l'API en cherchant « FROM <table> » dans les routeurs. Même schéma, écrites par le notebook 04.
+# SQL: FROM meta_scores / FROM meta_scores_ocg
+HISTORY_SQL = {"meta_scores": _history_sql("meta_scores"), "meta_scores_ocg": _history_sql("meta_scores_ocg")}
+
+
+def load_history(db: sqlite3.Connection, archetype: str, table: str = "meta_scores") -> list[ArchetypeMonth]:
+    # Un mois sans ligne pour l'archétype est un mois à 0 deck, pas un mois manquant :
+    # on part de tous les mois de la base à partir de sa première apparition.
+    rows = db.execute(HISTORY_SQL[table], {"a": archetype}).fetchall()
     return [
         ArchetypeMonth(
             month=row["month"],
@@ -96,6 +104,20 @@ def load_history(db: sqlite3.Connection, archetype: str) -> list[ArchetypeMonth]
         )
         for row in rows
     ]
+
+
+def load_ocg_history(db: sqlite3.Connection, archetype: str) -> tuple[list[ArchetypeMonth], str | None]:
+    """Part mensuelle en OCG (TOK-116) et date de calcul de la chaîne OCG.
+
+    `meta_scores_ocg` n'a pas de colonne de date : on sert `computed_at` de `ocg_archetype_scores`,
+    écrite par le notebook 10, qui tourne juste après le notebook 04 dans `refresh_all.py`.
+    """
+    try:
+        history = load_history(db, archetype, table="meta_scores_ocg")
+        computed_at = db.execute("SELECT MAX(computed_at) FROM ocg_archetype_scores").fetchone()[0]
+    except sqlite3.OperationalError:  # base de service construite avant l'ajout de la table
+        return [], None
+    return history, computed_at
 
 
 def load_key_cards(db: sqlite3.Connection, archetype: str) -> ArchetypeKeyCards | None:
@@ -185,6 +207,7 @@ def get_archetype(slug: str, db: sqlite3.Connection = Depends(get_db)) -> Archet
         image = next((s.image_url for s in own + with_image), None)
 
     tcg_window, tcg = load_tcg(db, archetype)
+    ocg_history, ocg_history_computed_at = load_ocg_history(db, archetype)
     return ArchetypeResponse(
         archetype=archetype,
         slug=slugify(archetype),
@@ -192,6 +215,8 @@ def get_archetype(slug: str, db: sqlite3.Connection = Depends(get_db)) -> Archet
         tcg_window=tcg_window,
         tcg=tcg,
         history=load_history(db, archetype),
+        ocg_history=ocg_history,
+        ocg_history_computed_at=ocg_history_computed_at,
         key_cards=key_cards,
         ocg=load_ocg(db, archetype),
         boutique=boutique,

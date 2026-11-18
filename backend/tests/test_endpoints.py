@@ -27,7 +27,12 @@ EXPLICIT_GETS = {
     "/api/v1/cards/search": ["/api/v1/cards/search?q=Ash"],
     "/api/v1/cards/{name}": ["/api/v1/cards/Ash Blossom & Joyous Spring"],
     # Un archétype de la tier list, un nom à barre oblique (signal boutique, absent du TCG).
-    "/api/v1/archetypes/{slug}": ["/api/v1/archetypes/branded", "/api/v1/archetypes/harpie-amazoness"],
+    # Kewl Tune : exemple de l'accueil (TOK-116).
+    "/api/v1/archetypes/{slug}": [
+        "/api/v1/archetypes/branded",
+        "/api/v1/archetypes/harpie-amazoness",
+        "/api/v1/archetypes/kewl-tune",
+    ],
     # Un archétype à profil (≥ 8 listes) ; les autres slugs de l'index sont couverts plus bas.
     "/api/v1/decks/{slug}": ["/api/v1/decks/elfnote"],
     "/api/v1/ban-radar": [
@@ -91,6 +96,20 @@ def test_tier_list_slugs_resolve_to_their_archetype():
         assert detail.status_code == 200, entry
         assert detail.json()["archetype"] == entry["archetype"]
         assert detail.json()["tcg"]["share"] == entry["share"]
+
+
+def test_home_example_has_both_series():
+    # L'accueil (frontend/src/lib/proof-data.ts) dessine Kewl Tune d'août 2025 à novembre 2026, en TCG et en OCG.
+    # Une base de service construite avant TOK-116 n'a pas `meta_scores_ocg` : relancer build_serving_db.py.
+    body = client.get("/api/v1/archetypes/kewl-tune").json()
+    ocg = {m["month"] for m in body["ocg_history"]}
+    tcg_months = [m["month"] for m in body["history"]]
+    assert ocg, "ocg_history vide : meta_scores_ocg absente de la base (relancer scripts/build_serving_db.py)"
+    assert {"2025-08", "2026-11"} <= ocg, sorted(ocg)[:3]
+    assert tcg_months and tcg_months[-1] >= "2026-11", tcg_months[-3:]
+    assert body["ocg_history_computed_at"]
+    for month in body["ocg_history"]:
+        assert 0 <= month["decks"] <= month["total_decks"]
 
 
 def test_unknown_deck_is_a_404():

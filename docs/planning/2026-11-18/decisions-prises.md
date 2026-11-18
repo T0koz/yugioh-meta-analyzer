@@ -390,3 +390,124 @@ fois, glissement Linear par renommage (« Fini n°N ») plutôt que détachement
 À faire par Thomas dans Linear (l'outil ne sait ni retirer un jalon d'un ticket ni supprimer un jalon) : **supprimer les
 jalons « File de nuit 16-17/11 » et « File du 18/11 (moteur de combos) »**, ce qui détache leurs tickets. L'échéance du
 13/01/2027 reste sur TOK-119.
+
+## Jalon 2 — TOK-130 (B1) : fenêtre d'arrivée en TCG par analyse de survie
+
+Journal : `docs/journal/fenetre-survie-tok-130.md` ; script `scripts/build_arrival_survival.py` (lecture seule, ≈ 8 s).
+Critère de l'audit **non atteint et non testable** : sur 2024-2025, la survie ne produit que 5 prévisions (4 cohortes ;
+données OCG à partir de janvier 2024, 8 arrivées connues seulement à mi-2025) : 85 % annoncés, 60 % observés, écart
+−25 points, IC [−60 ; +15]. Sur 2025-2026 (hors critère) : 18 fenêtres justes sur 23 (78 %) pour 89 % annoncés (trop
+confiante d'environ 11 points) ; fenêtre actuelle 75-202 : 15 sur 23 (65 %), à largeur égale ; écart non démontré
+(p = 0,45). Biais du survivant faible dans la population du notebook 10 (42 arrivées sur 44 unités). Rien d'affiché ne change.
+
+Décidé par défaut (à confirmer) :
+- arrivée définie par les cartes (la moitié des cartes inédites sorties en TCG), pas par le nom : 9 libellés sur 62
+  étaient déjà joués en TCG sous ce nom avant l'ancre ;
+- libellés qui partagent ≥ 50 % de leurs cartes inédites fusionnés en une unité (7 fusions) ;
+- ancres antérieures au 2024-03-01 écartées (données OCG à partir de janvier 2024) ;
+- minimum de 8 arrivées connues pour estimer la courbe à une origine donnée.
+
+```
+1. Fenêtre d'arrivée affichée (boutique, accueil, page d'archétype)
+[x] Garder 75-202 jours, libellé corrigé en unité archétype :
+    « arrivée dans la fenêtre pour 27 archétypes sur 36 (2024-2026) ; 12 sur 18 pour 2026 »
+[ ] Remplacer par la fenêtre de survie, libellé = couverture observée en validation
+    (« 18 fenêtres sur 23 justes, 2025-2026 »), jamais la probabilité Kaplan-Meier
+[ ] Remplacer par la fenêtre de survie avec sa probabilité Kaplan-Meier (≈ 82-89 %) : déconseillé, trop confiante d'environ 11 points
+[ ] Retirer la fenêtre
+Commentaire libre :
+
+2. Rendre le critère testable (effectif actuel : 5 prévisions sur 2024-2025)
+[x] Nouveau script d'ingestion : liste complète YGOPRODeck sans filtre format=tcg (cartes OCG seules comprises),
+    survie par archétype depuis 2015 avec censure ; avec gardien-donnees, puis relancer B1
+[ ] Attendre que les données s'accumulent (revalidation dans 6 à 12 mois)
+[ ] Abandonner la validation à ± 5 points
+Commentaire libre :
+
+3. Validateur (validate_predictions.py, arrivée par le nom)
+[x] Ticket à part : l'aligner sur l'arrivée par les cartes (moitié des cartes inédites sorties en TCG)
+[ ] Garder l'arrivée par le nom
+Commentaire libre :
+
+4. Tables tcg_arrival_survival / tcg_arrival_km (nouvelles, non servies)
+[x] Les écrire sur la base de référence (après sauvegarde) pour garder une trace datée des 3 fenêtres actuelles
+    (échéances au printemps 2027) : `python scripts/build_arrival_survival.py --write --reference`
+    (`--write --reference` depuis le dépôt principal ; sans `--reference`, le script refuse cette base)
+[ ] Ne rien écrire pour l'instant
+Commentaire libre :
+```
+
+## Jalon 2 — TOK-131 (B4) : intervalles de prévision par archétype
+
+Journal : `docs/journal/intervalles-tok-131.md` ; script `scripts/build_prediction_intervals.py` (lecture seule, ≈ 6 s).
+Conformité séquentielle sur les résidus du walk-forward (prévision servie, TCG), calibration sur les mois antérieurs,
+24 mois de test (2024-11 → 2026-10, 507 prévisions). Méthode retenue par la règle figée avant mesure : **Mondrian par
+terciles de niveau**, couverture **75,7 % [67,7 ; 82,0]** pour 80 % visés (critère ± 5 points atteint de justesse,
+non démontré) ; tiers haut 72,8 %, 5 premiers du mois 68,3 %. Naïves : « le mois dernier » ± quantile 78,7 % (battue
+au score de Winkler, −1,59 [−2,72 ; −0,43]), gaussienne 82,8 % (écart non démontré). Ratés concentrés sur 4 mois de
+rupture de méta (30-59 %). Rien d'affiché ne change : API et dessin prêts derrière l'option
+`NEXT_PUBLIC_PREDICTION_INTERVALS=1` (capture : `tok-131-intervalles-option.jpg`).
+
+Décidé par défaut (à confirmer) :
+- calibration cumulée (une fenêtre de 12 mois donne 80,1 %, sans différence) ; amorce de 3 mois ;
+- troncature de la borne basse à 0 (sans effet sur la couverture, la cible étant ≥ 0) ;
+- deux variantes asymétriques ajoutées après lecture, marquées exploratoires et non retenues ;
+- dessin derrière l'option : trait épais `--cat-1` à 35 % d'opacité derrière l'haltère, légende « fourchette visée à 80 % ».
+
+```
+1. Dessiner les intervalles par archétype sur /predictions ?
+[ ] Non : garder « aucun intervalle par archétype » et réévaluer dans 6 mois
+[x] Oui, derrière l'option, avec la couverture OBSERVÉE dans le libellé (jamais « 80 % » seul)
+[ ] Oui, sans réserve
+Commentaire libre :
+
+2. Niveau
+[x] 80 % visé, méthode Mondrian (retenue par la règle figée)
+[ ] 90 % visé (≈ 82 % observé sur les 5 premiers) : choix fait après lecture des résultats, à confirmer sur les mois à venir
+[ ] Les deux, 90 % en trait fin
+Commentaire libre :
+
+3. Libellé de couverture
+[x] « Fourchette visée à 80 % ; rejouée sur 24 mois (507 prévisions), elle a contenu la valeur réalisée 3 fois
+    sur 4, 2 fois sur 3 pour les 5 premiers archétypes du mois »
+[ ] « Intervalle à 80 % » (faux pour les gros archétypes)
+[ ] Pas de libellé chiffré, renvoi vers /methode
+Commentaire libre :
+
+4. Suites
+[x] Ticket : corriger le notebook 05 (entraînement sur la cible partielle de novembre, 25 lignes périmées de 2026-08/09)
+[x] Pré-enregistrer Mondrian asymétrique et le niveau 90 %, puis les réévaluer sur les mois à venir
+Commentaire libre :
+
+Si « oui » : notebook 05 → `python scripts/build_prediction_intervals.py --write --reference` (après sauvegarde) →
+ajouter `meta_prediction_intervals` à SERVED_TABLES (et une règle dans check_freshness.py) → `build_serving_db.py` →
+build avec NEXT_PUBLIC_PREDICTION_INTERVALS=1.
+```
+
+## Jalon 2 — TOK-116 : parts OCG mensuelles servies par l'API
+
+Journal : `docs/journal/parts-ocg-servies-tok-116.md`. `meta_scores_ocg` ajoutée à `SERVED_TABLES` ; `GET
+/archetypes/{slug}` sert `ocg_history` et `ocg_history_computed_at` ; l'accueil lit `GET /archetypes/kewl-tune` au lieu
+de `proof-data.ts` figé. Valeurs dessinées identiques au relevé du 16/11 (16 mois × 2 formats, 0 écart), 51 captures
+identiques. Rien d'autre ne change à l'écran.
+
+Décidé par défaut (à confirmer) :
+- date affichée = `MAX(computed_at)` d'`ocg_archetype_scores` (notebook 10, juste après le notebook 04) :
+  `meta_scores_ocg` n'a pas de date, et lui en ajouter une ne serait pas additif ;
+- fenêtre fixe août 2025 → novembre 2026 (les textes nomment ses mois) ;
+- sans données complètes, la section n'est pas rendue (pas de repli sur des chiffres figés) ;
+- champ ajouté à `GET /archetypes/{slug}` plutôt qu'un endpoint nouveau.
+
+```
+1. Légende du graphique : « Incertitude non dessinée : les effectifs mensuels n'ont pas été relevés avec cette
+   série figée » est devenue inexacte (les effectifs sont servis)
+[x] Remplacer par « Incertitude non dessinée : effectifs mensuels de 145 à 574 decks en OCG », chiffres tirés de l'API
+[ ] Dessiner la bande de Wilson à 95 % comme sur /evolution (charte, lot 15)
+[ ] Laisser tel quel
+Commentaire libre :
+
+2. Fenêtre de l'exemple
+[x] Garder la fenêtre fixe (août 2025 → novembre 2026) et les textes actuels
+[ ] Fenêtre glissante (16 derniers mois), textes calculés depuis les données
+Commentaire libre :
+```

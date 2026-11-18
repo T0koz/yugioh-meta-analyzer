@@ -1,0 +1,303 @@
+{
+ "archetype": "Kewl Tune",
+ "slug": "kewl-tune",
+ "image_url": "https://images.ygoprodeck.com/images/cards_small/89392810.jpg",
+ "tcg_window": {
+  "start": "2026-10",
+  "end": "2026-11",
+  "n_decks": 396
+ },
+ "tcg": {
+  "tier": "Rogue",
+  "trend": "Declining",
+  "rank": 50,
+  "n_archetypes": 60,
+  "share": 0.0025252525252525255,
+  "decks": 1,
+  "meta_score": 0.017766726362967538,
+  "share_prev": 0.08863198458574181,
+  "decks_prev": 46,
+  "n_decks_prev": 519
+ },
+ "history": [
+  {
+   "month": "2025-12",
+   "decks": 3,
+   "total_decks": 218,
+   "share": 0.013761467889908258
+  },
+  {
+   "month": "2026-01",
+   "decks": 4,
+   "total_decks": 152,
+   "share": 0.02631578947368421
+  },
+  {
+   "month": "2026-02",
+   "decks": 5,
+   "total_decks": 351,
+   "share": 0.014245014245014245
+  },
+  {
+   "month": "2026-03",
+   "decks": 3,
+   "total_decks": 313,
+   "share": 0.009584664536741214
+  },
+  {
+   "month": "2026-04",
+   "decks": 2,
+   "total_decks": 279,
+   "share": 0.007168458781362007
+  },
+  {
+   "month": "2026-05",
+   "decks": 91,
+   "total_decks": 405,
+   "share": 0.22469135802469137
+  },
+  {
+   "month": "2026-06",
+   "decks": 75,
+   "total_decks": 281,
+   "share": 0.2669039145907473
+  },
+  {
+   "month": "2026-07",
+   "decks": 42,
+   "total_decks": 131,
+   "share": 0.32061068702290074
+  },
+  {
+   "month": "2026-08",
+   "decks": 54,
+   "total_decks": 272,
+   "share": 0.19852941176470587
+  },
+  {
+   "month": "2026-09",
+   "decks": 46,
+   "total_decks": 519,
+   "share": 0.08863198458574181
+  },
+  {
+   "month": "2026-10",
+   "decks": 1,
+   "total_decks": 240,
+   "share": 0.004166666666666667
+  },
+  {
+   "month": "2026-11",
+   "decks": 0,
+   "total_decks": 156,
+   "share": 0.0
+  }
+ ],
+ "ocg_history": [
+  {
+   "month": "2025-08",
+   "decks": 3,
+   "total_decks": 379,
+   "share": 0.0079155672823219
+  },
+  {
+   "month": "2025-09",
+   "decks": 2,
+   "total_decks": 251,
+   "share": 0.00796812749003984
+  },
+  {
+   "month": "2025-10",
+   "decks": 2,
+   "total_decks": 311,
+   "share": 0.006430868167202572
+  },
+  {
+   "month": "2025-11",
+   "decks": 3,
+   "total_decks": 435,
+   "share": 0.006896551724137931
+  },
+  {
+   "month": "2025-12",
+   "decks": 0,
+   "total_decks": 325,
+   "share": 0.0
+  },
+  {
+   "month": "2026-01",
+   "decks": 8,
+   "total_decks": 365,
+   "share": 0.021917808219178082
+  },
+  {
+   "month": "2026-02",
+   "decks": 34,
+   "total_decks": 331,
+   "share": 0.1027190332326284
+  },
+  {
+   "month": "2026-03",
+   "decks": 66,
+   "total_decks": 361,
+   "share": 0.18282548476454294
+  },
+  {
+   "month": "2026-04",
+   "decks": 124,
+   "total_decks": 464,
+   "share": 0.2672413793103448
+  },
+  {
+   "month": "2026-05",
+   "decks": 101,
+   "total_decks": 574,
+   "share": 0.1759581881533101
+  },
+  {
+   "month": "2026-06",
+   "decks": 87,
+   "total_decks": 347,
+   "share": 0.2507204610951009
+  },
+  {
+   "month": "2026-07",
+   "decks": 34,
+   "total_decks": 294,
+   "share": 0.11564625850340136
+  },
+  {
+   "month": "2026-08",
+   "decks": 36,
+   "total_decks": 365,
+   "share": 0.09863013698630137
+  },
+  {
+   "month": "2026-09",
+   "decks": 22,
+   "total_decks": 322,
+   "share": 0.06832298136645963
+  },
+  {
+   "month": "2026-10",
+   "decks": 4,
+   "total_decks": 377,
+   "share": 0.010610079575596816
+  },
+  {
+   "month": "2026-11",
+   "decks": 3,
+   "total_decks": 145,
+   "share": 0.020689655172413793
+  }
+ ],
+ "ocg_history_computed_at": "2026-11-16",
+ "key_cards": {
+  "data": [
+   {
+    "card_name": "Fydraulis Harmonia",
+    "decks": 536,
+    "deck_share": 28.47,
+    "mean_copies": 2.85,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/70088809.jpg"
+   },
+   {
+    "card_name": "Effect Veiler",
+    "decks": 532,
+    "deck_share": 28.25,
+    "mean_copies": 2.73,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/97268402.jpg"
+   },
+   {
+    "card_name": "Golden Cloud Beast - Malong",
+    "decks": 525,
+    "deck_share": 27.88,
+    "mean_copies": 1.05,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/93125329.jpg"
+   },
+   {
+    "card_name": "Wind Pegasus @Ignister",
+    "decks": 378,
+    "deck_share": 20.07,
+    "mean_copies": 1.03,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/98506199.jpg"
+   },
+   {
+    "card_name": "Pot of Prosperity",
+    "decks": 351,
+    "deck_share": 18.64,
+    "mean_copies": 1.0,
+    "current_status": "Limited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/84211599.jpg"
+   },
+   {
+    "card_name": "Kewl Tune B2B",
+    "decks": 336,
+    "deck_share": 17.84,
+    "mean_copies": 1.0,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/65961304.jpg"
+   },
+   {
+    "card_name": "Zalen the Shackled Dragon",
+    "decks": 328,
+    "deck_share": 17.42,
+    "mean_copies": 1.05,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/4891376.jpg"
+   },
+   {
+    "card_name": "Kewl Tune RS",
+    "decks": 301,
+    "deck_share": 15.99,
+    "mean_copies": 1.65,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/15665977.jpg"
+   },
+   {
+    "card_name": "Kewl Tune Remix",
+    "decks": 295,
+    "deck_share": 15.67,
+    "mean_copies": 1.83,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/88170262.jpg"
+   },
+   {
+    "card_name": "Kewl Tune Track Maker",
+    "decks": 295,
+    "deck_share": 15.67,
+    "mean_copies": 2.02,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/42781164.jpg"
+   },
+   {
+    "card_name": "Synchro Overtake",
+    "decks": 295,
+    "deck_share": 15.67,
+    "mean_copies": 1.1,
+    "current_status": "Limited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/99243014.jpg"
+   },
+   {
+    "card_name": "JJ \"Kewl Tune\"",
+    "decks": 294,
+    "deck_share": 15.61,
+    "mean_copies": 1.17,
+    "current_status": "Unlimited",
+    "image_url": "https://images.ygoprodeck.com/images/cards_small/14442329.jpg"
+   }
+  ],
+  "as_of": "2026-11-14",
+  "n_decks_window": 1883
+ },
+ "ocg": {
+  "share": 0.04704704704704705,
+  "decks": 47,
+  "computed_at": "2026-11-16"
+ },
+ "boutique": null
+}

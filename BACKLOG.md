@@ -57,8 +57,10 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 | — | _4 tickets terminés (TOK-95 à 98) : voir l’archive_ | | |
 
-- **TOK-116** (🔜 Backlog, 🟠 Medium, créé le 2026-11-17) : servir les parts OCG mensuelles par l'API pour remplacer
-  les données figées de l'accueil (`lib/proof-data.ts`, décision 0041).
+- **TOK-116** (🟡 Livré le 2026-11-18 sur `claude/jalon-2-survie-intervalles-ocg-af6a73`, Jalon 2, non fusionnée) : parts OCG
+  mensuelles servies (`meta_scores_ocg` dans `SERVED_TABLES`, `ocg_history` dans `GET /archetypes/{slug}`), accueil branché
+  sur l'API, valeurs identiques au relevé figé, 51 captures inchangées. Reste : `build_serving_db.py` sur la référence,
+  formulaire Jalon 2 (légende devenue inexacte) — `docs/journal/parts-ocg-servies-tok-116.md`.
 - Suites hors chantier : `log_predictions.py` journalise la fausse date comme `target_date` ; le notebook 10 ne
   filtre pas les archétypes déjà en TCG ; `/meta/evolution` choisit son top 15 sur un mois à petits effectifs.
 
@@ -136,6 +138,8 @@ bloquant (0 occurrence), 35 captures régénérées — `docs/textes-avant-apres
 | TOK-120 | Ban Radar : rangs par liste, régression conditionnelle, pont daté (B5) | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-120-132-ban-radar-pont-d32da4` (Jalon 1, non fusionnée) : `diagnose_ban_radar_rangs.py`, `bridge_date.py` ; règle d'adoption non remplie (échec OCG à la coupure « contenu », égalité avec les staples en TCG), `WEIGHTS` inchangés ; `card_graph_metrics` périmée. Reste : formulaire lot 22, relecture de la collaboratrice — `docs/journal/ban-radar-rangs-tok-120.md` | 🟠 Medium |
 | TOK-132 | B3 : score de pont et simulateur confrontés aux banlists | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-120-132-ban-radar-pont-d32da4` (Jalon 1, non fusionnée) : `diagnose_pont_simulateur.py` ; un ban fait baisser ses porteurs (−3,1 points), mais le score de pont va dans le sens contraire d'« Impact » (+6,5 à part des decks égale) et les archétypes voisins du simulateur ne battent pas une liste naïve. Reste : formulaire lot 26 (renommer en « Diffusion »), relecture de la collaboratrice — `docs/journal/pont-simulateur-tok-132.md` | 🟠 Medium |
 | TOK-129 | B2 : signaux précoces rejoués contre « vues seules » | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-129-93-signaux-fraicheur-d1344d` (Jalon 1, non fusionnée, dépend de TOK-122) : `backtest_early_signals.py` ; critère rempli en cartes (+0,154 contre les vues, IC dates [+0,066 ; +0,252]) mais nul compté par archétype (≈ 8 épisodes) ; la force OCG sans vues désigne l'archétype qui arrive (+0,272). Reste : formulaire TOK-129 (revoir la page), relecture de la collaboratrice — `docs/journal/signaux-precoces-backtest-tok-129.md` | 🟠 Medium |
+| TOK-130 | B1 : fenêtre d'arrivée en TCG par analyse de survie | 🟡 Livré le 2026-11-18 sur `claude/jalon-2-survie-intervalles-ocg-af6a73` (Jalon 2, non fusionnée) : `build_arrival_survival.py` (Kaplan-Meier par archétype, censure, origine glissante) ; critère non atteint et non testable (5 prévisions sur 2024-2025) ; 2025-2026 : 18 sur 23 justes contre 15 sur 23 pour la fenêtre actuelle (p = 0,45). Rien d'affiché ne change. Reste : formulaire Jalon 2 (TOK-130), relecture de la collaboratrice — `docs/journal/fenetre-survie-tok-130.md` | 🟠 Medium |
+| TOK-131 | B4 : intervalles de prévision par archétype (conformes) | 🟡 Livré le 2026-11-18 sur `claude/jalon-2-survie-intervalles-ocg-af6a73` (Jalon 2, non fusionnée) : `build_prediction_intervals.py`, Mondrian par terciles, couverture 75,7 % [67,7 ; 82,0] pour 80 % visés sur 24 mois (critère atteint de justesse, non démontré ; 68,3 % sur les 5 premiers) ; API et dessin derrière `NEXT_PUBLIC_PREDICTION_INTERVALS`, rien d'affiché. Reste : formulaire Jalon 2 (TOK-131), relecture de la collaboratrice — `docs/journal/intervalles-tok-131.md` | 🟠 Medium |
 | TOK-123 | Chantiers de méthode B1 à B4 (lots 23 à 26), C1 plus tard | 🔜 Lots 23-26 ; relecture de la collaboratrice après (décision du 18/11) | 🟠 Medium |
 
 ## TOK-107 — Collaboration et stack (2026-11-16)

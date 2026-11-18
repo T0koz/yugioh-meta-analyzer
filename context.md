@@ -625,6 +625,55 @@ ligne `fraicheur_tables` dans `data/fetch_health.jsonl` ; `--status`. Dernière 
 - **Ne pas nommer une ligne du journal `"freshness"`** : `refresh_decks.py` relit ces lignes pour le nombre de decks.
 → détail complet (plan B si `/top-decks` disparaît) : `docs/journal/fraicheur-tables-tok-93.md`, formulaire TOK-93
 
+### ⏳ Fenêtre d'arrivée en TCG par analyse de survie (TOK-130, B1, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+Diagnostic seulement : la fenêtre affichée (75-202 jours, notebook 10) ne change pas. `scripts/build_arrival_survival.py`
+(≈ 8 s, lecture seule ; `--write` écrit deux tables nouvelles non servies, `--reference` requis sur la base du dépôt
+principal) : Kaplan-Meier par archétype, censure et entrée différée, validation à origine glissante mensuelle.
+**Critère non atteint et non testable** : 5 prévisions seulement sur 2024-2025 (85 % annoncés, 60 % observés, IC de
+l'écart [−60 ; +15]) ; 2025-2026 : 18 fenêtres justes sur 23 (78 %) pour 89 % annoncés, fenêtre actuelle 15 sur 23,
+écart non démontré (p = 0,45). Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (Jalon 2, TOK-130).
+- **Arrivée définie par les cartes** (la moitié des cartes inédites sorties en TCG), pas par le nom : 9 libellés sur 62
+  étaient déjà joués en TCG sous ce nom avant l'ancre. Le validateur (`validate_predictions.py`) juge encore par le nom.
+- **Le « 37 % jamais arrivés » ne vaut pas pour la population du notebook 10** : 42 arrivées sur 44 unités, P(jamais)
+  ≤ 6,5 %. Le défaut principal est l'échantillon (données OCG depuis janvier 2024), pas le biais du survivant.
+- **En unité archétype, la fenêtre actuelle couvre 27 sur 36 (75 %)** sur 2024-2026, 12 sur 18 sur 2026 seule
+  (hors échantillon) ; le 62-67 % de l'A2 est en unité carte.
+- La probabilité Kaplan-Meier est trop confiante d'environ 11 points : ne jamais l'afficher comme couverture.
+→ détail complet : `docs/journal/fenetre-survie-tok-130.md`
+
+### 📏 Intervalles de prévision par archétype (TOK-131, B4, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+`scripts/build_prediction_intervals.py` (≈ 6 s, lecture seule ; `--write [--reference]` écrit la table nouvelle
+`meta_prediction_intervals`, non servie) : conformité séquentielle sur les résidus du walk-forward de la prévision
+servie (TCG, fonctions importées d'`evaluate_prediction.py`), calibration sur les mois antérieurs. Retenue par règle
+figée : Mondrian par terciles de niveau, **75,7 % [67,7 ; 82,0]** pour 80 % visés sur 24 mois (507 prévisions) ; 5
+premiers du mois 68,3 %. Rien d'affiché ne change : `GET /meta/predictions` sert `interval_lo/hi` seulement si la table
+existe, `/predictions` ne les dessine qu'avec `NEXT_PUBLIC_PREDICTION_INTERVALS=1`. Formulaire : `decisions-prises.md`
+(Jalon 2, TOK-131).
+- **Une couverture moyenne de 80 % ne prouve rien ici** : les deux naïves y sont aussi (78,7 et 82,8 %). Les ratés sont
+  sur les gros archétypes et sur 4 mois de rupture de méta, où tous les archétypes bougent ensemble (échangeabilité
+  violée) ; le centre de la prévision, à 30 % du retour à la moyenne, est biaisé vers la persistance en tête de méta.
+- **Ne jamais écrire `meta_prediction_intervals` sur la référence avant le formulaire** : le routeur la cite, donc
+  `build_serving_db.py` refusera de construire tant qu'elle n'est pas dans `SERVED_TABLES`.
+- Le notebook 05 entraîne le modèle de production sur des lignes qui incluent la cible partielle du mois en cours
+  (effet 0,11 point en moyenne, négligeable pour les intervalles, à corriger à part).
+→ détail complet : `docs/journal/intervalles-tok-131.md`
+
+### 🗾 Parts OCG mensuelles servies (TOK-116, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+L'exemple Kewl Tune de l'accueil lit `GET /archetypes/kewl-tune` (`history` en TCG, `ocg_history` en OCG,
+`ocg_history_computed_at`) au lieu des données figées de `proof-data.ts` (décision 0041). `meta_scores_ocg` est dans
+`SERVED_TABLES` (règle de fraîcheur ajoutée). Valeurs identiques au relevé du 16/11, 51 captures inchangées.
+- **Après fusion : `python scripts/build_serving_db.py`** sur la référence. Sans cela, `test_home_example_has_both_series`
+  échoue sur `serving.db` et l'accueil n'affiche pas la section (rendu volontairement absent plutôt que partiel).
+- **Une table lue par un routeur doit y être nommée en clair** (« FROM meta_scores_ocg ») : `build_serving_db.py --check`
+  et `check_freshness.py` repèrent les tables par expression régulière, une requête construite par f-string leur échappe.
+- **Fenêtre fixe** (août 2025 → novembre 2026) : les textes de l'accueil nomment ses mois et ses pics ; un recalcul qui
+  déplacerait un pic ne serait vu par aucun test.
+- Nouvelle fixture de test visuel : `kewl-tune` ajouté à `ARCHETYPES` dans `scripts/visual_tests.py`.
+→ détail complet : `docs/journal/parts-ocg-servies-tok-116.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le
@@ -655,7 +704,7 @@ décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ;
   A1 à A8 de l'audit). Le lot 17 (TOK-86) est prêt aussi : `premake` 5.0.0 et `lua@5.4`
   installés le 17/11 (`/opt/homebrew/opt/lua@5.4`, non liée ; le cœur demande Lua 5.3 ou 5.4, pas la 5.5 de `brew install lua`).
 - **Encore en attente de Thomas** : lots de correctifs de la revue de code (rapport de la tâche de fond).
-- **TOK-116** : servir les parts OCG mensuelles par l'API, pour retirer les données figées de l'accueil (`lib/proof-data.ts`).
+- **TOK-116** : livré au Jalon 2 (parts OCG servies, `build_serving_db.py` à relancer après fusion).
 - **Push de `main` par Thomas** (fusion faite le 17/11, `check.py --all --visuel` vert) ; supprimer les worktrees et les branches de lots fusionnées.
 - **TOK-35** : relier le projet Vercel depuis la racine du dépôt, créer le compte Cloudflare R2, premier déploiement de prévisualisation (`docs/deploiement.md`).
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109), protection de `main`.

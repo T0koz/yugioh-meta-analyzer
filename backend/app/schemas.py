@@ -60,6 +60,10 @@ class PredictionEntry(BaseModel):
     predicted: float
     direction: Trend
     image_url: Optional[str] = None
+    # Intervalle de prévision (TOK-131, conformité par terciles de niveau, même échelle que `predicted`) :
+    # NULL tant que `meta_prediction_intervals` n'est pas dans la base servie.
+    interval_lo: Optional[float] = None
+    interval_hi: Optional[float] = None
 
 
 class PredictionsResponse(BaseModel):
@@ -71,6 +75,9 @@ class PredictionsResponse(BaseModel):
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
     # Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse » (lot 20).
     direction_threshold: Optional[float] = None
+    # Niveau visé (0,8) et méthode des intervalles (TOK-131) ; NULL sans table d'intervalles.
+    interval_level: Optional[float] = None
+    interval_method: Optional[str] = None
 
 
 class BoutiqueSignal(BaseModel):
@@ -384,6 +391,10 @@ class ArchetypeResponse(BaseModel):
     tcg: Optional[ArchetypeTcg] = None
     # Un point par mois, du premier mois où l'archétype apparaît au dernier mois de la base.
     history: list[ArchetypeMonth] = []
+    # Même chose en OCG (`meta_scores_ocg`, TOK-116) ; vide si l'archétype n'y apparaît pas.
+    ocg_history: list[ArchetypeMonth] = []
+    # Date de calcul de la chaîne OCG (`ocg_archetype_scores.computed_at`, notebook 10) ; NULL si inconnue.
+    ocg_history_computed_at: Optional[str] = None
     # NULL si aucune carte suivie n'a cet archétype pour deck d'attache.
     key_cards: Optional[ArchetypeKeyCards] = None
     ocg: Optional[ArchetypeOcg] = None

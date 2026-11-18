@@ -3,7 +3,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { CRITERIA } from "@/lib/ban-criteria";
 import { fmtDate, fmtMonthRange, fmtNum } from "@/lib/format";
-import { PROOF } from "@/lib/proof-data";
+import { PROOF_EXAMPLE, buildProof, type Proof } from "@/lib/proof-data";
 import { pageMetadata } from "@/lib/seo";
 import { ARRIVAL_COVERAGE_RANGE, SITE_FACTS } from "@/lib/site-facts";
 import { CardArt, CardArtFill } from "@/components/card-art";
@@ -80,21 +80,23 @@ const fmtMonthYearLong = (yearMonth: string) =>
   new Date(`${yearMonth}-01T00:00:00`).toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 
 export default async function Home() {
-  const [boutique, radar, tierList, predictions, early] = await Promise.all([
+  const [boutique, radar, tierList, predictions, early, example] = await Promise.all([
     api.boutiqueSignals(),
     api.banRadar({ limit: 3, kind: "archetype" }),
     api.tierList(),
     api.predictions(),
     api.earlySignals(),
+    api.archetype(PROOF_EXAMPLE.slug),
   ]);
+  // Exemple de l'accueil (TOK-116) : parts servies par l'API ; sans elles (base de service
+  // antérieure, archétype absent), la section n'est pas rendue plutôt que dessinée à moitié.
+  const proof = buildProof(example);
   const topBuy = boutique.data[0];
   const rule = boutique.label_rule;
   const tcgWindow = topBuy ? fmtMonthRange(topBuy.tcg_window_start, topBuy.tcg_window_end) : null;
   const illustrated = tierList.data.filter((entry) => entry.image_url);
   const leader = tierList.data[0];
-  const lag = PROOF.tcgPeak - PROOF.ocgPeak;
   const tierWindow = fmtMonthRange(`${tierList.window_start}-01`, `${tierList.window_end}-01`);
-  const { ocg, tcg, ocgPeak, tcgPeak } = PROOF;
   const topEarly = early.data[0];
   // Une ligne chiffrée par lien, tirée de l'API ; sans donnée, le lien reste seul.
   const alsoText: Record<string, string | undefined> = {
@@ -185,52 +187,7 @@ export default async function Home() {
         </section>
 
         {/* ---------- 2. La preuve : graphique piloté par le défilement ---------- */}
-        <ProofScroll id="preuve" aria-labelledby="h-preuve" className="scroll-mt-20">
-          <div className="home-proof-sticky py-20">
-            <div className={`${WRAP} grid items-center gap-10 min-[900px]:grid-cols-[minmax(0,0.8fr)_minmax(0,1.4fr)] min-[900px]:gap-12`}>
-              <div>
-                <Eyebrow>Exemple · un archétype, deux formats</Eyebrow>
-                <h2 id="h-preuve" className={`mt-[18px] ${H2}`}>
-                  {PROOF.archetype} : pic en OCG en avril 2026, en TCG <Em>{lag} mois</Em> plus tard.
-                </h2>
-                <ol className="mt-7 grid gap-1.5">
-                  {[
-                    ["1 · OCG", `${pct(ocg[ocgPeak - 3])} des decks en janvier 2026, ${pct(ocg[ocgPeak - 2])} en février, pic à ${pct(ocg[ocgPeak])} en avril.`],
-                    ["2 · TCG", `${pct(tcg[tcgPeak - 3])} en avril 2026, ${pct(tcg[tcgPeak - 2])} en mai, pic à ${pct(tcg[tcgPeak])} en juillet.`],
-                    [
-                      "3 · Écart",
-                      `Courbe OCG décalée de ${lag} mois. Un seul archétype : sur ${SITE_FACTS.ocgTcgArchetypes} archétypes, l’écart observé va de ${SITE_FACTS.ocgTcgLagRange}.`,
-                    ],
-                  ].map(([label, text]) => (
-                    <li key={label} className="home-step px-4 py-3.5 text-[16px]">
-                      <b className="mb-1 block font-mono text-[11px] font-medium tracking-[0.1em] uppercase">{label}</b>
-                      {text}
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <figure className="rounded-[14px] border border-line-2 bg-linear-to-b from-ink-3 to-ink-2 px-4 pt-5 pb-3.5 min-[760px]:px-[22px]">
-                <div className="mb-2.5 flex flex-wrap gap-4 font-mono text-[12px] text-soft">
-                  <span className="flex items-center gap-2">
-                    <i className="h-[3px] w-[18px] rounded-[2px] bg-ocg" />
-                    OCG (Japon, Asie)
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <i className="h-[3px] w-[18px] rounded-[2px] bg-signal" />
-                    TCG (Europe, Amériques)
-                  </span>
-                </div>
-                <ProofChart />
-                <figcaption className={`mt-3 ${SOURCE}`}>
-                  Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists
-                  yugiohmeta.com, relevé du {fmtDate(PROOF.asOf)}. Incertitude non dessinée : les effectifs mensuels
-                  n’ont pas été relevés avec cette série figée.
-                </figcaption>
-              </figure>
-            </div>
-          </div>
-        </ProofScroll>
+        {proof && <ProofSection proof={proof} />}
 
         {/* ---------- 3. Les outils : bento avec de vraies cartes ---------- */}
         <section id="outils" aria-labelledby="h-outils" className={`${WRAP} scroll-mt-20 pt-24 min-[900px]:pt-[120px]`}>
@@ -520,5 +477,59 @@ export default async function Home() {
 
       <SiteFooter asOf={radar.as_of} />
     </>
+  );
+}
+
+/** 2. La preuve : graphique piloté par le défilement (données : GET /archetypes/kewl-tune). */
+function ProofSection({ proof }: { proof: Proof }) {
+  const { ocg, tcg, ocgPeak, tcgPeak } = proof;
+  const lag = tcgPeak - ocgPeak;
+  return (
+    <ProofScroll id="preuve" aria-labelledby="h-preuve" className="scroll-mt-20">
+      <div className="home-proof-sticky py-20">
+        <div className={`${WRAP} grid items-center gap-10 min-[900px]:grid-cols-[minmax(0,0.8fr)_minmax(0,1.4fr)] min-[900px]:gap-12`}>
+          <div>
+            <Eyebrow>Exemple · un archétype, deux formats</Eyebrow>
+            <h2 id="h-preuve" className={`mt-[18px] ${H2}`}>
+              {proof.archetype} : pic en OCG en avril 2026, en TCG <Em>{lag} mois</Em> plus tard.
+            </h2>
+            <ol className="mt-7 grid gap-1.5">
+              {[
+                ["1 · OCG", `${pct(ocg[ocgPeak - 3])} des decks en janvier 2026, ${pct(ocg[ocgPeak - 2])} en février, pic à ${pct(ocg[ocgPeak])} en avril.`],
+                ["2 · TCG", `${pct(tcg[tcgPeak - 3])} en avril 2026, ${pct(tcg[tcgPeak - 2])} en mai, pic à ${pct(tcg[tcgPeak])} en juillet.`],
+                [
+                  "3 · Écart",
+                  `Courbe OCG décalée de ${lag} mois. Un seul archétype : sur ${SITE_FACTS.ocgTcgArchetypes} archétypes, l’écart observé va de ${SITE_FACTS.ocgTcgLagRange}.`,
+                ],
+              ].map(([label, text]) => (
+                <li key={label} className="home-step px-4 py-3.5 text-[16px]">
+                  <b className="mb-1 block font-mono text-[11px] font-medium tracking-[0.1em] uppercase">{label}</b>
+                  {text}
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <figure className="rounded-[14px] border border-line-2 bg-linear-to-b from-ink-3 to-ink-2 px-4 pt-5 pb-3.5 min-[760px]:px-[22px]">
+            <div className="mb-2.5 flex flex-wrap gap-4 font-mono text-[12px] text-soft">
+              <span className="flex items-center gap-2">
+                <i className="h-[3px] w-[18px] rounded-[2px] bg-ocg" />
+                OCG (Japon, Asie)
+              </span>
+              <span className="flex items-center gap-2">
+                <i className="h-[3px] w-[18px] rounded-[2px] bg-signal" />
+                TCG (Europe, Amériques)
+              </span>
+            </div>
+            <ProofChart proof={proof} />
+            <figcaption className={`mt-3 ${SOURCE}`}>
+              Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists
+              yugiohmeta.com, relevé du {fmtDate(proof.asOf)}. Incertitude non dessinée : les effectifs mensuels
+              n’ont pas été relevés avec cette série figée.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </ProofScroll>
   );
 }

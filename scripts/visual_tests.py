@@ -61,7 +61,8 @@ WIDTHS = [375, 768, 1440]
 VIEWPORT_HEIGHT = 900
 # Archétypes dont la réponse est figée : un de la tier list, un qui n'existe que par son signal
 # boutique. Les autres pages d'archétype répondent 404 pendant ce build (elles ne sont pas capturées).
-ARCHETYPES = ["branded", "raise-moon"]
+# kewl-tune : exemple de l'accueil (TOK-116, GET /archetypes/kewl-tune).
+ARCHETYPES = ["branded", "raise-moon", "kewl-tune"]
 # Fiches de deck figées (TOK-114) : une avec profil (≥ 8 listes), une sous l'effectif minimal (listes seules).
 DECKS = ["branded", "chaos-ritual"]
 PAGES = [

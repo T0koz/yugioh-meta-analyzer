@@ -595,6 +595,22 @@ Formulaire : renommer « Impact » en « Diffusion », simulateur décrit sans p
   contraire à l'affirmation testée (signe ajouté après lecture, déclaré).
 → détail complet : `docs/journal/pont-simulateur-tok-132.md`, formulaire `docs/planning/2026-11-18/decisions-prises.md` (lot 26)
 
+### 🌱 Signaux précoces rejoués contre « vues seules » (TOK-129, B2, Jalon 1, 2026-11-18, branche `claude/j1-tok-129-93-signaux-fraicheur-d1344d`, non fusionnée)
+
+`scripts/backtest_early_signals.py` (≈ 35 s, lecture seule, graine fixée, rien d'affiché ne change ; dépend de TOK-122) rejoue
+`build_early_signals.py` à 25 dates (2024-07 → 2026-07) ; « entrer en méta » = ≥ 3 % des decks TCG légaux sur 120 j.
+Critère B2 **rempli en cartes** (P@20 0,536 contre 0,382 aux vues, +0,154, IC dates [+0,066 ; +0,252]) **mais pas robuste** :
+≈ 8 épisodes (effectif efficace 6,5), écart nul compté par archétype (+0,026 [−0,063 ; +0,119] par épisodes). Signal solide :
+la force OCG sans vues désigne l'archétype qui arrive (+0,272 [+0,114 ; +0,430] contre les vues). Le texte coûte −0,106.
+Recommandation au formulaire : revoir la page (archétypes classés par la force OCG, après backtest propre).
+- **`views_week` n'existe qu'à une date** (`data/raw/cards.json`, commit du 13/06) : toute date antérieure voit des vues du
+  futur. Aucun test des vues n'est possible sans archive datée.
+- **Compter les réussites en archétypes, pas seulement en cartes** : un top 20 rempli d'un archétype qui arrive gonfle la
+  precision@20 ; bootstrap par épisodes (dates consécutives du même archétype), pas seulement par dates.
+- **Le calcul servi n'est pas le calcul testé** : texte nul au lot 20 (`text_synergies` hors chaîne) ; le recalculer ferait
+  revenir le texte, qui fait baisser le score.
+→ détail complet : `docs/journal/signaux-precoces-backtest-tok-129.md`, formulaire `docs/planning/2026-11-18/decisions-prises.md` (TOK-129)
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

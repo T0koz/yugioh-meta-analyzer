@@ -1,0 +1,766 @@
+# Situations de l'échantillon J1 (TOK-143, jalon n°6) — écrites par la session de l'oracle, le 2026-11-18, AVANT de les jouer.
+#
+# But : exercer **chaque clause** des 20 effets tirés (echantillon-j1.md § 1, graine 20260118) : condition remplie et non
+# remplie, choix possibles, coût, limite par tour. Écrites à partir du **texte TCG** de chaque carte (table `cards` de la
+# base de référence, lue en lecture seule), sans lire le code du moteur ni sa formalisation (isolement AGPL, décision 0055).
+# Ce fichier est figé par un commit avant toute exécution dans l'oracle (empreinte dans le message du commit) ; les
+# réponses de l'oracle sont dans reponses-oracle.md § 9. Le jalon n°7 exécutera le moteur sur ces situations et comptera
+# les accords avec l'oracle (unité : l'effet ; un effet est juste si toutes ses situations sont en accord).
+#
+# Même schéma que situations-j1.yaml et tests-branded.yaml (conventions de départ identiques : tour 1, nous commençons,
+# Phase Principale 1, pas de pioche, terrain adverse vide, Extra Deck complet, Deck = les 40 cartes du deck source moins
+# celles placées ailleurs, mémoire du tour vide). Champs ajoutés :
+#   clause   : la clause du texte que la situation exerce.
+#   observer : ce qu'il faut relever chez l'oracle comme chez le moteur (liste proposée, choix, état d'arrivée).
+#   attendu  : lecture de la session de l'oracle à partir du texte TCG, écrite AVANT de jouer. Ce n'est pas la référence :
+#              la référence est la réponse de l'oracle (§ 9 de reponses-oracle.md).
+# « (Invocation Fusion ce tour) », « (Invocation Synchro ce tour) » : le monstre a été correctement invoqué ce tour depuis
+# l'Extra Deck (mémoire du tour). « posé » : placé sans historique d'invocation. Les numéros d'effet suivent
+# echantillon-j1.md (rang dans le texte TCG).
+
+# Clauses non exerçables avec ce deck au tour 1 (déclarées, sans situation) : limite par tour de GARURA/2, MERC/2,
+# TITAN/3 et CHAMPIONS/1 (un seul exemplaire, qui ne peut pas revenir la déclencher une 2e fois) ; GSWORD/2 : bannissement
+# face cachée (aucune carte du deck ne bannit face cachée) et limite par tour (GSWORD se bannit en coût) ; AEON/1 : « 3
+# matériels ou plus » (il faudrait 3 Fusions d'Attributs tous différents) et l'Extra Deck adverse ; DECCLESIA/2 et
+# BOPENING/2 en Damage Step (pas de combat). 86 situations, 20 effets.
+
+version: 1
+deck_source: 6af240d29e8b7a3a8eb28d8d
+auteur: "session de l'oracle (jalon n°6), écrit avant exécution, non relu"
+
+cartes:
+  ALUBER: "Aluber the Jester of Despia"
+  ASH: "Ash Blossom & Joyous Spring"
+  CARTESIA: "Blazing Cartesia, the Virtuous"
+  BFUSION: "Branded Fusion"
+  BOPENING: "Branded Opening"
+  BHIGH: "Branded in High Spirits"
+  COCA: "Cocatorium the Heavy Metal Avian"
+  DECCLESIA: "Dogmatika Ecclesia, the Virtuous"
+  ALBAZ: "Fallen of Albaz"
+  WHITE: "Fallen of the White Dragon"
+  OGRE: "Ghost Ogre & Snow Rabbit"
+  SARC: "Gold Sarcophagus"
+  QUEM: "Guiding Quem, the Virtuous"
+  IECCLESIA: "Incredible Ecclesia, the Virtuous"
+  NADIR: "Nadir Servant"
+  SKITT: "Springans Kitt"
+  SPOLY: "Super Polymerization"
+  TFTV: "The Fallen & The Virtuous"
+  GSWORD: "The Golden Swordsoul"
+  MERC: "Tri-Brigade Mercourier"
+  TBKITT: "Tri-Brigade Springans Kitt"
+  SANCTIFIRE: "Albion the Sanctifire Dragon"
+  LULU: "Despian Luluwalilith"
+  EDD: "Ecclesia and the Dark Dragon"
+  GARURA: "Garura, Wings of Resonant Life"
+  GRANG: "Granguignol the Dusk Dragon"
+  AEON: "Hyperinvoked Aeon"
+  MIRROR: "Mirrorjade the Iceblade Dragon"
+  MIXOUSIA: "Mixousia the Confounder"
+  RIND: "Rindbrumm the Striking Dragon"
+  DOGMA: "The Dragon that Devours the Dogma"
+  CHAMPIONS: "The Three Champions of Swordsoul"
+  TITAN: "Titaniklad the Ash Dragon"
+
+situations:
+
+  # ---------------------------------------------------------------- 1. ALUBER/1 (strate a)
+  - id: E01
+    effets: ["ALUBER/1"]
+    clause: "Invoqué Normalement : ajouter 1 Magie/Piège « Branded » du Deck."
+    depart: {main: [ALUBER, ASH]}
+    action: "Invocation Normale d'ALUBER ; activer son effet ; ajouter BFUSION."
+    observer: "liste des cartes ajoutables"
+    attendu: {verdict: legal, choix: [BFUSION, BOPENING, BHIGH, TFTV], note: "TFTV compte comme « Branded » (R11)."}
+
+  - id: E02
+    effets: ["ALUBER/1"]
+    clause: "Invoqué Spécialement : même effet."
+    depart: {main: [BOPENING, ASH]}
+    action: "BOPENING (défausser ASH) : prendre ALUBER du Deck et l'Invoquer Spécialement en Défense ; activer l'effet d'ALUBER ; ajouter BHIGH."
+    observer: "effet proposé après l'Invocation Spéciale ; liste des cartes ajoutables"
+    attendu: {verdict: legal, choix: [BFUSION, BHIGH, TFTV], note: "BOPENING est au Cimetière, plus dans le Deck."}
+
+  - id: E03
+    effets: ["ALUBER/1"]
+    clause: "Aucune Magie/Piège « Branded » dans le Deck : l'effet ne s'active pas (R01)."
+    depart: {main: [ALUBER, BFUSION, BOPENING, BHIGH], cimetiere: [TFTV, TFTV, TFTV]}
+    action: "Invocation Normale d'ALUBER."
+    observer: "l'effet d'ALUBER est-il proposé ?"
+    attendu: {verdict: illegal, note: "effet non proposé"}
+
+  - id: E04
+    effets: ["ALUBER/1"]
+    clause: "Un seul effet d'« Aluber » par tour : la 2e copie ne peut pas l'utiliser."
+    depart: {main: [ALUBER, BOPENING, ASH]}
+    action: "Invocation Normale d'ALUBER, effet (ajouter BFUSION) ; puis BOPENING (défausser ASH) : Invoquer Spécialement ALUBER (2e copie) du Deck en Défense."
+    observer: "l'effet de la 2e ALUBER est-il proposé ?"
+    attendu: {verdict: illegal, note: "non proposé (limite par nom)"}
+
+  # ---------------------------------------------------------------- 2. CARTESIA/2 (strate a)
+  - id: E05
+    effets: ["CARTESIA/2"]
+    clause: "Phase Principale : Invocation Fusion d'un Fusion de Niveau 8 ou plus, matériels de la main ou du terrain."
+    depart: {main: [ALBAZ, ASH], terrain: ["CARTESIA (posée)"]}
+    action: "Effet de CARTESIA : Fusion de GRANG avec CARTESIA (terrain) + ALBAZ (main)."
+    observer: "liste des Fusions proposées ; matériels proposés"
+    attendu: {verdict: legal, choix: [GRANG, SANCTIFIRE, MIXOUSIA], note: "GRANG (CARTESIA + TÉNÈBRES), SANCTIFIRE (ALBAZ + LUMIÈRE Magicien), MIXOUSIA (Magicien + non-Magicien)."}
+  - id: E06
+    effets: ["CARTESIA/2"]
+    clause: "Effet rapide : activable en réponse, pendant la Phase Principale."
+    depart: {main: [ALUBER, ALBAZ], terrain: ["CARTESIA (posée)"]}
+    action: "Invocation Normale d'ALUBER, activer son effet ; en réponse, effet de CARTESIA : Fusion de GRANG avec CARTESIA + ALBAZ (main)."
+    observer: "CARTESIA proposée dans la fenêtre de réponse à l'effet d'ALUBER"
+    attendu: {verdict: legal}
+
+  - id: E07
+    effets: ["CARTESIA/2"]
+    clause: "Hors Phase Principale (Phase de Fin) : non activable."
+    depart: {main: [WHITE, ALBAZ], terrain: ["CARTESIA (posée)"]}
+    action: "Effet de WHITE en main (coût : envoyer TITAN), WHITE Invoqué (ne pas activer son effet déclenché) ; passer à la Phase de Fin ; lire la liste (effet de TITAN)."
+    observer: "l'effet de Fusion de CARTESIA figure-t-il dans la liste de la Phase de Fin ? (le verrou de WHITE laisse GRANG, Fusion de Niveau 8)"
+    attendu: {verdict: illegal, note: "seul TITAN est proposé"}
+  - id: E08
+    effets: ["CARTESIA/2"]
+    clause: "Niveau 8 ou plus : GARURA (Niveau 6), réalisable avec CARTESIA + DECCLESIA, n'est pas proposée."
+    depart: {main: [DECCLESIA, ASH], terrain: ["CARTESIA (posée)"]}
+    action: "Effet de CARTESIA ; lire la liste des Fusions (CARTESIA + DECCLESIA : GRANG ou GARURA en Fusion ordinaire)."
+    observer: "GARURA absente de la liste"
+    attendu: {verdict: legal, choix: [GRANG], exclus: [GARURA]}
+
+  - id: E08b
+    effets: ["CARTESIA/2"]
+    clause: "Matériels de la main ou du terrain seulement : un monstre au Cimetière ne sert pas."
+    depart: {main: [ASH], terrain: ["CARTESIA (posée)"], cimetiere: [ALBAZ]}
+    action: "Tenter l'effet de CARTESIA (seul matériel possible hors CARTESIA : ALBAZ, au Cimetière)."
+    observer: "l'effet de CARTESIA est-il proposé ?"
+    attendu: {verdict: illegal}
+  - id: E09
+    effets: ["CARTESIA/2"]
+    clause: "Chaque effet de « Blazing Cartesia » une fois par tour : la 2e copie ne peut pas réutiliser la Fusion."
+    depart: {main: [ALBAZ, WHITE], terrain: ["CARTESIA (posée)", "CARTESIA (posée)"]}
+    action: "Effet de la 1re CARTESIA : Fusion de GRANG avec CARTESIA + ALBAZ ; puis tenter l'effet de la 2e CARTESIA (CARTESIA + WHITE)."
+    observer: "l'effet de la 2e CARTESIA est-il proposé ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 3. BFUSION/1 (strate a)
+  - id: E10
+    effets: ["BFUSION/1"]
+    clause: "Fusion d'un monstre qui mentionne Albaz comme matériel ; matériels du Deck."
+    depart: {main: [BFUSION]}
+    action: "BFUSION : Fusion de RIND avec ALBAZ + COCA, tous deux du Deck."
+    observer: "liste des Fusions ; matériels proposés (Deck)"
+    attendu: {verdict: legal, choix: [RIND, SANCTIFIRE], note: "R05 : seuls les Fusions dont la ligne de matériels nomme Albaz, et réalisables."}
+
+  - id: E11
+    effets: ["BFUSION/1"]
+    clause: "Matériels de la main et du terrain."
+    depart: {main: [BFUSION, ALBAZ], terrain: ["CARTESIA (posée)"]}
+    action: "BFUSION : Fusion de SANCTIFIRE avec ALBAZ (main) + CARTESIA (terrain)."
+    observer: "matériels proposés (main, terrain, Deck)"
+    attendu: {verdict: legal}
+
+  - id: E12
+    effets: ["BFUSION/1"]
+    clause: "Exactement 2 matériels : DOGMA (3 matériels) n'est pas proposée."
+    depart: {main: [BFUSION]}
+    action: "Activer BFUSION et lire la liste des Fusions."
+    observer: "DOGMA absente de la liste"
+    attendu: {verdict: legal, exclus: [DOGMA]}
+
+  - id: E13
+    effets: ["BFUSION/1"]
+    clause: "Le tour de l'activation, pas d'Invocation Spéciale depuis l'Extra Deck sauf Fusion (après l'activation)."
+    depart: {main: [BFUSION, ASH], terrain: ["IECCLESIA (posée)", "ALUBER (posé)"]}
+    action: "Lire les Invocations Synchro possibles (EDD avec IECCLESIA + ALUBER) ; activer BFUSION (RIND avec ALBAZ + COCA du Deck) ; relire."
+    observer: "EDD proposée avant, absente après"
+    attendu: {verdict: legal, etat: "après BFUSION, plus aucune Invocation Synchro proposée"}
+
+  - id: E14
+    effets: ["BFUSION/1"]
+    clause: "Le verrou porte sur tout le tour : après une Invocation Synchro, BFUSION n'est pas activable (R07)."
+    depart: {main: [BFUSION, ASH], terrain: ["IECCLESIA (posée)", "ALUBER (posé)"]}
+    action: "Invocation Synchro d'EDD (IECCLESIA + ALUBER) ; tenter BFUSION."
+    observer: "BFUSION proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E15
+    effets: ["BFUSION/1"]
+    clause: "Une seule activation de « Branded Fusion » par tour."
+    depart: {main: [BFUSION, BFUSION]}
+    action: "1re BFUSION (RIND avec ALBAZ + COCA du Deck) ; tenter la 2e."
+    observer: "2e BFUSION proposée ?"
+    attendu: {verdict: illegal, note: "2e copie ajoutée au départ, comme T72"}
+
+  - id: E16
+    effets: ["BFUSION/1"]
+    clause: "Aucun Fusion réalisable (ALBAZ et WHITE au Cimetière) : non activable (R01)."
+    depart: {main: [BFUSION], cimetiere: [ALBAZ, WHITE, WHITE]}
+    action: "Tenter BFUSION."
+    observer: "BFUSION proposée ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 4. DECCLESIA/2 (strate a)
+  - id: E17
+    effets: ["DECCLESIA/2"]
+    clause: "Un monstre Invoqué Spécialement depuis l'Extra Deck sur notre terrain : s'Invoquer Spécialement depuis la main."
+    depart: {main: [DECCLESIA, BFUSION]}
+    action: "BFUSION (RIND avec ALBAZ + COCA du Deck) ; effet de DECCLESIA en main."
+    observer: "effet proposé ; DECCLESIA sur le terrain"
+    attendu: {verdict: legal}
+
+  - id: E18
+    effets: ["DECCLESIA/2"]
+    clause: "Le monstre de l'Extra Deck peut être chez l'adversaire."
+    depart: {main: [DECCLESIA, ASH], terrain_adverse: ["RIND (Invoqué par Fusion ce tour, par l'adversaire)"]}
+    action: "Effet de DECCLESIA en main."
+    observer: "effet proposé"
+    attendu: {verdict: legal}
+
+  - id: E19
+    effets: ["DECCLESIA/2"]
+    clause: "Condition non remplie : seulement un monstre du Deck principal sur le terrain."
+    depart: {main: [DECCLESIA, ALUBER]}
+    action: "Invocation Normale d'ALUBER (effet : ne rien faire) ; tenter l'effet de DECCLESIA."
+    observer: "effet proposé ?"
+    attendu: {verdict: illegal}
+
+  - id: E20
+    effets: ["DECCLESIA/2"]
+    clause: "Condition non remplie : le monstre de l'Extra Deck est au Cimetière, pas sur le terrain."
+    depart: {main: [DECCLESIA, NADIR]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ) ; tenter l'effet de DECCLESIA."
+    observer: "effet proposé ?"
+    attendu: {verdict: illegal}
+
+  - id: E21
+    effets: ["DECCLESIA/2"]
+    clause: "Une fois par tour (par nom) : la 2e copie ne peut pas s'Invoquer par cet effet."
+    depart: {main: [DECCLESIA, DECCLESIA, BFUSION]}
+    action: "BFUSION (RIND) ; effet de la 1re DECCLESIA (ne pas activer son effet de recherche) ; tenter l'effet de la 2e."
+    observer: "2e effet proposé ?"
+    attendu: {verdict: illegal, note: "2e copie ajoutée au départ"}
+
+  # ---------------------------------------------------------------- 5. GARURA/2 (strate a)
+  - id: E22
+    effets: ["GARURA/2"]
+    clause: "Envoyée au Cimetière depuis l'Extra Deck : piocher 1 carte."
+    depart: {main: [NADIR, ASH]}
+    action: "NADIR : envoyer GARURA (1500), ajouter DECCLESIA ; effet de GARURA : piocher 1 carte."
+    observer: "effet proposé après la résolution de NADIR ; une carte piochée"
+    attendu: {verdict: legal}
+
+  - id: E23
+    effets: ["GARURA/2"]
+    clause: "Envoyée au Cimetière depuis le terrain (matériel de Fusion)."
+    depart: {main: [ALBAZ, ASH], terrain: ["CARTESIA (posée)", "GARURA (posée)"]}
+    action: "Effet de CARTESIA : Fusion de MIRROR avec ALBAZ (main) + GARURA (terrain) ; effet de GARURA : piocher."
+    observer: "effet de GARURA proposé"
+    attendu: {verdict: legal}
+
+  # ---------------------------------------------------------------- 6. NADIR/1 (strate a)
+  - id: E24
+    effets: ["NADIR/1"]
+    clause: "Envoyer 1 monstre de l'Extra Deck, puis ajouter du Deck un « Dogmatika » ou « Fallen of Albaz » d'ATK ≤ celle du monstre envoyé."
+    depart: {main: [NADIR, ASH]}
+    action: "NADIR : envoyer TITAN (2500) ; lire la liste ; ajouter ALBAZ."
+    observer: "liste des monstres envoyables ; liste des ajoutables"
+    attendu: {verdict: legal, choix: [ALBAZ, WHITE, DECCLESIA, QUEM]}
+
+  - id: E25
+    effets: ["NADIR/1"]
+    clause: "Seuil d'ATK : envoi de GARURA (1500)."
+    depart: {main: [NADIR, ASH]}
+    action: "NADIR : envoyer GARURA ; lire la liste."
+    observer: "liste des ajoutables"
+    attendu: {verdict: legal, choix: [DECCLESIA, QUEM]}
+
+  - id: E26
+    effets: ["NADIR/1"]
+    clause: "Ajout depuis le Cimetière."
+    depart: {main: [NADIR, ASH], cimetiere: [ALBAZ]}
+    action: "NADIR : envoyer TITAN ; ajouter ALBAZ du Cimetière."
+    observer: "ALBAZ du Cimetière dans la liste"
+    attendu: {verdict: legal}
+
+  - id: E27
+    effets: ["NADIR/1"]
+    clause: "Aucun « Dogmatika » ni Albaz dans le Deck ni au Cimetière : non activable (R01)."
+    depart: {main: [NADIR, ASH], bannies: [ALBAZ, WHITE, WHITE, DECCLESIA, QUEM]}
+    action: "Tenter NADIR."
+    observer: "NADIR proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E28
+    effets: ["NADIR/1"]
+    clause: "Le verrou vaut après la résolution : en réponse à NADIR, une Invocation depuis l'Extra Deck reste possible."
+    depart: {main: [NADIR, ALBAZ], terrain: ["CARTESIA (posée)"]}
+    action: "Activer NADIR ; en réponse, effet de CARTESIA (GRANG avec CARTESIA + ALBAZ) ; NADIR se résout (envoyer TITAN, ajouter WHITE)."
+    observer: "CARTESIA proposée en réponse ; GRANG Invoquée"
+    attendu: {verdict: legal}
+
+  - id: E29
+    effets: ["NADIR/1"]
+    clause: "Après la résolution : plus d'Invocation Spéciale depuis l'Extra Deck."
+    depart: {main: [NADIR, ASH], terrain: ["IECCLESIA (posée)", "ALUBER (posé)"]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ) ; lire les Invocations Synchro."
+    observer: "EDD absente après la résolution"
+    attendu: {verdict: legal, etat: "aucune Invocation Synchro proposée"}
+
+  - id: E30
+    effets: ["NADIR/1"]
+    clause: "Une seule activation de « Nadir Servant » par tour."
+    depart: {main: [NADIR, NADIR, ASH]}
+    action: "1re NADIR (envoyer TITAN, ajouter ALBAZ) ; tenter la 2e."
+    observer: "2e NADIR proposée ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 7. SPOLY/1 (strate a)
+  - id: E31
+    effets: ["SPOLY/1"]
+    clause: "Coût : défausser 1 carte ; sans autre carte en main, non activable."
+    depart: {main: [SPOLY], terrain: ["ALBAZ (posé)", "CARTESIA (posée)"]}
+    action: "Tenter SPOLY (une Fusion serait possible : GRANG avec CARTESIA + ALBAZ)."
+    observer: "SPOLY proposée ?"
+    attendu: {verdict: illegal}
+  - id: E32
+    effets: ["SPOLY/1"]
+    clause: "Matériels sur l'un ou l'autre terrain : un monstre adverse sert de matériel."
+    depart: {main: [SPOLY, ASH], terrain: ["ALBAZ (posé)"], terrain_adverse: ["SKITT (posé)"]}
+    action: "SPOLY (défausser ASH) : Fusion de RIND avec ALBAZ (à nous) + SKITT (adverse, Bête)."
+    observer: "liste des Fusions ; SKITT adverse proposé comme matériel ; SKITT va au Cimetière de l'adversaire"
+    attendu: {verdict: legal, choix: [RIND]}
+  - id: E33
+    effets: ["SPOLY/1"]
+    clause: "Matériels du terrain seulement : un monstre en main ne sert pas."
+    depart: {main: [SPOLY, ASH, ALBAZ], terrain: ["CARTESIA (posée)"]}
+    action: "Tenter SPOLY (GRANG demanderait ALBAZ, qui est en main)."
+    observer: "SPOLY proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E34
+    effets: ["SPOLY/1"]
+    clause: "Aucune réponse possible à son activation."
+    depart: {main: [SPOLY, ASH, BOPENING], terrain: ["ALBAZ (posé)", "CARTESIA (posée)"]}
+    action: "SPOLY (défausser ASH) : Fusion de GRANG avec CARTESIA + ALBAZ ; regarder les fenêtres de réponse."
+    observer: "aucune fenêtre ne propose BOPENING"
+    attendu: {verdict: legal}
+
+  - id: E35
+    effets: ["SPOLY/1"]
+    clause: "Magie Jeu-Rapide : activable depuis la main en réponse à un effet."
+    depart: {main: [ALUBER, SPOLY, ASH], terrain: ["ALBAZ (posé)", "CARTESIA (posée)"]}
+    action: "Invocation Normale d'ALUBER, effet ; en réponse, SPOLY (défausser ASH) : Fusion de GRANG avec CARTESIA + ALBAZ."
+    observer: "SPOLY proposée dans la fenêtre de réponse"
+    attendu: {verdict: legal}
+
+  # ---------------------------------------------------------------- 8. GSWORD/2 (strate a)
+  - id: E36
+    effets: ["GSWORD/2"]
+    clause: "Un monstre est banni face visible (coût) : GSWORD au Cimetière se bannit ; Invoquer un LUMIÈRE Magicien de la main dont ATK = DEF."
+    depart: {main: [CARTESIA, ASH], terrain: ["COCA (posée)"], cimetiere: [GSWORD]}
+    action: "Effet de COCA (bannir MERC du Deck) ; effets déclenchés : GSWORD (bannir GSWORD, Invoquer CARTESIA de la main)."
+    observer: "GSWORD proposée ; liste des monstres Invocables"
+    attendu: {verdict: legal, choix: [CARTESIA]}
+
+  - id: E37
+    effets: ["GSWORD/2"]
+    clause: "Coût depuis le terrain ; Invocation depuis le Cimetière."
+    depart: {main: [ASH], terrain: ["COCA (posée)", "GSWORD (posée)"], cimetiere: [DECCLESIA]}
+    action: "Effet de COCA (bannir MERC) ; GSWORD se bannit du terrain ; Invoquer DECCLESIA du Cimetière."
+    observer: "GSWORD proposée depuis le terrain ; DECCLESIA dans la liste"
+    attendu: {verdict: legal, choix: [DECCLESIA]}
+
+  - id: E38
+    effets: ["GSWORD/2"]
+    clause: "Aucun LUMIÈRE Magicien ATK = DEF en main ni au Cimetière : non activable."
+    depart: {main: [ASH], terrain: ["COCA (posée)"], cimetiere: [GSWORD]}
+    action: "Effet de COCA (bannir MERC)."
+    observer: "GSWORD proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E39
+    effets: ["GSWORD/2"]
+    clause: "Le banni doit être un monstre : une Magie bannie (remplacement de BOPENING) ne déclenche pas."
+    depart: {main: [TFTV, CARTESIA], terrain: ["RIND (posé)"], cimetiere: [GSWORD, BOPENING]}
+    action: "TFTV, 1er effet : envoyer TITAN, cibler RIND ; à la résolution, bannir BOPENING du Cimetière à la place."
+    observer: "GSWORD proposée après le bannissement de BOPENING ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 9. TITAN/3 (strate a)
+  - id: E40
+    effets: ["TITAN/3"]
+    clause: "Phase de Fin, envoyé au Cimetière ce tour : ajouter 1 Albaz ou 1 « Dogmatika » du Deck."
+    depart: {main: [NADIR, ASH]}
+    action: "NADIR (envoyer TITAN, ajouter DECCLESIA) ; Phase de Fin : effet de TITAN, ajouter ALBAZ."
+    observer: "effet proposé ; liste ; choix ajouter / Invoquer"
+    attendu: {verdict: legal, choix: [ALBAZ, WHITE, QUEM], note: "DECCLESIA déjà en main"}
+
+  - id: E41
+    effets: ["TITAN/3"]
+    clause: "Option « Invoquer Spécialement » (le verrou de NADIR ne vise que l'Extra Deck)."
+    depart: {main: [NADIR, ASH]}
+    action: "Comme E40, mais Invoquer Spécialement QUEM."
+    observer: "QUEM sur le terrain"
+    attendu: {verdict: legal}
+
+  - id: E42
+    effets: ["TITAN/3"]
+    clause: "Pas envoyé ce tour (déjà au Cimetière au départ) : non activable."
+    depart: {main: [NADIR, ASH], cimetiere: ["TITAN (au Cimetière depuis un tour précédent)"]}
+    action: "NADIR (envoyer GARURA, ajouter QUEM) ; Phase de Fin."
+    observer: "TITAN proposé ?"
+    attendu: {verdict: illegal}
+
+  - id: E43
+    effets: ["TITAN/3"]
+    clause: "Aucune carte valable dans le Deck : non activable."
+    depart: {main: [NADIR, ASH], cimetiere: [ALBAZ], bannies: [WHITE, WHITE, DECCLESIA, QUEM]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ du Cimetière) ; Phase de Fin."
+    observer: "TITAN proposé ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 10. MERC/2 (strate a)
+  - id: E44
+    effets: ["MERC/2"]
+    clause: "Bannie (en coût, depuis le Deck) : ajouter Albaz ou un monstre qui le mentionne, sauf MERC."
+    depart: {main: [ASH], terrain: ["COCA (posée)"]}
+    action: "Effet de COCA (bannir MERC du Deck) ; effet de MERC : ajouter ALBAZ."
+    observer: "liste des ajoutables"
+    attendu: {verdict: legal, note: "ALBAZ, WHITE et les monstres du Deck dont le texte mentionne Albaz ; jamais MERC"}
+
+  - id: E45
+    effets: ["MERC/2"]
+    clause: "Bannie par un effet (GOLD SARCOPHAGUS), pas en coût."
+    depart: {main: [SARC, ASH]}
+    action: "SARC : bannir MERC du Deck ; effet de MERC : ajouter WHITE."
+    observer: "effet proposé"
+    attendu: {verdict: legal}
+
+  # ---------------------------------------------------------------- 11. BOPENING/2 (strate b)
+  - id: E46
+    effets: ["BOPENING/2"]
+    clause: "Un Fusion que je contrôle serait détruit par un effet : bannir BOPENING du Cimetière à la place."
+    depart: {main: [TFTV, ASH], terrain: ["RIND (posé)"], cimetiere: [BOPENING]}
+    action: "TFTV, 1er effet : envoyer TITAN, cibler RIND ; à la résolution, accepter de bannir BOPENING."
+    observer: "question proposée ; RIND reste ; BOPENING bannie"
+    attendu: {verdict: legal}
+
+  - id: E47
+    effets: ["BOPENING/2"]
+    clause: "Remplacement facultatif : refuser."
+    depart: {main: [TFTV, ASH], terrain: ["RIND (posé)"], cimetiere: [BOPENING]}
+    action: "Comme E46, mais refuser."
+    observer: "RIND détruit, BOPENING reste au Cimetière"
+    attendu: {verdict: legal}
+
+  - id: E48
+    effets: ["BOPENING/2"]
+    clause: "Monstre non Fusion : pas de remplacement."
+    depart: {main: [TFTV, ASH], terrain: ["ALUBER (posé)"], cimetiere: [BOPENING]}
+    action: "TFTV, 1er effet : envoyer TITAN, cibler ALUBER."
+    observer: "question proposée ?"
+    attendu: {verdict: illegal, note: "ALUBER détruit sans question"}
+
+  - id: E49
+    effets: ["BOPENING/2"]
+    clause: "Fusion contrôlé par l'adversaire : pas de remplacement."
+    depart: {main: [TFTV, ASH], terrain_adverse: ["RIND (posé)"], cimetiere: [BOPENING]}
+    action: "TFTV, 1er effet : envoyer TITAN, cibler le RIND adverse."
+    observer: "question proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E50
+    effets: ["BOPENING/2"]
+    clause: "Chaque effet une fois par tour : le 1er effet utilisé ce tour n'empêche pas le 2e."
+    depart: {main: [BOPENING, TFTV, ASH], terrain: ["RIND (posé)"]}
+    action: "BOPENING (défausser ASH, ajouter ALUBER) ; puis TFTV, 1er effet : envoyer TITAN, cibler RIND ; bannir BOPENING à la place."
+    observer: "question proposée"
+    attendu: {verdict: legal}
+
+  # ---------------------------------------------------------------- 12. BHIGH/2 (strate b)
+  - id: E51
+    effets: ["BHIGH/2"]
+    clause: "Phase de Fin, un Fusion envoyé à mon Cimetière ce tour : revenir en main."
+    depart: {main: [NADIR, ASH], cimetiere: [BHIGH]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ) ; Phase de Fin : effet de BHIGH."
+    observer: "BHIGH proposée"
+    attendu: {verdict: legal}
+
+  - id: E52
+    effets: ["BHIGH/2"]
+    clause: "Aucun Fusion envoyé ce tour : non activable."
+    depart: {main: [ALUBER, ASH], cimetiere: [BHIGH]}
+    action: "Invocation Normale d'ALUBER (effet : ajouter BFUSION) ; Phase de Fin."
+    observer: "BHIGH proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E53
+    effets: ["BHIGH/2"]
+    clause: "Un Synchro envoyé (pas un Fusion) : non activable."
+    depart: {main: [NADIR, ASH], cimetiere: [BHIGH]}
+    action: "NADIR (envoyer EDD, ajouter ALBAZ) ; Phase de Fin."
+    observer: "BHIGH proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E54
+    effets: ["BHIGH/2"]
+    clause: "Un seul effet de « Branded in High Spirits » par tour : après le 1er effet, pas de retour."
+    depart: {main: [BHIGH, SKITT]}
+    action: "BHIGH : révéler SKITT, envoyer DOGMA (Bête, 2500 DEF) ; appliquer : défausser SKITT, ajouter ALBAZ ; Phase de Fin."
+    observer: "BHIGH proposée à la Phase de Fin ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 13. LULU/1 (strate b)
+  - id: E55
+    effets: ["LULU/1"]
+    clause: "Une carte quitte l'Extra Deck (envoi par un effet) : +500 ATK à mes monstres ; ne rien annuler."
+    depart: {main: [NADIR, ASH], terrain: ["LULU (posée)", "ALUBER (posé)"]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ) ; effet de LULU ; ne rien annuler."
+    observer: "effet proposé ; ATK de LULU et d'ALUBER"
+    attendu: {verdict: legal, etat: "LULU 3000, ALUBER 2300"}
+
+  - id: E56
+    effets: ["LULU/1"]
+    clause: "Puis on peut annuler les effets d'1 carte face visible."
+    depart: {main: [NADIR, ASH], terrain: ["LULU (posée)", "ALUBER (posé)"]}
+    action: "Comme E55, mais annuler les effets d'ALUBER."
+    observer: "question « annuler ? » ; liste des cartes ciblables"
+    attendu: {verdict: legal}
+
+  - id: E57
+    effets: ["LULU/1"]
+    clause: "Une carte quitte l'Extra Deck par une Invocation Fusion."
+    depart: {main: [ALBAZ, ASH], terrain: ["LULU (posée)", "CARTESIA (posée)"]}
+    action: "Effet de CARTESIA : Fusion de GRANG avec CARTESIA + ALBAZ (main) ; effet de LULU."
+    observer: "effet de LULU proposé"
+    attendu: {verdict: legal}
+
+  - id: E58
+    effets: ["LULU/1"]
+    clause: "Une fois par tour : une 2e sortie de l'Extra Deck ne redéclenche pas."
+    depart: {main: [NADIR, WHITE], terrain: ["LULU (posée)"]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ) ; effet de LULU ; puis WHITE (coût : envoyer SANCTIFIRE de l'Extra Deck)."
+    observer: "LULU proposée après le coût de WHITE ?"
+    attendu: {verdict: illegal}
+
+  - id: E59
+    effets: ["LULU/1"]
+    clause: "Sa propre sortie de l'Extra Deck ne la déclenche pas (N01)."
+    depart: {main: [ASH], terrain: ["QUEM (posé)", "DECCLESIA (posée)", "ALUBER (posé)"]}
+    action: "Invocation Synchro de LULU (QUEM + DECCLESIA + ALUBER)."
+    observer: "effet de LULU proposé ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 14. LULU/2 (strate b)
+  - id: E60
+    effets: ["LULU/2"]
+    clause: "Phase de Fin, envoyée au Cimetière ce tour : Invoquer un LUMIÈRE Magicien ATK = DEF du Deck."
+    depart: {main: [NADIR, ASH]}
+    action: "NADIR (envoyer LULU, ajouter ALBAZ) ; Phase de Fin : effet de LULU, Invoquer IECCLESIA du Deck."
+    observer: "liste"
+    attendu: {verdict: legal, choix: [CARTESIA, QUEM, IECCLESIA, DECCLESIA]}
+
+  - id: E61
+    effets: ["LULU/2"]
+    clause: "Depuis la main."
+    depart: {main: [NADIR, CARTESIA]}
+    action: "NADIR (envoyer LULU, ajouter ALBAZ) ; Phase de Fin : Invoquer CARTESIA de la main."
+    observer: "CARTESIA de la main dans la liste"
+    attendu: {verdict: legal}
+
+  - id: E62
+    effets: ["LULU/2"]
+    clause: "Pas envoyée ce tour : non activable."
+    depart: {main: [NADIR, ASH], cimetiere: ["LULU (au Cimetière depuis un tour précédent)"]}
+    action: "NADIR (envoyer TITAN, ajouter ALBAZ) ; Phase de Fin."
+    observer: "LULU proposée ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 15. OGRE/1 (strate b)
+  - id: E63
+    effets: ["OGRE/1"]
+    clause: "Un monstre active son effet sur le terrain : envoyer OGRE de la main ; détruire ce monstre."
+    depart: {main: [QUEM, OGRE, ASH]}
+    action: "Invocation Normale de QUEM, effet ; en réponse, OGRE (main) : détruire QUEM."
+    observer: "OGRE proposée ; QUEM détruit"
+    attendu: {verdict: legal}
+
+  - id: E64
+    effets: ["OGRE/1"]
+    clause: "Depuis le terrain."
+    depart: {main: [ALUBER, ASH], terrain: ["OGRE (posé)"]}
+    action: "Invocation Normale d'ALUBER, effet ; en réponse, OGRE (terrain) : détruire ALUBER."
+    observer: "OGRE proposée depuis le terrain"
+    attendu: {verdict: legal}
+
+  - id: E65
+    effets: ["OGRE/1"]
+    clause: "Une Magie activée depuis la main n'est pas « déjà face visible » : pas de réponse."
+    depart: {main: [NADIR, OGRE, ASH]}
+    action: "Activer NADIR ; regarder la fenêtre de réponse."
+    observer: "OGRE proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E66
+    effets: ["OGRE/1"]
+    clause: "Un effet de monstre activé dans la main n'est pas « sur le terrain » : pas de réponse."
+    depart: {main: [WHITE, OGRE, ASH]}
+    action: "Effet de WHITE en main (coût : envoyer TITAN) ; regarder la fenêtre de réponse."
+    observer: "OGRE proposée ?"
+    attendu: {verdict: illegal}
+
+  - id: E67
+    effets: ["OGRE/1"]
+    clause: "Une fois par tour : la 2e OGRE ne peut pas répondre à un autre effet de monstre sur le terrain."
+    depart: {main: [QUEM, OGRE, OGRE, CARTESIA]}
+    action: "Invocation Normale de QUEM, effet (envoyer ALBAZ) ; en réponse, 1re OGRE : détruire QUEM ; l'effet de QUEM se résout (ALBAZ au Cimetière) ; effet de CARTESIA en main (s'Invoquer, ALBAZ au Cimetière) ; effet de Fusion de CARTESIA (terrain) ; regarder la fenêtre de réponse."
+    observer: "la 2e OGRE est-elle proposée en réponse à l'effet de CARTESIA sur le terrain ?"
+    attendu: {verdict: illegal}
+  # ---------------------------------------------------------------- 16. AEON/1 (strate b)
+  - id: E68
+    effets: ["AEON/1"]
+    clause: "Invoquée par Fusion : bannir des cartes du terrain et/ou des Cimetières, jusqu'au nombre de matériels (2)."
+    depart: {main: [SPOLY, ASH], terrain: ["RIND (posé)", "GRANG (posé)"]}
+    action: "SPOLY (défausser ASH) : Fusion d'AEON avec RIND (TÉNÈBRES) + GRANG (LUMIÈRE) ; effet d'AEON : bannir RIND et GRANG du Cimetière."
+    observer: "liste des cartes bannissables ; nombre minimum et maximum"
+    attendu: {verdict: legal, note: "au plus 2 ; terrain et Cimetières, AEON comprise"}
+
+  - id: E69
+    effets: ["AEON/1"]
+    clause: "« Jusqu'à » : bannir 1 seule carte."
+    depart: {main: [SPOLY, ASH], terrain: ["RIND (posé)", "GRANG (posé)"]}
+    action: "Comme E68, en ne bannissant qu'ASH (Cimetière)."
+    observer: "1 carte acceptée"
+    attendu: {verdict: legal}
+
+  - id: E70
+    effets: ["AEON/1"]
+    clause: "Un seul effet d'« Hyperinvoked Aeon » par tour : après le 1er, pas le 2e (déclarer un Attribut)."
+    depart: {main: [SPOLY, ASH], terrain: ["RIND (posé)", "GRANG (posé)"]}
+    action: "Comme E69 ; puis tenter l'effet rapide d'AEON."
+    observer: "2e effet proposé ?"
+    attendu: {verdict: illegal, note: "la clause « 3 matériels ou plus » n'est pas réalisable avec ce deck (3 Fusions d'Attributs tous différents)"}
+
+  # ---------------------------------------------------------------- 17. CHAMPIONS/1 (strate b)
+  - id: E71
+    effets: ["CHAMPIONS/1"]
+    clause: "Invoquée par Synchro : ajouter un Magicien de Niveau 4 ou 8 ATK = DEF du Deck."
+    depart: {main: [ASH], terrain: ["IECCLESIA (posée)", "ALUBER (posé)"]}
+    action: "Invocation Synchro de CHAMPIONS (IECCLESIA + ALUBER) ; effet : ajouter CARTESIA."
+    observer: "liste"
+    attendu: {verdict: legal, choix: [IECCLESIA, QUEM, DECCLESIA, CARTESIA], note: "IECCLESIA au Cimetière (matériel) comptée aussi"}
+
+  - id: E72
+    effets: ["CHAMPIONS/1"]
+    clause: "Depuis le Cimetière."
+    depart: {main: [ASH], terrain: ["IECCLESIA (posée)", "ALUBER (posé)"], cimetiere: [CARTESIA]}
+    action: "Invocation Synchro de CHAMPIONS ; ajouter CARTESIA du Cimetière."
+    observer: "CARTESIA du Cimetière dans la liste"
+    attendu: {verdict: legal}
+
+  - id: E73
+    effets: ["CHAMPIONS/1"]
+    clause: "Invoquée autrement que par Synchro (ressuscitée) : pas d'effet."
+    depart: {main: [TFTV, ASH], terrain: ["IECCLESIA (posée)", "ALUBER (posé)"]}
+    action: "Invocation Synchro de CHAMPIONS (IECCLESIA + ALUBER), ne pas activer son effet ; effet 2 de CHAMPIONS : se cibler, la détruire (IECCLESIA au Cimetière) ; TFTV, 2e effet (IECCLESIA au Cimetière) : Invoquer Spécialement CHAMPIONS du Cimetière."
+    observer: "effet 1 de CHAMPIONS proposé après la résurrection ?"
+    attendu: {verdict: illegal}
+  # ---------------------------------------------------------------- 18. CHAMPIONS/2 (strate b)
+  - id: E74
+    effets: ["CHAMPIONS/2"]
+    clause: "Cibler 1 carte face visible ; annuler ; avec ALBAZ au Cimetière, on peut la détruire : détruire."
+    depart: {main: [ASH], terrain: ["CHAMPIONS (posée)", "ALUBER (posé)"], cimetiere: [ALBAZ]}
+    action: "Effet de CHAMPIONS : cibler ALUBER ; détruire."
+    observer: "liste des cibles ; question « détruire ? » ; ALUBER au Cimetière"
+    attendu: {verdict: legal, choix: [CHAMPIONS, ALUBER]}
+
+  - id: E75
+    effets: ["CHAMPIONS/2"]
+    clause: "Destruction facultative : refuser."
+    depart: {main: [ASH], terrain: ["CHAMPIONS (posée)", "ALUBER (posé)"], cimetiere: [ALBAZ]}
+    action: "Comme E74, mais ne pas détruire."
+    observer: "ALUBER reste"
+    attendu: {verdict: legal}
+
+  - id: E76
+    effets: ["CHAMPIONS/2"]
+    clause: "Sans « Ecclesia » ni Albaz au Cimetière : pas de destruction proposée."
+    depart: {main: [ASH], terrain: ["CHAMPIONS (posée)", "ALUBER (posé)"]}
+    action: "Effet de CHAMPIONS : cibler ALUBER."
+    observer: "question « détruire ? » proposée ?"
+    attendu: {verdict: legal, etat: "ALUBER reste, aucune question"}
+
+  - id: E77
+    effets: ["CHAMPIONS/2"]
+    clause: "WHITE au Cimetière compte comme Albaz ; un « Ecclesia » au Cimetière aussi."
+    depart: {main: [ASH], terrain: ["CHAMPIONS (posée)", "ALUBER (posé)"], cimetiere: [WHITE]}
+    action: "Effet de CHAMPIONS : cibler ALUBER ; détruire."
+    observer: "question « détruire ? » proposée"
+    attendu: {verdict: legal}
+
+  - id: E78
+    effets: ["CHAMPIONS/2"]
+    clause: "Une fois par tour."
+    depart: {main: [ASH], terrain: ["CHAMPIONS (posée)", "ALUBER (posé)"]}
+    action: "Effet de CHAMPIONS (cibler ALUBER) ; tenter de nouveau."
+    observer: "2e activation proposée ?"
+    attendu: {verdict: illegal}
+
+  # ---------------------------------------------------------------- 19. TITAN/1 (strate b)
+  - id: E79
+    effets: ["TITAN/1"]
+    clause: "Gagne 100 ATK par Niveau d'origine des matériels (ALBAZ 4 + GRANG 8 = 12 → +1200)."
+    depart: {main: [SPOLY, ASH], terrain: ["ALBAZ (posé)", "GRANG (posé)"]}
+    action: "SPOLY (défausser ASH) : Fusion de TITAN avec ALBAZ + GRANG ; lire l'ATK de TITAN."
+    observer: "ATK de TITAN"
+    attendu: {verdict: legal, etat: "TITAN 3700"}
+
+  - id: E80
+    effets: ["TITAN/1"]
+    clause: "Autres matériels (WHITE 4 + DOGMA 8 = 12) ; Niveau d'origine."
+    depart: {main: [SPOLY, ASH], terrain: ["WHITE (posé)", "DOGMA (posée)"]}
+    action: "SPOLY : Fusion de TITAN avec WHITE + DOGMA ; lire l'ATK."
+    observer: "ATK de TITAN"
+    attendu: {verdict: legal, etat: "TITAN 3700"}
+
+  - id: E81
+    effets: ["TITAN/1"]
+    clause: "Sans Invocation Fusion (TITAN posé, ou Invoqué autrement) : pas de gain."
+    depart: {terrain: ["TITAN (posé)"]}
+    action: "Lire l'ATK de TITAN."
+    observer: "ATK de TITAN"
+    attendu: {verdict: legal, etat: "TITAN 2500"}
+
+  # ---------------------------------------------------------------- 20. TITAN/2 (strate b)
+  - id: E82
+    effets: ["TITAN/2"]
+    clause: "Après son Invocation Fusion : insensible aux effets activés des autres monstres Invoqués depuis l'Extra Deck (MIRROR)."
+    depart: {main: [WHITE, SPOLY, ASH], terrain: ["CARTESIA (posée)", "RIND (posé)", "GRANG (posé)", "ALBAZ (posé)"]}
+    action: "CARTESIA : Fusion de MIRROR (WHITE main + RIND) ; SPOLY (défausser ASH) : Fusion de TITAN (ALBAZ + GRANG) ; effet de MIRROR (envoyer SANCTIFIRE) : choisir TITAN."
+    observer: "TITAN proposé ; banni ou non"
+    attendu: {verdict: legal, etat: "TITAN reste (N09 : proposé, sans effet sur lui)"}
+  - id: E83
+    effets: ["TITAN/2"]
+    clause: "Sans Invocation Fusion (posé) : pas d'insensibilité."
+    depart: {main: [ALBAZ, ASH], terrain: ["CARTESIA (posée)", "RIND (posé)", "TITAN (posé)"]}
+    action: "CARTESIA : Fusion de MIRROR (ALBAZ main + RIND) ; effet de MIRROR : bannir TITAN."
+    observer: "TITAN banni"
+    attendu: {verdict: legal}
+
+  - id: E84
+    effets: ["TITAN/2"]
+    clause: "Une Magie (TFTV) n'est pas un monstre : TITAN est détruit."
+    depart: {main: [TFTV, SPOLY, ASH], terrain: ["ALBAZ (posé)", "GRANG (posé)"]}
+    action: "SPOLY (défausser ASH) : Fusion de TITAN ; TFTV, 1er effet (envoyer SANCTIFIRE), cibler TITAN."
+    observer: "TITAN détruit"
+    attendu: {verdict: legal}
+
+  - id: E85
+    effets: ["TITAN/2"]
+    clause: "Effet activé d'un Synchro (CHAMPIONS, depuis l'Extra Deck) : sans effet sur TITAN."
+    depart: {main: [SPOLY, ASH], terrain: ["ALBAZ (posé)", "GRANG (posé)", "IECCLESIA (posée)", "ALUBER (posé)"], cimetiere: [WHITE]}
+    action: "SPOLY (défausser ASH) : Fusion de TITAN (ALBAZ + GRANG) ; Invocation Synchro de CHAMPIONS (IECCLESIA + ALUBER) ; effet de CHAMPIONS : cibler TITAN, détruire."
+    observer: "TITAN ciblable ? détruit ou non"
+    attendu: {verdict: legal, etat: "TITAN ciblable (N08), reste sur le terrain"}

@@ -91,3 +91,24 @@ Commentaire libre :
   son propre effet (+500 ATK, annulation possible).
 - **Q4, Q5, Q6, Q7** : sans effet sur les combos du tour 1 ; elles fixent une liste de choix (Q4), une nature de coût qui
   ne compte que si l'activation est annulée (Q5), ou des effets qui supposent l'adversaire (Q6, Q7).
+
+## 5. Ajout du jalon n°7 (TOK-144, 18/11) : ce que l'échantillon J1 n'a pas tranché
+
+Rien n'est envoyé (décision 0055). Une seule question nouvelle ; les trois désaccords de l'échantillon (E32, E49, E68)
+ont reçu une réponse de l'oracle et ont été corrigés côté moteur (`j1-rapport.md` § 9).
+
+| Rang | Question | Point | Effets touchés | Combos touchés (sur 10) | Pourquoi l'oracle ne tranche pas |
+|---|---|---|---|---|---|
+| 8 | Q8 | E18 | `Dogmatika Ecclesia` 2 (« un monstre Invoqué Spécialement depuis l'Extra Deck est sur le terrain ») | 0 (au tour 1, l'adversaire n'a pas de monstre) | le lanceur ne sait pas donner à un monstre adverse un historique d'invocation |
+
+**Q8 — `Dogmatika Ecclesia, the Virtuous`, condition de son Invocation depuis la main** (E18)
+Elle peut s'Invoquer Spécialement depuis la main si un monstre Invoqué Spécialement depuis l'Extra Deck est sur le
+terrain. → Un monstre de ce genre **chez l'adversaire** suffit-il ? `[ ] oui  [ ] non` — source :
+
+Ce que change la réponse : « oui » → rien (le moteur lit déjà les deux terrains) ; « non » → la condition se limite à
+notre terrain. Sans effet sur un combo du tour 1. Sans réponse, `Dogmatika Ecclesia` reste `verifiee` (la règle du
+§ 8 de `j1-rapport.md` ne la bloque pas : ses deux effets du pilote ont des situations en accord) ; ce point est le
+seul de la carte que l'oracle n'a pas pu jouer.
+
+Différence de modèle J2-a (retour d'`Ecclesia and the Dark Dragon` en Phase de Fin) : **pas une question pour un
+joueur**, l'oracle a répondu ; c'est une correction à faire côté moteur (`j2-rapport.md` § 9.3).

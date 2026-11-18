@@ -583,6 +583,18 @@ Recommandation A (ne rien changer), validée par `data-scientist-ygo`.
 - Toute règle d'adoption future : candidats et règle figés dans la docstring avant la première exécution, aux deux coupures.
 → détail complet et formulaire : `docs/journal/ban-radar-rangs-tok-120.md`, `docs/planning/2026-11-18/decisions-prises.md` (lot 22)
 
+**Score de pont et simulateur contre les banlists (TOK-132, B3, lot 26, même branche)** : `scripts/diagnose_pont_simulateur.py`
+(≈ 4 min, lecture seule, rien d'affiché ne change). Mesure : variation de la part cumulée des archétypes porteurs (≥ 50 % de
+leurs decks jouent la carte), 3 mois avant / 3 mois après ; 17 listes, 158 cartes touchées. Un ban fait baisser ses
+porteurs (−3,1 points contre des cartes de même popularité, −5,5 sans contrôles contaminés). **Le score de pont
+(`card_impact`, onglet « Impact ») va dans le sens contraire** à part des decks égale (+6,5 [+4,5 ; +8,6]) : il mesure la
+diffusion d'une carte, dont le ban déplace le moins ses porteurs. Fragmentation du simulateur : bon sens, aucun gain hors
+échantillon ; « archétypes voisins » : 31 % seulement sont des archétypes de deck, pas meilleurs qu'une liste naïve.
+Formulaire : renommer « Impact » en « Diffusion », simulateur décrit sans prévision (non appliqué).
+- **Une règle de gain doit fixer le sens attendu** : ici le « gain » hors échantillon venait d'un coefficient de signe
+  contraire à l'affirmation testée (signe ajouté après lecture, déclaré).
+→ détail complet : `docs/journal/pont-simulateur-tok-132.md`, formulaire `docs/planning/2026-11-18/decisions-prises.md` (lot 26)
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

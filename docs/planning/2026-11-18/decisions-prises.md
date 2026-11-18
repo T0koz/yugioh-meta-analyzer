@@ -89,6 +89,9 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | Lot 22 (TOK-120) | À quelle date de coupure appliquer la règle d'adoption ? | Aux deux (veille de l'entrée en vigueur, veille du contenu `content_date` du lot 21), adoption seulement si les deux passent ; candidats (`rangs_poids_ecrits`, `clogit_rangs`) et règle figés avant la première exécution. | La plus prudente ; le brief demande d'utiliser les dates du lot 21 sans abandonner la référence TOK-115. |
 | Lot 22 (TOK-120) | Pont daté : intermédiarité échantillonnée (500 sources, sans graine, notebook 03) ou exacte ? `weight = jaccard` lu comme une distance ? | Exacte ; `weight = jaccard` gardé tel quel (déclaré). | Reproductible ; dater le critère, pas en changer la définition. |
 | Lot 22 (TOK-120) | Relecture `data-scientist-ygo`. | Méthode et chiffres validés (règle d'adoption recalculée, rang médian TCG 2026-05-18 refait de zéro : 36/889) ; recommandation A ; pont à retirer au prochain changement de poids ; deux suites signalées (`card_graph_metrics` périmée, `load_usage` filtre `created` et non `uploaded` : 925 decks sur 36 917 mis en ligne après la coupure). | Corrections appliquées : vérification de Breslow partie de zéro, colonne `n_train_lists_tcg_ocg`. |
+| Lot 26 (TOK-132) | Quelle mesure de l'« impact » d'un ban ? | Variation de la part cumulée des archétypes porteurs (≥ 50 % de leurs decks jouent la carte, archétypes ≥ 5 decks), 3 mois avant la coupure contre 3 mois après l'entrée en vigueur ; listes dont les 3 mois suivants sont complets (17 sur 20). | Mesure proposée par l'audit (§ 9) ; validée par Q1 (un ban la fait baisser). |
+| Lot 26 (TOK-132) | La règle de gain (Q3) ne fixait pas le sens attendu ; le « gain » du score de pont vient d'un coefficient de signe contraire à « Impact ». | Signe des coefficients ajouté après lecture (« Q3 bis », déclaré dans le script et le journal) ; c'est lui qui tranche : pas d'impact, une mesure de diffusion. | Ne pas cacher un résultat favorable sur la forme mais contraire au sens. Leçon : fixer le signe dans toute règle future. |
+| Lot 26 (TOK-132) | Relecture `data-scientist-ygo`. | Q1 à Q3 validés (effet −3,1 et coefficient +6,5 recalculés) ; Q4 refait en variation relative avec le filtre de 5 decks des deux côtés (la version en points favorisait la liste naïve) ; variante de Q1 sans contrôles contaminés ajoutée (effet −5,5 au lieu de −3,1). | Corrections appliquées avant le commit. |
 
 ## Formulaire
 
@@ -297,6 +300,22 @@ Lot 22 (TOK-120) — fenêtre du backtest filtrée sur la date du tournoi (`crea
 [ ] Laisser tel quel, déclaré dans le journal
 Commentaire libre :
 
+Lot 26 (TOK-132) — onglet « Impact » (score de pont `n_archetypes × log(1 + decks)`)
+[x] Renommer « Impact » en « Diffusion » et écrire ce que mesure la formule : à part des decks égale, plus le score est haut, MOINS les archétypes porteurs perdent après un ban (+6,5 points par écart type [+4,5 ; +8,6], 158 cartes, 17 listes)
+[ ] Garder « Impact » (non recommandé : contredit par la mesure)
+[ ] Retirer l'onglet
+Commentaire libre :
+
+Lot 26 (TOK-132) — simulateur de ban
+[x] Le décrire comme la position de la carte dans le graphe, sans prévision ; remplacer les « archétypes voisins » (31 % seulement sont des archétypes de deck, pas meilleurs qu'une liste naïve) par les archétypes de deck qui jouent la carte, avec leur effectif
+[ ] Retirer le simulateur
+[ ] Laisser tel quel (textes déjà conformes au calcul depuis A4)
+Commentaire libre :
+
+Lot 26 (TOK-132) — suite
+[x] Relecture de la collaboratrice (cible, contrôles de Q1, Q3 bis ajouté après lecture, Q4 relatif), puis lot de textes pour appliquer les deux choix ci-dessus
+[ ] Appliquer tout de suite les textes, relecture ensuite
+Commentaire libre :
 ```
 
 ## Linear : jalons glissants 1-2-3 (18/11, décision de Thomas, note 0054)

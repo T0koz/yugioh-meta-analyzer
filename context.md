@@ -625,6 +625,23 @@ ligne `fraicheur_tables` dans `data/fetch_health.jsonl` ; `--status`. Dernière 
 - **Ne pas nommer une ligne du journal `"freshness"`** : `refresh_decks.py` relit ces lignes pour le nombre de decks.
 → détail complet (plan B si `/top-decks` disparaît) : `docs/journal/fraicheur-tables-tok-93.md`, formulaire TOK-93
 
+### ⏳ Fenêtre d'arrivée en TCG par analyse de survie (TOK-130, B1, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+Diagnostic seulement : la fenêtre affichée (75-202 jours, notebook 10) ne change pas. `scripts/build_arrival_survival.py`
+(≈ 8 s, lecture seule ; `--write` écrit deux tables nouvelles non servies, `--reference` requis sur la base du dépôt
+principal) : Kaplan-Meier par archétype, censure et entrée différée, validation à origine glissante mensuelle.
+**Critère non atteint et non testable** : 5 prévisions seulement sur 2024-2025 (85 % annoncés, 60 % observés, IC de
+l'écart [−60 ; +15]) ; 2025-2026 : 18 fenêtres justes sur 23 (78 %) pour 89 % annoncés, fenêtre actuelle 15 sur 23,
+écart non démontré (p = 0,45). Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (Jalon 2, TOK-130).
+- **Arrivée définie par les cartes** (la moitié des cartes inédites sorties en TCG), pas par le nom : 9 libellés sur 62
+  étaient déjà joués en TCG sous ce nom avant l'ancre. Le validateur (`validate_predictions.py`) juge encore par le nom.
+- **Le « 37 % jamais arrivés » ne vaut pas pour la population du notebook 10** : 42 arrivées sur 44 unités, P(jamais)
+  ≤ 6,5 %. Le défaut principal est l'échantillon (données OCG depuis janvier 2024), pas le biais du survivant.
+- **En unité archétype, la fenêtre actuelle couvre 27 sur 36 (75 %)** sur 2024-2026, 12 sur 18 sur 2026 seule
+  (hors échantillon) ; le 62-67 % de l'A2 est en unité carte.
+- La probabilité Kaplan-Meier est trop confiante d'environ 11 points : ne jamais l'afficher comme couverture.
+→ détail complet : `docs/journal/fenetre-survie-tok-130.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

@@ -390,3 +390,49 @@ fois, glissement Linear par renommage (« Fini n°N ») plutôt que détachement
 À faire par Thomas dans Linear (l'outil ne sait ni retirer un jalon d'un ticket ni supprimer un jalon) : **supprimer les
 jalons « File de nuit 16-17/11 » et « File du 18/11 (moteur de combos) »**, ce qui détache leurs tickets. L'échéance du
 13/01/2027 reste sur TOK-119.
+
+## Jalon 2 — TOK-130 (B1) : fenêtre d'arrivée en TCG par analyse de survie
+
+Journal : `docs/journal/fenetre-survie-tok-130.md` ; script `scripts/build_arrival_survival.py` (lecture seule, ≈ 8 s).
+Critère de l'audit **non atteint et non testable** : sur 2024-2025, la survie ne produit que 5 prévisions (4 cohortes ;
+données OCG à partir de janvier 2024, 8 arrivées connues seulement à mi-2025) : 85 % annoncés, 60 % observés, écart
+−25 points, IC [−60 ; +15]. Sur 2025-2026 (hors critère) : 18 fenêtres justes sur 23 (78 %) pour 89 % annoncés (trop
+confiante d'environ 11 points) ; fenêtre actuelle 75-202 : 15 sur 23 (65 %), à largeur égale ; écart non démontré
+(p = 0,45). Biais du survivant faible dans la population du notebook 10 (42 arrivées sur 44 unités). Rien d'affiché ne change.
+
+Décidé par défaut (à confirmer) :
+- arrivée définie par les cartes (la moitié des cartes inédites sorties en TCG), pas par le nom : 9 libellés sur 62
+  étaient déjà joués en TCG sous ce nom avant l'ancre ;
+- libellés qui partagent ≥ 50 % de leurs cartes inédites fusionnés en une unité (7 fusions) ;
+- ancres antérieures au 2024-03-01 écartées (données OCG à partir de janvier 2024) ;
+- minimum de 8 arrivées connues pour estimer la courbe à une origine donnée.
+
+```
+1. Fenêtre d'arrivée affichée (boutique, accueil, page d'archétype)
+[x] Garder 75-202 jours, libellé corrigé en unité archétype :
+    « arrivée dans la fenêtre pour 27 archétypes sur 36 (2024-2026) ; 12 sur 18 pour 2026 »
+[ ] Remplacer par la fenêtre de survie, libellé = couverture observée en validation
+    (« 18 fenêtres sur 23 justes, 2025-2026 »), jamais la probabilité Kaplan-Meier
+[ ] Remplacer par la fenêtre de survie avec sa probabilité Kaplan-Meier (≈ 82-89 %) : déconseillé, trop confiante d'environ 11 points
+[ ] Retirer la fenêtre
+Commentaire libre :
+
+2. Rendre le critère testable (effectif actuel : 5 prévisions sur 2024-2025)
+[x] Nouveau script d'ingestion : liste complète YGOPRODeck sans filtre format=tcg (cartes OCG seules comprises),
+    survie par archétype depuis 2015 avec censure ; avec gardien-donnees, puis relancer B1
+[ ] Attendre que les données s'accumulent (revalidation dans 6 à 12 mois)
+[ ] Abandonner la validation à ± 5 points
+Commentaire libre :
+
+3. Validateur (validate_predictions.py, arrivée par le nom)
+[x] Ticket à part : l'aligner sur l'arrivée par les cartes (moitié des cartes inédites sorties en TCG)
+[ ] Garder l'arrivée par le nom
+Commentaire libre :
+
+4. Tables tcg_arrival_survival / tcg_arrival_km (nouvelles, non servies)
+[x] Les écrire sur la base de référence (après sauvegarde) pour garder une trace datée des 3 fenêtres actuelles
+    (échéances au printemps 2027) : `python scripts/build_arrival_survival.py --write --reference`
+    (`--write --reference` depuis le dépôt principal ; sans `--reference`, le script refuse cette base)
+[ ] Ne rien écrire pour l'instant
+Commentaire libre :
+```

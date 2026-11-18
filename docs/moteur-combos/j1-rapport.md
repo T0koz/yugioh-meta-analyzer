@@ -231,3 +231,77 @@ mêmes listes que le YAML (lui-même identique à l'oracle sauf T37).
   ordre des matériels dans le libellé ; J13 : déclencheur d'`Aluber` oublié dans le script), corrigées.
 - **Relecture de l'auteur** (après les tests, non indépendante) : aucune erreur trouvée ; 13 points non tranchés par
   le texte relevés (N01 à N13).
+
+<!-- REGLE-JALON-7-DEBUT -->
+## 8. Jalon n°7 (TOK-144) : règle de comptage figée avant la comparaison
+
+> Écrite et commitée le 18/11 **avant** d'exécuter le moteur sur une seule situation de
+> `situations-echantillon-j1.yaml`. Cette section ne change plus ; une règle qui se révèle inapplicable est déclarée au
+> § 9 et le résultat y est donné selon la règle figée **et** selon la variante. Ce que la session avait déjà lu en
+> écrivant : les réponses de l'oracle (`reponses-oracle.md` § 8 et § 9), les 30 réponses J1 du lot C2 bis (§ 7), le
+> code du moteur ; **pas** le comportement du moteur sur les situations E01 à E85.
+
+**Référence.** La réponse de l'oracle (colonne « Réponse de l'oracle » du § 9.2 de `reponses-oracle.md`), jamais le
+champ `attendu` du fichier (lecture écrite avant de jouer) ni le moteur. Moteur mesuré : `moteur_combos/` tel qu'au
+commit `b463f13` (règles et cartes) ; seule la **traduction** des situations en décisions est écrite par cette session
+(module de scénarios séparé). Le taux se mesure sur ce moteur ; toute correction vient après, et le taux après
+correction est donné à part, « après correction, non revalidé par l'oracle ».
+
+**Traduction.** Chaque situation devient une déclaration et une suite de réponses aux décisions du moteur, comme
+`SCENARIOS_J1`. Conventions du lanceur de l'oracle reprises : position Attaque, Zone Monstre Extra de gauche pour un
+monstre de l'Extra Deck, plus basse zone principale libre. « Posé » = placé sans historique d'invocation. Une erreur de
+traduction (script qui ne dit pas l'action écrite) se corrige ; chaque correction faite après une première exécution
+est listée au § 9 avec sa raison, et ne touche jamais au moteur ni à la référence.
+
+**Ce qu'on compare, par situation.** Chaque élément écrit dans la réponse de l'oracle : action ou effet proposé / non
+proposé ; listes de choix (comparées comme **ensembles de noms distincts** : multiplicité « ×n » ignorée ; la zone
+d'origine comparée quand l'oracle l'écrit) ; question posée ou non ; état d'arrivée écrit (carte détruite, bannie,
+restée, Invoquée ; ATK). Un élément que l'oracle n'écrit pas n'est pas comparé.
+
+**Trois issues par situation.**
+1. **Accord** : tous les éléments écrits par l'oracle sont identiques côté moteur.
+2. **Désaccord avéré** : au moins un élément diffère, y compris une réponse « non couvert » du moteur ou une erreur du
+   moteur pendant l'exécution. Un désaccord que la session croit dû à l'oracle (script, réglage) reste **avéré** dans le
+   chiffre principal ; il est signalé comme « litige » et donné à part, sans changer le compte.
+3. **Non tranché par l'oracle** : (a) la situation est déclarée non testable par l'oracle (E18) ; (b) l'élément en
+   désaccord porte sur une clause dont le texte de la base de l'oracle diffère du texte TCG par le sens (liste du § 7.4
+   de `reponses-oracle.md`) ; (c) le moteur ne peut pas représenter le départ (limite du modèle, déclarée situation par
+   situation) — ce dernier cas est listé à part, comme défaut de couverture à corriger.
+
+**Unité : l'effet tiré** (20 effets, graine 20260118, `echantillon-j1.md` § 1), pas la situation. Un effet est **en
+erreur** si au moins une de ses situations est en désaccord avéré ; **juste** sinon, s'il a au moins une situation en
+accord ; **non tranché** si toutes ses situations sont non tranchées (il sort alors du dénominateur).
+
+**Deux taux, toujours donnés ensemble.**
+- **Principal** : effets en erreur / effets tranchés (non tranchés exclus du dénominateur).
+- **Pessimiste** : un effet qui a au moins une situation non tranchée et aucun désaccord avéré compte comme **erreur** ;
+  dénominateur 20.
+- Pour chacun : intervalle de Wilson à 95 % sur l'échantillon poolé, et estimation ponctuelle pondérée par strate
+  (30/57 pour la strate a, 27/57 pour la strate b), comme au § 4. Nombre de cartes distinctes rappelé (16).
+
+**Critère J1 (fixé au lot C2, inchangé).** J1 atteint si la **borne haute de Wilson à 95 % du taux principal ≤ 20 %**.
+Repère : 0 erreur sur 20 → 16,1 % ; 1 erreur sur 20 → 24,9 %. Si la variante pessimiste donne un autre verdict, les
+deux verdicts sont écrits côte à côte.
+
+**Second compte, séparé (30 situations J1, `situations-j1.yaml`).** Unité : effet du pilote exercé par au moins une
+situation J1 ; même définition de l'accord, du désaccord avéré et du non tranché (R23 = texte, donc non tranché ; N04 =
+désaccord avéré, litige signalé). Deux valeurs : moteur du lot C2 (comparé par l'oracle au lot C2 bis) et moteur
+actuel (après les corrections du lot C3). Ces réponses étaient connues avant d'écrire cette règle : compte descriptif,
+jamais additionné à l'échantillon ni utilisé pour le critère J1.
+
+**Critère J2 : celui du § 0 de `j2-rapport.md`, tel quel** (largeur sans cible, 60 s, profondeur 16, filtres D4 ;
+« retrouvé » = cible remplie et jalons en sous-suite ; G6 compté tel que figé ; G1-G5 et G6-G10 sur deux lignes).
+S'ajoute la condition du jalon n°7 : une séquence ne compte retrouvée que si l'oracle la rejoue **légale pas à pas** et
+avec le **même plateau final** ; un pas illégal = combo non retrouvé. Le § 0 ne fixe pas de seuil chiffré : le verdict
+(atteint / sous réserve / non atteint) est proposé au formulaire avec les chiffres, sans en inventer un. Les résultats
+du rejeu (`reponses-oracle.md` § 8) étaient lus avant d'écrire cette règle.
+
+**Statut `verifiee` (dans `data/combos.db` seulement).** Une carte passe en `verifiee` (`verified_by = oracle`) si
+**chaque effet du pilote** (résolution écrite) est exercé (résolu au moins une fois, `regles.EXERCES`) par au moins une
+situation en accord avec l'oracle, et si aucune situation jouée par l'oracle qui l'exerce n'est en désaccord non
+corrigé. Situations prises en compte : jeu de tests (lot 17, rejouées en entier seulement : celles marquées `*` ou
+non rejouées ne comptent pas), situations J1 (lot C2 bis), échantillon (jalon n°7) ; un désaccord du lot C2 bis corrigé
+au lot C3 ne bloque pas. Ne passent pas : une carte sans effet du pilote (rien d'exercé) ; une carte dont un effet
+dépend d'une question résiduelle ouverte (`questions-residuelles.md`, décision 0055) ; une carte dont un effet n'est
+exercé que par une situation non tranchée.
+<!-- REGLE-JALON-7-FIN -->

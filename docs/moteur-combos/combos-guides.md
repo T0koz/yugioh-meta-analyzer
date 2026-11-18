@@ -161,8 +161,15 @@ depuis le Cimetière ; (4) effet de Mercourier banni ; (5) Invocation Spéciale 
 Spéciale de Dogmatika Ecclesia ; (7) Invocation Spéciale de Quem par Titaniklad ; (8) activation de The Fallen & The
 Virtuous ; (9) Invocation Spéciale de Cartesia depuis le Cimetière.
 
-Cible : White, Dogmatika Ecclesia, Quem et Cartesia sur le terrain ; Rindbrumm, Titaniklad et Cocatorium au Cimetière ;
-Mercourier banni.
+Cible : White, Dogmatika Ecclesia, Quem et Cartesia sur le terrain ; Rindbrumm et Titaniklad au Cimetière ; Mercourier
+banni.
+
+> **Correction du 18/11 (commit séparé, après le commit qui fige cette section)** : la version figée ajoutait
+> « Cocatorium au Cimetière ». Le guide ne dit pas où va Cocatorium détruit ; c'était une inférence de la transcription,
+> fausse : Cocatorium Invoqué par son propre effet est banni quand il quitte le terrain (texte de la carte ; réponse de
+> l'oracle N06 pour le cas voisin du matériel de Fusion). Trouvée en exécutant G6 : cible figée inatteignable (recherche
+> dirigée, 120 s, 31 677 états, aucun état). La condition est **retirée** (le lieu final de Cocatorium n'est pas fixé),
+> pas remplacée. Le résultat de G6 est donné dans les deux versions (`j2-rapport.md`).
 
 ### G7 — Aluber + Mulcharmy Fuwalos, vers Mirrorjade (combatant 17/06 ; carte révélée : SirRichard Alt 23/06)
 1. Invocation Normale d'Aluber ; Aluber ajoute Branded in High Spirits.

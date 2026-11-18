@@ -26,7 +26,7 @@ from moteur_combos.catalogue import construire_catalogue  # noqa: E402
 from moteur_combos.deck import charger_deck, lire_textes, tous_les_noms  # noqa: E402
 from moteur_combos import regles  # noqa: E402
 from moteur_combos.echantillon_oracle import (  # noqa: E402
-    comparer_tout, compter, second_compte, situations_des_lots_precedents, statuts_verifiee,
+    RESERVES_HORS_REGLE, comparer_tout, compter, second_compte, situations_des_lots_precedents, statuts_verifiee,
 )
 from moteur_combos.harnais import couverture  # noqa: E402
 
@@ -87,8 +87,13 @@ def main(argv=None) -> int:
     print(f"\nCartes qui remplissent la règle `verifiee` : {len(ok)} sur {len(st)}")
     for n, (v, raisons) in st.items():
         print(f"  {'✓' if v else '✗'} {n}" + ("" if v else " — " + " ; ".join(raisons)))
+    a_ecrire = [n for n in ok if n not in RESERVES_HORS_REGLE]
+    for n in ok:
+        if n in RESERVES_HORS_REGLE:
+            print(f"  réserve déclarée, non passée : {n} — {RESERVES_HORS_REGLE[n]}")
+    print(f"Cartes à passer en `verifiee` (règle figée moins les réserves déclarées) : {len(a_ecrire)}")
     if args.ecrire_statuts:
-        ecrire_statuts(ok)
+        ecrire_statuts(a_ecrire)
     if args.json:
         args.json.write_text(json.dumps([{"id": c.id, "effets": c.effets, "issue": c.issue, "ecarts": c.ecarts,
                                           "releve": {k: sorted(v) if isinstance(v, set) else v

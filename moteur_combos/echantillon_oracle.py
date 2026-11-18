@@ -1067,6 +1067,15 @@ QUESTIONS_OUVERTES = {
 }
 
 
+# Variante déclarée (§ 9 de `j1-rapport.md`) : cartes qui remplissent la règle figée mais que la session ne passe pas en
+# `verifiee`, à cause d'un écart que la règle n'avait pas prévu (« seulement » : la règle est nécessaire, pas suffisante).
+RESERVES_HORS_REGLE = {
+    EDD: "J2-a (reponses-oracle.md § 8.1) : le moteur fait revenir la carte au passage en Phase de Fin ; l'oracle en "
+         "fait un effet obligatoire de Phase de Fin dont le joueur choisit le moment (liste d'options plus courte, "
+         "zones différentes possibles)",
+}
+
+
 def situations_des_lots_precedents(cat, deck):
     """(id, issue, effets exercés) des situations du jeu de tests et des situations J1, avec le moteur actuel.
     Jeu de tests : seules les situations rejouées en entier par l'oracle et conformes au moteur comptent."""

@@ -47,10 +47,10 @@ export function BanSimulatorView({
         eyebrow="Ban Center · Simulateur"
         title={
           <>
-            Le graphe de <span className="whitespace-nowrap">co-occurrences</span> <Em>sans</Em> une carte.
+            La <Em>position</Em> d’une carte dans le graphe de <span className="whitespace-nowrap">co-occurrences</span>.
           </>
         }
-        intro="Effet du retrait d’une carte sur le graphe de co-occurrences : archétypes touchés, position de pont, perte de cohésion."
+        intro="Estimation de l’effet d’un ban à partir de la position de la carte dans le graphe de co-occurrences déjà calculé : archétypes de ses 15 voisines les plus proches, score de pont, centralité de pont rapportée à la carte la plus centrale. Le graphe n’est pas recalculé sans la carte."
       >
         {tabs}
       </PageHero>
@@ -107,15 +107,15 @@ export function BanSimulatorView({
               { value: fmtNum(result.bridge_score), label: "Score de pont" },
               {
                 value: fmtPct(fragmentation * 100, 0),
-                label: community_id >= 0 ? `Fragmentation · communauté ${community_id}` : "Fragmentation · communauté inconnue",
+                label: community_id >= 0 ? `Centralité de pont, part du maximum · communauté ${community_id}` : "Centralité de pont, part du maximum · communauté inconnue",
               },
-              { value: fmtNum(result.affected_archetypes.length), label: "Archétypes touchés" },
+              { value: fmtNum(result.affected_archetypes.length), label: "Archétypes voisins" },
             ]}
           />
 
           {result.affected_archetypes.length > 0 && (
             <div className="mt-8">
-              <p className="mb-3 font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">Archétypes touchés</p>
+              <p className="mb-3 font-mono text-[11px] tracking-[0.08em] text-muted-text uppercase">Archétypes des 15 cartes voisines et archétype porteur</p>
               <div className="flex flex-wrap gap-2">
                 {result.affected_archetypes.map((arch) => (
                   <span key={arch} className="rounded-[4px] border border-line-2 px-2.5 py-1 font-mono text-[12px] text-soft">
@@ -128,8 +128,10 @@ export function BanSimulatorView({
           <DataFooter
             source="graphe de co-occurrences des decklists de tournoi, yugiohmeta.com"
             date="date de calcul non enregistrée dans la base servie"
-            uncertainty="aucun intervalle : la simulation recalcule le graphe sans la carte, elle ne prévoit pas ce que joueraient les joueurs"
-          />
+            uncertainty="aucun intervalle : estimation à partir de la position de la carte dans le graphe déjà calculé, qui n’est pas recalculé sans elle ; jamais confrontée à un ban réel ; elle ne prévoit pas ce que joueraient les joueurs"
+          >
+            communauté : la première dont les archétypes principaux contiennent le nom de l’archétype porteur
+          </DataFooter>
         </section>
       )}
     </>

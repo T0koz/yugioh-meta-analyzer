@@ -38,7 +38,7 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 | Jalon | Tickets (charge) | Statut | Sessions |
 |---|---|---|---|
 | 1 (n°5) | Moteur, côté moteur (sans oracle) : TOK-139 transcrire 5 combos de guides, figés avant exécution (2), TOK-140 exécuter les 10 combos et exporter pour l'oracle (2), TOK-141 lot de questions résiduelles, non envoyé (1) | en cours depuis le 18/11 | session `jalon-5` (lancée le 18/11, signal n°4 déjà posé) |
-| 2 (n°6) | Moteur, côté oracle (session isolée, ne lit pas `moteur_combos/`) : TOK-142 rejouer les séquences J2 (2), TOK-143 taux d'erreur J1 sur l'échantillon (2) | composé | à armer au prochain message de Thomas |
+| 2 (n°6) | Moteur, côté oracle (session isolée, ne lit pas `moteur_combos/`) : TOK-142 rejouer les séquences J2 (2), TOK-143 taux d'erreur J1 sur l'échantillon (2) | armé le 18/11 | session `jalon-6` (attend `jalon n°5 fini` ; isolée : ne lit jamais `moteur_combos/`) |
 | 3 (n°7) | TOK-144 verdicts J1 et J2 contre l'oracle, statuts `verifiee` (2) | composé | |
 
 Décision 0055 (18/11) : plus de juge humain sauf exception ; l'oracle valide (`verifiee` = accord avec l'oracle) ; côté moteur et
@@ -97,6 +97,7 @@ ce que contient déjà `claude/moteur-18-11` (lots 16, 17, 18, C1, C2, C2 bis, C
 | 15 (étape 2) + 15a | Demande explicite de Thomas (17/11) : lancer 15a dès qu'un créneau se libère, deux sessions maximum ; l'étape 2 n'écrit pas le verdict de l'historique | oui (autorisation explicite, deux sessions) |
 | j1-tok129-93 + jalon-2 (18/11) | Demande de Thomas : sessions lancées sans l'attendre (décision 0054) ; jalon-2 attend passivement le commit `jalon n°1 fini` (Monitor), ne touche aucun fichier avant | oui (deux sessions, la seconde passive) |
 | jalon-2 + jalon-3 (18/11) | Armement d'avance (décision 0054, feu vert de Thomas) : jalon-3 attend passivement `jalon n°2 fini` (Monitor) | oui (deux sessions, la seconde passive) |
+| jalon-5 + jalon-6 (18/11) | Armement d'avance (décision 0054, feu vert de Thomas) : jalon-6 attend passivement `jalon n°5 fini` (Monitor) | oui (deux sessions, la seconde passive) |
 
 Règle appliquée à partir du 17/11 (précision de Thomas) : un lot à la fois ; une deuxième session seulement pendant une attente longue et passive de la première, sur d'autres fichiers ; jamais plus de deux.
 

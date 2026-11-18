@@ -21,6 +21,26 @@
       ],
       "port": 8000,
       "cwd": "backend"
+    },
+    {
+      "name": "backend-serving",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "ROOT=\"$(git rev-parse --path-format=absolute --git-common-dir)/..\"; YGO_DB_PATH=\"$ROOT/data/serving.db\" exec \"$ROOT/.venv/bin/uvicorn\" app.main:app --port 8000"
+      ],
+      "port": 8000,
+      "cwd": "backend"
+    },
+    {
+      "name": "frontend-prod",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "npm run build && exec npx next start -p 3100"
+      ],
+      "port": 3100,
+      "cwd": "frontend"
     }
   ]
 }

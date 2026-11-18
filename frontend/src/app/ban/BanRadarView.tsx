@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum, fmtPct } from "@/lib/format";
 import { SITE_FACTS } from "@/lib/site-facts";
@@ -109,6 +110,8 @@ function RadarRow({ entry, rank }: { entry: BanRadarEntry; rank: number }) {
 
 export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React.ReactNode }) {
   const { data, as_of, n_decks_window } = await api.banRadar({ limit: 50, kind: apiKind(view) });
+  // Verdict TOK-115 (validé le 17/11), mêmes chiffres que l’onglet Historique (table ban_backtest_lists).
+  const [tcg, ocg] = SITE_FACTS.banTop25;
 
   return (
     <>
@@ -116,7 +119,7 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
         eyebrow="Ban Center · Radar"
         title={
           <>
-            Qui sera <Em>banni</Em> ensuite ?
+            Les cartes qui ressemblent le plus aux cartes déjà <Em>bannies</Em>.
           </>
         }
         aside={
@@ -126,39 +129,25 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
             {fmtNum(n_decks_window)} decks · 6 mois
           </>
         }
-        intro="Les cartes les plus exposées à la prochaine banlist TCG, notées sur six critères."
+        intro={`Cartes TCG notées de 0 à 100 sur six critères, d’après ${fmtNum(n_decks_window)} decks de tournoi des 6 derniers mois ; les ${fmtNum(data.length)} premières sont affichées.`}
       >
         {tabs}
       </PageHero>
 
-      <Explainer label="Comment lire ce score ?" title="Lecture du score">
+      <Explainer label="Lecture du score" title="Lecture du score">
         <p>
-          C’est un score de <strong className="font-medium text-text">risque</strong>, pas une probabilité : il
-          classe les cartes par ressemblance au profil de celles que Konami a historiquement touchées. Il ne dit pas
-          « X % de chances d’être bannie ».
+          Score de <strong className="font-medium text-text">risque</strong>, pas une probabilité : il classe les
+          cartes par ressemblance au profil des cartes déjà touchées par Konami.
         </p>
-        <p>Rejoué la veille des banlists passées (listes dont la fenêtre compte au moins 600 decks : dix en TCG, dix en OCG) :</p>
-        <ul className="grid gap-1.5">
-          <li>
-            <strong className="font-medium text-text">TCG, 18 mai 2026</strong> : rang médian 84 sur 889 cartes notées
-            pour les cartes réellement touchées (le hasard donnerait environ 445).
-          </li>
-          <li>
-            <strong className="font-medium text-text">OCG, 1er juillet 2026</strong> : rang médian 19 sur 1 236. Le
-            score n’a jamais été calibré sur l’OCG : c’est un test hors distribution, et il y réussit mieux qu’en TCG.
-          </li>
-          <li>
-            <strong className="font-medium text-text">TCG, 21 septembre et 19 octobre 2026</strong> : les deux listes
-            les plus récentes sont mauvaises (rang médian 206 sur 981, puis 308 sur 905, proche du hasard). Le haut du
-            classement tient, mais la liste d’octobre touche 43 cartes dont beaucoup de marginales, et le méta
-            Genesys, exclu des données, échappe au score.
-          </li>
-        </ul>
-        <p>Résultats mitigés selon les listes : c’est encourageant, ce n’est pas une validation.</p>
         <p>
-          Les <strong className="font-medium text-text">staples génériques</strong> trustent le haut du classement complet parce
-          qu’elles sont jouées partout à 3 exemplaires, mais Konami frappe surtout les pièces de moteur des decks qui
-          gagnent. La page s’ouvre donc sur les « Pièces d’archétype » ; les staples ont leur propre vue.
+          {`Sur les ${tcg.lists} banlists TCG ${tcg.periodFrom}, ${tcg.radar} cartes touchées dans le top 25 de la veille (sur ${tcg.lists * 25} places), contre ${tcg.staples} pour le classement par part des decks ; écart non établi (${tcg.better} listes pour, ${tcg.worse} contre, ${tcg.lists - tcg.better - tcg.worse} égalités). Rang médian meilleur sur ${tcg.medianBetter} listes sur ${tcg.lists}. En OCG : ${ocg.radar} contre ${ocg.staples} (${ocg.better} listes sur ${ocg.lists}), rang médian meilleur sur ${ocg.medianBetter} listes sur ${ocg.lists}. Liste par liste : onglet `}
+          <Link href="/ban?tab=historique" className="text-signal underline-offset-4 hover:underline">
+            Historique
+          </Link>
+          .
+        </p>
+        <p>
+          {`Sur les ${SITE_FACTS.banBacktestLists} banlists TCG rejouées, ${SITE_FACTS.banTop10HitsGeneric} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre ${SITE_FACTS.banTop10HitsArchetype} pour les pièces d’archétype : la page s’ouvre sur les pièces d’archétype.`}
         </p>
         <p>La barre sous chaque carte décompose le score : un segment par critère, en points sur 100.</p>
         <dl className="grid gap-1 font-mono text-[12px]">
@@ -178,9 +167,9 @@ export async function BanRadarView({ view, tabs }: { view: KindView; tabs: React
 
       {view !== "archetype" && (
         <div className="mb-4 max-w-[72ch]">
-          <Callout title="Un score élevé ne suffit pas pour une staple">
+          <Callout title="Staples génériques et restrictions">
             <p>
-              {`Sur les ${SITE_FACTS.banBacktestLists} dernières banlists TCG rejouées, ${SITE_FACTS.banTop10HitsGeneric} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre ${SITE_FACTS.banTop10HitsArchetype} sur 100 pour les pièces d’archétype. Ash Blossom, première à chaque fois, n’a jamais été touchée.`}
+              {`Sur les ${SITE_FACTS.banBacktestLists} dernières banlists TCG rejouées, ${SITE_FACTS.banTop10HitsGeneric} des 100 places du top 10 des staples génériques ont été suivies d’une restriction, contre ${SITE_FACTS.banTop10HitsArchetype} sur 100 pour les pièces d’archétype. Ash Blossom, première des staples sur les ${SITE_FACTS.banBacktestLists} listes, n’a été touchée par aucune.`}
             </p>
           </Callout>
         </div>

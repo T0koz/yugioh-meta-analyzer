@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { fmtDate, fmtMonthRange, fmtRank } from "@/lib/format";
+import { SITE_FACTS } from "@/lib/site-facts";
 import { Tag } from "@/components/ds/tags";
 import type { BuyLabel, SignalLabelRule } from "@/types";
 
@@ -22,6 +23,11 @@ export const LABEL_TONE: Record<BuyLabel, "strong" | "outline" | "neutral"> = {
   Modéré: "outline",
   Faible: "neutral",
 };
+
+// Couverture hors échantillon de la fenêtre (audit de rigueur, A2) : « 67 % des cartes en 2024, 62 % en 2025 ».
+export const ARRIVAL_COVERAGE = SITE_FACTS.arrivalCoverage
+  .map((c, i) => `${c.pct} %${i === 0 ? " des cartes" : ""} en ${c.year}`)
+  .join(", ");
 
 const LABEL = "font-mono text-[12px] leading-none text-muted-text tabular-nums";
 
@@ -80,7 +86,7 @@ export function ArrivalTimeline({
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span aria-hidden className="h-2 w-5 rounded-[2px] bg-cat-2/60" />
-          arrivée en TCG, 8 fois sur 10 par le passé
+          arrivée en TCG : délai de 8 cartes sur 10 parmi celles sorties en TCG ; couverture vérifiée : {ARRIVAL_COVERAGE}
         </span>
         {computedAt && (
           <span className="inline-flex items-center gap-1.5">
@@ -126,10 +132,10 @@ export function ArrivalTimeline({
                 <div
                   className="absolute top-1/2 flex h-4 -translate-y-1/2 items-center justify-center rounded-[3px] bg-cat-2/60"
                   style={{ left: `${x(row.windowStart)}%`, width: `${x(row.windowEnd) - x(row.windowStart)}%` }}
-                  title={`Arrivée en TCG estimée : ${fmtMonthRange(row.windowStart, row.windowEnd)}, 8 fois sur 10 par le passé`}
+                  title={`Arrivée en TCG estimée : ${fmtMonthRange(row.windowStart, row.windowEnd)} ; couverture vérifiée : ${ARRIVAL_COVERAGE}`}
                 >
                   <span className="sr-only">
-                    Arrivée en TCG estimée de {fmtDate(row.windowStart)} à {fmtDate(row.windowEnd)}, 8 fois sur 10 par le passé
+                    Arrivée en TCG estimée de {fmtDate(row.windowStart)} à {fmtDate(row.windowEnd)} ; couverture vérifiée : {ARRIVAL_COVERAGE}
                   </span>
                 </div>
               ) : (

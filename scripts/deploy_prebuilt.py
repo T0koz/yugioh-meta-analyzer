@@ -154,6 +154,17 @@ def check_database(c: Checks, copy: bool) -> None:
         c.ok("serving.db plus récente que yugioh.db")
     else:
         c.warn("yugioh.db introuvable : fraîcheur non vérifiée")
+    # TOK-93 : fraîcheur table par table (dates de référence lues dans yugioh.db), sans appel réseau ni journal.
+    ref = ["--reference", str(source)] if source.exists() else []
+    fresh = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_freshness.py"), "--db", str(serving),
+                            *ref, "--sans-endpoint", "--sans-journal"],
+                           cwd=ROOT, capture_output=True, text=True)
+    if fresh.returncode == 0:
+        c.ok("aucune table servie périmée (check_freshness.py)")
+    else:
+        lines = [l.strip() for l in fresh.stdout.splitlines() if l.lstrip().startswith("✗")]
+        c.fail("table servie périmée : " + ("; ".join(lines) or fresh.stdout[-300:] + fresh.stderr[-300:]),
+               f"python scripts/check_freshness.py --db {serving}")
     age = (datetime.now() - stamp).days
     if age > 8:
         c.warn(f"serving.db a {age} jours : le job du lundi a-t-il tourné ?")

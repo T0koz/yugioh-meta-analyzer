@@ -3,7 +3,6 @@ import { api } from "@/lib/api";
 import { fmtMonthRange, fmtMonthShort, fmtNum } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
-import { SITE_FACTS } from "@/lib/site-facts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { MethodNote } from "@/components/ds/explain";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -24,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TierListPage() {
-  const { data, window_start, window_end, n_decks } = await api.tierList();
+  const { data, window_start, window_end, n_decks, tier_thresholds, tier_min_decks } = await api.tierList();
   // La fenêtre cumule les mois récents jusqu'à 300 decks : un ou plusieurs mois.
   const period =
     window_start === window_end
@@ -41,37 +40,36 @@ export default async function TierListPage() {
             eyebrow={`Tier list · TCG · ${period} · ${fmtNum(n_decks)} decks`}
             title={
               <>
-                Ce que joue la méta, <Em>maintenant</Em>.
+                Les archétypes TCG classés par <Em>part</Em> des decks de tournoi.
               </>
             }
             intro={
               <>
-                Classement calculé sur nos decklists de tournoi TCG. Tier
+                {`${fmtNum(data.length)} archétypes classés sur ${fmtNum(n_decks)} decklists de tournoi TCG, ${period} (${DECK_SOURCE}). Tier`}
                 <InfoTooltip term="Tier" text="Niveau de l’archétype selon la part des decks de tournoi qui le jouent." />{" "}
-                selon la part de méta, tendance par rapport à la période précédente.
+                selon la part des decks, tendance par rapport à la fenêtre précédente.
               </>
             }
           >
             <StatBand
               stats={[
-                { value: fmtNum(SITE_FACTS.decklists), label: "Decklists analysées" },
-                { value: fmtNum(SITE_FACTS.cardsTracked), label: "Cartes suivies" },
-                { value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 2), label: "Corrélation OCG → TCG" },
-                { value: SITE_FACTS.ocgTcgLagRange, label: "Fenêtre du signal sur le TCG" },
+                { value: fmtNum(n_decks), label: "Decks de la fenêtre" },
+                { value: fmtNum(data.length), label: "Archétypes classés" },
               ]}
             />
           </PageHero>
 
-          <TierList data={data} nDecks={n_decks} />
+          <TierList data={data} nDecks={n_decks} thresholds={tier_thresholds} minDecks={tier_min_decks} />
           <DataFooter
             source="decklists de tournoi TCG, yugiohmeta.com"
             date={period}
             sample={`${fmtNum(n_decks)} decks, ${fmtNum(data.length)} archétypes`}
-            uncertainty="barre : intervalle à 95 % de la part, point : part observée ; tendance affichée seulement si l’écart dépasse le bruit d’échantillonnage"
+            uncertainty="barre : intervalle à 95 % de la part, point : part observée ; « limite » : l’intervalle contient un seuil de tier ; tendance affichée seulement si l’écart résiste à la correction pour comparaisons multiples"
           />
           <MethodNote anchor="tier-list">
             <p>Tier : T0 à partir de 40 % des decks de la fenêtre, T1 à partir de 15 %, T2 à partir de 7 %, T3 à partir de 3 % ; Rogue en dessous ou sous 5 decks.</p>
-            <p>Sur une soixantaine d’archétypes comparés, deux ou trois tendances peuvent être dues au hasard.</p>
+            <p>Seuils ronds, fixés à la main. « Limite » : l’intervalle à 95 % de la part contient un seuil, le tier pourrait être celui d’à côté.</p>
+            <p>Tendance : écart avec la fenêtre précédente testé archétype par archétype, puis corrigé pour le nombre de tests ; en moyenne, au plus 5 % des tendances affichées seraient dues au hasard.</p>
           </MethodNote>
         </Page>
       </PageTransition>

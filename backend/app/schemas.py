@@ -20,12 +20,21 @@ class TierEntry(BaseModel):
     image_url: Optional[str] = None
 
 
+class TierThreshold(BaseModel):
+    tier: str
+    share: float  # part minimale des decks de la fenêtre
+
+
 class TierListResponse(BaseModel):
     data: list[TierEntry]
     # Fenêtre de calcul : mois « AAAA-MM » du premier et du dernier mois cumulés.
     window_start: str
     window_end: str
     n_decks: int
+    # Lot 20 (A8) : seuils de tier (app/tiering.py) pour que le front marque « à la limite » un archétype
+    # dont l'intervalle de Wilson (calculé côté front, lib/wilson.ts) chevauche un seuil.
+    tier_thresholds: list[TierThreshold] = []
+    tier_min_decks: Optional[int] = None
 
 
 class EvolutionPoint(BaseModel):
@@ -51,14 +60,24 @@ class PredictionEntry(BaseModel):
     predicted: float
     direction: Trend
     image_url: Optional[str] = None
+    # Intervalle de prévision (TOK-131, conformité par terciles de niveau, même échelle que `predicted`) :
+    # NULL tant que `meta_prediction_intervals` n'est pas dans la base servie.
+    interval_lo: Optional[float] = None
+    interval_hi: Optional[float] = None
 
 
 class PredictionsResponse(BaseModel):
     data: list[PredictionEntry]
     model: str
-    # Mois observé (« AAAA-MM ») : la prévision porte sur le mois suivant.
+    # Dernier mois complet observé (« AAAA-MM ») : la prévision porte sur le mois suivant, qui est en
+    # général le mois en cours au moment du calcul, déjà en partie relevé (audit de rigueur, A6).
     data_month: Optional[str] = None
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
+    # Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse » (lot 20).
+    direction_threshold: Optional[float] = None
+    # Niveau visé (0,8) et méthode des intervalles (TOK-131) ; NULL sans table d'intervalles.
+    interval_level: Optional[float] = None
+    interval_method: Optional[str] = None
 
 
 class BoutiqueSignal(BaseModel):
@@ -146,6 +165,12 @@ class EarlySignal(BaseModel):
 class EarlySignalsResponse(BaseModel):
     data: list[EarlySignal]
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
+    # Lot 20 (A1) : date de référence du calcul (dernier deck TCG relevé). None sur une base antérieure.
+    as_of: Optional[str] = None
+    # Nombre de cartes notées (la réponse n'en sert que les 50 premières) et, parmi elles, celles dont
+    # la proximité de texte avec les cartes de la méta est positive (0 : le terme ne pèse rien).
+    cards_scored: Optional[int] = None
+    text_signal_cards: Optional[int] = None
 
 
 class CommunityImpact(BaseModel):
@@ -366,6 +391,10 @@ class ArchetypeResponse(BaseModel):
     tcg: Optional[ArchetypeTcg] = None
     # Un point par mois, du premier mois où l'archétype apparaît au dernier mois de la base.
     history: list[ArchetypeMonth] = []
+    # Même chose en OCG (`meta_scores_ocg`, TOK-116) ; vide si l'archétype n'y apparaît pas.
+    ocg_history: list[ArchetypeMonth] = []
+    # Date de calcul de la chaîne OCG (`ocg_archetype_scores.computed_at`, notebook 10) ; NULL si inconnue.
+    ocg_history_computed_at: Optional[str] = None
     # NULL si aucune carte suivie n'a cet archétype pour deck d'attache.
     key_cards: Optional[ArchetypeKeyCards] = None
     ocg: Optional[ArchetypeOcg] = None

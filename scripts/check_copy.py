@@ -14,8 +14,9 @@ littérales qui ressemblent à une phrase (lettre + espace, ou lettre accentuée
 imports, classes CSS, adresses et noms de variables sont écartés. L'extraction est heuristique :
 un faux positif se déclare dans `ALLOW` (fichier + extrait exact), jamais en affaiblissant une règle.
 
-Branché dans `scripts/check.py` en étape **non bloquante** tant que les textes du lot 16 ne sont
-pas appliqués ; il passera en `--strict` ensuite.
+Branché dans `scripts/check.py` en étape **bloquante** (`--strict`) depuis l'application des textes
+du lot 16 (2026-11-18). Le titre de l'accueil (tableau de mots `TITLE` de `app/page.tsx`) échappe à
+l'extracteur : à relire à la main.
 
 Bibliothèque standard uniquement (tourne sans venv ni node_modules).
 """

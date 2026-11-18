@@ -206,6 +206,71 @@ Collaboratrice data scientist qui pousse sur `main` sans revue, dépôt public :
 Projet distinct (`docs/moteur-combos/`), pas de code de moteur. `scripts/fetch_new_cards.py` ajoute les cartes absentes sans réécrire les existantes ; garde de nom obligatoire avant tout insert dans `cards`.
 → détail complet : `docs/journal/moteur-combos.md`
 
+**Lot 18, fondations du moteur (2026-11-18, branche `claude/lot18-fondations-moteur-dab1df`, non fusionnée)** : paquet
+`moteur_combos/` (état, schéma, chargement du deck, harnais), base à part `data/combos.db` (jamais `yugioh.db`, lue en
+`mode=ro`). Commande : `python scripts/combos_harnais.py` (`--detail`). 72 départs construits (48 complets, 24 avec
+mémoire en texte libre), classement 54 « règles confirmées » / 6 « un seul avis » / 12 « non exécutable sans règles ».
+**Aucune règle de jeu codée.** Horloge de la règle d'arrêt ouverte : J2 avant le 13/01/2027 (décision 0053).
+- **Isolement de l'oracle** (TOK-86, AGPL) : ne jamais lire son code ni `~/code/oracle-ignis/` ; seul
+  `docs/moteur-combos/reponses-oracle.md` (données) est lisible.
+- **Le texte des cartes vit dans `combos.db`** (copie locale, ignorée par Git) ; un texte changé remet la carte à
+  `non_traitee` (errata). Le dépôt ne garde que `text_sha256`.
+- **Le statut d'un point de règle est lu dans `points-de-regle-a-valider.md`** : changer la colonne « Relecture 1 » ou
+  « Confiance » change le classement. R27 se précise en R27a / R27b dans `moteur_combos/classement.py`.
+- Tests : `python -m pytest moteur_combos/tests` (branché dans `check.py` quand `moteur_combos/` ou les fichiers du jeu
+  de tests changent ; les tests qui lisent les textes demandent `yugioh.db`, sinon « ignorés »).
+→ détail : `docs/moteur-combos/definitions-et-schema.md` (§ 2 mis à jour, § 3), décisions par défaut :
+`docs/planning/2026-11-18/decisions-prises.md`
+
+**Lot C1, tranche 0 du moteur (TOK-90, 2026-11-18, branche `claude/c1-tok-90-tranche-0-554a89`, non fusionnée)** :
+premières règles de jeu (`moteur_combos/regles.py` : Invocation Normale, Invocation Spéciale et Fusion, activation,
+coût, limites dans les cinq formes, chaîne simple), 5 cartes formalisées (`cartes.py` : Aluber, Branded Fusion,
+Fallen of Albaz, Tri-Brigade Springans Kitt, Rindbrumm en `brouillon`), 10 situations exécutées et conformes au YAML
+(`scenarios.py` : T01, T03, T04, T05, T08, T09, T11, T15, T60, T68). Combo : Aluber → Branded Fusion → Rindbrumm
+(Albaz + Kitt du Deck) → Kitt rappelle Albaz. Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (C1).
+- **« Non couvert » s'applique effet par effet** : une formalisation déclare tous les effets ; une résolution peut
+  rester `NON_CODEE` (jamais jouée) ou `HORS_PERIMETRE` (suppose l'adversaire). Une carte `non_traitee` jouée,
+  déplacée ou choisie → `non_couvert` ; restée en main → **réserve** dans le résultat ; option de légalité inconnue →
+  liste « peut-être incomplète ». Ne jamais faire disparaître une option : la ranger dans l'une de ces trois sorties.
+- **Formaliser une carte, c'est écrire contre `text_sha256`** : un errata désactive la formalisation (test dédié).
+- **Un scénario traduit l'action d'une situation, il ne dit jamais le verdict** : verdict et `choix` viennent du YAML.
+- Plusieurs déclencheurs simultanés → `non_couvert` (R22 non tranché) ; le test « retirer X » (hypothèse de Winston,
+  definitions § 4) n'est pas encore écrit.
+
+**Lot C2, J1 formalisation (TOK-118, 2026-11-18, branche `claude/c2-j1-formalisation-a044b3`, non fusionnée)** : les 37
+cartes du pilote sont `formalisee` (`moteur_combos/cartes_j1.py` + tranche 0) ; 72 effets déclarés, 57 du pilote, tous
+exercés par un test ; 69/72 situations du YAML et 30/30 situations J1 (`situations-j1.yaml`, verdicts de l'agent)
+exécutées et conformes ; 0 erreur de formalisation trouvée, 173 tests pytest. **J1 non déclaré atteint** : le taux
+d'erreur demande l'oracle sur les situations J1 et la relecture à l'aveugle de 20 effets tirés (graine 20260118, cible
+borne haute Wilson ≤ 20 %). Rapport : `docs/moteur-combos/j1-rapport.md` ; pour l'oracle :
+`situations-pour-oracle.md` ; formulaire : `docs/planning/2026-11-18/decisions-prises.md` (C2).
+- **`formalisee` = résolutions écrites ET chaque effet du pilote exercé par un test** (`regles.EXERCES`, compté par le
+  harnais), sinon `brouillon`. Le YAML n'exerçait que 29 des 57 effets : sans la mesure, 28 effets jamais joués
+  auraient été déclarés formalisés.
+- **R22 codé** (ordre libre, obligatoires d'abord) ; **R23 obligatoire** (texte TCG) contre l'oracle (texte OCG).
+- **Passer les tests du premier coup ne vaut pas vérification** : YAML et formalisation sont deux lectures LLM du même
+  texte. Le 0/30 d'aujourd'hui est un constat, pas le taux de J1 (avis `data-scientist-ygo`).
+- 13 points non tranchés par le texte (N01 à N13, marqués ⚖ dans le code) ; N01 (`Luluwalilith` sur sa propre sortie
+  de l'Extra Deck) répond « non couvert » : toute Invocation Synchro de `Luluwalilith` est non couverte pour l'instant.
+- Une situation J1 ou un scénario du YAML est une traduction en décisions ; la liste attendue reste celle du YAML.
+  Nouvelle situation : départ dans `situations-j1.yaml`, scénario dans `SCENARIOS_J1` (`scenarios.py`).
+
+**Lot C3, J2 exploration (TOK-119, 2026-11-18, branche `claude/c3-j2-exploration-ff7592`, non fusionnée)** : étape 0
+(N09 corrigé : un monstre insensible reste choisissable par un effet sans cible, l'effet est sans effet sur lui ; N01
+et DIVIN adoptés ; N04 « Attribut déjà porté » gardé permis par le texte TCG) ; exploration bornée
+(`moteur_combos/exploration.py`, 8 filtres déclarés D4, largeur ou A* vers une cible, jalons), stockage dans
+`combos.db` (schéma inchangé), 5 combos de guides publics (`docs/moteur-combos/combos-guides.md`). Résultat : séquences
+retrouvées **4 sur 5 sans cible** (largeur, 60 s), 5 sur 5 vers la cible, joueur au hasard 0 sur 5 ; **J2 « atteint sous
+réserve », horloge du 13/01/2027 maintenue**. Commande : `python scripts/combos_j2.py` (≈ 12 min). Rapport et
+formulaire : `docs/moteur-combos/j2-rapport.md`.
+- **Une décision à une seule option ne consomme jamais d'entrée du préfixe de réponses** (au premier passage comme au
+  rejeu) : sinon le préfixe se décale et des branches entières disparaissent sans erreur (bug trouvé au lot C3).
+- **Un combo « à une carte » se joue avec la carte seule** (les 4 autres retirées du jeu) : avec des cartes de réponse
+  en main, le moteur s'en sert comme matériel (`Ghost Ogre` pour `Granguignol`).
+- **Une cible de plateau ne suffit pas à dire « retrouvé »** : G3 la remplissait par un autre chemin ; les jalons
+  (actions clés du guide, en sous-suite) font la différence.
+- ≈ 1 200 états/s, facteur 3 à 4 par transition : le parcours en largeur ne dépasse pas 6 transitions en 60 s.
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree
@@ -247,7 +312,7 @@ JavaScript transféré 180 ko, CLS 0.
   jamais `buy_score` (ordre d'affichage). Libellé `signal_label` toujours accompagné de « seuils provisoires, non validés
   hors échantillon ».
 - **Données figées** : `lib/proof-data.ts` (parts mensuelles de Kewl Tune, relevé du 16/11 : `meta_scores_ocg` n'est pas
-  servie) et `SITE_FACTS.banBacktest` (4 des 20 listes du backtest). À relever de nouveau quand la base change.
+  servie) et `SITE_FACTS.banTop25` (bilan top 25 par format, 20 listes du backtest, depuis le lot 16). À relever de nouveau quand la base change.
 - **Effets** (`components/home/effects.tsx`) : chacun part d'un HTML serveur complet ; `data-live` (posé en JS, ≥ 900 px,
   mouvement autorisé) est le seul interrupteur du récit au défilement. Styles `home-*` dans `globals.css`.
 - Tokens ajoutés : `--ocg` (série OCG uniquement), `--shadow-card`, `--holo`, `--tile-glow`. `CRITERIA` du Ban Radar est
@@ -468,9 +533,203 @@ Méthode déjà conformes. Rien n’est appliqué avant la validation de Thomas.
   échappe à l’extracteur. Un faux positif se déclare dans `ALLOW`, jamais en affaiblissant une règle.
 - « Yu-Gi-Oh! » est exclu de la règle du point d’exclamation (nom de marque).
 
+**Seconde moitié (2026-11-18, branche `claude/lot16-application-textes-8896be`, non fusionnée)** : T01 à T43 et B01 à B28
+appliqués (99 lignes marquées ✅ dans `docs/textes-avant-apres.md`, écarts au § 0) ; titre neutre « Méta Yu-Gi-Oh! TCG et
+OCG » (h1, partage, image) ; `check_copy.py --strict` **bloquant** dans `check.py` (853 textes, 0 occurrence) ; 35 captures
+sur 51 régénérées. Aucun `WEIGHTS`, aucune donnée ni API touchés.
+- **Verdict du Ban Radar écrit une fois** (`lib/ban-verdict.ts`, chiffres de `SITE_FACTS.banTop25`, backtest du 16/11) : accueil,
+  encart du Radar, onglet Historique, `/methode`. Dans l’Historique, il disparaît si les listes servies ne donnent plus les
+  mêmes sommes (`verdictMatches`) : après une nouvelle banlist, relancer le diagnostic, puis réécrire `banTop25` et le texte.
+- **Le titre de l’accueil** (`TITLE`, mots révélés un à un) échappe toujours à `check_copy.py` : à relire à la main.
+- Un worktree n’a pas de `frontend/node_modules` : `cp -cR <dépôt principal>/frontend/node_modules frontend/` (clone APFS,
+  ≈ 10 s, ignoré par Git) avant `tsc`, `eslint` ou les captures.
+
 ### 🧪 Audit de rigueur statistique (lot 19, 2026-11-17, branche `claude/lot19-audit-rigueur-e3bee6`, non fusionnée)
 
 Aucun score ne remplit « estimé, validé hors échantillon, comparé au naïf, incertitude affichée » ; pires écarts : signaux précoces (carte interdite en tête, banlist figée au 13 juin), fenêtre d'arrivée « 80 % » couvrant 62-67 % en 2024-2025, score boutique ≈ part OCG (ρ 0,94) → `docs/journal/audit-rigueur-statistique.md`.
+
+**Correctifs A1 à A8 (lot 20, TOK-122, 2026-11-18, branche `claude/lot20-audit-a1-a8-cbc82f`, non fusionnée)** : un commit par ticket ; `early_card_signals` produite par `scripts/build_early_signals.py` (référence = dernier deck, banlist à date, cartes déjà en méta exclues ; colonne `as_of`), couverture réelle de la fenêtre d'arrivée affichée (62-67 %), r ≈ 0,53 sorti du bandeau boutique, simulateur décrit comme une approximation, libellé affiché journalisé, flèche des prédictions sur l'écart dessiné, réglages manuels datés sur `/methode`, tendance de la tier list corrigée (Benjamini-Hochberg) et tiers « limite ». Après fusion : `build_early_signals.py` puis `build_serving_db.py`. Pièges : `text_synergies` (notebook 07, hors chaîne) ne couvre plus les cartes récentes, la proximité de texte vaut 0 ; l'IC « −4 % » de l'audit vient d'une table d'avant TOK-80 ; seuls 20 archétypes sont testés pour la tendance, pas 60 ; `PRED_GAP_THRESHOLD` (0,003) suit `W_MODEL` du notebook 05. Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (lot 20).
+
+### 📅 Dates d'annonce des banlists (TOK-121, lot 21, 2026-11-18, branche `claude/lot21-dates-annonce-65588d`, non fusionnée)
+
+Table nouvelle `banlist_announcements` (`scripts/fetch_banlist_announcements.py`, Yugipedia + sources citées ; `banlist_history`
+intacte, hors `SERVED_TABLES`, dernière étape de `refresh_all.py`) ; `diagnose_ban_radar.py --annonces` classe la veille de
+l'annonce. Les 20 listes du backtest ont une date ou une raison écrite (16 avec le jour de publication des cartes, 4 TCG
+avec une borne haute seulement). Effet : OCG ≈ 5 rangs médians sur 1 100 (9 listes sur 10), TCG rien de net, aucun des 60 tests
+ne survit à la correction ; **verdict de l'Historique inchangé**.
+- **« Annoncée » ≠ cartes publiques.** Konami OCG publie la date de la liste ~10 jours avant son contenu, et Yugipedia écrit
+  « first announced » pour l'une ou l'autre (OCG 2026, TCG 2024-09 : date de sortie seule). La table a `announced_date` et
+  `content_date` ; toute mesure coupe à `content_date`. Jamais de date devinée : sans preuve, la colonne reste vide.
+- Coupure plus tôt = fenêtre de 6 mois et césure de tendance plus anciennes aussi : pas de lecture « annonce seule » sans placebo.
+- `build_ban_radar.backtest_lists(..., as_of_override)` : paramètre optionnel, défaut inchangé.
+→ détail complet : `docs/journal/dates-annonce-banlists-tok-121.md`
+
+### 📐 Ban Radar en rangs et pont daté (TOK-120, lot 22, Jalon 1, 2026-11-18, branche `claude/j1-tok-120-132-ban-radar-pont-d32da4`, non fusionnée)
+
+Diagnostic seulement : `WEIGHTS` inchangés, `--backtest` identique (84/889, 19/1236), rien d'affiché ne change.
+`scripts/diagnose_ban_radar_rangs.py` (ou `diagnose_ban_radar.py --rangs [--coupure contenu]`, ≈ 1 min) : critères en rangs
+centiles par liste, logit conditionnel par liste (Breslow, vérifié contre l'exacte), pont daté (`scripts/bridge_date.py`).
+**Règle d'adoption non remplie** : le logit conditionnel sur les rangs la remplit à la veille de l'entrée en vigueur, pas à
+la veille du contenu (OCG 3/7 contre les poids actuels) ; contre les staples en TCG, égalité (−0,15 point, 5/7, p = 0,45).
+Recommandation A (ne rien changer), validée par `data-scientist-ygo`.
+- **En rangs centiles, les poids écrits deviennent les poids effectifs** (sauf « déjà restreinte », 93 % d'égalités à 0),
+  et les poids estimés sur les rangs sont proches des poids écrits (0,29 / 0,20 / 0,17 / 0,16 / 0,12) : le défaut du score
+  était l'échelle brute des critères, pas la valeur des poids. Le pont reçoit un poids négatif (−0,05 [−0,10 ; −0,01]).
+- **`card_graph_metrics` est périmée** (663 nœuds ; le graphe recalculé aujourd'hui en a 1 402, Spearman 0,31) : elle
+  alimente le critère `bridge` et la « fragmentation » du simulateur. `bridge_date.py` reproduit `card_cooccurrence` à
+  l'identique à la date du jour (10 741 paires).
+- **`load_usage` filtre sur `created`, pas `uploaded`** : 2,5 % des decks des fenêtres du backtest sont mis en ligne après
+  la coupure (surtout dans « tendance »). Correction = changement du backtest, au formulaire.
+- Toute règle d'adoption future : candidats et règle figés dans la docstring avant la première exécution, aux deux coupures.
+→ détail complet et formulaire : `docs/journal/ban-radar-rangs-tok-120.md`, `docs/planning/2026-11-18/decisions-prises.md` (lot 22)
+
+**Score de pont et simulateur contre les banlists (TOK-132, B3, lot 26, même branche)** : `scripts/diagnose_pont_simulateur.py`
+(≈ 4 min, lecture seule, rien d'affiché ne change). Mesure : variation de la part cumulée des archétypes porteurs (≥ 50 % de
+leurs decks jouent la carte), 3 mois avant / 3 mois après ; 17 listes, 158 cartes touchées. Un ban fait baisser ses
+porteurs (−3,1 points contre des cartes de même popularité, −5,5 sans contrôles contaminés). **Le score de pont
+(`card_impact`, onglet « Impact ») va dans le sens contraire** à part des decks égale (+6,5 [+4,5 ; +8,6]) : il mesure la
+diffusion d'une carte, dont le ban déplace le moins ses porteurs. Fragmentation du simulateur : bon sens, aucun gain hors
+échantillon ; « archétypes voisins » : 31 % seulement sont des archétypes de deck, pas meilleurs qu'une liste naïve.
+Formulaire : renommer « Impact » en « Diffusion », simulateur décrit sans prévision (non appliqué).
+- **Une règle de gain doit fixer le sens attendu** : ici le « gain » hors échantillon venait d'un coefficient de signe
+  contraire à l'affirmation testée (signe ajouté après lecture, déclaré).
+→ détail complet : `docs/journal/pont-simulateur-tok-132.md`, formulaire `docs/planning/2026-11-18/decisions-prises.md` (lot 26)
+
+### 🌱 Signaux précoces rejoués contre « vues seules » (TOK-129, B2, Jalon 1, 2026-11-18, branche `claude/j1-tok-129-93-signaux-fraicheur-d1344d`, non fusionnée)
+
+`scripts/backtest_early_signals.py` (≈ 35 s, lecture seule, graine fixée, rien d'affiché ne change ; dépend de TOK-122) rejoue
+`build_early_signals.py` à 25 dates (2024-07 → 2026-07) ; « entrer en méta » = ≥ 3 % des decks TCG légaux sur 120 j.
+Critère B2 **rempli en cartes** (P@20 0,536 contre 0,382 aux vues, +0,154, IC dates [+0,066 ; +0,252]) **mais pas robuste** :
+≈ 8 épisodes (effectif efficace 6,5), écart nul compté par archétype (+0,026 [−0,063 ; +0,119] par épisodes). Signal solide :
+la force OCG sans vues désigne l'archétype qui arrive (+0,272 [+0,114 ; +0,430] contre les vues). Le texte coûte −0,106.
+Recommandation au formulaire : revoir la page (archétypes classés par la force OCG, après backtest propre).
+- **`views_week` n'existe qu'à une date** (`data/raw/cards.json`, commit du 13/06) : toute date antérieure voit des vues du
+  futur. Aucun test des vues n'est possible sans archive datée.
+- **Compter les réussites en archétypes, pas seulement en cartes** : un top 20 rempli d'un archétype qui arrive gonfle la
+  precision@20 ; bootstrap par épisodes (dates consécutives du même archétype), pas seulement par dates.
+- **Le calcul servi n'est pas le calcul testé** : texte nul au lot 20 (`text_synergies` hors chaîne) ; le recalculer ferait
+  revenir le texte, qui fait baisser le score.
+→ détail complet : `docs/journal/signaux-precoces-backtest-tok-129.md`, formulaire `docs/planning/2026-11-18/decisions-prises.md` (TOK-129)
+
+### 🩺 Fraîcheur des tables servies et santé de `/top-decks` (TOK-93, Jalon 1, 2026-11-18, même branche, non fusionnée)
+
+`scripts/check_freshness.py` (stdlib, `mode=ro`) : une règle par table de `SERVED_TABLES` (`computed_at`, `as_of` contre
+le dernier deck, mois, cohérence graphe ↔ `card_cooccurrence`, historique ↔ banlists, vues ↔ instantané du 13/06, fille ↔
+mère, sinon « non datée ») + un GET sur yugiohmeta `/top-decks`. Code 1 si une table est périmée ou l'endpoint en erreur ;
+ligne `fraicheur_tables` dans `data/fetch_health.jsonl` ; `--status`. Dernière étape de `refresh_decks.py` (après
+`serving`, sur `serving.db`) et contrôle de `deploy_prebuilt.py`. Au 18/11 : 12 ok, 3 périmées connues tolérées jusqu'au
+31/12 (graphe 663 contre 1 402 nœuds, TOK-136 ; vues figées), 2 non datées, 2 lues par aucun routeur ; endpoint HTTP 200.
+- **Jamais un contrôle qui peut échouer dans `refresh_all.py`** : son code 1 fait sauter `serving` dans `refresh_decks.py`.
+- **Nouvelle table servie → une règle dans `RULES`** (test : toute table de `SERVED_TABLES` en a une) ; table vide,
+  absente ou colonne de date vide = périmée, jamais tolérée ; une tolérance (`KNOWN_STALE`) a toujours une expiration.
+- **Ne pas nommer une ligne du journal `"freshness"`** : `refresh_decks.py` relit ces lignes pour le nombre de decks.
+→ détail complet (plan B si `/top-decks` disparaît) : `docs/journal/fraicheur-tables-tok-93.md`, formulaire TOK-93
+
+### ⏳ Fenêtre d'arrivée en TCG par analyse de survie (TOK-130, B1, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+Diagnostic seulement : la fenêtre affichée (75-202 jours, notebook 10) ne change pas. `scripts/build_arrival_survival.py`
+(≈ 8 s, lecture seule ; `--write` écrit deux tables nouvelles non servies, `--reference` requis sur la base du dépôt
+principal) : Kaplan-Meier par archétype, censure et entrée différée, validation à origine glissante mensuelle.
+**Critère non atteint et non testable** : 5 prévisions seulement sur 2024-2025 (85 % annoncés, 60 % observés, IC de
+l'écart [−60 ; +15]) ; 2025-2026 : 18 fenêtres justes sur 23 (78 %) pour 89 % annoncés, fenêtre actuelle 15 sur 23,
+écart non démontré (p = 0,45). Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (Jalon 2, TOK-130).
+- **Arrivée définie par les cartes** (la moitié des cartes inédites sorties en TCG), pas par le nom : 9 libellés sur 62
+  étaient déjà joués en TCG sous ce nom avant l'ancre. Le validateur (`validate_predictions.py`) juge encore par le nom.
+- **Le « 37 % jamais arrivés » ne vaut pas pour la population du notebook 10** : 42 arrivées sur 44 unités, P(jamais)
+  ≤ 6,5 %. Le défaut principal est l'échantillon (données OCG depuis janvier 2024), pas le biais du survivant.
+- **En unité archétype, la fenêtre actuelle couvre 27 sur 36 (75 %)** sur 2024-2026, 12 sur 18 sur 2026 seule
+  (hors échantillon) ; le 62-67 % de l'A2 est en unité carte.
+- La probabilité Kaplan-Meier est trop confiante d'environ 11 points : ne jamais l'afficher comme couverture.
+→ détail complet : `docs/journal/fenetre-survie-tok-130.md`
+
+### 📏 Intervalles de prévision par archétype (TOK-131, B4, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+`scripts/build_prediction_intervals.py` (≈ 6 s, lecture seule ; `--write [--reference]` écrit la table nouvelle
+`meta_prediction_intervals`, non servie) : conformité séquentielle sur les résidus du walk-forward de la prévision
+servie (TCG, fonctions importées d'`evaluate_prediction.py`), calibration sur les mois antérieurs. Retenue par règle
+figée : Mondrian par terciles de niveau, **75,7 % [67,7 ; 82,0]** pour 80 % visés sur 24 mois (507 prévisions) ; 5
+premiers du mois 68,3 %. Rien d'affiché ne change : `GET /meta/predictions` sert `interval_lo/hi` seulement si la table
+existe, `/predictions` ne les dessine qu'avec `NEXT_PUBLIC_PREDICTION_INTERVALS=1`. Formulaire : `decisions-prises.md`
+(Jalon 2, TOK-131).
+- **Une couverture moyenne de 80 % ne prouve rien ici** : les deux naïves y sont aussi (78,7 et 82,8 %). Les ratés sont
+  sur les gros archétypes et sur 4 mois de rupture de méta, où tous les archétypes bougent ensemble (échangeabilité
+  violée) ; le centre de la prévision, à 30 % du retour à la moyenne, est biaisé vers la persistance en tête de méta.
+- **Ne jamais écrire `meta_prediction_intervals` sur la référence avant le formulaire** : le routeur la cite, donc
+  `build_serving_db.py` refusera de construire tant qu'elle n'est pas dans `SERVED_TABLES`.
+- Le notebook 05 entraîne le modèle de production sur des lignes qui incluent la cible partielle du mois en cours
+  (effet 0,11 point en moyenne, négligeable pour les intervalles, à corriger à part).
+→ détail complet : `docs/journal/intervalles-tok-131.md`
+
+### 🗾 Parts OCG mensuelles servies (TOK-116, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+L'exemple Kewl Tune de l'accueil lit `GET /archetypes/kewl-tune` (`history` en TCG, `ocg_history` en OCG,
+`ocg_history_computed_at`) au lieu des données figées de `proof-data.ts` (décision 0041). `meta_scores_ocg` est dans
+`SERVED_TABLES` (règle de fraîcheur ajoutée). Valeurs identiques au relevé du 16/11, 51 captures inchangées.
+- **Après fusion : `python scripts/build_serving_db.py`** sur la référence. Sans cela, `test_home_example_has_both_series`
+  échoue sur `serving.db` et l'accueil n'affiche pas la section (rendu volontairement absent plutôt que partiel).
+- **Une table lue par un routeur doit y être nommée en clair** (« FROM meta_scores_ocg ») : `build_serving_db.py --check`
+  et `check_freshness.py` repèrent les tables par expression régulière, une requête construite par f-string leur échappe.
+- **Fenêtre fixe** (août 2025 → novembre 2026) : les textes de l'accueil nomment ses mois et ses pics ; un recalcul qui
+  déplacerait un pic ne serait vu par aucun test.
+- Nouvelle fixture de test visuel : `kewl-tune` ajouté à `ARCHETYPES` dans `scripts/visual_tests.py`.
+→ détail complet : `docs/journal/parts-ocg-servies-tok-116.md`
+
+### 🔍 Vérification des données du 18/11 (TOK-133, Jalon 3, 2026-11-18, branche `claude/jalon-3-entretien-vitrine-280593`, non fusionnée)
+
+Rapport seul, lecture seule : `docs/planning/fond/2026-11-18-donnees.md`. 20 tables servies identiques entre `yugioh.db`
+et `serving.db` (schéma et empreinte des lignes) ; fraîcheur par `check_freshness.py --sans-journal` (aucune périmée
+hors tolérances) ; bornes respectées (parts, scores, prix, exemplaires).
+- **13 cartes jouées n'ont pas de fiche dans `cards`** (`Bystial Druiswurm`, 4 974 decks ; 4 `Artmage …` ; `Empire of
+  Endymion` contre `Endymion Empire`…) : sans image ni lien, mais le score du Ban Radar n'est pas touché (statut lu dans
+  `banlist_history`). Proposé : table de correspondance des noms et contrôle « cartes jouées sans fiche ».
+- **`cards.ban_tcg` est figé au 13/06** comme `views_week` (12 désaccords avec la banlist en vigueur) : le site lit
+  `banlist_history`, mais `evaluate_prediction.py` et `combos_extract_deck.py` lisent encore `cards.ban_tcg`.
+- 116 cartes sans illustration carrée chez YGOPRODeck (4 affichées) ; 40 decks à moins de 40 cartes de Main Deck.
+- `build_serving_db.py --check` ouvre `data/yugioh.db` du checkout : dans un worktree, passer par un lien ou par
+  `check_coverage` sur une connexion `mode=ro`.
+
+### 📚 Documentation réalignée sur le code (TOK-134, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+`docs/api-contracts.md` (16 endpoints au lieu de 8, paramètres et champs réels), `docs/data-models.md` (effectifs du
+18/11, colonnes changées, 12 tables ajoutées), `docs/architecture.md`, `README.md`, `docs/ONBOARDING.md` (stack Next 16 /
+D3, chaîne `refresh_decks.py` / `refresh_all.py`, 20 tables servies, r ≈ 0,53 au lieu de 0,771). Écart par écart :
+`docs/planning/fond/2026-11-18-documentation.md`. Doc seulement.
+- **Écarts restés dans le code** (docstrings) : `check.py` dit les textes « non bloquants » (ils le sont depuis le
+  lot 16) et « 45 captures » (51) ; `build_serving_db.py` dit « 12 tables, ~9 Mo » (20, ~12 Mo).
+- Toute nouvelle route ou table : la ligne de `api-contracts.md` (tableau des endpoints) et la section de
+  `data-models.md` vont avec.
+
+### 🧪 Tests de l'API (TOK-135, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+`backend/tests` : 74 → 125 tests passés + 1 `xfail`, sur les deux bases, sans réseau ni modification du code testé.
+Nouveaux fichiers : `test_price_history.py`, `test_labels_mapping.py`, `test_db.py`, `test_routes_synthetic.py` (routes
+sur bases en mémoire : filtres, tri, bornes, 404/422), `test_api_invariants.py` (base réelle : tier = `tier_for`, trous
+de prix = `find_gaps`, libellés boutique, seuils du backtest), `test_build_serving_db.py`.
+- **Bug signalé (`xfail`)** : `/cards/search` et `resolve_card_name` mettent la saisie telle quelle dans un `LIKE` :
+  « % » et « _ » ne sont pas échappés (« %% » renvoie toutes les cartes, `/cards/%25` une carte au lieu d'un 404).
+- **`test_build_serving_db.py` voit une table citée par un routeur et absente de `SERVED_TABLES` même si elle n'existe
+  pas encore** (ce que `check_coverage` ne voit pas) ; un alias SQL inédit dans un routeur s'ajoute à `NOT_TABLES`, une
+  table lue seulement si elle existe à `OPTIONAL_TABLES` (`meta_prediction_intervals` aujourd'hui).
+- Les routes se testent sans base avec `app.dependency_overrides[get_db]` et une connexion `:memory:`
+  (`check_same_thread=False`, `row_factory = sqlite3.Row`).
+→ détail : `docs/planning/fond/2026-11-18-tests.md`
+
+### 🪧 Chiffres de vitrine remesurés (TOK-82, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+Chaque chiffre de `frontend/src/lib/site-facts.ts` remesuré sur la base de référence (lecture seule) : r = 0,53
+[0,43 ; 0,59] sur 105 archétypes (relancé avec `evaluate_prediction.py --part B`), « 2 à 6 mois », ρ 0,94, top 10
+6 contre 19, `banTop25` et 23 948 decklists **identiques**. Deux écarts affichés : cartes suivies 13 797 → 14 084 ; « légales
+à la date du tournoi » accolé aux 23 948 listes, dont 22 422 seulement sont légales (611 illégales, 915 Genesys).
+Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (Jalon 3 — TOK-82) ; le commit du front, **dernier de la
+branche**, applique les cases pré-cochées et ne se fusionne qu'après le formulaire. Notebook 11 : déjà marqué remplacé,
+n'écrit rien, aucune correction.
+- **Depuis TOK-80, « cible mélangée » et « TCG pur » donnent le même r** dans `evaluate_prediction.py` (`meta_scores`
+  est TCG pur) : la ligne « mélangée » de la sortie n'est plus un contrôle de contamination.
+- **Un total relevé n'est pas un total utilisé** : 23 948 listes relevées, 22 422 légales et seules comptées. Toute phrase
+  qui donne un effectif dit lequel.
+- Les chiffres du Ban Radar se remesurent avec `build_ban_radar.backtest_lists` (top 10 par type : `top_archetype` nul
+  ou non dans le classement de la veille) et la table `ban_backtest_lists` (`banTop25`).
+→ détail complet : `docs/journal/chiffres-vitrine-tok-82.md`
 
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
@@ -489,15 +748,20 @@ décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ;
 
 ### 🔜 À faire
 
+- **Priorité n° 1 depuis le 18/11 (décision de Thomas) : le moteur de combos (TOK-84).** Chaîne de la file : lot 17 (oracle,
+  TOK-86) et lot 18 (fondations, TOK-117) en cours, puis C1 tranche 0 (TOK-90) → C2 J1 formalisation (TOK-118) → C3 J2
+  exploration (TOK-119, échéance de la règle d'arrêt 13/01/2027). Le reste (16, 20 = TOK-122, 21 = TOK-121, 22 = TOK-120,
+  23-26 = TOK-123, tâches de fond) passe en deuxième session, pendant une attente passive. Lots de méthode : rien d'affiché ne
+  change sans formulaire de Thomas ; la relecture de la collaboratrice vient après (décision du 18/11).
 - **Validé par Thomas le 17/11 (revue du matin, détail dans `docs/planning/2026-11-17/decisions-prises.md`)** : formulaire TOK-115
   (poids inchangés, verdict de l'Historique tel que proposé) ; audit de rigueur (A1-A4 puis A5-A8) ; textes du lot 16 (tout appliquer,
   titre neutre « Méta Yu-Gi-Oh! TCG et OCG », `check_copy.py` bloquant) ; source de l'oracle TOK-86 (`edo9300/ygopro-core`, usage
   local hors dépôt) ; D1 à D7 du moteur de combos ; les 14 notes « à valider » de `docs/decisions/` (52 acceptées).
-- **Lots prêts à lancer** (un à la fois) : 16 seconde moitié (application des textes), 18 (fondations du moteur), 20 (correctifs
+- **Lots prêts à lancer** (un à la fois) : 20 (correctifs
   A1 à A8 de l'audit). Le lot 17 (TOK-86) est prêt aussi : `premake` 5.0.0 et `lua@5.4`
   installés le 17/11 (`/opt/homebrew/opt/lua@5.4`, non liée ; le cœur demande Lua 5.3 ou 5.4, pas la 5.5 de `brew install lua`).
 - **Encore en attente de Thomas** : lots de correctifs de la revue de code (rapport de la tâche de fond).
-- **TOK-116** : servir les parts OCG mensuelles par l'API, pour retirer les données figées de l'accueil (`lib/proof-data.ts`).
+- **TOK-116** : livré au Jalon 2 (parts OCG servies, `build_serving_db.py` à relancer après fusion).
 - **Push de `main` par Thomas** (fusion faite le 17/11, `check.py --all --visuel` vert) ; supprimer les worktrees et les branches de lots fusionnées.
 - **TOK-35** : relier le projet Vercel depuis la racine du dépôt, créer le compte Cloudflare R2, premier déploiement de prévisualisation (`docs/deploiement.md`).
 - **Thomas** : pseudo GitHub de la collaboratrice (TOK-108), envoi de la base (TOK-109), protection de `main`.

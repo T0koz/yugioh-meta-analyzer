@@ -231,6 +231,219 @@
    "share": 0.03205128205128205
   }
  ],
+ "ocg_history": [
+  {
+   "month": "2024-01",
+   "decks": 8,
+   "total_decks": 292,
+   "share": 0.0273972602739726
+  },
+  {
+   "month": "2024-02",
+   "decks": 11,
+   "total_decks": 365,
+   "share": 0.030136986301369864
+  },
+  {
+   "month": "2024-03",
+   "decks": 8,
+   "total_decks": 264,
+   "share": 0.030303030303030304
+  },
+  {
+   "month": "2024-04",
+   "decks": 3,
+   "total_decks": 354,
+   "share": 0.00847457627118644
+  },
+  {
+   "month": "2024-05",
+   "decks": 3,
+   "total_decks": 292,
+   "share": 0.010273972602739725
+  },
+  {
+   "month": "2024-06",
+   "decks": 7,
+   "total_decks": 285,
+   "share": 0.02456140350877193
+  },
+  {
+   "month": "2024-07",
+   "decks": 3,
+   "total_decks": 208,
+   "share": 0.014423076923076924
+  },
+  {
+   "month": "2024-08",
+   "decks": 3,
+   "total_decks": 304,
+   "share": 0.009868421052631578
+  },
+  {
+   "month": "2024-09",
+   "decks": 0,
+   "total_decks": 282,
+   "share": 0.0
+  },
+  {
+   "month": "2024-10",
+   "decks": 3,
+   "total_decks": 255,
+   "share": 0.011764705882352941
+  },
+  {
+   "month": "2024-11",
+   "decks": 4,
+   "total_decks": 400,
+   "share": 0.01
+  },
+  {
+   "month": "2024-12",
+   "decks": 4,
+   "total_decks": 328,
+   "share": 0.012195121951219513
+  },
+  {
+   "month": "2025-01",
+   "decks": 2,
+   "total_decks": 468,
+   "share": 0.004273504273504274
+  },
+  {
+   "month": "2025-02",
+   "decks": 0,
+   "total_decks": 402,
+   "share": 0.0
+  },
+  {
+   "month": "2025-03",
+   "decks": 1,
+   "total_decks": 423,
+   "share": 0.002364066193853428
+  },
+  {
+   "month": "2025-04",
+   "decks": 2,
+   "total_decks": 428,
+   "share": 0.004672897196261682
+  },
+  {
+   "month": "2025-05",
+   "decks": 3,
+   "total_decks": 400,
+   "share": 0.0075
+  },
+  {
+   "month": "2025-06",
+   "decks": 2,
+   "total_decks": 313,
+   "share": 0.006389776357827476
+  },
+  {
+   "month": "2025-07",
+   "decks": 4,
+   "total_decks": 337,
+   "share": 0.011869436201780416
+  },
+  {
+   "month": "2025-08",
+   "decks": 1,
+   "total_decks": 379,
+   "share": 0.002638522427440633
+  },
+  {
+   "month": "2025-09",
+   "decks": 2,
+   "total_decks": 251,
+   "share": 0.00796812749003984
+  },
+  {
+   "month": "2025-10",
+   "decks": 6,
+   "total_decks": 311,
+   "share": 0.01929260450160772
+  },
+  {
+   "month": "2025-11",
+   "decks": 26,
+   "total_decks": 435,
+   "share": 0.059770114942528735
+  },
+  {
+   "month": "2025-12",
+   "decks": 15,
+   "total_decks": 325,
+   "share": 0.046153846153846156
+  },
+  {
+   "month": "2026-01",
+   "decks": 30,
+   "total_decks": 365,
+   "share": 0.0821917808219178
+  },
+  {
+   "month": "2026-02",
+   "decks": 14,
+   "total_decks": 331,
+   "share": 0.04229607250755287
+  },
+  {
+   "month": "2026-03",
+   "decks": 21,
+   "total_decks": 361,
+   "share": 0.05817174515235457
+  },
+  {
+   "month": "2026-04",
+   "decks": 41,
+   "total_decks": 464,
+   "share": 0.08836206896551724
+  },
+  {
+   "month": "2026-05",
+   "decks": 35,
+   "total_decks": 574,
+   "share": 0.06097560975609756
+  },
+  {
+   "month": "2026-06",
+   "decks": 11,
+   "total_decks": 347,
+   "share": 0.03170028818443804
+  },
+  {
+   "month": "2026-07",
+   "decks": 13,
+   "total_decks": 294,
+   "share": 0.04421768707482993
+  },
+  {
+   "month": "2026-08",
+   "decks": 9,
+   "total_decks": 365,
+   "share": 0.024657534246575342
+  },
+  {
+   "month": "2026-09",
+   "decks": 9,
+   "total_decks": 322,
+   "share": 0.027950310559006212
+  },
+  {
+   "month": "2026-10",
+   "decks": 15,
+   "total_decks": 377,
+   "share": 0.03978779840848806
+  },
+  {
+   "month": "2026-11",
+   "decks": 0,
+   "total_decks": 145,
+   "share": 0.0
+  }
+ ],
+ "ocg_history_computed_at": "2026-11-16",
  "key_cards": {
   "data": [
    {

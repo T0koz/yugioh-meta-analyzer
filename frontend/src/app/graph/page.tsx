@@ -11,10 +11,12 @@ import { MethodNote } from "@/components/ds/explain";
 import { GraphView } from "./GraphView";
 
 const MIN_JACCARD = 0.15;
+/** Seuil du lien, en mots : part des decks qui jouent l’une ou l’autre carte et les jouent ensemble. */
+const LINK_RULE = `jouées ensemble dans au moins ${Math.round(MIN_JACCARD * 100)} % des decks de tournoi qui jouent l’une ou l’autre`;
 
 export const metadata: Metadata = pageMetadata({
   title: "Graphe de synergies",
-  description: `Graphe de co-occurrence des cartes Yu-Gi-Oh! : un lien relie deux cartes souvent jouées dans les mêmes decks de tournoi. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
+  description: `Graphe de co-occurrence des cartes Yu-Gi-Oh! : un lien relie deux cartes ${LINK_RULE}. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
   path: "/graph",
 });
 
@@ -32,7 +34,7 @@ export default async function GraphPage() {
               Les cartes qui se jouent <Em>ensemble</Em>.
             </>
           }
-          intro={`Les ${data.nodes.length} cartes les plus connectées. Un lien relie deux cartes souvent jouées dans les mêmes decks.`}
+          intro={`Les ${data.nodes.length} cartes les plus connectées. Un lien relie deux cartes ${LINK_RULE}.`}
         />
         <GraphView data={data} />
         <DataFooter

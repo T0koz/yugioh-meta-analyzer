@@ -24,10 +24,10 @@ export default function ErrorPage({
         eyebrow="Erreur"
         title={
           <>
-            Les données ne <Em>répondent</Em> pas.
+            Données <Em>indisponibles</Em>.
           </>
         }
-        intro="L’API n’a pas répondu ou a renvoyé une erreur. Le reste du site n’est pas touché : réessaie dans un instant."
+        intro="L’API n’a pas répondu ou a renvoyé une erreur. Les autres pages ne sont pas touchées."
       >
         <div className="mt-7 flex flex-wrap items-center gap-4">
           <Button variant="primary" onClick={() => unstable_retry()}>

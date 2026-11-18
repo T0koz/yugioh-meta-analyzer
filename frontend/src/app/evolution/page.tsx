@@ -31,7 +31,7 @@ export default async function EvolutionPage() {
         eyebrow="Méta · Évolution"
         title={
           <>
-            Qui monte, qui <Em>s’efface</Em>.
+            Part mensuelle des decks de tournoi, <Em>archétype</Em> par archétype.
           </>
         }
         intro={`Part mensuelle des decks de tournoi TCG des ${archetypes.length} premiers archétypes${lastMonth ? ` de ${fmtMonthShort(lastMonth)}` : ""}, quatre séries au plus.`}

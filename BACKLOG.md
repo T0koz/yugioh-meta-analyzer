@@ -31,7 +31,11 @@ traitement conseillé : TOK-70 → TOK-72 → TOK-69 → TOK-74 / TOK-73.
 | TOK-76 | Risque : dépendance à l'API non officielle yugiohmeta | 🟡 Monitoring fait (`data/fetch_health.jsonl`) ; risque structurel reste | 🟠 Medium |
 | TOK-78 | Onboarding d'une data scientist (`docs/ONBOARDING.md` fait ; accès tranché : dépôt public, écriture directe, base par Drive — voir TOK-107) | 🟡 Reste l'invitation (TOK-108) et l'envoi de la base (TOK-109) | 🟠 Medium |
 | TOK-92 | Ré-héberger les images de cartes avant le déploiement (hotlink YGOPRODeck interdit) | 🟡 Livré le 2026-11-17 sur `claude/lot10-tok-92-images-5c0cd5` : 14 084 cartes, 3 tailles, 1,1 Go hors Git, 0 requête YGOPRODeck ; reste le stockage définitif (TOK-35) — `docs/journal/images-tok-92.md` | 🟠 Medium |
-| TOK-93 | Contrôle de fraîcheur des tables servies dans le job du lundi | 🔜 À faire | 🟠 Medium |
+| TOK-93 | Contrôle de fraîcheur des tables servies dans le job du lundi | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-129-93-signaux-fraicheur-d1344d` (Jalon 1, non fusionnée) : `check_freshness.py` (19 tables + endpoint `/top-decks`, journal `fetch_health.jsonl`, `--status`), dernière étape de `refresh_decks.py` et contrôle de `deploy_prebuilt.py` ; 3 périmées connues tolérées jusqu'au 31/12 (graphe TOK-136, vues figées). Reste : formulaire TOK-93 (tolérance, seuils, tables non lues) — `docs/journal/fraicheur-tables-tok-93.md` | 🟠 Medium |
+| TOK-133 | Vérification des données (rapport seul) | 🟡 Livré le 2026-11-18 sur `claude/jalon-3-entretien-vitrine-280593` (Jalon 3, non fusionnée) : 20 tables servies identiques entre les deux bases, aucune périmée hors tolérances ; 13 cartes jouées sans fiche dans `cards`, `cards.ban_tcg` figé, 116 illustrations absentes. Reste : tickets proposés au rapport — `docs/planning/fond/2026-11-18-donnees.md` | 🟢 Low |
+| TOK-134 | Documentation désynchronisée (doc seulement) | 🟡 Livré le 2026-11-18 sur `claude/jalon-3-entretien-vitrine-280593` (Jalon 3, non fusionnée) : `api-contracts.md`, `data-models.md`, `architecture.md`, `README.md`, `ONBOARDING.md` réalignés sur le code et la base du 18/11. Reste : 3 docstrings de code périmées (au compte rendu) — `docs/planning/fond/2026-11-18-documentation.md` | 🟢 Low |
+| TOK-135 | Tests des routes de l'API et des fonctions sans test | 🟡 Livré le 2026-11-18 sur `claude/jalon-3-entretien-vitrine-280593` (Jalon 3, non fusionnée) : 74 → 125 tests + 1 `xfail` (jokers `LIKE` non échappés dans la recherche de cartes, correctif XS proposé) — `docs/planning/fond/2026-11-18-tests.md` | 🟢 Low |
+| TOK-82 | Chiffres de vitrine (`site-facts.ts`) et fenêtres du notebook 11 | 🟡 Relevé le 2026-11-18 sur `claude/jalon-3-entretien-vitrine-280593` (Jalon 3, non fusionnée) : tous les chiffres remesurés, 2 écarts affichés (cartes suivies 13 797 → 14 084 ; 23 948 listes dites « légales », 22 422 le sont) ; notebook 11 déjà obsolète. Reste : formulaire TOK-82 ; commit du front (dernier de la branche) à fusionner après — `docs/journal/chiffres-vitrine-tok-82.md` | 🟠 Medium |
 | — | _13 tickets terminés (TOK-68 à 75, 77, 79, 83, 91, 113) : voir l’archive_ | | |
 
 ⚠ **Intitulé trompeur dans Linear** : TOK-25 s'appelle « Modèle séquentiel ARIMA ou LSTM ». Le modèle
@@ -57,8 +61,10 @@ Rien n'est lancé tant que Thomas ne le décide pas (décision 12).
 | TOK-105 | Option 3D pour le graphe, après le mois 3 | 🔜 Backlog | 🟢 Low |
 | — | _4 tickets terminés (TOK-95 à 98) : voir l’archive_ | | |
 
-- **TOK-116** (🔜 Backlog, 🟠 Medium, créé le 2026-11-17) : servir les parts OCG mensuelles par l'API pour remplacer
-  les données figées de l'accueil (`lib/proof-data.ts`, décision 0041).
+- **TOK-116** (🟡 Livré le 2026-11-18 sur `claude/jalon-2-survie-intervalles-ocg-af6a73`, Jalon 2, non fusionnée) : parts OCG
+  mensuelles servies (`meta_scores_ocg` dans `SERVED_TABLES`, `ocg_history` dans `GET /archetypes/{slug}`), accueil branché
+  sur l'API, valeurs identiques au relevé figé, 51 captures inchangées. Reste : `build_serving_db.py` sur la référence,
+  formulaire Jalon 2 (légende devenue inexacte) — `docs/journal/parts-ocg-servies-tok-116.md`.
 - Suites hors chantier : `log_predictions.py` journalise la fausse date comme `target_date` ; le notebook 10 ne
   filtre pas les archétypes déjà en TCG ; `/meta/evolution` choisit son top 15 sur un mois à petits effectifs.
 
@@ -109,12 +115,15 @@ d'annonce, verdict de la page Historique).
 
 ---
 
-## Lot 16 — Réécriture des textes selon la charte (file du 2026-11-17)
+## Lot 16 — Réécriture des textes selon la charte (file du 2026-11-17) ✅
 
 🟡 Première moitié livrée le 2026-11-17 sur `claude/lot16-reecriture-textes-9d97ee` (non fusionnée) : `docs/textes-avant-apres.md`
 (846 textes relevés : 775 conformes, 43 à changer, 28 en attente du formulaire TOK-115), formulaire de validation en tête,
 `scripts/check_copy.py` (mots interdits, branché dans `check.py` en avertissement). **Aucun texte du site modifié.** Reste :
 validation par Thomas, puis application et passage du script en bloquant (`--strict`).
+✅ Seconde moitié livrée le 2026-11-18 sur `claude/lot16-application-textes-8896be` (non fusionnée) : T01 à T43 et B01 à B28
+appliqués selon les réponses de Thomas du 17/11 (titre neutre « Méta Yu-Gi-Oh! TCG et OCG », verdict TOK-115), `check_copy.py`
+bloquant (0 occurrence), 35 captures régénérées — `docs/textes-avant-apres.md` § 0.
 
 ---
 
@@ -123,6 +132,19 @@ validation par Thomas, puis application et passage du script en bloquant (`--str
 🟡 Rapport livré sur `claude/lot19-audit-rigueur-e3bee6` (non fusionnée) : 13 scores audités, aucun ne remplit les 4 critères ; 14 tickets proposés (A1-A8 en S, B1-B5, C1), formulaire à valider par Thomas — `docs/journal/audit-rigueur-statistique.md`.
 
 ---
+
+## Suites du diagnostic TOK-115 et de l'audit de rigueur (17-18/11)
+
+| TOK | Item | Statut | Priorité |
+|-----|------|--------|----------|
+| TOK-122 | Correctifs de l'audit A1 à A8 (A1-A4 d'abord) | 🟡 Livré le 2026-11-18 sur `claude/lot20-audit-a1-a8-cbc82f` (non fusionnée) : A1 à A8 faits, un commit chacun, critères mesurés dans `docs/journal/audit-rigueur-statistique.md` ; deux écarts à l'audit (IC du gain périmé, 20 archétypes testés et non 60) au formulaire. Reste : `build_early_signals.py` + `build_serving_db.py` sur la référence, formulaire lot 20, relecture de la collaboratrice | 🔴 High |
+| TOK-121 | Collecte des dates d'annonce des banlists | 🟡 Livré le 2026-11-18 sur `claude/lot21-dates-annonce-65588d` (non fusionnée) : table `banlist_announcements` (170 listes, 20 du backtest couvertes ou justifiées), `diagnose_ban_radar.py --annonces` ; effet faible et exploratoire (OCG ≈ 5 rangs, TCG rien), Historique inchangé. Reste : lancer le script sur la base de référence, formulaire lot 21, relecture de la collaboratrice — `docs/journal/dates-annonce-banlists-tok-121.md` | 🟠 Medium |
+| TOK-120 | Ban Radar : rangs par liste, régression conditionnelle, pont daté (B5) | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-120-132-ban-radar-pont-d32da4` (Jalon 1, non fusionnée) : `diagnose_ban_radar_rangs.py`, `bridge_date.py` ; règle d'adoption non remplie (échec OCG à la coupure « contenu », égalité avec les staples en TCG), `WEIGHTS` inchangés ; `card_graph_metrics` périmée. Reste : formulaire lot 22, relecture de la collaboratrice — `docs/journal/ban-radar-rangs-tok-120.md` | 🟠 Medium |
+| TOK-132 | B3 : score de pont et simulateur confrontés aux banlists | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-120-132-ban-radar-pont-d32da4` (Jalon 1, non fusionnée) : `diagnose_pont_simulateur.py` ; un ban fait baisser ses porteurs (−3,1 points), mais le score de pont va dans le sens contraire d'« Impact » (+6,5 à part des decks égale) et les archétypes voisins du simulateur ne battent pas une liste naïve. Reste : formulaire lot 26 (renommer en « Diffusion »), relecture de la collaboratrice — `docs/journal/pont-simulateur-tok-132.md` | 🟠 Medium |
+| TOK-129 | B2 : signaux précoces rejoués contre « vues seules » | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-129-93-signaux-fraicheur-d1344d` (Jalon 1, non fusionnée, dépend de TOK-122) : `backtest_early_signals.py` ; critère rempli en cartes (+0,154 contre les vues, IC dates [+0,066 ; +0,252]) mais nul compté par archétype (≈ 8 épisodes) ; la force OCG sans vues désigne l'archétype qui arrive (+0,272). Reste : formulaire TOK-129 (revoir la page), relecture de la collaboratrice — `docs/journal/signaux-precoces-backtest-tok-129.md` | 🟠 Medium |
+| TOK-130 | B1 : fenêtre d'arrivée en TCG par analyse de survie | 🟡 Livré le 2026-11-18 sur `claude/jalon-2-survie-intervalles-ocg-af6a73` (Jalon 2, non fusionnée) : `build_arrival_survival.py` (Kaplan-Meier par archétype, censure, origine glissante) ; critère non atteint et non testable (5 prévisions sur 2024-2025) ; 2025-2026 : 18 sur 23 justes contre 15 sur 23 pour la fenêtre actuelle (p = 0,45). Rien d'affiché ne change. Reste : formulaire Jalon 2 (TOK-130), relecture de la collaboratrice — `docs/journal/fenetre-survie-tok-130.md` | 🟠 Medium |
+| TOK-131 | B4 : intervalles de prévision par archétype (conformes) | 🟡 Livré le 2026-11-18 sur `claude/jalon-2-survie-intervalles-ocg-af6a73` (Jalon 2, non fusionnée) : `build_prediction_intervals.py`, Mondrian par terciles, couverture 75,7 % [67,7 ; 82,0] pour 80 % visés sur 24 mois (critère atteint de justesse, non démontré ; 68,3 % sur les 5 premiers) ; API et dessin derrière `NEXT_PUBLIC_PREDICTION_INTERVALS`, rien d'affiché. Reste : formulaire Jalon 2 (TOK-131), relecture de la collaboratrice — `docs/journal/intervalles-tok-131.md` | 🟠 Medium |
+| TOK-123 | Chantiers de méthode B1 à B4 (lots 23 à 26), C1 plus tard | 🔜 Lots 23-26 ; relecture de la collaboratrice après (décision du 18/11) | 🟠 Medium |
 
 ## TOK-107 — Collaboration et stack (2026-11-16)
 
@@ -137,19 +159,21 @@ Livrables : `docs/collaboration/`, `scripts/check.py`, `.githooks/pre-push`, `.g
 | TOK-109 | Lui fournir une copie de la base (court terme, accès privé) | 🟡 Méthode prête (`scripts/export_db_snapshot.py`, Drive nominatif, `docs/collaboration/transmission-base.md`) ; envoi par Thomas | 🔴 High |
 | — | _3 tickets terminés (TOK-110, 111, 112) : voir l’archive_ | | |
 
-## TOK-84 — Moteur de combos, pilote Branded (réunion du 2026-11-16)
+## TOK-84 — Moteur de combos, pilote Branded (réunion du 2026-11-16) — PRIORITÉ N° 1 DEPUIS LE 18/11
 
-Projet distinct du produit d'analyse de méta, mené en parallèle (le nettoyage du backlog reste
-prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decisions-2026-11-16.md`](docs/moteur-combos/decisions-2026-11-16.md).
+**Décision de Thomas (18/11)** : le moteur de combos passe en tête de la file (`docs/planning/file.md`, lots 17, 18, C1-C3) ; le reste avance en deuxième session. Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decisions-2026-11-16.md`](docs/moteur-combos/decisions-2026-11-16.md).
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-85 | Définitions formelles (état, action, équivalence, arrêt) + schéma de données | 🟡 Rédigé et arbitré (2026-11-16), reste la relecture par un juge — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
+| TOK-85 | Définitions formelles + schéma de données | ✅ Fait ; D3 révisée après la relecture du 17/11 — `docs/moteur-combos/definitions-et-schema.md` | 🟠 Medium |
 | TOK-86 | Banc d'oracle Project Ignis en local (AGPL : jamais dans le produit, jamais fourni au LLM) | 🟡 Installation arrêtée le 2026-11-17 (cœur hors organisation officielle, `premake5` et Lua absents) ; décision de Thomas requise — `docs/moteur-combos/reponses-oracle.md` | 🟠 Medium |
-| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel, ~50 situations) | 🟡 Rédigé (2026-11-16), 72 situations **non validées** — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
-| TOK-90 | Tranche 0 : un combo Branded de bout en bout (bloqué par TOK-85 et TOK-87) | 🔜 Backlog | 🟠 Medium |
+| TOK-87 | Jeu de tests Branded écrit à la main (deck de tournoi réel) | ✅ 72 situations, relues par le juge le 17/11 (relecture 1) — `docs/moteur-combos/tests-branded.yaml` | 🟠 Medium |
+| TOK-90 | Tranche 0 : un combo Branded de bout en bout | 🟡 Livré le 18/11 (lot C1, branche `claude/c1-tok-90-tranche-0-554a89`, non fusionnée) : `moteur_combos/regles.py`, 5 cartes formalisées, combo Aluber → Branded Fusion → Rindbrumm → Kitt rappelle Albaz ; négatifs T60 (hors timing), T04 (effet déjà utilisé), T11 (matériel manquant), T68 « non couvert » ; 10 situations exécutées dans le harnais, 77 tests pytest ; 11 décisions par défaut (`docs/planning/2026-11-18/decisions-prises.md`) | 🔴 Urgent |
 | TOK-89 | Trouver un juge humain qui connaît le jeu | 🟡 Relecture 1 faite le 17/11 (joueur de tournoi, non arbitre, Google Form + entretien) : 32 points sur 34 confirmés, R22 contesté (probable malentendu), R34 complété ; D3 révisée (« entre-deux », 18/11), D1 maintenue malgré l'absence de `Lubellion` — `docs/moteur-combos/reponses-juge-2026-11-17.md`. Relecteur plus disponible : R22 levé par cohérence avec R23 ; R08, R27 (b), R34 n'ont qu'un avis (prochain relecteur ou oracle TOK-86) | 🔴 High |
 | TOK-88 | Journal de chronométrage des étapes | 🟡 Ouvert — `docs/moteur-combos/chronometrage.md` (3 sessions d'agent le 2026-11-16, validation humaine non mesurée) | 🟢 Low |
+| TOK-117 | Fondations du moteur (schéma, chargement des decks, harnais de tests) | 🟡 Livré le 18/11 (lot 18, fusionné dans `claude/moteur-18-11`) : `moteur_combos/`, `data/combos.db` (ignorée), harnais `python scripts/combos_harnais.py` (72 tests classés : 54 confirmés / 6 un seul avis / 12 sans point relu), 50 tests pytest, aucune règle de jeu ; 12 décisions par défaut à valider (`docs/planning/2026-11-18/decisions-prises.md`) | 🔴 Urgent |
+| TOK-118 | J1 : formaliser les 37 cartes du pilote, taux d'erreur chiffré | 🟡 Formalisation livrée le 18/11 (lot C2, branche `claude/c2-j1-formalisation-a044b3`, non fusionnée) : 37 cartes `formalisee`, 57/57 effets du pilote exercés, 69/72 situations du YAML + 30 situations J1 conformes, 0 erreur trouvée. Reste pour atteindre J1 : oracle sur les 30 situations J1 et les points N01-N13 (`situations-pour-oracle.md`), relecture à l'aveugle de 20 effets tirés + 15 hors périmètre (`j1-rapport.md` § 4), formulaire C2 — `docs/moteur-combos/j1-rapport.md` | 🔴 High |
+| TOK-119 | J2 : retrouver seul les combos des guides publics (échéance de la règle d'arrêt : 13/01/2027) | 🟡 Livré le 18/11 (lot C3, branche `claude/c3-j2-exploration-ff7592`, non fusionnée) : étape 0 (N09 corrigé, N01, N04), exploration bornée + stockage, 5 combos de guides ; séquences retrouvées 4 sur 5 sans cible, 5 sur 5 vers la cible, hasard 0 sur 5. **« Atteint sous réserve »**, horloge maintenue. Reste pour J2 plein : 5 combos de plus transcrits par un joueur, cible et jalons figés avant exécution, essai à 5 cartes ; formulaire C3 — `docs/moteur-combos/j2-rapport.md` | 🔴 High |
 
 - ⚠ À arbitrer avec le data scientist : `views_week` des cartes existantes n'est jamais rafraîchi
   (1 088 valeurs sur 14 084 égales à celles de l'API du jour), alors que les cartes nouvelles
@@ -157,7 +181,7 @@ prioritaire). Décisions, jalons et règle d'arrêt : [`docs/moteur-combos/decis
   dates différentes. Ce défaut existait avant ; l'ajout des cartes nouvelles le rend visible.
 - ⚠ `cards.archetype` ne suit pas les règles du jeu (`Fallen of Albaz` y est « Dogmatika », ce qu'il
   n'est pas) : le moteur calcule l'appartenance depuis le nom et les clauses « always treated as ».
-- TOK-89 passe en priorité haute : sans juge, les 72 tests restent des hypothèses (34 points de règle).
+- TOK-89 fait (relecture 1 du 17/11) ; une seconde relecture par un arbitre reste souhaitable pour R08, R27, R34.
 
 Jalons : **J1** 100 % des cartes Branded formalisées avec un taux d'erreur chiffré · **J2** le moteur
 retrouve seul les combos des guides publics · **J3** il en trouve un qu'aucun guide ne cite. Règle

@@ -11,9 +11,10 @@
   quelles cartes montent) et essaie de **l'anticiper**.
 - **Pour qui :** à terme, les boutiques de cartes (B2B, abonnement) qui doivent commander
   leur stock des mois avant que la demande n'explose ; et les joueurs (site public).
-- **Thèse centrale :** le format japonais (OCG) précède le format occidental (TCG) d'environ
-  **4 mois** (annoncé : r = 0,771, n = 43 ; **recalculé le 2026-11-16 : r ≈ 0,53 à 4 mois, IC95 [0,43 ; 0,59]**, voir §4). Un archétype qui domine
-  l'OCG aujourd'hui dominera probablement le TCG dans quatre mois : signal d'achat.
+- **Thèse centrale :** le format japonais (OCG) précède le format occidental (TCG) de quelques mois
+  (**recalculé le 2026-11-16 : r ≈ 0,53 à 4 mois, IC95 [0,43 ; 0,59], plateau de 2 à 6 mois** ; l'ancien r = 0,771,
+  n = 43, n'est pas reproductible, voir §4). Un archétype fort en OCG a plus de chances d'être fort en TCG
+  quelques mois plus tard : c'est la base du signal boutique.
 - **Second produit :** le **Ban Radar**, un score 0-100 du risque qu'une carte soit bannie à
   la prochaine liste.
 - **Où on en est :** pipeline de données, modèles, API et site (Next.js) existent et tournent
@@ -26,12 +27,12 @@ Thomas (le fondateur) apprend la data science en parallèle (bootcamp). Il veut 
 
 | Source | Contenu | Volume | Fragilité |
 |---|---|---|---|
-| **YGOPRODeck** (API v7) | Cartes, effets, archétypes, banlist courante, prix, popularité (`views_week`) | 13 797 cartes | API publique, stable |
-| **yugiohmeta.com** (API *non officielle*) | Decklists des top-coupes de tournois, TCG + OCG, depuis 2024 | ~21 200 decks, ~850 000 lignes `deck_cards` | **Point de défaillance unique** : endpoint non documenté, sans clé, qui peut être coupé. Les données y sont collectées par un réseau communautaire (soumissions de joueurs/organisateurs), pas par un flux officiel |
-| **Yugipedia** (scraping) | Historique des banlists TCG + OCG | ~24 000 lignes | Wiki : amende les listes passées rétroactivement, donc la table est reconstruite intégralement à chaque run |
+| **YGOPRODeck** (API v7) | Cartes, effets, archétypes, banlist courante, prix, popularité (`views_week`, figée au 13/06/2026) | 14 084 cartes (2026-11-18) | API publique, stable |
+| **yugiohmeta.com** (API *non officielle*) | Decklists des top-coupes de tournois, TCG + OCG, depuis mai 2023 | 23 948 decks (11 618 TCG, 12 330 OCG), 1 026 945 lignes `deck_cards` (2026-11-18) | **Point de défaillance unique** : endpoint non documenté, sans clé, qui peut être coupé. Les données y sont collectées par un réseau communautaire (soumissions de joueurs/organisateurs), pas par un flux officiel |
+| **Yugipedia** (scraping) | Historique des banlists TCG + OCG ; dates d'annonce (`banlist_announcements`, TOK-121) | 24 696 lignes ; 170 listes datées | Wiki : amende les listes passées rétroactivement, donc la table est reconstruite intégralement à chaque run |
 | **YouTube** (transcripts) | Séquences de cartes citées dans des combo guides | quelques centaines de lignes | Transcription automatique qui déforme les noms japonais (« Kewl Tune » → « Cool Tune ») |
 
-Stockage : **SQLite** (`data/yugioh.db`, ~270 Mo, une quarantaine de tables). Les tables dérivées
+Stockage : **SQLite** (`data/yugioh.db`, ~275 Mo, 49 tables au 2026-11-18). Les tables dérivées
 (scores, prédictions, graphe…) sont produites par les notebooks et scripts, pas par l'API.
 Schéma complet : [`data-models.md`](data-models.md).
 
@@ -42,7 +43,7 @@ Schéma complet : [`data-models.md`](data-models.md).
  (YGOPRODeck,            (tables brutes)        │ (tables dérivées : meta_scores,
   yugiohmeta, Yugipedia)                        │  meta_predictions, boutique_*, ban_radar…)
                                                 ▼
-                        scripts/build_serving_db.py ──► data/serving.db (9 Mo, 12 tables)
+                        scripts/build_serving_db.py ──► data/serving.db (~12 Mo, 20 tables)
                                                                  │ lecture seule
                                                                  ▼
                                               backend/ (FastAPI) ──► frontend/ (Next.js 16)
@@ -51,10 +52,13 @@ Schéma complet : [`data-models.md`](data-models.md).
 - L'API ne calcule rien : elle sert des tables **précalculées**. Toute la science est en
   amont, dans `notebooks/` et `scripts/`.
 - Un dashboard Streamlit historique (`app.py`) existe encore ; le site Next.js est la cible.
+- Le job du lundi (`scripts/refresh_decks.py`) se termine par `scripts/check_freshness.py` (TOK-93) : une règle de
+  fraîcheur par table servie, plus la santé de l'endpoint yugiohmeta `/top-decks`.
 - **Peu de tests automatisés.** `python scripts/check.py` regroupe ce qui existe (§8) : test
-  de fumée de l'API (tous les endpoints répondent 200), `build_serving_db.py --check` (les
-  tables servies existent), tsc + eslint, et le backtest du Ban Radar (§7), seul garde-fou
-  *statistique*. Aucun test ne vérifie qu'un chiffre affiché est juste : c'est un chantier
+  de fumée de l'API (tous les endpoints répondent 200, plus les tests de `backend/tests/`),
+  `build_serving_db.py --check` (les tables servies existent), tsc + eslint + test du calcul de
+  Wilson du front, les textes du site (`check_copy.py`), les tests du moteur de combos, le garde-fou
+  des commandes, et le backtest du Ban Radar (§7), seul garde-fou *statistique*. Aucun test ne vérifie qu'un chiffre affiché est juste : c'est un chantier
   pour toi (voir [`collaboration/avis-stack.md`](collaboration/avis-stack.md)).
 
 ## 4. Ce que font les modèles — et leurs réserves
@@ -87,7 +91,7 @@ Classés par impact. Les trois premiers touchent à la **validité** de ce qu'on
    `illegal = 0` des notebooks 02, 03, 04, 09, 10, 12 et de `build_ban_radar.py` jette donc
    l'essentiel de l'historique, **en priorité les decks qui jouaient des cartes bannies
    ensuite**. L'étape 1 est faite (`scripts/compute_deck_legality.py` → table
-   `deck_legality`, 20 220 decks légaux sur ~21 200). **L'étape 2 est faite (2026-11-16)** : consommateurs rebranchés,
+   `deck_legality` : 22 422 decks légaux, 611 illégaux et 915 non évaluables sur 23 948 au 2026-11-18). **L'étape 2 est faite (2026-11-16)** : consommateurs rebranchés,
    tout recalculé (`scripts/refresh_all.py`), backtest relancé. Les chiffres de vitrine (r = 0,771…)
    ont changé : voir §4.
 2. ~~**Évaluer la prédiction sur ce qu'elle prétend prédire.**~~ *(fait : `evaluation-prediction.md`)* Mesurer la corrélation des
@@ -103,7 +107,7 @@ Classés par impact. Les trois premiers touchent à la **validité** de ce qu'on
    de surapprentissage est maximal ; la validation doit rester temporelle.
 5. **Pollution Genesys.** Le format Genesys (légalité par points) représente ~11 % du TCG
    depuis février 2026 et l'API le juge « légal » : le méta TCG actuel en est
-   contaminé : **mesuré le 2026-11-16 à 27-44 % des decks TCG depuis juillet** (`tok-77-genesys.md`) ; le pipeline actuel les exclut. 388 decks sont marqués « non évaluables » dans `deck_legality`.
+   contaminé : **mesuré le 2026-11-16 à 27-44 % des decks TCG depuis juillet** (`tok-77-genesys.md`) ; le pipeline actuel les exclut. 915 decks sont marqués « non évaluables » dans `deck_legality` (2026-11-18).
 6. ~~**Script de validation du `prediction_log`**~~ *(fait : `scripts/validate_predictions.py`)*
 7. **Clustering** (silhouette 0,171) : revoir les features, le scaling, le choix de k.
 
@@ -120,7 +124,7 @@ Classés par impact. Les trois premiers touchent à la **validité** de ce qu'on
   avec un `.json` qui dit de quand elle date). Installation et mise à jour :
   [`collaboration/transmission-base.md`](collaboration/transmission-base.md). **Ne la
   republie nulle part.**
-- `data/serving.db` (~10 Mo) suffit pour lancer l'API et le site, **pas** pour les notebooks.
+- `data/serving.db` (~12 Mo) suffit pour lancer l'API et le site, **pas** pour les notebooks.
   Elle se régénère : `python scripts/build_serving_db.py`.
 - En dernier recours, la base se reconstruit (~20 min + les notebooks), mais tu n'auras pas
   exactement les mêmes chiffres que Thomas, et ça dépend de l'API yugiohmeta.
@@ -139,19 +143,13 @@ git config core.hooksPath .githooks             # optionnel : vérifications ava
 ### Reconstruire la base (ordre à respecter)
 
 ```bash
-python scripts/fetch_cards.py && python scripts/init_db.py
-python scripts/fetch_tournament_decks.py          # TCG, ~10 min, idempotent
-python scripts/fetch_ocg_decks.py                 # OCG, ~10 min, idempotent
-python scripts/fetch_banlist_history.py           # reconstruit la table à chaque run
-python scripts/compute_deck_legality.py           # table deck_legality
-# ou, pour tout rafraîchir d'un coup : scripts/refresh_decks.py puis scripts/refresh_all.py
-python scripts/setup_impact_tables.py
-python scripts/snapshot_prices.py
-# puis les notebooks, dans l'ordre : 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09_banlist
-#   → 10_archetypes → 10_boutique → 11 → 12   (01 et 09_ocg_tcg_correlation : lecture seule)
-python scripts/build_ban_radar.py && python scripts/build_ban_radar.py --backtest
-python scripts/build_card_impact.py               # dérive de ban_radar : à lancer après
-python scripts/build_serving_db.py                # produit serving.db pour l'API
+python scripts/fetch_cards.py && python scripts/init_db.py   # une fois : init_db.py écrase views_week
+python scripts/refresh_decks.py   # cartes nouvelles, decks TCG + OCG (idempotents), banlists, légalité,
+                                  # puis refresh_all.py (notebooks 02, 04, 05, 10 et scripts build_*),
+                                  # serving.db et contrôle de fraîcheur ; `refresh_all.py --list` : l'ordre
+# hors chaîne, à la main : notebooks 03 (graphe), 07 (texte), 08 (combos), 10_archetypes, 12 (clustering)
+python scripts/build_ban_history.py && python scripts/build_serving_db.py   # onglet Historique du Ban Radar
+python scripts/build_ban_radar.py --backtest      # à chaque retouche du scoring
 ```
 
 ### Lancer le projet
@@ -210,6 +208,11 @@ git push
 | `WEIGHTS` identiques dans `build_ban_radar.py` et l'API | toujours | oui |
 | `tsc --noEmit` + `eslint` | `frontend/` modifié | oui |
 | `build_serving_db.py --check` + test de fumée sur `yugioh.db` **et** `serving.db` | `backend/` ou `scripts/` modifié | oui |
+| Test du calcul de Wilson du front (`npm run test:stats`) | `frontend/` modifié | oui |
+| Garde-fou des commandes (`.claude/hooks/test_garde_fou.py`) | toujours (0,2 s) | oui |
+| Textes du site (`check_copy.py --strict`) | `frontend/src/` modifié, ou `--all` | oui |
+| Tests du moteur de combos (`moteur_combos/tests`) | `moteur_combos/` ou fichiers du jeu de tests modifiés | oui |
+| Tests visuels (51 captures) | seulement avec `--visuel` | oui |
 | Backtest du Ban Radar | scoring modifié | non : il affiche les rangs médians, **à comparer à `context.md`** |
 
 Une étape « ignorée » (base ou `node_modules` absents) n'est **pas** réussie : lance-la, ou

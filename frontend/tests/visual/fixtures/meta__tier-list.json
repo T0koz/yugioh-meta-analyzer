@@ -603,5 +603,24 @@
  ],
  "window_start": "2026-10",
  "window_end": "2026-11",
- "n_decks": 396
+ "n_decks": 396,
+ "tier_thresholds": [
+  {
+   "tier": "T0",
+   "share": 0.4
+  },
+  {
+   "tier": "T1",
+   "share": 0.15
+  },
+  {
+   "tier": "T2",
+   "share": 0.07
+  },
+  {
+   "tier": "T3",
+   "share": 0.03
+  }
+ ],
+ "tier_min_decks": 5
 }

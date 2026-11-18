@@ -7,6 +7,10 @@
   l'orchestrateur ; sous-agent autorisé seulement pour `data-scientist-ygo` (chiffres) et `gardien-donnees`
   (écriture en base), en lecture seule sauf mention contraire.
 - Tu ne touches qu'à ta section de `BACKLOG.md` et de `context.md` (une section par ticket).
+- **Retrait possible d'un ticket (décision 0054, 18/11)** : un commit par ticket avec le TOK dans le message (jamais
+  deux tickets dans un même commit) ; écriture en base additive seulement (table ou colonne nouvelle, jamais de
+  modification d'une table existante sans sauvegarde dédiée ni formulaire) ; si ton ticket utilise le travail d'un
+  autre ticket non encore dans `main`, écris-le dans ton compte rendu (« dépend de TOK-xxx »).
 - Le worktree n'a ni base ni `node_modules` : `npm install` dans `frontend/`, backend avec
   `YGO_DB_PATH=<dépôt principal>/data/serving.db`, `yugioh.db` en lecture seule (`file:…?mode=ro`).
 - `python scripts/check.py` doit passer avant de rendre la main. Une étape ignorée n'est pas réussie : dis-le.

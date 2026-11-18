@@ -1,4 +1,4 @@
-import { PROOF } from "@/lib/proof-data";
+import type { Proof } from "@/lib/proof-data";
 import { fmtMonthShort, fmtNum } from "@/lib/format";
 
 // Graphique « la preuve » : SVG rendu côté serveur dans son état final (les
@@ -12,26 +12,25 @@ const X1 = 700;
 const Y0 = 330;
 const Y1 = 24;
 const MAX = 35;
-const N = PROOF.ocg.length;
-const STEP = (X1 - X0) / (N - 1);
 
-const sx = (i: number) => X0 + i * STEP;
 const sy = (v: number) => Y0 - (v / MAX) * (Y0 - Y1);
-const path = (values: readonly number[]) =>
-  values.map((v, i) => `${i ? "L" : "M"}${sx(i).toFixed(1)} ${sy(v).toFixed(1)}`).join(" ");
 
-function monthAt(index: number): Date {
-  const [year, month] = PROOF.firstMonth.split("-").map(Number);
-  return new Date(year, month - 1 + index, 1);
-}
-const monthName = (index: number) => monthAt(index).toLocaleDateString("fr-FR", { month: "long" });
-const axisLabel = (index: number) => {
-  const d = monthAt(index);
-  return fmtMonthShort(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
-};
-
-export function ProofChart() {
-  const { ocg, tcg, ocgPeak, tcgPeak, archetype } = PROOF;
+export function ProofChart({ proof }: { proof: Proof }) {
+  const { ocg, tcg, ocgPeak, tcgPeak, archetype, firstMonth } = proof;
+  const N = ocg.length;
+  const STEP = (X1 - X0) / (N - 1);
+  const sx = (i: number) => X0 + i * STEP;
+  const path = (values: readonly number[]) =>
+    values.map((v, i) => `${i ? "L" : "M"}${sx(i).toFixed(1)} ${sy(v).toFixed(1)}`).join(" ");
+  const monthAt = (index: number) => {
+    const [year, month] = firstMonth.split("-").map(Number);
+    return new Date(year, month - 1 + index, 1);
+  };
+  const monthName = (index: number) => monthAt(index).toLocaleDateString("fr-FR", { month: "long" });
+  const axisLabel = (index: number) => {
+    const d = monthAt(index);
+    return fmtMonthShort(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+  };
   const lag = tcgPeak - ocgPeak;
   const lagY = sy(Math.max(ocg[ocgPeak], tcg[tcgPeak])) - 26;
   const text = "font-mono text-[11px]";

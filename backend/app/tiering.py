@@ -6,7 +6,7 @@ l'endpoint source renvoie 404. On recalcule donc la tier list à la volée depui
 pouvoir être testées sans base (backend/tests/test_tiering.py).
 """
 
-from math import sqrt
+from math import erfc, sqrt
 
 # Un mois seul est trop mince en début de mois (156 decks au 14 novembre 2026 :
 # l'intervalle à 95 % d'une part de 5 % fait ±3,4 points, plus large qu'un seuil
@@ -25,6 +25,9 @@ TREND_Z = 1.96  # seuil bilatéral à 5 %
 # Le test n'est pas valide sur de très petits comptes (5 decks contre 0 sortirait
 # « en hausse ») : Stable d'office en dessous.
 TREND_MIN_DECKS = 10
+# Correction pour comparaisons multiples (audit de rigueur, A8, lot 20) : Benjamini-Hochberg sur les
+# archétypes réellement testés, taux de fausses tendances attendu ≤ 5 % parmi celles affichées.
+TREND_FDR = 0.05
 
 
 def tier_for(share: float, decks: int) -> str:
@@ -40,8 +43,12 @@ def trend_for(decks: int, n: int, decks_prev: int, n_prev: int) -> str:
     """Rising / Declining si la part a bougé au-delà du bruit d'échantillonnage.
 
     z = (p1 - p2) / sqrt(p(1-p)(1/n1 + 1/n2)), p étant la part poolée des deux
-    fenêtres. Avec une soixantaine d'archétypes testés à 5 %, deux ou trois
-    signaux peuvent être dus au hasard : c'est une indication, pas une preuve.
+    fenêtres. Test brut, archétype par archétype : la tier list passe par
+    `trends_corrected` (Benjamini-Hochberg sur les archétypes testés, ceux qui
+    cumulent au moins TREND_MIN_DECKS decks sur les deux fenêtres ; 20 sur 60 au
+    14/11/2026). Dépendance faible entre parts d'une même fenêtre (somme à 1) :
+    simulation du lot 20, au moins une fausse tendance dans 3,75 % des tirages
+    sous l'hypothèse nulle globale avec BH, 66 % sans correction.
     """
     if n <= 0 or n_prev <= 0 or decks + decks_prev < TREND_MIN_DECKS:
         return "Stable"
@@ -55,6 +62,43 @@ def trend_for(decks: int, n: int, decks_prev: int, n_prev: int) -> str:
     if z <= -TREND_Z:
         return "Declining"
     return "Stable"
+
+
+def trend_pvalue(decks: int, n: int, decks_prev: int, n_prev: int) -> float | None:
+    """p-valeur bilatérale du test z de deux proportions de `trend_for`, None si le test ne s'applique pas."""
+    if n <= 0 or n_prev <= 0 or decks + decks_prev < TREND_MIN_DECKS:
+        return None
+    pooled = (decks + decks_prev) / (n + n_prev)
+    variance = pooled * (1 - pooled) * (1 / n + 1 / n_prev)
+    if variance <= 0:
+        return None
+    z = (decks / n - decks_prev / n_prev) / sqrt(variance)
+    return erfc(abs(z) / sqrt(2))
+
+
+def benjamini_hochberg(pvalues: list[float | None], q: float = TREND_FDR) -> list[bool]:
+    """Hypothèses rejetées au taux de fausses découvertes `q` (procédure de Benjamini-Hochberg).
+
+    Les None (test non applicable) ne comptent pas dans le nombre de tests et ne sont jamais rejetés.
+    """
+    tested = sorted((p, i) for i, p in enumerate(pvalues) if p is not None)
+    m = len(tested)
+    cutoff = 0
+    for rank, (p, _) in enumerate(tested, start=1):
+        if p <= q * rank / m:
+            cutoff = rank
+    rejected = [False] * len(pvalues)
+    for p, i in tested[:cutoff]:
+        rejected[i] = True
+    return rejected
+
+
+def trends_corrected(counts: list[tuple[int, int]], n: int, n_prev: int) -> list[str]:
+    """Tendance de chaque archétype (decks, decks_prev), après correction de Benjamini-Hochberg :
+    une hausse ou une baisse de `trend_for` n'est gardée que si le test résiste à la correction."""
+    raw = [trend_for(k, n, k_prev, n_prev) for k, k_prev in counts]
+    keep = benjamini_hochberg([trend_pvalue(k, n, k_prev, n_prev) for k, k_prev in counts])
+    return [t if t == "Stable" or kept else "Stable" for t, kept in zip(raw, keep)]
 
 
 def meta_score_for(share: float, avg_placement: float, best_placement_score: float) -> float:

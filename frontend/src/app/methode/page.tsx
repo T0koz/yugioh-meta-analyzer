@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 import { fmtDate, fmtMonthShort, fmtNum, fmtPct } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
+import { BAN_VERDICT } from "@/lib/ban-verdict";
 import { SITE_FACTS } from "@/lib/site-facts";
 import { WEAK_MONTH_DECKS } from "@/lib/wilson";
 import { Em } from "@/components/ds/em";
@@ -11,6 +12,7 @@ import { IntervalBar } from "@/components/ds/explain";
 import { DataFooter, Page, PageHero } from "@/components/ds/page";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { BanHistoryList } from "@/types";
+import { earlyTextNote } from "@/lib/early-signals";
 
 // Page Méthode (lot 15, charte « ton et explication » §4) : une section par outil,
 // dans l'ordre de la navigation ; sources, dates, seuils et leur origine, résultats
@@ -163,12 +165,13 @@ function BanTable({ lists }: { lists: BanHistoryList[] }) {
 }
 
 export default async function MethodePage() {
-  const [tierList, evolution, banHistory, boutique, prices] = await Promise.all([
+  const [tierList, evolution, banHistory, boutique, prices, early] = await Promise.all([
     api.tierList(),
     api.evolution(),
     api.banHistory(),
     api.boutiqueSignals(),
     api.boutiquePrices(),
+    api.earlySignals(),
   ]);
 
   const months = Object.entries(evolution.decks_by_month).sort(([a], [b]) => a.localeCompare(b));
@@ -222,20 +225,25 @@ export default async function MethodePage() {
       <Section id="seuils" title="Seuils et leur origine">
         <div className="mt-5">
           <SimpleTable
-            caption="Seuils appliqués sur le site et leur origine"
-            head={["Seuil", "Valeur", "Origine"]}
+            caption="Seuils et poids appliqués sur le site, leur origine et leur date"
+            head={["Réglage", "Valeur", "Origine"]}
             rows={[
-              ["Mois atténué dans les séries", `moins de ${WEAK_MONTH_DECKS} decks`, "à 100 decks, une part de 10 % est connue à ±6 points près"],
-              ["Fiche de composition d’un archétype", "8 listes", "9 à 13 % d’étiquettes instables à 8 listes, 19 à 24 % à 5"],
-              ["Banlist retenue dans le backtest", "600 decks", "mesure du 14 août 2026 : la seule liste sous ce volume (OCG d’avril 2026, 416 decks à l’époque) tombait au niveau du hasard"],
-              ["Archétype classé Rogue", "moins de 5 decks", "pas de part ni de tendance lisible en dessous"],
-              ["Libellé boutique Fort / Modéré", rule ? `rang ${rule.strong_max_rank} / rang ${rule.moderate_max_rank} sur ${rule.population}` : "10 % / 25 % des archétypes", "premiers 10 % et 25 % ; provisoires, non validés hors échantillon"],
+              ["Mois atténué dans les séries", `moins de ${WEAK_MONTH_DECKS} decks`, "fixé à la main le 17 novembre 2026, d’après une mesure : à 100 decks, une part de 10 % est connue à ±6 points près"],
+              ["Fiche de composition d’un archétype", "8 listes", "fixé à la main le 16 novembre 2026, d’après une mesure : 9 à 13 % d’étiquettes instables à 8 listes, 19 à 24 % à 5"],
+              ["Carte de base / d’appoint (Decks)", "80 % / 20 % des listes", "fixés à la main le 16 novembre 2026 : seuils ronds ; 80 % donne un cœur de deck plausible, ce n’est pas un optimum"],
+              ["Seuils de tier", "T0 40 %, T1 15 %, T2 7 %, T3 3 % des decks", "fixés à la main le 16 novembre 2026 : seuils ronds, conventionnels ; un classement descriptif, sans validation"],
+              ["Archétype classé Rogue", "moins de 5 decks", "fixé à la main le 16 novembre 2026 : pas de part ni de tendance lisible en dessous"],
+              ["Poids du Ban Radar", "part des decks 30 %, porteur 25 %, exemplaires 20 %, restriction 10 %, élan 10 %, pont 5 %", "fixés à la main le 14 août 2026, pas estimés sur les données ; 3 des 20 banlists rejouées sont postérieures à ce réglage ; le classement y est sensible"],
+              ["Banlist retenue dans le backtest", "600 decks", "fixé à la main le 14 août 2026, d’après une mesure : la seule liste sous ce volume (OCG d’avril 2026, 416 decks à l’époque) tombait au niveau du hasard"],
+              ["Libellé boutique Fort / Modéré", rule ? `rang ${rule.strong_max_rank} / rang ${rule.moderate_max_rank} sur ${rule.population}` : "10 % / 25 % des archétypes", "fixés à la main le 16 novembre 2026 : premiers 10 % et 25 % ; provisoires, non validés hors échantillon"],
+              ["Signaux précoces", "vues 35 %, texte 35 %, OCG 30 % ; sortie TCG depuis moins de 168 jours ; moins de 3 % des decks sur 90 jours", "fixés à la main (notebook de juin 2026, filtres ajoutés le 18 novembre 2026) ; jamais validés"],
+              ["Direction des prédictions", "écart dessiné d’au moins 0,3 point", "fixé à la main, repris du modèle de prévision (seuil sur la variation complète, ramené à l’échelle dessinée)"],
             ]}
           />
           <DataFooter
             source="documentation du projet et calculs des scripts"
-            date="seuils en vigueur au 17 novembre 2026"
-            uncertainty="les seuils de 8 listes et 600 decks viennent de mesures ; ceux du libellé boutique n’ont pas pu être validés (une seule série datée)"
+            date="réglages en vigueur au 18 novembre 2026"
+            uncertainty="aucun de ces réglages n’est estimé sur les données ni validé hors échantillon ; ceux de 100 decks, 8 listes et 600 decks s’appuient sur une mesure"
           />
         </div>
       </Section>
@@ -244,8 +252,9 @@ export default async function MethodePage() {
         <Facts
           items={[
             { term: "Ce que mesure", text: "La part des decks de tournoi TCG de la fenêtre qui jouent chaque archétype, et l’écart avec la fenêtre précédente." },
-            { term: "Seuils", text: "T0 dès 40 % des decks, T1 dès 15 %, T2 dès 7 %, T3 dès 3 %, Rogue en dessous ou sous 5 decks." },
-            { term: "Tendance", text: "Affichée seulement si l’écart avec la fenêtre précédente dépasse le bruit d’échantillonnage, testé archétype par archétype." },
+            { term: "Seuils", text: "T0 dès 40 % des decks, T1 dès 15 %, T2 dès 7 %, T3 dès 3 %, Rogue en dessous ou sous 5 decks. Seuils ronds, fixés à la main." },
+            { term: "Tendance", text: "Écart avec la fenêtre précédente testé archétype par archétype, puis corrigé pour le nombre de tests : en moyenne, au plus 5 % des tendances affichées seraient dues au hasard. Contrôle approché : les parts d’une même fenêtre sont liées entre elles, un effet faible vérifié par simulation." },
+            { term: "À la limite", text: "Tier marqué « limite » quand l’intervalle à 95 % de la part contient un seuil : avec d’autres decks, l’archétype pourrait passer au tier d’à côté." },
             { term: "Limites", text: "La fenêtre courante compte quelques centaines de decks : un archétype à 2 % repose sur une dizaine de listes." },
           ]}
         />
@@ -267,7 +276,7 @@ export default async function MethodePage() {
         <Facts
           items={[
             { term: "Ce que mesure", text: "Pour chaque archétype, la part de ses listes qui jouent chaque carte, et le nombre médian d’exemplaires." },
-            { term: "Seuils", text: "Carte de base dans au moins 80 % des listes, d’appoint dans au moins 20 % ; fiche à partir de 8 listes." },
+            { term: "Seuils", text: "Carte de base dans au moins 80 % des listes, d’appoint dans au moins 20 % (seuils ronds, fixés à la main) ; fiche à partir de 8 listes." },
             { term: "Fenêtre", text: "La même que la tier list : les effectifs des deux pages sont égaux." },
             { term: "Limites", text: "Pas d’intervalle affiché : à 8 listes il serait trop large pour être lu ; chaque part est donnée avec son effectif." },
           ]}
@@ -335,7 +344,7 @@ export default async function MethodePage() {
       <Section id="predictions" title="Prédictions">
         <Facts
           items={[
-            { term: "Ce que mesure", text: "Le score méta attendu le mois suivant si la situation récente se prolonge, en ramenant les écarts vers la moyenne." },
+            { term: "Ce que mesure", text: "Le score méta attendu le mois qui suit le dernier mois complet observé si la situation récente se prolonge, en ramenant les écarts vers la moyenne. Ce mois est en général le mois en cours au calcul : ses decks déjà relevés ne sont pas utilisés." },
             { term: "Construction", text: "Pour l’essentiel la valeur du mois observé, corrigée d’une part de retour à la moyenne apprise sur l’historique." },
             { term: "Incertitude", text: "Aucun intervalle par archétype : le modèle ne produit qu’une valeur." },
             { term: "Limites", text: "N’anticipe ni les ruptures (banlist, nouvelle extension) ni l’arrivée d’un nouvel archétype." },
@@ -343,18 +352,21 @@ export default async function MethodePage() {
         />
         <Validation title="Erreur, rejouée mois par mois sur l’historique">
           <SimpleTable
-            caption="Erreur de prévision comparée à deux références"
-            head={["Référence", "Erreur du modèle"]}
+            caption="Erreur de prévision comparée à deux références, avec intervalle à 95 %"
+            head={["Comparaison", "Résultat", "Intervalle à 95 %"]}
             rows={[
-              ["« rien ne change » (valeur du mois observé)", "environ 5 % de moins"],
-              ["retour à la moyenne seul", "équivalente"],
+              ["erreur sur la variation du score, contre « rien ne change »", "6 % de moins (0,20 point)", "0,10 à 0,30 point de moins"],
+              ["classement des archétypes par score prévu, contre « rien ne change »", "aucun écart démontré (écart de corrélation de rang +0,01)", "−0,01 à +0,04"],
+              ["contre le retour à la moyenne seul", "équivalente", "—"],
             ]}
           />
           <DataFooter
-            source="validation glissante dans le temps (notebook 05)"
-            date="dernier calcul du modèle"
-            uncertainty="gain faible : le modèle fait à peine mieux que la valeur du mois observé"
-          />
+            source="validation glissante dans le temps, decks TCG seuls, 24 mois de test, 519 prévisions"
+            date="évaluation du 16 novembre 2026"
+            uncertainty="intervalles à 95 % par rééchantillonnage des mois ; points de score ×100 ; gain faible et limité à la variation : en niveau, le modèle ne classe pas mieux que la valeur du mois observé"
+          >
+            la part du modèle (30 %) a été choisie sur ces mêmes 24 mois
+          </DataFooter>
         </Validation>
       </Section>
 
@@ -364,7 +376,9 @@ export default async function MethodePage() {
             { term: "Ce que mesure", text: "La ressemblance de chaque carte avec le profil des cartes déjà touchées par Konami, sur six critères." },
             { term: "Critères", text: "Part des decks, archétype porteur, exemplaires joués, restriction en cours, élan sur 3 mois, position de pont." },
             { term: "Fenêtre", text: "Les 6 derniers mois de decks de tournoi TCG." },
+            { term: "Poids", text: "Fixés à la main le 14 août 2026, pas estimés sur les données. 3 des 20 banlists rejouées sont postérieures à ce réglage ; les autres étaient connues au moment du réglage." },
             { term: "Limites", text: "Un score de risque, pas une probabilité. Le méta Genesys, exclu des données, lui échappe." },
+            { term: "Résultat", text: BAN_VERDICT.measures },
           ]}
         />
       </Section>
@@ -372,10 +386,10 @@ export default async function MethodePage() {
       <Section id="ban-historique" title="Ban Radar contre l’historique">
         <Facts
           items={[
-            { term: "Protocole", text: "Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures." },
+            { term: "Protocole", text: "Chaque banlist est rejouée avec les decks des 6 mois qui précèdent son entrée en vigueur, jamais avec des données postérieures. Exception : le critère « pont » vient du graphe actuel ; effet mesuré négligeable (le retirer change de 2 le nombre de cartes touchées dans le top 25 TCG)." },
             { term: "Hasard", text: "Rangs médians qu’on obtiendrait en tirant au sort autant de cartes : 90 % des tirages tombent dans la bande." },
             { term: "Base de comparaison", text: "Classer simplement les cartes par part des decks (« staples les plus jouées »)." },
-            { term: "Lecture", text: "En attente du diagnostic du Ban Radar TCG (TOK-115)." },
+            { term: "Lecture", text: BAN_VERDICT.significance },
           ]}
         />
         <Validation title="Rang médian des cartes touchées, liste par liste">
@@ -404,8 +418,16 @@ export default async function MethodePage() {
                 ? `Rang parmi les ${rule.population} archétypes OCG suivis : Fort jusqu’au rang ${rule.strong_max_rank}, Modéré jusqu’au rang ${rule.moderate_max_rank}. Seuils provisoires.`
                 : "Rang parmi les archétypes OCG suivis. Seuils provisoires.",
             },
-            { term: "Arrivée en TCG", text: "Période où 8 archétypes sur 10 sont arrivés en TCG par le passé : 75 à 202 jours après le premier deck OCG, mesurée sur 1 897 cartes sorties de 2022 à 2025." },
-            { term: "Limites", text: "Rien n’est encore échu pour juger les signaux actuels ; la fenêtre d’arrivée n’a pas été vérifiée sur des cas nouveaux." },
+            { term: "Arrivée en TCG", text: `De 75 à 202 jours après le premier deck OCG : délai de 8 cartes sur 10 parmi les ${fmtNum(SITE_FACTS.arrivalWindowCards)} cartes sorties en OCG de 2022 à 2025 puis en TCG. La mesure porte sur des cartes, pas sur des archétypes, et ignore les cartes jamais sorties en TCG.` },
+            {
+              term: "Couverture vérifiée",
+              text: `Fenêtre estimée sur les cartes de 2022-2023, puis appliquée aux cartes suivantes : elle contient le délai de ${SITE_FACTS.arrivalCoverage.map((c) => `${c.pct} % des ${fmtNum(c.cards)} cartes de ${c.year}`).join(" et ")}, et non 80 %.`,
+            },
+            {
+              term: "Comparaison naïve",
+              text: `Le classement suit presque la seule part des decks OCG : corrélation de rang ${fmtNum(SITE_FACTS.ocgScoreShareRho, 2)} sur ${SITE_FACTS.ocgScoreArchetypes} archétypes (recalcul du 18 novembre 2026). Aucun test ne montre encore qu’il fait mieux.`,
+            },
+            { term: "Limites", text: "Rien n’est encore échu pour juger les signaux actuels." },
           ]}
         />
         <Validation title="Lien entre OCG et TCG">
@@ -434,7 +456,9 @@ export default async function MethodePage() {
             date={`décalage de ${SITE_FACTS.ocgTcgLagRange}, recalcul du 16 novembre 2026`}
             sample={`${SITE_FACTS.ocgTcgArchetypes} archétypes`}
             uncertainty="segment : intervalle à 95 % ; l’ancienne valeur affichée (0,77 sur 43 archétypes) n’est plus reproductible"
-          />
+          >
+            mesuré sur des archétypes déjà joués en OCG et en TCG : ce lien ne valide pas le signal boutique, qui porte sur des archétypes pas encore sortis en TCG
+          </DataFooter>
         </Validation>
         <Validation title="Signal de juin 2026">
           <SimpleTable
@@ -456,9 +480,10 @@ export default async function MethodePage() {
       <Section id="signaux-precoces" title="Signaux précoces">
         <Facts
           items={[
-            { term: "Ce que mesure", text: "Une note de 0 à 100 qui réunit les vues d’une carte récente sur une semaine, sa présence dans les decks de la méta et le niveau de son archétype." },
+            { term: "Ce que mesure", text: "Une note de 0 à 100 qui réunit les vues d’une carte récente sur une semaine, la proximité de son texte avec celui des cartes des 20 archétypes de la méta récente, et le poids de son archétype en OCG. Les decks où la carte est jouée n’entrent pas dans la note." },
+            { term: "Cartes retenues", text: "Sorties en TCG dans les 168 jours qui précèdent le dernier deck relevé, ou pas encore sorties ; ni interdites ni limitées dans la banlist TCG en vigueur à cette date ; jouées dans moins de 3 % des decks TCG des 90 derniers jours (seuil du tier T3)." },
             { term: "Validation", text: "Aucune à ce jour : la note ordonne les cartes, elle n’a pas été confrontée à ce que les cartes sont devenues." },
-            { term: "Limites", text: "Les vues des cartes anciennes ne sont pas rafraîchies au même rythme que celles des cartes nouvelles." },
+            { term: "Limites", text: `${earlyTextNote(early) ?? ""} Les vues des cartes anciennes ne sont pas rafraîchies au même rythme que celles des cartes nouvelles.`.trim() },
           ]}
         />
       </Section>

@@ -16,12 +16,21 @@ export interface TierEntry {
   image_url: string | null;
 }
 
+export interface TierThreshold {
+  tier: string;
+  /** Part minimale des decks de la fenêtre (0 à 1). */
+  share: number;
+}
+
 export interface TierListResponse {
   data: TierEntry[];
   /** Fenêtre de calcul : premier et dernier mois cumulés (« AAAA-MM »). */
   window_start: string;
   window_end: string;
   n_decks: number;
+  /** Seuils de tier (lot 20, A8) : absents d'une réponse figée plus ancienne. */
+  tier_thresholds?: TierThreshold[];
+  tier_min_decks?: number | null;
 }
 
 export interface EvolutionPoint {
@@ -46,14 +55,22 @@ export interface PredictionEntry {
   predicted: number;
   direction: Trend;
   image_url: string | null;
+  /** Intervalle de prévision (TOK-131), même échelle que `predicted` ; absent sans table servie. */
+  interval_lo?: number | null;
+  interval_hi?: number | null;
 }
 
 export interface PredictionsResponse {
   data: PredictionEntry[];
   model: string;
-  /** Mois observé (« AAAA-MM ») : la prévision porte sur le mois suivant. */
+  /** Dernier mois complet observé (« AAAA-MM ») : la prévision porte sur le mois suivant, en général le mois en cours au calcul. */
   data_month: string | null;
   computed_at: string | null;
+  /** Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse ». */
+  direction_threshold?: number | null;
+  /** Niveau visé (0,8) et méthode des intervalles (TOK-131) ; null sans table servie. */
+  interval_level?: number | null;
+  interval_method?: string | null;
 }
 
 export interface BoutiqueSignal {
@@ -134,6 +151,12 @@ export interface EarlySignal {
 export interface EarlySignalsResponse {
   data: EarlySignal[];
   computed_at: string | null;
+  /** Date de référence du calcul : dernier deck TCG relevé (lot 20). Absente avant. */
+  as_of?: string | null;
+  /** Cartes notées (la réponse sert les 50 premières). */
+  cards_scored?: number | null;
+  /** Cartes notées dont la proximité de texte avec les cartes de la méta est positive. */
+  text_signal_cards?: number | null;
 }
 
 export interface BanSimResult {
@@ -322,6 +345,10 @@ export interface ArchetypeResponse {
   /** null si aucun deck dans la fenêtre courante de la tier list. */
   tcg: ArchetypeTcg | null;
   history: ArchetypeMonth[];
+  /** Même chose en OCG (TOK-116) ; vide si l'archétype n'y apparaît pas. */
+  ocg_history: ArchetypeMonth[];
+  /** Date de calcul de la chaîne OCG ; null si inconnue (base de service antérieure à TOK-116). */
+  ocg_history_computed_at: string | null;
   key_cards: { data: ArchetypeKeyCard[]; as_of: string; n_decks_window: number } | null;
   ocg: { share: number; decks: number; computed_at: string | null } | null;
   boutique: {

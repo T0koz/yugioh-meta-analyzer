@@ -5,6 +5,8 @@ Lecture seule. N'écrit rien en base, ne modifie ni `WEIGHTS` ni le calcul du sc
 
     python scripts/diagnose_ban_radar.py                       # base du dépôt, sorties dans ./diagnostic_ban_radar
     python scripts/diagnose_ban_radar.py --db <chemin> --out <dossier>
+    python scripts/diagnose_ban_radar.py --annonces --db <chemin> --out <dossier>   # lot 21 : veille de l'annonce
+    python scripts/diagnose_ban_radar.py --rangs [--coupure contenu] --db <chemin> --out <dossier>   # TOK-120
 
 Démarche (détail et lecture : docs/journal/ban-radar-tcg-diagnostic.md) :
 
@@ -56,10 +58,11 @@ SEED = 115
 
 # --------------------------------------------------------------------------- données
 
-def load_dataset(conn: sqlite3.Connection) -> tuple[pd.DataFrame, pd.DataFrame]:
+def load_dataset(conn: sqlite3.Connection,
+                 as_of_override: dict[str, str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     rows, lists = [], []
     for fmt in ("TCG", "OCG"):
-        for res in radar.backtest_lists(conn, fmt):
+        for res in radar.backtest_lists(conn, fmt, as_of_override):
             if not res["retained"]:
                 continue
             df = res["ranking"]
@@ -294,6 +297,207 @@ def hit_profile(data: pd.DataFrame) -> pd.DataFrame:
     return g
 
 
+# --------------------------------------------------------------------------- lot 21 : veille de l'annonce
+
+SCENARIOS = {
+    # nom: (colonne de banlist_announcements, repli sur la borne haute `first_source_date` ?)
+    "effective": None,
+    "annonce": ("announced_date", False),            # la date que dit Yugipedia (peut n'être qu'une date de sortie)
+    "contenu": ("content_date", False),              # jour de publication des cartes, preuve à l'appui
+    "contenu+borne": ("content_date", True),         # idem, + borne haute (source citée) pour 4 listes TCG
+}
+
+
+def announcement_overrides(conn: sqlite3.Connection) -> dict[str, dict[str, tuple[str, str]]]:
+    """{scénario: {format|effective: (veille de la date, nature de la date)}}, lu dans `banlist_announcements`.
+
+    Une liste sans date pour le scénario garde la veille de l'entrée en vigueur (nature « inchangée »).
+    """
+    have = conn.execute("SELECT 1 FROM sqlite_master WHERE name = 'banlist_announcements'").fetchone()
+    if not have:
+        raise SystemExit("Table banlist_announcements absente : lancer scripts/fetch_banlist_announcements.py")
+    ann = pd.read_sql_query("SELECT * FROM banlist_announcements", conn)
+    out: dict[str, dict] = {}
+    for name, spec in SCENARIOS.items():
+        if spec is None:
+            continue
+        col, bound = spec
+        m = {}
+        for _, r in ann.iterrows():
+            day, kind = r[col], "date"
+            if (day is None or pd.isna(day)) and bound and isinstance(r.first_source_date, str):
+                day, kind = r.first_source_date, "borne"
+            if isinstance(day, str) and day <= r.effective_date:
+                eve = (pd.Timestamp(day) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                # Jamais plus tard que la veille de l'entrée en vigueur (une annonce le jour même ne change rien).
+                eff_eve = (pd.Timestamp(r.effective_date) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                m[(r.format, r.effective_date)] = (min(eve, eff_eve), kind)
+        out[name] = m
+    return out
+
+
+def decks_between(conn: sqlite3.Connection, fmt: str, as_of_new: str, as_of_eff: str) -> tuple[int, int]:
+    """(decks légaux joués dans (as_of_new, as_of_eff], decks de la fenêtre habituelle se terminant à as_of_eff)."""
+    usage = radar.load_usage(conn, as_of_eff, fmt)
+    ids = usage.deck_id.unique().tolist()
+    created = pd.read_sql_query(
+        f"SELECT id, created FROM tournament_decks WHERE id IN ({','.join('?' * len(ids))})", conn, params=ids)
+    return int((created.created > as_of_new).sum()), len(ids)
+
+
+def scenario_dataset(conn: sqlite3.Connection, over: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Jeu de données d'un scénario : override groupé par format (`backtest_lists` le lit par date d'effet)."""
+    rows, lists = [], []
+    for fmt in ("TCG", "OCG"):
+        sub = {eff: v[0] for (f, eff), v in over.items() if f == fmt}
+        d, l = load_dataset_one(conn, fmt, sub)
+        rows.append(d); lists.append(l)
+    return pd.concat(rows, ignore_index=True), pd.concat(lists, ignore_index=True)
+
+
+def load_dataset_one(conn: sqlite3.Connection, fmt: str, override: dict[str, str]):
+    rows, lists = [], []
+    for res in radar.backtest_lists(conn, fmt, override):
+        if not res["retained"]:
+            lists.append({"format": fmt, "effective": res["effective"], "as_of": res["as_of"], "retained": 0,
+                          "n": 0, "k": len(res["hits"]), "k_missing": 0, "n_decks": int(res["n_decks"])})
+            continue
+        df = res["ranking"]
+        hits = set(res["hits"])
+        d = df[FEATURES + ["ban_risk_score", "mean_copies", "n_archetypes", "current_status"]].copy()
+        d["card_name"] = df.index
+        d["format"] = fmt
+        d["effective"] = res["effective"]
+        d["as_of"] = res["as_of"]
+        d["position"] = np.arange(1, len(d) + 1)
+        d["generic"] = df.top_archetype.isna().astype(int).values
+        d["y"] = d.card_name.isin(hits).astype(int)
+        rows.append(d.reset_index(drop=True))
+        lists.append({"format": fmt, "effective": res["effective"], "as_of": res["as_of"], "retained": 1,
+                      "n": len(d), "k": int(d.y.sum()), "k_missing": len(res["missing"]),
+                      "n_decks": int(res["n_decks"])})
+    return (pd.concat(rows, ignore_index=True) if rows else pd.DataFrame()), pd.DataFrame(lists)
+
+
+def announcement_effect(conn: sqlite3.Connection, out: Path) -> None:
+    """Classer « la veille de l'annonce » au lieu de « la veille de l'entrée en vigueur ».
+
+    Trois scénarios contre la référence, sur les mêmes listes (celles retenues dans les deux) :
+    la date que dit Yugipedia (`annonce`), le jour de publication des cartes (`contenu`), et `contenu` complété par
+    la borne haute de 4 listes TCG sans date d'annonce écrite (`contenu+borne`). Mesures par liste : rang médian
+    des cartes touchées, cartes touchées dans le top 25, AUC ; poids actuels, staples (part des decks), hasard.
+    Incertitude : bootstrap par liste (graine fixe) et test du signe. Aucune estimation : les poids sont ceux du
+    script, rien n'est ajusté.
+    """
+    base_data, base_lists = scenario_dataset(conn, {})
+    ref_set = set(zip(base_lists[base_lists.retained == 1].format, base_lists[base_lists.retained == 1].effective))
+    print(f"Référence (veille de l'entrée en vigueur) : {len(ref_set)} listes retenues")
+    # Seules les listes du backtest sont rejouées à une autre date (les 150 autres listes de la table n'y servent pas).
+    overrides = {n: {k: v for k, v in o.items() if k in ref_set} for n, o in announcement_overrides(conn).items()}
+
+    scen_data, scen_lists, shifts = {"effective": base_data}, {"effective": base_lists}, []
+    for name, over in overrides.items():
+        d, l = scenario_dataset(conn, over)
+        scen_data[name], scen_lists[name] = d, l
+        for (fmt, eff), (as_of, kind) in over.items():
+            eve = (pd.Timestamp(eff) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+            if as_of >= eve:
+                continue
+            n_between, n_win = decks_between(conn, fmt, as_of, eve)
+            shifts.append({"scenario": name, "format": fmt, "effective": eff, "as_of": as_of, "nature": kind,
+                           "jours_avant": (pd.Timestamp(eve) - pd.Timestamp(as_of)).days,
+                           "decks_exclus": n_between, "decks_fenetre": n_win,
+                           "part_exclue": n_between / n_win if n_win else np.nan})
+    shifts = pd.DataFrame(shifts)
+    shifts.to_csv(out / "annonces_decalages.csv", index=False)
+
+    rng = np.random.default_rng(SEED)
+    per_rows = []
+    for name, data in scen_data.items():
+        if data.empty:
+            continue
+        for (fmt, eff), g in data.groupby(["format", "effective"]):
+            for method, m in score_methods(g, {}).items():
+                per_rows.append({"scenario": name, "format": fmt, "effective": eff, "method": method, **m})
+    per = pd.DataFrame(per_rows)
+    per.to_csv(out / "annonces_par_liste.csv", index=False)
+
+    retained = {n: set(zip(l[l.retained == 1].format, l[l.retained == 1].effective)) for n, l in scen_lists.items()}
+    for name in overrides:
+        lost = sorted(retained["effective"] - retained[name])
+        print(f"[{name}] listes retenues : {len(retained[name])} ; perdues par rapport à la référence : {lost or 'aucune'}")
+
+    print("\n== Décalage de la date de coupure, par liste (scénario « contenu+borne ») ==")
+    sh = shifts[shifts.scenario == "contenu+borne"]
+    print(sh.round(3).to_string(index=False))
+    for fmt in ("TCG", "OCG"):
+        s_ = sh[sh.format == fmt]
+        print(f"{fmt} : {len(s_)} listes décalées sur {sum(1 for f, _ in ref_set if f == fmt)} ; jours avant l'entrée en vigueur, médiane "
+              f"{s_.jours_avant.median():.0f} (min {s_.jours_avant.min()}, max {s_.jours_avant.max()}) ; part des decks de la "
+              f"fenêtre exclus, médiane {s_.part_exclue.median():.1%} (max {s_.part_exclue.max():.1%})")
+
+    print("\n== Mesures par scénario (listes retenues dans le scénario ET dans la référence) ==")
+    summary, paired = [], []
+    for name in ["effective", *overrides]:
+        common = retained["effective"] & retained[name]
+        p = per[(per.scenario == name) & per.set_index(["format", "effective"]).index.isin(common)]
+        for (fmt, method), g in p.groupby(["format", "method"]):
+            summary.append({"scenario": name, "format": fmt, "method": method, "listes": g.effective.nunique(),
+                            "mediane_des_rangs_medians": g.median_rank.median(), "rang_median_pct_moy": g.median_pct.mean(),
+                            "top25_total": g.top25.sum(), "cartes_touchees": g.k.sum(), "auc_moy": g.auc.mean()})
+    summary = pd.DataFrame(summary)
+    summary.to_csv(out / "annonces_synthese.csv", index=False)
+    print(summary.round(3).to_string(index=False))
+
+    print("\n== Écart de chaque scénario à la référence, liste par liste (bootstrap par liste, intervalle 90 %) ==")
+    print("Un écart positif de `rang_median_pct` = classement moins bon qu'à la veille de l'entrée en vigueur.")
+    for name in overrides:
+        common = sorted(retained["effective"] & retained[name])
+        moved = set(zip(shifts[shifts.scenario == name].format, shifts[shifts.scenario == name].effective))
+        for fmt in ("TCG", "OCG"):
+            for method in ("poids_actuels", "staples"):
+                for metric in ("median_pct", "top25", "auc"):
+                    a = per[(per.scenario == name) & (per.format == fmt) & (per.method == method)].set_index("effective")[metric]
+                    b = per[(per.scenario == "effective") & (per.format == fmt) & (per.method == method)].set_index("effective")[metric]
+                    effs = [e for (f, e) in common if f == fmt and (f, e) in moved]
+                    if not effs:
+                        continue
+                    d = (a.loc[effs] - b.loc[effs]).to_numpy()
+                    agg = np.sum if metric == "top25" else np.mean
+                    idx = rng.integers(0, len(d), size=(BOOT, len(d)))
+                    lo, hi = np.percentile(agg(d[idx], axis=1), [5, 95])
+                    better = int((d < 0).sum()) if metric == "median_pct" else int((d > 0).sum())
+                    worse = int((d > 0).sum()) if metric == "median_pct" else int((d < 0).sum())
+                    paired.append({"scenario": name, "format": fmt, "methode": method, "mesure": metric,
+                                   "listes_decalees": len(d), "ecart": float(agg(d)), "p05": float(lo), "p95": float(hi),
+                                   "mieux": better, "pire": worse, "egalites": int((d == 0).sum()),
+                                   "p_signe": sign_test(better, len(d), int((d == 0).sum()))})
+    paired = pd.DataFrame(paired)
+    paired.to_csv(out / "annonces_ecarts.csv", index=False)
+    print(paired.round(4).to_string(index=False))
+
+    print("\n== Score contre staples dans chaque scénario (listes retenues dans les deux scénarios) ==")
+    rel = []
+    for name in ["effective", *overrides]:
+        common = retained["effective"] & retained[name]
+        for fmt in ("TCG", "OCG"):
+            p = per[(per.scenario == name) & (per.format == fmt) & per.set_index(["format", "effective"]).index.isin(common)]
+            for metric in ("median_pct", "top25", "auc"):
+                pv = p.pivot(index="effective", columns="method", values=metric)
+                d = (pv.poids_actuels - pv.staples).to_numpy()
+                wins = int((d < 0).sum()) if metric == "median_pct" else int((d > 0).sum())
+                ties = int((d == 0).sum())
+                agg = np.sum if metric == "top25" else np.mean
+                idx = rng.integers(0, len(d), size=(BOOT, len(d)))
+                lo, hi = np.percentile(agg(d[idx], axis=1), [5, 95])
+                rel.append({"scenario": name, "format": fmt, "mesure": metric, "listes": len(d),
+                            "score_moins_staples": float(agg(d)), "p05": float(lo), "p95": float(hi),
+                            "score_mieux": wins, "egalites": ties, "p_signe": sign_test(wins, len(d), ties)})
+    rel = pd.DataFrame(rel)
+    rel.to_csv(out / "annonces_score_vs_staples.csv", index=False)
+    print(rel.round(4).to_string(index=False))
+
+
 # --------------------------------------------------------------------------- sortie
 
 def summarize(per_list: pd.DataFrame) -> pd.DataFrame:
@@ -313,6 +517,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--out", type=Path, default=Path("diagnostic_ban_radar"))
+    parser.add_argument("--annonces", action="store_true",
+                        help="Lot 21 (TOK-121) : mesure seulement l'effet de classer la veille de l'annonce "
+                             "(lit banlist_announcements ; le diagnostic TOK-115 n'est pas relancé)")
+    parser.add_argument("--rangs", action="store_true",
+                        help="TOK-120 : critères en rangs centiles par liste, logit conditionnel, pont daté "
+                             "(scripts/diagnose_ban_radar_rangs.py)")
+    parser.add_argument("--coupure", choices=["effective", "contenu"], default="effective",
+                        help="avec --rangs : veille de l'entrée en vigueur (défaut) ou veille du contenu (lot 21)")
     args = parser.parse_args()
     if not args.db.exists():
         raise SystemExit(f"Base absente : {args.db}")
@@ -322,6 +534,13 @@ def main() -> None:
     warnings.filterwarnings("ignore", category=FutureWarning)
 
     conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True, timeout=60)
+    if args.annonces:
+        announcement_effect(conn, args.out)
+        return
+    if args.rangs:
+        import diagnose_ban_radar_rangs  # noqa: PLC0415 (importe ce module : import tardif, sans cycle)
+        diagnose_ban_radar_rangs.run(conn, args.out, args.coupure)
+        return
     data, lists = load_dataset(conn)
     data.to_csv(args.out / "dataset.csv", index=False)
     print(f"Jeu de données : {len(data)} lignes, {data.y.sum()} cartes touchées classées, "

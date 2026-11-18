@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Pill } from "@/components/ds/control";
 import { Toolbar } from "@/components/ds/page";
 import { wilsonInterval } from "@/lib/wilson";
-import type { TierEntry } from "@/types";
+import { tierLimit } from "@/lib/tiers";
+import type { TierEntry, TierThreshold } from "@/types";
 import { ArchetypeRow } from "./ArchetypeRow";
 
 const FILTERS: { id: string; label: string; keep: (entry: TierEntry) => boolean }[] = [
@@ -14,7 +15,17 @@ const FILTERS: { id: string; label: string; keep: (entry: TierEntry) => boolean 
   { id: "rising", label: "En hausse", keep: (e) => e.trend === "Rising" },
 ];
 
-export function TierList({ data, nDecks }: { data: TierEntry[]; nDecks: number }) {
+export function TierList({
+  data,
+  nDecks,
+  thresholds,
+  minDecks,
+}: {
+  data: TierEntry[];
+  nDecks: number;
+  thresholds?: TierThreshold[];
+  minDecks?: number | null;
+}) {
   const [filterId, setFilterId] = useState("all");
   const filter = FILTERS.find((f) => f.id === filterId) ?? FILTERS[0];
 
@@ -43,6 +54,7 @@ export function TierList({ data, nDecks }: { data: TierEntry[]; nDecks: number }
             rank={rank}
             nDecks={nDecks}
             maxShare={maxShare}
+            limit={tierLimit(entry, nDecks, thresholds, minDecks)}
             highlighted={rank === 1}
           />
         ))}

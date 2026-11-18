@@ -38,7 +38,7 @@ export async function generateMetadata({
   if (tab === "simulateur") {
     return pageMetadata({
       title: "Simulateur de ban",
-      description: `Archétypes et decks de tournoi Yu-Gi-Oh! TCG reliés à une carte dans le graphe de co-occurrences, et cohésion du graphe sans elle. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
+      description: `Archétypes et decks de tournoi Yu-Gi-Oh! TCG reliés à une carte dans le graphe de co-occurrences et sa position de pont : estimation sur le graphe déjà calculé, sans recalcul. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
       path: "/ban?tab=simulateur",
     });
   }

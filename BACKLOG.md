@@ -31,7 +31,7 @@ traitement conseillé : TOK-70 → TOK-72 → TOK-69 → TOK-74 / TOK-73.
 | TOK-76 | Risque : dépendance à l'API non officielle yugiohmeta | 🟡 Monitoring fait (`data/fetch_health.jsonl`) ; risque structurel reste | 🟠 Medium |
 | TOK-78 | Onboarding d'une data scientist (`docs/ONBOARDING.md` fait ; accès tranché : dépôt public, écriture directe, base par Drive — voir TOK-107) | 🟡 Reste l'invitation (TOK-108) et l'envoi de la base (TOK-109) | 🟠 Medium |
 | TOK-92 | Ré-héberger les images de cartes avant le déploiement (hotlink YGOPRODeck interdit) | 🟡 Livré le 2026-11-17 sur `claude/lot10-tok-92-images-5c0cd5` : 14 084 cartes, 3 tailles, 1,1 Go hors Git, 0 requête YGOPRODeck ; reste le stockage définitif (TOK-35) — `docs/journal/images-tok-92.md` | 🟠 Medium |
-| TOK-93 | Contrôle de fraîcheur des tables servies dans le job du lundi | 🔜 À faire | 🟠 Medium |
+| TOK-93 | Contrôle de fraîcheur des tables servies dans le job du lundi | 🟡 Livré le 2026-11-18 sur `claude/j1-tok-129-93-signaux-fraicheur-d1344d` (Jalon 1, non fusionnée) : `check_freshness.py` (19 tables + endpoint `/top-decks`, journal `fetch_health.jsonl`, `--status`), dernière étape de `refresh_decks.py` et contrôle de `deploy_prebuilt.py` ; 3 périmées connues tolérées jusqu'au 31/12 (graphe TOK-136, vues figées). Reste : formulaire TOK-93 (tolérance, seuils, tables non lues) — `docs/journal/fraicheur-tables-tok-93.md` | 🟠 Medium |
 | — | _13 tickets terminés (TOK-68 à 75, 77, 79, 83, 91, 113) : voir l’archive_ | | |
 
 ⚠ **Intitulé trompeur dans Linear** : TOK-25 s'appelle « Modèle séquentiel ARIMA ou LSTM ». Le modèle

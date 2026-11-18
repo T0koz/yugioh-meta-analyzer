@@ -5,7 +5,8 @@ Rafraîchissement hebdomadaire des decklists (TOK-70) + journal de santé des fe
     python scripts/refresh_decks.py --status   # n'exécute rien : affiche les 10 derniers runs + fraîcheur
 
 Enchaîne `fetch_new_cards.py` (cartes nouvelles, non bloquante), `fetch_tournament_decks.py`, `fetch_ocg_decks.py`, `fetch_banlist_history.py`, `compute_deck_legality.py`,
-`refresh_all.py` (tables dérivées) et `build_serving_db.py` (base de service)
+`refresh_all.py` (tables dérivées), `build_serving_db.py` (base de service) puis `check_freshness.py` (TOK-93 :
+fraîcheur des tables servies et santé de l'endpoint yugiohmeta, toujours lancé, même après un échec amont)
 en sous-processus, **en séquence** (un seul écrivain sur `yugioh.db`). Chaque étape est
 journalisée dans `data/fetch_health.jsonl` (fichier, pas table : il reste lisible quand la
 base est verrouillée et il survit à une reconstruction de la base) : code de retour, durée,
@@ -48,6 +49,10 @@ DOWNSTREAM = [
     ("serving", "scripts/build_serving_db.py"),
 ]
 NON_BLOCKING = {"new_cards"}  # en échec : journalisée, code de sortie non nul, mais l'aval tourne
+# TOK-93 : dernier contrôle, après la base de service (qu'il ne peut donc pas bloquer), lancé même si l'amont a
+# échoué. Il contrôle la base qui part en ligne, avec les dates de référence de yugioh.db, et teste /top-decks.
+# Il journalise lui-même sa ligne {"step": "fraicheur_tables", …} : pas de seconde ligne ici.
+TABLES_FRESHNESS = ["scripts/check_freshness.py", "--db", "data/serving.db", "--reference", "data/yugioh.db"]
 
 
 def log(entry: dict) -> None:
@@ -77,8 +82,11 @@ def status() -> int:
     stale = [k for k, v in f.items() if v["age_days"] is None or v["age_days"] > FRESHNESS_MAX_DAYS]
     if stale:
         print(f"⚠ périmé (> {FRESHNESS_MAX_DAYS} j) : {', '.join(stale)}")
-        return 1
-    return 0
+    # TOK-93 : derniers contrôles de fraîcheur des tables servies et de l'endpoint.
+    tables = subprocess.run([sys.executable, "scripts/check_freshness.py", "--status"], cwd=ROOT,
+                            capture_output=True, text=True)
+    print(tables.stdout.rstrip())
+    return 1 if (stale or tables.returncode == 1) else 0
 
 
 def main() -> int:
@@ -123,6 +131,14 @@ def main() -> int:
     stale = stale or (["nombre_de_decks_en_baisse"] if shrunk else [])
     if stale:
         print(f"⚠ decks périmés (> {FRESHNESS_MAX_DAYS} j) : {', '.join(stale)}", file=sys.stderr)
+
+    t0 = time.time()
+    p = subprocess.run([sys.executable, *TABLES_FRESHNESS], cwd=ROOT, capture_output=True, text=True)
+    print(p.stdout.rstrip())
+    print(f"[tables_freshness] {'ok' if p.returncode == 0 else 'ÉCHEC'} ({round(time.time() - t0)} s)")
+    if p.returncode:
+        print(p.stderr[-600:], file=sys.stderr)
+        failed += 1
     return 1 if (failed or stale) else 0
 
 

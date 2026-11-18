@@ -611,6 +611,20 @@ Recommandation au formulaire : revoir la page (archétypes classés par la force
   revenir le texte, qui fait baisser le score.
 → détail complet : `docs/journal/signaux-precoces-backtest-tok-129.md`, formulaire `docs/planning/2026-11-18/decisions-prises.md` (TOK-129)
 
+### 🩺 Fraîcheur des tables servies et santé de `/top-decks` (TOK-93, Jalon 1, 2026-11-18, même branche, non fusionnée)
+
+`scripts/check_freshness.py` (stdlib, `mode=ro`) : une règle par table de `SERVED_TABLES` (`computed_at`, `as_of` contre
+le dernier deck, mois, cohérence graphe ↔ `card_cooccurrence`, historique ↔ banlists, vues ↔ instantané du 13/06, fille ↔
+mère, sinon « non datée ») + un GET sur yugiohmeta `/top-decks`. Code 1 si une table est périmée ou l'endpoint en erreur ;
+ligne `fraicheur_tables` dans `data/fetch_health.jsonl` ; `--status`. Dernière étape de `refresh_decks.py` (après
+`serving`, sur `serving.db`) et contrôle de `deploy_prebuilt.py`. Au 18/11 : 12 ok, 3 périmées connues tolérées jusqu'au
+31/12 (graphe 663 contre 1 402 nœuds, TOK-136 ; vues figées), 2 non datées, 2 lues par aucun routeur ; endpoint HTTP 200.
+- **Jamais un contrôle qui peut échouer dans `refresh_all.py`** : son code 1 fait sauter `serving` dans `refresh_decks.py`.
+- **Nouvelle table servie → une règle dans `RULES`** (test : toute table de `SERVED_TABLES` en a une) ; table vide,
+  absente ou colonne de date vide = périmée, jamais tolérée ; une tolérance (`KNOWN_STALE`) a toujours une expiration.
+- **Ne pas nommer une ligne du journal `"freshness"`** : `refresh_decks.py` relit ces lignes pour le nombre de decks.
+→ détail complet (plan B si `/top-decks` disparaît) : `docs/journal/fraicheur-tables-tok-93.md`, formulaire TOK-93
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

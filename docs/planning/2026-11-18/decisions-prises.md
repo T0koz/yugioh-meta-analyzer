@@ -95,6 +95,10 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | Jalon 1 (TOK-129) | Les vues n'existent qu'à une date (instantané du 13/06/2026) : comment rejouer les signaux à des dates passées ? | Deux analyses : une origine propre le 13/06/2026 (vues du même jour) et 25 origines glissantes avec les vues du 13/06, fuite déclarée et chiffrée. | Aucune autre série de vues n'existe ; la fuite avantage les vues seules plus que le score, le test reste donc lisible. |
 | Jalon 1 (TOK-129) | « Entrer en méta » ? | ≥ 3 % des decks TCG légaux de ]t ; t + 120 j], toutes zones (seuil « déjà en méta » du lot 20) ; sensibilité 1 %. Figé avant la première exécution. | Même seuil pour exclure (« déjà en méta ») et pour réussir ; 120 j = horizon de 4 mois du produit. |
 | Jalon 1 (TOK-129) | Relecture `data-scientist-ygo` : dépendance entre dates, comptage par archétype, décomposition. | Intégrées au script après la première exécution, déclarées : bootstrap par 8 épisodes (découpage posé après lecture), précision par archétype, variantes sans vues et sans texte ; docstring « 54 % de vues » corrigée (34 / 32 / 33 % aux dates passées). | Le critère est rempli en cartes mais nul en archétypes ; ne pas laisser un résultat favorable sur la forme cacher sa fragilité. |
+| Jalon 1 (TOK-93) | Où brancher le contrôle de fraîcheur ? | Dernière étape de `refresh_decks.py`, après `serving`, lancée même après un échec amont, sur `serving.db` (dates de référence de `yugioh.db`) ; et `deploy_prebuilt.py` (étape base de service). Ni `refresh_all.py`, ni `build_serving_db.py --check`. | Relecture `gardien-donnees` : dans `refresh_all.py`, le code 1 faisait sauter la reconstruction de `serving.db` ; dans `--check`, `check.py` aurait bloqué des pushes sans rapport. |
+| Jalon 1 (TOK-93) | 3 défauts connus (graphe TOK-136 ×2, vues figées) feraient échouer le job chaque lundi. | Tolérance déclarée `KNOWN_STALE` par motif (table:contrôle), avec ticket et expiration au 2026-12-31 ; jamais pour une table absente, vide ou illisible. | Avis du gardien : un contrôle toujours rouge masque une 4e table périmée ; la date d'expiration rend la tolérance réversible d'elle-même. |
+| Jalon 1 (TOK-93) | Complément de l'orchestrateur : journal, `--status`, endpoint `/top-decks`, plan B. | Ligne `{"step": "fraicheur_tables", …}` dans `data/fetch_health.jsonl` du checkout courant (ignoré par Git) ; `--status` (aussi dans `refresh_decks.py --status`) ; un GET sur `/top-decks` par contrôle, échec = code 1, jamais d'appel dans les tests ni au déploiement ; plan B dans le journal. | Nom d'étape distinct de `"freshness"`, que `refresh_decks.py` relit pour vérifier que le nombre de decks ne baisse pas. |
+| Jalon 1 (TOK-93) | Une table périmée qu'aucun routeur ne lit (`meta_tier_list`, 154 j) ? | « non lue » : affichée et journalisée, sans faire échouer. | Sans effet sur le site ; la retirer de `SERVED_TABLES` est au formulaire. |
 
 ## Formulaire
 
@@ -332,6 +336,26 @@ Jalon 1 (TOK-129) — suites
 [x] Archiver views_week chaque lundi (table datée nouvelle) pour tester les vues dans 6 à 12 mois
 [x] Ticket : backtest du classement d'archétypes (unité archétype × date, bases part OCG seule et archétypes annoncés en TCG, critères figés avant exécution, bootstrap par épisodes)
 [ ] Fusionner la page avec /boutique (la force OCG est presque le rang déjà affiché, ρ 0,94) : à trancher avec le ticket ci-dessus
+Commentaire libre :
+
+Jalon 1 (TOK-93) — contrôle de fraîcheur
+[ ] Strict : toute table périmée fait échouer le contrôle (le job du lundi échoue tant que TOK-136 et les vues ne sont pas faits)
+[x] Tolérance déclarée KNOWN_STALE (ticket + expiration au 31/12 : graphe → TOK-136, vues → ticket à créer), jamais pour une table absente, vide ou illisible
+Commentaire libre :
+
+Jalon 1 (TOK-93) — seuils (réglages manuels : calcul 8 j, retard sur le dernier deck 7 j, tables mensuelles 1 mois, vues 8 j)
+[x] Valider tels quels
+[ ] À revoir
+Commentaire libre :
+
+Jalon 1 (TOK-93) — tables servies lues par aucun routeur (meta_tier_list figée au 17/06, archetype_trend)
+[x] Les retirer de SERVED_TABLES (ticket court, avis gardien-donnees)
+[ ] Les garder, signalées « non lues »
+Commentaire libre :
+
+Jalon 1 (TOK-93) — suites
+[x] Ticket : rafraîchir cards.views_week chaque lundi avec la date du relevé (sans init_db.py), utile aussi à TOK-129
+[x] Ticket : colonne computed_at dans les notebooks 02 et 04 (card_cooccurrence, archetype_trend non datées)
 Commentaire libre :
 ```
 

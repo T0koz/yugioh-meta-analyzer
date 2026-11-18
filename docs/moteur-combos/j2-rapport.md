@@ -4,6 +4,28 @@
 > Commande : `python scripts/combos_j2.py` (≈ 12 min avec les budgets ci-dessous ; `--sans-ecriture` pour ne rien
 > écrire). Combos relevés : [`combos-guides.md`](combos-guides.md). Méthode du taux : avis de `data-scientist-ygo`.
 
+## 0. Lot J2 plein (TOK-140, jalon n°5) : protocole écrit avant le passage long
+
+> Écrit et commité **avant** le passage à budget long (avis `data-scientist-ygo` du 18/11). Les résultats viendront
+> au § 8 ; ce paragraphe ne change plus.
+
+- **Combos** : G1-G5 (lot C3, mis au point en les connaissant : combos de développement) et G6-G10 (figés par le commit
+  TOK-139 `f19f864` avant toute exécution : **seul test hors échantillon**). Deux lignes séparées, le total sur 10 vient
+  en second.
+- **Condition principale (déclarée au lot C3, inchangée)** : parcours en largeur sans cible, 60 s, profondeur 16, filtres
+  D4 ; « retrouvé » = cible remplie **et** jalons en sous-suite ; pour G6-G10, cible évaluée sur un état d'où le tour
+  peut se terminer. Trois issues par combo : retrouvé / plateau atteint par un autre chemin / non trouvé.
+- **G6 compte tel que figé** (cible inatteignable, erreur de transcription) dans le chiffre principal ; le résultat après
+  la correction `73cc104` (une condition retirée, cible plus facile) est donné à côté, jamais seul.
+- **Secondaires** : recherche dirigée vers la cible (120 s) ; joueur au hasard (60 s, test exact apparié) ; base naïve
+  plus forte : largeur **sans** les filtres D4 (60 s) ; main réelle de 5 cartes (à part).
+- **Passage long, exploratoire, décidé après avoir vu les échecs de G7, G8, G10 en 120 s** : recherche dirigée, 900 s
+  de budget, sur **les 10 combos et G6 figé**, un processus par combo (plusieurs cœurs), même code, même cible, mêmes
+  jalons ; on rapporte le palier (60, 120, 900 s), les états explorés et le temps CPU. **Aucune heuristique guidée par
+  les jalons** : elle ne mesurerait plus « seul » (hors J2).
+- Accélération du code : mémoïsation exacte de la clé de tri de l'empreinte d'état (×1,24 mesuré sur G8, mêmes
+  empreintes, test `test_multi_memoise_identique`).
+
 ## 1. En bref
 
 | Mesure | Valeur |

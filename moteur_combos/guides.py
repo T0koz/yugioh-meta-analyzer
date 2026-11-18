@@ -14,7 +14,7 @@ Détail, sources et lecture : `docs/moteur-combos/combos-guides.md`. Chaque comb
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from .modele import CibleExploration, ConditionCible as C
 
@@ -32,6 +32,16 @@ GS = "The Golden Swordsoul"
 GRANG = "Granguignol the Dusk Dragon"
 CHAMP = "The Three Champions of Swordsoul"
 TBKITT = "Tri-Brigade Springans Kitt"
+BFUSION = "Branded Fusion"
+RIND = "Rindbrumm the Striking Dragon"
+COCA = "Cocatorium the Heavy Metal Avian"
+MERC = "Tri-Brigade Mercourier"
+ALUBER = "Aluber the Jester of Despia"
+FUWALOS = "Mulcharmy Fuwalos"
+BHIGH = "Branded in High Spirits"
+MIRROR = "Mirrorjade the Iceblade Dragon"
+ALBAZ = "Fallen of Albaz"
+SARC = "Gold Sarcophagus"
 
 INERTES = ["Ash Blossom & Joyous Spring", "Ash Blossom & Joyous Spring", "Ghost Ogre & Snow Rabbit",
            "Ghost Ogre & Snow Rabbit"]
@@ -68,13 +78,90 @@ class Jalon:
                 and (self.contient is None or self.contient in arete.reponses))
 
 
-def respecte_jalons(chemin, jalons) -> bool:
-    """Les jalons apparaissent dans le chemin, dans l'ordre (sous-suite, d'autres transitions peuvent s'intercaler)."""
+    def colle_pas(self, arete, avant, apres) -> bool:
+        return self.colle(arete)
+
+
+ZONES_MOUVEMENT = ("main", "deck", "extra", "cimetiere", "bannies", "terrain")
+
+
+def compter(etat, zone: str, carte: str | None) -> int:
+    """Exemplaires de `carte` (toutes cartes si None) dans une zone du joueur 0."""
+    j = etat.joueurs[0]
+    if zone == "terrain":
+        noms = [i.carte for _, i in j.cases] + [o.instance.carte for o in etat.zones_monstre_extra
+                                                 if o.controleur == 0]
+    else:
+        noms = [i.carte for i in getattr(j, zone)]
+    return len(noms) if carte is None else noms.count(carte)
+
+
+@dataclass(frozen=True)
+class Mouvement:
+    """Une carte arrive dans `vers` pendant la transition (plus d'exemplaires après qu'avant) et, si `depuis` est
+    donné, quitte cette zone (moins d'exemplaires après). `carte=None` : n'importe quelle carte."""
+    carte: str | None
+    vers: str = "terrain"
+    depuis: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.vers not in ZONES_MOUVEMENT or (self.depuis is not None and self.depuis not in ZONES_MOUVEMENT):
+            raise ValueError(f"zone inconnue : {self.vers} / {self.depuis}")
+
+    def vrai(self, avant, apres) -> bool:
+        if compter(apres, self.vers, self.carte) <= compter(avant, self.vers, self.carte):
+            return False
+        return self.depuis is None or compter(apres, self.depuis, self.carte) < compter(avant, self.depuis, self.carte)
+
+
+@dataclass(frozen=True)
+class JalonPas:
+    """Jalon du lot J2 plein (TOK-140), traduit mot à mot du texte figé (`combos-guides.md` § 5) : chaque champ
+    donné doit être vrai sur la transition, les autres sont libres. `type`/`carte`/`effet` : la déclaration ;
+    `contient` : réponses du script (ex. « Tri-Brigade Mercourier/2 », un déclencheur activé) ; `mouvements` :
+    changements d'état (« Invocation Spéciale de X depuis la main » = X arrive sur le terrain et quitte la main)."""
+    texte: str
+    type: str | None = None
+    carte: str | None = None
+    effet: int | None = None
+    contient: tuple[str, ...] = ()
+    mouvements: tuple[Mouvement, ...] = ()
+
+    def colle_pas(self, arete, avant, apres) -> bool:
+        d = arete.declaration
+        if self.type is not None and d.type != self.type:
+            return False
+        if self.carte is not None and d.carte != self.carte:
+            return False
+        if self.effet is not None and d.effet != self.effet:
+            return False
+        if any(c not in arete.reponses for c in self.contient):
+            return False
+        return all(m.vrai(avant, apres) for m in self.mouvements)
+
+
+def respecte_jalons(chemin, jalons, etats=None) -> bool:
+    """Les jalons apparaissent dans le chemin, dans l'ordre (sous-suite, d'autres transitions peuvent s'intercaler).
+    Plusieurs jalons consécutifs peuvent tenir dans une même transition (ex. « White s'Invoque » puis « elle Invoque
+    Incredible Ecclesia » : une seule transition, l'effet déclenché se résout avec elle) ; la correspondance gloutonne
+    reste optimale pour une sous-suite. Les jalons du lot C3 portent chacun une déclaration différente de la
+    précédente : pour eux, rien ne change. `etats` (empreinte → état) : requis par les jalons `JalonPas`."""
     k = 0
     for a in chemin:
-        if k < len(jalons) and jalons[k].colle(a):
+        avant = etats[a.source] if etats is not None else None
+        apres = etats[a.cible] if etats is not None and a.cible is not None else None
+        while k < len(jalons) and jalons[k].colle_pas(a, avant, apres):
             k += 1
     return k == len(jalons)
+
+
+def fin_de_tour_possible(cat, etat) -> bool:
+    """État de Phase de Fin d'où le tour peut se terminer (aucun effet obligatoire n'attend, R23) : la « fin du
+    tour » du § 5.2 de `combos-guides.md`."""
+    from .regles import Declaration, Moteur, Script
+    if etat.cadre.phase != "fin":
+        return False
+    return Moteur(cat).jouer(etat, Declaration("fin_de_tour", "—"), Script()).verdict == "legal"
 
 
 @dataclass(frozen=True)
@@ -88,10 +175,30 @@ class ComboGuide:
     substitutions: tuple[str, ...] = ()
     remarques: tuple[str, ...] = ()
     main: tuple[str, ...] = field(default=())
-    jalons: tuple[Jalon, ...] = ()
+    jalons: tuple = ()
+    lot: str = "C3"
+    en_fin_de_tour: bool = False      # J2 plein : cible évaluée sur un état d'où le tour peut se terminer
+    condition: object = None          # condition de plus sur l'état final (ex. « Mercourier ou Cartesia »)
 
     def accepter(self, rapport, etat_id) -> bool:
-        return respecte_jalons(rapport.chemin(etat_id), self.jalons)
+        if self.en_fin_de_tour:
+            raise ValueError(f"{self.gid} : cible évaluée en fin de tour, utiliser accepteur(catalogue)")
+        return self._jalons_et_condition(rapport, etat_id)
+
+    def _jalons_et_condition(self, rapport, etat_id) -> bool:
+        if self.condition is not None and not self.condition(rapport.etats[etat_id]):
+            return False
+        return respecte_jalons(rapport.chemin(etat_id), self.jalons, rapport.etats)
+
+    def accepteur(self, cat):
+        """Fonction `accepter(rapport, etat_id)` pour `explorer` : jalons, condition, et fin de tour si demandée."""
+        if not self.en_fin_de_tour:
+            return self.accepter
+
+        def f(rapport, etat_id) -> bool:
+            return (fin_de_tour_possible(cat, rapport.etats[etat_id])
+                    and self._jalons_et_condition(rapport, etat_id))
+        return f
 
     @property
     def main_de_depart(self) -> list[str]:
@@ -99,7 +206,8 @@ class ComboGuide:
 
     @property
     def hors_jeu(self) -> list[str]:
-        return [] if self.main else list(INERTES)
+        """Cartes de réponse retirées du jeu pour compléter la main à 5 cartes (règle du lot C3, § 5.2)."""
+        return list(INERTES[: max(0, 5 - len(self.main_de_depart))])
 
     @property
     def etapes_realisables(self) -> int:
@@ -234,3 +342,132 @@ GUIDES: tuple[ComboGuide, ...] = (
         jalons=(Jalon("activer", NADIR, 1, WHITE), Jalon("activer", WHITE, 1, IECC), Jalon("activer", TITAN, 3, QUEM)),
     ),
 )
+
+# ── Lot J2 plein (TOK-139 figé, TOK-140 traduit) ────────────────────────────────────────────────────────────────
+# Traduction mot à mot de `combos-guides.md` § 5 (section figée, empreinte dans le commit TOK-139) : main, cible et
+# jalons ; cible évaluée en fin de tour (§ 5.2). Les étapes ne sont pas recopiées ici : le document fait foi.
+TCG5 = "docs/moteur-combos/combos-guides.md § 5"
+M = Mouvement
+SUB_ALBION = ("Coûts payés dans le guide par Albion the Branded Dragon (absente) : n'importe quel monstre de notre "
+              "Extra Deck qui remplit la même condition (§ 2 et § 5.2)",)
+
+# Cible de G6 telle que figée par le commit TOK-139 (avant correction) : gardée pour la mesure « tel que figé ».
+CIBLE_G6_FIGEE = CibleExploration(
+    "G6 (figée) : White, Dogmatika Ecclesia, Quem et Cartesia sur le terrain ; Rindbrumm, Titaniklad et Cocatorium au "
+    "Cimetière ; Mercourier banni",
+    (C("terrain", WHITE), C("terrain", DECC), C("terrain", QUEM), C("terrain", CART), C("cimetiere", RIND),
+     C("cimetiere", TITAN), C("cimetiere", COCA), C("bannies", MERC)))
+
+GUIDES_J2_PLEIN: tuple[ComboGuide, ...] = (
+    ComboGuide(
+        "G6", "Branded Fusion seule", (Source("Master Game", "2026-06-07", MDM + "6a2585f47c53112dc8c296ff"),),
+        BFUSION, (Etape(TCG5 + ", G6, étapes 1 à 7"), Etape("étape 8", absente="Albion the Branded Dragon")),
+        # Cible corrigée (commit TOK-139 séparé) : la version figée ajoutait « Cocatorium au Cimetière », inatteignable
+        # (banni en quittant le terrain) ; voir `CIBLE_G6_FIGEE` et combos-guides.md § 5, G6.
+        CibleExploration("G6 : White, Dogmatika Ecclesia, Quem et Cartesia sur le terrain ; Rindbrumm et Titaniklad au "
+                         "Cimetière ; Mercourier banni",
+                         (C("terrain", WHITE), C("terrain", DECC), C("terrain", QUEM), C("terrain", CART),
+                          C("cimetiere", RIND), C("cimetiere", TITAN), C("bannies", MERC))),
+        substitutions=SUB_ALBION, main=(BFUSION,), lot="J2 plein", en_fin_de_tour=True,
+        jalons=(JalonPas("(1) activation de Branded Fusion", "activer", BFUSION),
+                JalonPas("(2) Invocation Fusion de Rindbrumm", mouvements=(M(RIND, "terrain", "extra"),)),
+                JalonPas("(3) Invocation Spéciale de Cocatorium depuis le Cimetière",
+                         mouvements=(M(COCA, "terrain", "cimetiere"),)),
+                JalonPas("(4) effet de Mercourier banni", contient=(MERC + "/2",)),
+                JalonPas("(5) Invocation Spéciale de White depuis la main", mouvements=(M(WHITE, "terrain", "main"),)),
+                JalonPas("(6) Invocation Spéciale de Dogmatika Ecclesia", mouvements=(M(DECC, "terrain"),)),
+                JalonPas("(7) Invocation Spéciale de Quem par Titaniklad", "activer", TITAN,
+                         mouvements=(M(QUEM, "terrain"),)),
+                JalonPas("(8) activation de The Fallen & The Virtuous", "activer", TFTV),
+                JalonPas("(9) Invocation Spéciale de Cartesia depuis le Cimetière",
+                         mouvements=(M(CART, "terrain", "cimetiere"),))),
+    ),
+    ComboGuide(
+        "G7", "Aluber + Mulcharmy Fuwalos, vers Mirrorjade",
+        (Source("combatant", "2026-06-17", MDM + "6a330ada9026d5cfa564d08e"),
+         Source("SirRichard Alt", "2026-06-23", MDM + "6a3a064927d579237da6ca51")),
+        ALUBER, (Etape(TCG5 + ", G7, étapes 1 à 8 et 10"), Etape("étape 9", absente="PSY-Framelord Omega")),
+        CibleExploration("G7 : Mirrorjade, Ecclesia and the Dark Dragon, Quem et Cartesia sur le terrain ; Rindbrumm "
+                         "et Three Champions au Cimetière",
+                         (C("terrain", MIRROR), C("terrain", EDD), C("terrain", QUEM), C("terrain", CART),
+                          C("cimetiere", RIND), C("cimetiere", CHAMP))),
+        main=(ALUBER, FUWALOS), lot="J2 plein", en_fin_de_tour=True,
+        jalons=(JalonPas("(1) Invocation Normale d'Aluber", "invocation_normale", ALUBER),
+                JalonPas("(2) activation de Branded in High Spirits", "activer", BHIGH),
+                JalonPas("(3) Invocation Spéciale de White depuis la main", mouvements=(M(WHITE, "terrain", "main"),)),
+                JalonPas("(4) Invocation Spéciale d'Incredible Ecclesia", mouvements=(M(IECC, "terrain"),)),
+                JalonPas("(5) Invocation Spéciale de The Golden Swordsoul", mouvements=(M(GS, "terrain"),)),
+                JalonPas("(6) Invocation Synchro d'Ecclesia and the Dark Dragon", "invocation_synchro", EDD),
+                JalonPas("(7) Invocation Spéciale de Quem", mouvements=(M(QUEM, "terrain"),)),
+                JalonPas("(8) Invocation Synchro de The Three Champions of Swordsoul", "invocation_synchro", CHAMP),
+                JalonPas("(9) Invocation Fusion de Mirrorjade", mouvements=(M(MIRROR, "terrain", "extra"),))),
+    ),
+    ComboGuide(
+        "G8", "Aluber + Fallen of Albaz, branche sans Bystial",
+        (Source("mikethaguy", "2026-06-14", MDM + "6a2e53bbc1791e881a6e4489"),),
+        ALUBER, (Etape(TCG5 + ", G8, étapes 1 à 8 (sauf Albion)"),
+                 Etape("étape 8, Albion", absente="Albion the Branded Dragon")),
+        CibleExploration("G8 : Ecclesia and the Dark Dragon et Quem sur le terrain (plus Mercourier ou Cartesia) ; "
+                         "Granguignol, Titaniklad, Dogma, Rindbrumm et Fallen of Albaz au Cimetière ; Incredible "
+                         "Ecclesia en main",
+                         (C("terrain", EDD), C("terrain", QUEM), C("cimetiere", GRANG), C("cimetiere", TITAN),
+                          C("cimetiere", DOGMA), C("cimetiere", RIND), C("cimetiere", ALBAZ), C("main", IECC))),
+        substitutions=SUB_ALBION, main=(ALUBER, ALBAZ), lot="J2 plein", en_fin_de_tour=True,
+        condition=lambda e: compter(e, "terrain", MERC) + compter(e, "terrain", CART) >= 1,
+        jalons=(JalonPas("(1) Invocation Normale d'Aluber", "invocation_normale", ALUBER),
+                JalonPas("(2) activation de Branded in High Spirits", "activer", BHIGH),
+                JalonPas("(3) Invocation Spéciale de White depuis la main", mouvements=(M(WHITE, "terrain", "main"),)),
+                JalonPas("(4) Invocation Spéciale d'Incredible Ecclesia", mouvements=(M(IECC, "terrain"),)),
+                JalonPas("(5) Invocation Synchro d'Ecclesia and the Dark Dragon", "invocation_synchro", EDD),
+                JalonPas("(6) Invocation Spéciale de Cartesia depuis le Deck", mouvements=(M(CART, "terrain", "deck"),)),
+                JalonPas("(7) Invocation Fusion de Granguignol", mouvements=(M(GRANG, "terrain", "extra"),)),
+                JalonPas("(8) Invocation Spéciale de Quem par Titaniklad", "activer", TITAN,
+                         mouvements=(M(QUEM, "terrain"),)),
+                JalonPas("(9) activation de The Fallen & The Virtuous", "activer", TFTV),
+                JalonPas("(10) Invocation Spéciale par Quem depuis le Cimetière", contient=(QUEM + "/2",),
+                         mouvements=(M(None, "terrain", "cimetiere"),))),
+    ),
+    ComboGuide(
+        "G9", "Gold Sarcophagus seule", (Source("kanna ogata", "2026-05-20", MDM + "6a0d96f302b04933a7d3effb"),),
+        SARC, (Etape(TCG5 + ", G9, étapes 1 à 5 et 7 (sauf Albion)"),
+               Etape("étape 6", absente="Branded Sword")),
+        CibleExploration("G9 : Ecclesia and the Dark Dragon et Quem sur le terrain ; Incredible Ecclesia en main ; "
+                         "Mercourier banni",
+                         (C("terrain", EDD), C("terrain", QUEM), C("main", IECC), C("bannies", MERC))),
+        main=(SARC,), lot="J2 plein", en_fin_de_tour=True,
+        jalons=(JalonPas("(1) activation de Gold Sarcophagus", "activer", SARC),
+                JalonPas("(2) effet de Mercourier banni", contient=(MERC + "/2",)),
+                JalonPas("(3) Invocation Spéciale de White depuis la main", mouvements=(M(WHITE, "terrain", "main"),)),
+                JalonPas("(4) Invocation Spéciale d'Incredible Ecclesia", mouvements=(M(IECC, "terrain"),)),
+                JalonPas("(5) Invocation Synchro d'Ecclesia and the Dark Dragon", "invocation_synchro", EDD),
+                JalonPas("(6) Invocation Spéciale de Quem", mouvements=(M(QUEM, "terrain"),))),
+    ),
+    ComboGuide(
+        "G10", "Aluber + Fallen of the White Dragon, par Three Champions et Granguignol",
+        (Source("critboi (alt)", "2026-06-06", MDM + "6a244c9d24e0dc6684a2ab22"),),
+        ALUBER, (Etape(TCG5 + ", G10, étapes 1 à 8 et 10"),
+                 Etape("étape 9", absente="Branded in Red")),
+        CibleExploration("G10 : Three Champions, Granguignol et Ecclesia and the Dark Dragon sur le terrain ; "
+                         "Titaniklad, Quem, White, Cartesia et Aluber au Cimetière",
+                         (C("terrain", CHAMP), C("terrain", GRANG), C("terrain", EDD), C("cimetiere", TITAN),
+                          C("cimetiere", QUEM), C("cimetiere", WHITE), C("cimetiere", CART),
+                          C("cimetiere", ALUBER))),
+        main=(ALUBER, WHITE), lot="J2 plein", en_fin_de_tour=True,
+        jalons=(JalonPas("(1) Invocation Spéciale de White depuis la main", mouvements=(M(WHITE, "terrain", "main"),)),
+                JalonPas("(2) Invocation Spéciale d'Incredible Ecclesia", mouvements=(M(IECC, "terrain"),)),
+                JalonPas("(3) Invocation Synchro d'Ecclesia and the Dark Dragon", "invocation_synchro", EDD),
+                JalonPas("(4) Invocation Spéciale de Quem", mouvements=(M(QUEM, "terrain"),)),
+                JalonPas("(5) Invocation Spéciale de White depuis le Cimetière",
+                         mouvements=(M(WHITE, "terrain", "cimetiere"),)),
+                JalonPas("(6) Invocation Synchro de The Three Champions of Swordsoul", "invocation_synchro", CHAMP),
+                JalonPas("(7) Invocation Spéciale de Cartesia depuis la main", mouvements=(M(CART, "terrain", "main"),)),
+                JalonPas("(8) Invocation Normale d'Aluber", "invocation_normale", ALUBER),
+                JalonPas("(9) Invocation Fusion de Granguignol", mouvements=(M(GRANG, "terrain", "extra"),))),
+    ),
+)
+
+TOUS_LES_GUIDES: tuple[ComboGuide, ...] = GUIDES + GUIDES_J2_PLEIN
+
+# G6 tel que figé (avant la correction de sa cible) : compté dans le chiffre principal (avis data-scientist-ygo).
+G6_FIGE = replace(GUIDES_J2_PLEIN[0], gid="G6-figé", titre=GUIDES_J2_PLEIN[0].titre + " (cible figée, avant correction)",
+                  cible=CIBLE_G6_FIGEE)

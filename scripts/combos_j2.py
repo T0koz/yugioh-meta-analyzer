@@ -12,7 +12,14 @@ finaux distincts, temps, branches « non couvert ».
 Écrit dans `data/combos.db` (jamais `yugioh.db`) : runs, chemins retenus (combos), transitions, pas, relations.
 Le harnais (`scripts/combos_harnais.py`) doit avoir tourné une fois avant (tables `cb_card` et `cb_deck`).
 
+Lot J2 plein (TOK-140, jalon n°5) : 10 combos (G1-G5 du lot C3, G6-G10 figés par TOK-139) ; pour G6-G10 la cible
+est évaluée en fin de tour (`combos-guides.md` § 5.2). Pour chaque combo, un essai de plus avec la **main réelle de
+5 cartes** (cartes de départ + les cartes de réponse que le combo « à une carte » retire du jeu) : même cible, mêmes
+jalons ; on note si le moteur se sert des cartes de réponse. Les séquences brutes (déclaration + réponses) sont dans
+le JSON, pour `scripts/combos_export_oracle.py`.
+
 Usage : python scripts/combos_j2.py [--secondes 120] [--largeur 60] [--mains 5] [--json sortie.json] [--sans-ecriture]
+        [--guides G6,G7] [--sans-main-reelle]
 """
 
 from __future__ import annotations
@@ -23,6 +30,7 @@ import random
 import sys
 import time
 from collections import Counter
+from dataclasses import asdict
 from pathlib import Path
 
 RACINE = Path(__file__).resolve().parents[1]
@@ -34,7 +42,7 @@ from moteur_combos.cartes import FORMALISATIONS  # noqa: E402
 from moteur_combos.catalogue import construire_catalogue  # noqa: E402
 from moteur_combos.deck import charger_deck, lire_textes, tous_les_noms  # noqa: E402
 from moteur_combos.exploration import FILTRES_PAR_DEFAUT, etat_depart, explorer, parties_au_hasard  # noqa: E402
-from moteur_combos.guides import GUIDES  # noqa: E402
+from moteur_combos.guides import G6_FIGE, TOUS_LES_GUIDES  # noqa: E402
 from moteur_combos.stockage_combos import (  # noqa: E402
     Ecrivain, a_puis_directement_b, combos_passant_par, lire_combo, ouvrir_run,
 )
@@ -66,6 +74,12 @@ def chemin_lisible(r, sid: str) -> list[str]:
     return out
 
 
+def brut(r, sid: str) -> list[dict]:
+    """Séquence rejouable : déclaration et réponses du script, transition par transition."""
+    return [{"type": a.declaration.type, "carte": a.declaration.carte, "effet": a.declaration.effet,
+             "reponses": list(a.reponses)} for a in r.chemin(sid)]
+
+
 def resume(r) -> dict:
     return {"etats": len(r.etats), "aretes": r.aretes, "retours": r.retours, "rejouees": r.rejouees,
             "plateaux_finaux": len(set(r.finals.values())), "etats_finaux": len(r.finals),
@@ -92,6 +106,12 @@ def main(argv=None) -> int:
     ap.add_argument("--json", type=Path, default=None)
     ap.add_argument("--sans-ecriture", action="store_true")
     ap.add_argument("--guides", default="", help="sous-ensemble, ex. G1,G3")
+    ap.add_argument("--sans-main-reelle", action="store_true", help="pas d'essai avec la main réelle de 5 cartes")
+    ap.add_argument("--sans-hasard", action="store_true", help="pas de joueur au hasard (passage à budget long)")
+    ap.add_argument("--sans-largeur", action="store_true", help="recherche dirigée seulement")
+    ap.add_argument("--avec-g6-fige", action="store_true", help="ajoute G6 avec sa cible figée (avant correction)")
+    ap.add_argument("--largeur-sans-filtres", action="store_true",
+                    help="base naïve plus forte : parcours en largeur sans les filtres D4, même budget")
     args = ap.parse_args(argv)
 
     deck, cat = charger()
@@ -103,17 +123,34 @@ def main(argv=None) -> int:
     choisis = {g.strip() for g in args.guides.split(",") if g.strip()}
 
     print("▶ Combos des guides")
-    for g in GUIDES:
-        if choisis and g.gid not in choisis:
+    liste = TOUS_LES_GUIDES + ((G6_FIGE,) if args.avec_g6_fige else ())
+    for g in liste:
+        if choisis and g.gid not in choisis and not (g is G6_FIGE and args.avec_g6_fige):
             continue
+        accepter = g.accepteur(cat)
         depart = etat_depart(deck, g.main_de_depart, g.hors_jeu)
-        ligne = {"id": g.gid, "titre": g.titre, "main": g.main_de_depart, "hors_jeu": g.hors_jeu,
-                 "cible": g.cible.description,
+        ligne = {"id": g.gid, "lot": g.lot, "titre": g.titre, "main": g.main_de_depart, "hors_jeu": g.hors_jeu,
+                 "cible": g.cible.description, "en_fin_de_tour": g.en_fin_de_tour,
+                 "sources": [s.__dict__ for s in g.sources], "substitutions": list(g.substitutions),
                  "etapes_guide": len(g.etapes), "etapes_realisables": g.etapes_realisables}
-        for nom, strat, budget in (("dirigee", "cible", args.secondes), ("largeur", "largeur", args.largeur)):
-            r = explorer(cat, depart, max_profondeur=args.profondeur, max_secondes=budget, cible=g.cible,
-                         arreter_a_la_cible=True, strategie=strat, accepter=g.accepter)
-            info = resume(r) | {"plateau": bool(r.cibles_atteintes), "sequence": bool(r.cibles_acceptees)}
+        essais = [("dirigee", "cible", args.secondes, depart)]
+        if not args.sans_largeur:
+            essais.append(("largeur", "largeur", args.largeur, depart))
+        if args.largeur_sans_filtres:
+            essais.append(("largeur_sans_filtres", "largeur", args.largeur, depart))
+        if not args.sans_main_reelle and g.hors_jeu:
+            reelle = etat_depart(deck, g.main_de_depart + g.hors_jeu)
+            ligne["main_reelle"] = g.main_de_depart + g.hors_jeu
+            essais.append(("reelle_dirigee", "cible", args.secondes, reelle))
+            if not args.sans_largeur:
+                essais.append(("reelle_largeur", "largeur", args.largeur, reelle))
+        for nom, strat, budget, dep in essais:
+            t_cpu = time.process_time()
+            r = explorer(cat, dep, max_profondeur=args.profondeur, max_secondes=budget, cible=g.cible,
+                         arreter_a_la_cible=True, strategie=strat, accepter=accepter,
+                         filtres=() if nom == "largeur_sans_filtres" else FILTRES_PAR_DEFAUT)
+            info = resume(r) | {"plateau": bool(r.cibles_atteintes), "sequence": bool(r.cibles_acceptees),
+                                "secondes_cpu": round(time.process_time() - t_cpu, 1)}
             if r.cibles_atteintes:
                 sid = r.cibles_atteintes[0]
                 info["chemin_plateau"] = chemin_lisible(r, sid)
@@ -122,10 +159,14 @@ def main(argv=None) -> int:
                 sid = r.cibles_acceptees[0]
                 info["chemin_sequence"] = chemin_lisible(r, sid)
                 info["longueur_sequence"] = len(r.chemin(sid))
+                info["brut_sequence"] = brut(r, sid)
+                if nom.startswith("reelle"):
+                    fin = Counter(i.carte for i in r.etats[sid].joueurs[0].main)
+                    info["cartes_de_reponse_utilisees"] = sorted((Counter(g.hors_jeu) - fin).elements())
             if con is not None:
-                run = ouvrir_run(con, r, deck.ref, depart, g.cible, complement={
-                    "guide": g.gid, "recherche": nom, "jalons": [j.__dict__ for j in g.jalons],
-                    "hors_jeu": g.hors_jeu})
+                run = ouvrir_run(con, r, deck.ref, dep, g.cible, complement={
+                    "guide": g.gid, "recherche": nom, "jalons": [asdict(j) for j in g.jalons],
+                    "hors_jeu": [] if nom.startswith("reelle") else g.hors_jeu})
                 info["run_id"] = run
                 ecr = Ecrivain(con, cat, deck, r, run)
                 vus = set()
@@ -136,16 +177,23 @@ def main(argv=None) -> int:
                 con.commit()
             ligne[nom] = info
         # Méthode naïve (avis data-scientist-ygo) : joueur au hasard, même budget que le parcours en largeur.
-        ligne["hasard"] = parties_au_hasard(cat, depart, graine=GRAINE_MAINS, max_secondes=args.largeur,
-                                            cible=g.cible, accepter=g.accepter)
+        ligne["hasard"] = {"parties": 0, "plateau": 0, "sequence": 0, "secondes": 0} if args.sans_hasard else \
+            parties_au_hasard(cat, depart, graine=GRAINE_MAINS, max_secondes=args.largeur,
+                                            cible=g.cible, accepter=accepter)
         sortie["guides"].append(ligne)
-        d, l = ligne["dirigee"], ligne["largeur"]
+        d = ligne["dirigee"]
+        l = ligne.get("largeur", {"sequence": False, "plateau": False, "secondes": 0, "etats": 0, "arret": "—"})
         def etat(x):
             return ("séquence ✓" if x["sequence"] else ("plateau seul" if x["plateau"] else "✗"))
         print(f"  {g.gid} : dirigée {etat(d)} {d['secondes']} s, {d['etats']} états ({d['arret']})"
               f" | largeur {etat(l)} {l['secondes']} s, {l['etats']} états ({l['arret']})"
               f" | hasard : séquence {ligne['hasard']['sequence']}, plateau {ligne['hasard']['plateau']}"
               f" sur {ligne['hasard']['parties']} parties")
+        for cle in ("reelle_dirigee", "reelle_largeur"):
+            if cle in ligne:
+                x = ligne[cle]
+                print(f"      main réelle ({cle.split('_')[1]}) : {etat(x)} {x['secondes']} s, {x['etats']} états "
+                      f"({x['arret']}) ; cartes de réponse utilisées : {x.get('cartes_de_reponse_utilisees', '—')}")
         for pas in d.get("chemin_sequence", d.get("chemin_plateau", [])):
             print(f"      - {pas}")
 

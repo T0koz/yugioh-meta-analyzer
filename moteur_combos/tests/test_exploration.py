@@ -14,7 +14,9 @@ from moteur_combos.deck import charger_deck, enregistrer_carte, enregistrer_deck
 from moteur_combos.exploration import (
     FILTRES_PAR_DEFAUT, Branche, ScriptExploration, declarations, developper, etat_depart, explorer, options_filtrees,
 )
-from moteur_combos.guides import GUIDES, Jalon, respecte_jalons
+from moteur_combos.guides import (
+    CIBLE_G6_FIGEE, GUIDES, GUIDES_J2_PLEIN, TOUS_LES_GUIDES, Jalon, JalonPas, Mouvement, respecte_jalons,
+)
 from moteur_combos.regles import Decision, Declaration, Moteur, Option
 from moteur_combos.stockage_combos import Ecrivain, a_puis_directement_b, combos_passant_par, ouvrir_run
 
@@ -65,6 +67,45 @@ def test_jalons_en_sous_suite():
     assert not respecte_jalons(chemin, (Jalon("activer", "N", 1, "Z"),))
 
 
+def test_jalons_par_mouvement_et_plusieurs_par_transition():
+    """TOK-140 : un jalon « Invocation Spéciale de X depuis la main » se lit sur les états ; deux jalons peuvent tenir
+    dans une même transition (l'effet déclenché se résout avec elle)."""
+    from moteur_combos.modele import Cadre, Etat, Instance, MemoireTour, ZonesJoueur
+
+    def etat(main=(), cases=()):
+        return Etat(cadre=Cadre(), joueurs=(ZonesJoueur(main=tuple(Instance(n) for n in main),
+                                                        cases=tuple((c, Instance(n)) for c, n in cases)),
+                                            ZonesJoueur(main_connue=False, deck_connu=False)), memoire=MemoireTour())
+    e0, e1 = etat(main=("W",)), etat(cases=(("M1", "W"), ("M2", "I")))
+
+    class A:
+        def __init__(self, src, dst):
+            self.declaration, self.reponses, self.source, self.cible = Declaration("activer", "W", 1), ("W/2",), src, dst
+    etats = {"0": e0, "1": e1}
+    w_main = JalonPas("W depuis la main", mouvements=(Mouvement("W", "terrain", "main"),))
+    i_ss = JalonPas("I", mouvements=(Mouvement("I", "terrain"),))
+    assert respecte_jalons([A("0", "1")], (w_main, i_ss), etats)
+    assert not respecte_jalons([A("0", "1")], (JalonPas("W du Cimetière", mouvements=(
+        Mouvement("W", "terrain", "cimetiere"),)),), etats)
+    assert respecte_jalons([A("0", "1")], (JalonPas("trigger", contient=("W/2",)),), etats)
+    assert not respecte_jalons([A("0", "1")], (JalonPas("synchro", "invocation_synchro"),), etats)
+    with pytest.raises(ValueError):
+        Mouvement("W", "nulle_part")
+
+
+def test_guides_j2_plein_bien_formes():
+    assert [g.gid for g in GUIDES_J2_PLEIN] == ["G6", "G7", "G8", "G9", "G10"]
+    assert len(TOUS_LES_GUIDES) == 10 and len({g.gid for g in TOUS_LES_GUIDES}) == 10
+    for g in GUIDES_J2_PLEIN:
+        assert g.en_fin_de_tour and g.lot == "J2 plein" and g.sources and g.jalons and g.cible.conditions
+        assert all(isinstance(j, JalonPas) and j.texte.startswith(f"({k})") for k, j in enumerate(g.jalons, 1))
+        assert len(g.main_de_depart) + len(g.hors_jeu) == 5
+        with pytest.raises(ValueError):
+            g.accepter(None, None)          # cible en fin de tour : passer par accepteur(catalogue)
+    g6 = GUIDES_J2_PLEIN[0]
+    assert len(CIBLE_G6_FIGEE.conditions) == len(g6.cible.conditions) + 1   # correction : une condition retirée
+
+
 def test_guides_bien_formes():
     assert 5 <= len(GUIDES) <= 10
     for g in GUIDES:
@@ -104,6 +145,17 @@ def test_guides_courts_retrouves_avec_leur_sequence(monde, gid):
     r = explorer(cat, etat_depart(deck, g.main_de_depart, g.hors_jeu), max_profondeur=10, max_secondes=30,
                  cible=g.cible, arreter_a_la_cible=True, strategie="cible", accepter=g.accepter)
     assert r.cibles_acceptees, f"{gid} non retrouvé ({r.arret}, {len(r.etats)} états)"
+
+
+@avec_base
+@pytest.mark.parametrize("gid", ["G6", "G9"])
+def test_guides_j2_plein_courts_retrouves_en_fin_de_tour(monde, gid):
+    deck, cat, _ = monde
+    g = next(x for x in GUIDES_J2_PLEIN if x.gid == gid)
+    r = explorer(cat, etat_depart(deck, g.main_de_depart, g.hors_jeu), max_profondeur=12, max_secondes=60,
+                 cible=g.cible, arreter_a_la_cible=True, strategie="cible", accepter=g.accepteur(cat))
+    assert r.cibles_acceptees, f"{gid} non retrouvé ({r.arret}, {len(r.etats)} états)"
+    assert r.etats[r.cibles_acceptees[0]].cadre.phase == "fin"
 
 
 @avec_base

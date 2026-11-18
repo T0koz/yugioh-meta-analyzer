@@ -131,7 +131,7 @@ bloquant (0 occurrence), 35 captures régénérées — `docs/textes-avant-apres
 
 | TOK | Item | Statut | Priorité |
 |-----|------|--------|----------|
-| TOK-122 | Correctifs de l'audit A1 à A8 (A1-A4 d'abord) | 🔜 Lot 20 | 🔴 High |
+| TOK-122 | Correctifs de l'audit A1 à A8 (A1-A4 d'abord) | 🟡 Livré le 2026-11-18 sur `claude/lot20-audit-a1-a8-cbc82f` (non fusionnée) : A1 à A8 faits, un commit chacun, critères mesurés dans `docs/journal/audit-rigueur-statistique.md` ; deux écarts à l'audit (IC du gain périmé, 20 archétypes testés et non 60) au formulaire. Reste : `build_early_signals.py` + `build_serving_db.py` sur la référence, formulaire lot 20, relecture de la collaboratrice | 🔴 High |
 | TOK-121 | Collecte des dates d'annonce des banlists | 🔜 Lot 21 | 🟠 Medium |
 | TOK-120 | Ban Radar : rangs par liste, régression conditionnelle, pont daté (B5) | 🔜 Lot 22 | 🟠 Medium |
 | TOK-123 | Chantiers de méthode B1 à B4 (lots 23 à 26), C1 plus tard | 🔜 Lots 23-26 ; relecture de la collaboratrice après (décision du 18/11) | 🟠 Medium |

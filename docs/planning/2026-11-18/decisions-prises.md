@@ -61,6 +61,21 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | Lot 16 (textes) | T35, T36 : écrire « 15 % » en dur ? | Calculé depuis `MIN_JACCARD` (`app/graph/page.tsx`). | Le seuil affiché suit le seuil appliqué. |
 | Lot 16 (textes) | Titre du simulateur coupé au trait d'union (« co- / occurrences ») sur mobile. | « co-occurrences » insécable (`whitespace-nowrap`). | Lisibilité ; aucun texte changé. |
 | Lot 16 (textes) | Temps passé. | ≈ 1 h 15 de session (lecture, application, captures, vérification, documentation). | Note demandée par le brief. |
+| Lot 20 (A1) | Où mettre le calcul corrigé des signaux précoces ? | `scripts/build_early_signals.py`, branché dans `refresh_all.py` à la place du notebook 11, qui n'écrit plus en base. | Règle du projet : un calcul qui écrit en base va dans `scripts/` ; une seule source. |
+| Lot 20 (A1) | « Cartes déjà en méta exclues » : quelle règle ? | Jouées dans ≥ 3 % des decks TCG légaux des 90 jours avant la référence (seuil T3 de la tier list) : 70 cartes. Fenêtre de 90 jours choisie par la session, déclarée. | Le critère de fin ne disait pas comment ; un seuil existant et déclaré plutôt qu'un nouveau. |
+| Lot 20 (A1) | Semi-Limited exclues ? | Non (Forbidden et Limited seulement). | Lecture littérale du critère ; avis data-scientist : défendable. |
+| Lot 20 (A1) | La proximité de texte vaut 0 pour les 263 cartes retenues. | Poids inchangés ; l'API sert `text_signal_cards` et `as_of`, la page le dit sans date en dur. | Changer les poids sort du ticket ; `text_synergies` vient du notebook 07, hors chaîne (suite à ouvrir). |
+| Lot 20 (A1) | Réserve data-scientist : la part sur 90 jours sous-estime les cartes sorties en cours de fenêtre. | Non corrigé, renvoyé à B2. | Il faudrait un plancher de decks, nouveau réglage hors ticket. |
+| Lot 20 (A2) | Le « 80 % » apparaît aussi sur l'accueil, la page d'archétype et la boutique. | Corrigé partout (`ARRIVAL_COVERAGE_RANGE`, « couverture vérifiée de 62 à 67 % »). | Même défaut que le ticket ; un texte qui garderait le 80 % contredirait `/methode`. |
+| Lot 20 (A3) | Où dire que le score suit la part OCG (question 4) ? | Paragraphe de `/boutique` et ligne « Comparaison naïve » de `/methode` (ρ 0,94 recalculé, identique). | Validé par Thomas le 17/11 (question 4). |
+| Lot 20 (A4) | Libellés du simulateur. | « Fragmentation » → « Centralité de pont, part du maximum » ; « Archétypes touchés » → « Archétypes voisins ». | Les anciens libellés décrivaient un effet que le calcul ne mesure pas. |
+| Lot 20 (A5) | Changer `BOUTIQUE_MODEL` puisque `predicted_label` change de sens ? | Non ; marqueur `label_source` et `buy_label` dans le payload. | Avis data-scientist : une nouvelle version doublerait les prédictions déjà journalisées. |
+| Lot 20 (A6) | L'IC du critère ([−0,00116 ; −0,00051], −4 %) n'est plus reproductible (ancienne table TCG + OCG). | Non affiché ; seul le résultat TCG seul (−6 %, 0,10 à 0,30 point, évaluation du 16/11, recompté) l'est. « Environ 5 % » devient « environ 6 % » sur `/predictions`. | Règle : un chiffre qui diffère de l'audit ne s'applique pas sans formulaire ; le résultat TCG seul était déjà demandé par le critère. |
+| Lot 20 (A6) | Flèche « sur l'écart dessiné » : quel seuil ? | 0,003 = 0,3 × 0,01 du notebook 05, servi (`direction_threshold`) et déclaré « fixé à la main ». 0 direction changée sur 19. | Même classement, rendu lisible ; aucun nouveau réglage. |
+| Lot 20 (A7) | Dates des réglages manuels. | Lues dans l'historique git (tiers, Decks, Fort/Modéré : 16/11 ; poids du Ban Radar : 14/08 ; mois atténué : 17/11). | Le critère demande une date par réglage. |
+| Lot 20 (A8) | BH ou Benjamini-Yekutieli ? Marquer aussi les Rogue proches de T3 ? | BH (simulation : 3,75 % sous l'hypothèse nulle) ; Rogue marqués (8 sur 13). | Avis data-scientist ; BY ne garderait que 6 signaux sur 10. Variante « T0 à T3 seulement » au formulaire. |
+| Lot 20 (A8) | Tableau « environ 60 archétypes, environ 3 fausses tendances » de `/methode` : faux (20 testés, ≈ 1 attendue). | Laissé tel quel, formulaire. | Chiffre affiché différent de l'audit : pas de changement sans Thomas. |
+| Lot 20 | Temps passé. | ≈ 1 h 30 de session (lecture, huit correctifs, six relectures de sous-agents, deux passages de `check.py --all --visuel`, 24 captures régénérées, documentation). | Note demandée par le brief. |
 
 ## Formulaire
 
@@ -203,5 +218,31 @@ Commentaire libre :
 Lot 16 (textes) — critère « pont »
 [x] « le retirer change de 2 le nombre de cartes touchées dans le top 25 TCG »
 [ ] « 30 avec, 28 sans » (chiffres du diagnostic)
+Commentaire libre :
+Lot 20 (A6) — gain du modèle de prévision cité par le critère de l'audit (−4 %, IC −0,00116 à −0,00051)
+[x] Ne pas l'afficher : il vient de l'ancienne table TCG + OCG ; seul le résultat TCG seul (−6 %, 0,10 à 0,30 point) est affiché
+[ ] L'afficher en plus, étiqueté « ancienne table TCG + OCG, avant le 16/11 »
+[ ] Afficher la valeur recalculée sur la table actuelle (−5,7 %, IC −0,00295 à −0,00071, 27 mois)
+Commentaire libre :
+
+Lot 20 (A8) — tableau « Tendances dues au hasard » de /methode (« environ 60 / 5 % / environ 3 »), faux en dénominateur
+[x] Le retirer : la correction de Benjamini-Hochberg, décrite juste au-dessus, le rend sans objet
+[ ] Le remplacer par les nombres du jour servis par l'API (archétypes testés, tendances avant et après correction ; nouveau champ)
+[ ] Le laisser
+Commentaire libre :
+
+Lot 20 (A8) — marquage « limite »
+[x] Tous les archétypes à partir de 5 decks, Rogue compris (13 aujourd'hui, dont 8 Rogue)
+[ ] Tiers T0 à T3 seulement (5 aujourd'hui), déclaré comme réglage d'affichage
+Commentaire libre :
+
+Lot 20 (A3) — bloc « Le signal OCG → TCG » de l'accueil (r ≈ 0,53 à côté des libellés boutique)
+[x] Préciser la population : « archétypes déjà joués dans les deux formats »
+[ ] Laisser tel quel
+Commentaire libre :
+
+Lot 20 (A1) — part « déjà en méta » d'une carte sortie en cours de fenêtre (réserve data-scientist)
+[x] Traiter dans B2 (part depuis la sortie TCG, avec un plancher de decks)
+[ ] Corriger tout de suite (nouveau seuil à fixer)
 Commentaire libre :
 ```

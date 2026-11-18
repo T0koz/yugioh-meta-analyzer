@@ -29,7 +29,7 @@
 | C2 bis | Oracle sur les situations J1 et N01-N13 | ✅ fusionné dans `claude/moteur-18-11` (travail `dad808c`) | Sonnet 5.5 | 30 situations J1 : 26 accords, J07 accord partiel (R23, texte OCG), J26 **désaccord ferme (N09 : un monstre insensible peut être choisi par un effet sans cible)**, N04 en litige (Attribut déjà porté), N12 non testable ; valeurs d'ATK non lues par le lanceur |
 | C3 | Combos : J2, exploration (TOK-119) | ✅ fusionné dans `claude/moteur-18-11` (travail `767248a`…`26609d9`) | Opus 5.5 + sous-agent `data-scientist-ygo` | étape 0 : N09 corrigé, N04 tranché par le texte TCG ; **J2 atteint sous réserve** : 4 combos de guides sur 5 retrouvés sans cible (Wilson 95 % : 38 à 96 %), 5 sur 5 vers la cible, 0 sur 5 pour un joueur au hasard ; aucun combo de guide entièrement réalisable avec la liste pilote (cartes absentes : `Albion the Branded Dragon`, `Branded in Red`, `Branded Retribution`, `Khaos Starsource`) ; 186 tests pytest, `check.py --all` vert ; **formulaire C3 pour Thomas** (`docs/moteur-combos/j2-rapport.md` § 7) |
 
-Dernière mise à jour : 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Jalons n°1 à 3 finis le 18/11 ; **release `v2026.11.18` préparée** (fusion de `claude/moteur-18-11` dans `main`, `d97b4a2`, tag local, notes `docs/releases/v2026.11.18.md`), à pousser par Thomas ; jalon n°4 fini et fusionné (après la release) ; aucune session en cours, jalons suivants à composer. Ni `main` ni push.
+Dernière mise à jour : 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Jalons n°1 à 3 finis le 18/11 ; **release `v2026.11.18` préparée** (fusion de `claude/moteur-18-11` dans `main`, `d97b4a2`, tag local, notes `docs/releases/v2026.11.18.md`), à pousser par Thomas ; jalon n°4 fini et fusionné (après la release) ; session en cours : jalon n°5 (moteur, `jalon-5`). Ni `main` ni push.
 
 ## Jalons (Linear, glissants — décision 0054)
 Un jalon = un groupe de fonctionnalités composé selon la charge (S = 1, M = 2, L = 3 points). Fini = tous ses tickets
@@ -37,9 +37,13 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 
 | Jalon | Tickets (charge) | Statut | Sessions |
 |---|---|---|---|
-| 1 (n°5) | à composer avec Thomas | vide | aucune session armée |
-| 2 (n°6) | à composer avec Thomas | vide | |
-| 3 (n°7) | à composer avec Thomas | vide | |
+| 1 (n°5) | Moteur, côté moteur (sans oracle) : TOK-139 transcrire 5 combos de guides, figés avant exécution (2), TOK-140 exécuter les 10 combos et exporter pour l'oracle (2), TOK-141 lot de questions résiduelles, non envoyé (1) | en cours depuis le 18/11 | session `jalon-5` (lancée le 18/11, signal n°4 déjà posé) |
+| 2 (n°6) | Moteur, côté oracle (session isolée, ne lit pas `moteur_combos/`) : TOK-142 rejouer les séquences J2 (2), TOK-143 taux d'erreur J1 sur l'échantillon (2) | composé | à armer au prochain message de Thomas |
+| 3 (n°7) | TOK-144 verdicts J1 et J2 contre l'oracle, statuts `verifiee` (2) | composé | |
+
+Décision 0055 (18/11) : plus de juge humain sauf exception ; l'oracle valide (`verifiee` = accord avec l'oracle) ; côté moteur et
+côté oracle dans deux jalons, deux sessions (isolement AGPL). Release `v2026.11.18` : check-list de mise en ligne
+`docs/mise-en-ligne-checklist.md` (aussi sur `main`).
 
 Numérotation absolue (signal de fin = commit `jalon n°N fini`, décision 0054). Glissement Linear par renommage : « Fini n°N (date) ».
 

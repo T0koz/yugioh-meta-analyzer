@@ -51,3 +51,20 @@ Conditions imposées à chaque session pour que le retrait reste possible :
 **Passage dans `main` jalon par jalon** : un jalon fini et vérifié forme un lot de commits prêt à pousser ; une
 fonctionnalité retirée n'y entre jamais. Pas d'interrupteur par variable d'environnement pour l'instant (rien n'est
 déployé) ; à reconsidérer après le premier déploiement (TOK-35).
+
+## Une session par jalon, armée d'avance (complément validé par Thomas le 18/11)
+- **Une session par jalon** : elle enchaîne tous les tickets du jalon (un commit par ticket, `check.py` entre chaque,
+  sous-agents selon le ticket). L'orchestrateur vérifie et fusionne à la fin, puis fait le glissement.
+- **Lancement sans attendre Thomas** : l'application refuse qu'une session en démarre une autre depuis un tour automatique
+  (fin d'une session, message d'une session) ; seul un message de Thomas le permet. Donc, à chaque message de Thomas,
+  l'orchestrateur **arme d'avance** la session du jalon suivant : elle démarre, attend passivement (outil Monitor, sans
+  rien lire ni écrire d'autre) le commit de fin du jalon en cours sur la branche d'intégration, puis se met à jour sur
+  cette branche et travaille.
+- **Signal de fin** : un commit de l'orchestrateur sur `claude/moteur-18-11` dont le message contient
+  `jalon n°N fini` (numérotation absolue, tenue dans `etat.md`, indépendante des noms glissants « Jalon 1/2/3 »).
+  Abandon d'un jalon armé : commit contenant `jalon n°N annulé`.
+- **Limites** : une seule session armée à la fois (jamais plus de deux sessions, règle du 17/11) ; si Thomas n'écrit
+  rien entre deux fins de jalon, la chaîne s'arrête après le jalon armé et la suite attend son prochain message.
+- **Glissement dans Linear** : le jalon fini est renommé « Fini n°N (date) » (historique conservé, l'outil ne sait pas
+  détacher un ticket d'un jalon), « Jalon 2 » devient « Jalon 1 », « Jalon 3 » devient « Jalon 2 », un nouveau
+  « Jalon 3 » est créé et composé.

@@ -41,6 +41,10 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 | 2 | TOK-130 fenêtre par survie (3, `sprint-4/24`), TOK-131 intervalles (2, `sprint-4/25`), TOK-116 parts OCG servies (2) | en attente | |
 | 3 | TOK-133 données, TOK-134 doc, TOK-135 tests (1 chacun), TOK-82 chiffres de la vitrine (1) | en attente | |
 
+Numérotation absolue des jalons (signal de fin = commit `jalon n°N fini`, décision 0054) : **n°1** = Jalon 1 actuel
+(TOK-120, 132, 129, 93) ; **n°2** = Jalon 2 actuel (TOK-130, 131, 116), session `jalon-2` **armée le 18/11** (attend
+`jalon n°1 fini`, outil Monitor) ; n°3 = Jalon 3 actuel, à armer au prochain message de Thomas après la fin du n°1.
+
 Jalons finis : aucun pour l'instant.
 
 Résultats TOK-120 / TOK-132 (18/11) : règle d'adoption non remplie (régression conditionnelle sur les rangs : bat les poids
@@ -83,6 +87,7 @@ ce que contient déjà `claude/moteur-18-11` (lots 16, 17, 18, C1, C2, C2 bis, C
 | 12 + 14 bis | Lot 11 fini, lot 14 bis sans fichier commun | non : pas d'attente passive ; Thomas a décidé de le laisser finir |
 | 15 (étape 2) + 15a bis | Demande explicite de Thomas (« go session avec le data scientist ») ; l'étape 2 attend une réponse de Thomas (attente passive) ; fichiers distincts | oui (deux sessions) |
 | 15 (étape 2) + 15a | Demande explicite de Thomas (17/11) : lancer 15a dès qu'un créneau se libère, deux sessions maximum ; l'étape 2 n'écrit pas le verdict de l'historique | oui (autorisation explicite, deux sessions) |
+| j1-tok129-93 + jalon-2 (18/11) | Demande de Thomas : sessions lancées sans l'attendre (décision 0054) ; jalon-2 attend passivement le commit `jalon n°1 fini` (Monitor), ne touche aucun fichier avant | oui (deux sessions, la seconde passive) |
 
 Règle appliquée à partir du 17/11 (précision de Thomas) : un lot à la fois ; une deuxième session seulement pendant une attente longue et passive de la première, sur d'autres fichiers ; jamais plus de deux.
 

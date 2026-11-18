@@ -342,6 +342,10 @@ revert) ; un commit par ticket, écriture en base additive, dépendances « bloq
 par jalon. Interrupteur par variable d'environnement non retenu (rien de déployé). Règle ajoutée à
 `docs/planning/2026-11-17/regles.md` et `docs/planning/sprint-4/regles-methode.md`.
 
+**Validé par Thomas le 18/11 : une session par jalon, lancée sans l'attendre** (inscrit dans la note 0054). Décidé par
+défaut : armement d'avance (la session du jalon suivant attend le commit `jalon n°N fini`), une seule session armée à la
+fois, glissement Linear par renommage (« Fini n°N ») plutôt que détachement des tickets.
+
 À faire par Thomas dans Linear (l'outil ne sait ni retirer un jalon d'un ticket ni supprimer un jalon) : **supprimer les
 jalons « File de nuit 16-17/11 » et « File du 18/11 (moteur de combos) »**, ce qui détache leurs tickets. L'échéance du
 13/01/2027 reste sur TOK-119.

@@ -8,5 +8,7 @@
   (sur sa branche, fusionné dans l'intégration mais derrière un réglage ou dans une table à part), un journal dans
   `docs/journal/` et un formulaire pré-coché dans `decisions-prises.md`. `WEIGHTS` jamais modifié sans formulaire.
 - Écriture en base : table nouvelle seulement, après sauvegarde, transaction unique. `BACKTEST_MIN_DECKS` jamais baissé.
+- Un commit par ticket, TOK dans le message : un ticket qui pose problème doit pouvoir être retiré seul par
+  `git revert` (décision 0054, règle de retrait).
 - La relecture par la collaboratrice viendra **après** (décision de Thomas du 18/11) : noter dans chaque journal ce
   qu'elle devra relire.

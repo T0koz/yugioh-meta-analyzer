@@ -286,6 +286,12 @@ Décidé par défaut (à confirmer) :
 - **« Fini » = tous les tickets du jalon fusionnés dans la branche d'intégration et vérifiés (In Review)**, sans attendre le push ;
 - dans un jalon, une session par groupe de tickets qui touchent les mêmes fichiers (120 + 132 ensemble), un commit par ticket.
 
+**Validé par Thomas le 18/11 : retrait d'une fonctionnalité d'un jalon** (formulaire rendu tel que proposé, inscrit dans
+la note 0054) : règle en 3 cas (pas fusionnée / fusionnée → revert de ses commits / poussée → retour arrière Vercel puis
+revert) ; un commit par ticket, écriture en base additive, dépendances « bloqué par » dans Linear ; `main` avance jalon
+par jalon. Interrupteur par variable d'environnement non retenu (rien de déployé). Règle ajoutée à
+`docs/planning/2026-11-17/regles.md` et `docs/planning/sprint-4/regles-methode.md`.
+
 À faire par Thomas dans Linear (l'outil ne sait ni retirer un jalon d'un ticket ni supprimer un jalon) : **supprimer les
 jalons « File de nuit 16-17/11 » et « File du 18/11 (moteur de combos) »**, ce qui détache leurs tickets. L'échéance du
 13/01/2027 reste sur TOK-119.

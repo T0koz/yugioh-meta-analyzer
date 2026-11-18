@@ -43,6 +43,22 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 
 Jalons finis : aucun pour l'instant.
 
+Dépendances déclarées dans Linear (« bloqué par », 18/11) : TOK-120 ← TOK-121 (dates d'annonce, lot 21) ; TOK-129 et
+TOK-132 ← TOK-122 (A1, A4, lot 20) ; TOK-120 lié à TOK-132 (`bridge`). Les trois bloquants sont dans
+`claude/moteur-18-11` (In Review) : rien ne bloque le lancement, mais retirer le lot 20 ou 21 toucherait ces tickets.
+
+**Retrait d'une fonctionnalité** (décision 0054, validée le 18/11) : pas fusionnée → on ne fusionne pas ; fusionnée →
+revert de ses commits (`git log --grep TOK-xxx`), `check.py --all`, `serving.db` reconstruite ; poussée → retour arrière
+Vercel puis revert sur `main`. Le ticket passe au Jalon 2 ou sans jalon (sans jalon : à faire par Thomas dans Linear),
+raison en commentaire Linear et dans le tableau ci-dessous.
+
+| Ticket retiré | Jalon | Date | Raison | Commits annulés |
+|---|---|---|---|---|
+| aucun | | | | |
+
+**`main` avance jalon par jalon** : un jalon fini et vérifié = un lot de commits prêt à pousser. Premier push à venir :
+ce que contient déjà `claude/moteur-18-11` (lots 16, 17, 18, C1, C2, C2 bis, C3, 20, 21), puis le Jalon 1 une fois fini.
+
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |
 |---|---|---|---|

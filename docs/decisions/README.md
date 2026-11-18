@@ -92,3 +92,4 @@ Ce que ça change, ce qu'il faudra revoir et quand.
 | 0051 | 2026-11-16 | [Lots 4 et 5 : périmètre des pages, du SEO et des captures](0051-lots-4-et-5-perimetre-des-pages-du-seo-et-des-captures.md) | acceptée |
 | 0052 | 2026-11-17 | [Ban Radar : l'omniprésence prédit une partie des bans, le score sert à la tête de liste](0052-ban-radar-l-omniprésence-predit-une-partie-des-bans.md) | acceptée |
 | 0053 | 2026-11-18 | [Reprise du moteur de combos : ordre des lots, parallélisme et horloge](0053-reprise-du-moteur-de-combos-ordre-parallelisme-et-horloge.md) | acceptée |
+| 0054 | 2026-11-18 | [Linear : trois jalons glissants pour lire la file](0054-linear-jalons-glissants-1-2-3.md) | acceptée |

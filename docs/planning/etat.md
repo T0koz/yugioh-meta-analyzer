@@ -23,17 +23,25 @@
 
 | 20 | Correctifs de l'audit A1 à A8 (A1-A4 d'abord) | ✅ fusionné le 18/11 (`7b44cf8`…`d2860f8`, merge `5581f42`) ; `check.py --all --visuel` vert après fusion (52 tests API par base, 186 pytest, 51 captures, backtest aux rangs de référence). **Recalcul appliqué par l'orchestrateur** : `build_early_signals.py` sur `yugioh.db` (263 cartes, 0 Kewl Tune) puis `build_serving_db.py` (11,8 Mo), après sauvegarde `data/backup_avant_lot20_{yugioh,serving}_20261118.db`. **Reste à Thomas** : `log_predictions.py` (source des signaux précoces recalculée) puis commit de `prediction_log.jsonl` ; formulaire lot 20 (5 questions : IC du gain A6 non reproductible, A8 « ≈ 20 testés / ≈ 1 attendu » au lieu de 60 / 3, etc.) | Opus 5.5 + `data-scientist-ygo` | ajouté à la file le 17/11 après la validation du formulaire de l'audit |
 | 21 | Dates d'annonce des banlists | ✅ fusionné le 18/11 (`8ff8ede`, `538601b`) : table `banlist_announcements` (170 listes, 20/20 du backtest : 16 dates de publication des cartes, 4 bornes hautes TCG), `fetch_banlist_announcements.py` (dans `refresh_all.py`), `diagnose_ban_radar.py --annonces`. Effet exploratoire (OCG ≈ +5 rangs, 9/10 ; TCG rien de net ; rien ne survit à la correction multiple). `check.py --all` vert, backtest inchangé. Table appliquée à la référence après sauvegarde `data/backup_avant_lot21_yugioh_20261118.db` ; non servie. Reste : formulaire lot 21 (Historique inchangé pré-coché), relecture de la collaboratrice | Sonnet 5.5 + `gardien-donnees` | brief `sprint-4/21-dates-annonce.md`, journal `docs/journal/dates-annonce-banlists-tok-121.md` |
-| 22 | Ban Radar : rangs par liste, régression conditionnelle, pont daté | prêt, brief rédigé ; attend le feu vert de Thomas (l'app refuse de lancer une session sur un événement automatique). Motif quand il partira : aucune autre session en cours, chaîne combos en attente de formulaires | Opus 5.5 + `data-scientist-ygo` | `WEIGHTS` jamais modifié sans formulaire |
-| 23 | B2 backtest des signaux précoces | à faire (deuxième session), **après A1 (lot 20)** | | |
-| 24 | B1 fenêtre d'arrivée par analyse de survie | à faire (deuxième session), **après A2 (lot 20)** | | |
-| 25 | B4 intervalles de prévision par archétype | à faire (deuxième session) | | |
-| 26 | B3 pont et simulateur face aux banlists | à faire (deuxième session), **après A4 (lot 20)** | | |
+| 22-26 | Remplacés par les jalons glissants (décision 0054, 18/11) | voir « Jalons » ci-dessous | | les briefs `sprint-4/22` à `26` restent valables |
 | C1 | Combos : TOK-90 tranche 0 | ✅ fusionné dans `claude/moteur-18-11` (`46c1f33`, travail `53bca7a`) | Opus 5.5 | combo `Aluber` → `Branded Fusion` → `Rindbrumm` → `Kitt` rappelle `Albaz` ; négatifs T60, T04, T11 ; « non couvert » effet par effet ; 10 situations exécutées, 77 tests pytest, `check.py --all` vert ; **5 décisions par défaut à valider** |
 | C2 | Combos : J1, formalisation des 37 cartes (TOK-118) | ✅ fusionné dans `claude/moteur-18-11` (travail `19200d3`…`224b0d6`) | Opus 5.5 + sous-agent `data-scientist-ygo` (méthode) | 37 cartes `formalisee`, 57 effets du pilote + 15 hors périmètre ; 69/72 situations YAML et 30/30 situations J1 conformes ; 173 tests pytest ; `check.py --all` vert. **J1 pas encore déclaré atteint** : manquent l'oracle (C2 bis) et la relecture humaine de 20 effets tirés au hasard (`docs/moteur-combos/j1-rapport.md` § 4, cible : borne haute de Wilson ≤ 20 %, à valider) |
 | C2 bis | Oracle sur les situations J1 et N01-N13 | ✅ fusionné dans `claude/moteur-18-11` (travail `dad808c`) | Sonnet 5.5 | 30 situations J1 : 26 accords, J07 accord partiel (R23, texte OCG), J26 **désaccord ferme (N09 : un monstre insensible peut être choisi par un effet sans cible)**, N04 en litige (Attribut déjà porté), N12 non testable ; valeurs d'ATK non lues par le lanceur |
 | C3 | Combos : J2, exploration (TOK-119) | ✅ fusionné dans `claude/moteur-18-11` (travail `767248a`…`26609d9`) | Opus 5.5 + sous-agent `data-scientist-ygo` | étape 0 : N09 corrigé, N04 tranché par le texte TCG ; **J2 atteint sous réserve** : 4 combos de guides sur 5 retrouvés sans cible (Wilson 95 % : 38 à 96 %), 5 sur 5 vers la cible, 0 sur 5 pour un joueur au hasard ; aucun combo de guide entièrement réalisable avec la liste pilote (cartes absentes : `Albion the Branded Dragon`, `Branded in Red`, `Branded Retribution`, `Khaos Starsource`) ; 186 tests pytest, `check.py --all` vert ; **formulaire C3 pour Thomas** (`docs/moteur-combos/j2-rapport.md` § 7) |
 
-Dernière mise à jour : 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Aucune session en cours : lot 22 (TOK-120, rangs par liste) prêt, attend le feu vert. Ensuite 23 → 24 → 25 → 26 (A1, A2, A4 faits : dépendances levées). Ni `main` ni push.
+Dernière mise à jour : 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Aucune session en cours : Jalon 1 prêt, attend le feu vert. Ni `main` ni push.
+
+## Jalons (Linear, glissants — décision 0054)
+Un jalon = un groupe de fonctionnalités composé selon la charge (S = 1, M = 2, L = 3 points). Fini = tous ses tickets
+fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, nouveau 3. Historique des jalons finis ci-dessous.
+
+| Jalon | Tickets (charge) | Statut | Sessions |
+|---|---|---|---|
+| 1 | TOK-120 Ban Radar en rangs (3, brief `sprint-4/22`), TOK-132 pont et simulateur (2, `sprint-4/26`), TOK-129 signaux précoces (2, `sprint-4/23`), TOK-93 fraîcheur des tables (1) | prêt, attend le feu vert | prévu : 120 + 132 ensemble (même backtest, même `bridge`), puis 129 + 93 |
+| 2 | TOK-130 fenêtre par survie (3, `sprint-4/24`), TOK-131 intervalles (2, `sprint-4/25`), TOK-116 parts OCG servies (2) | en attente | |
+| 3 | TOK-133 données, TOK-134 doc, TOK-135 tests (1 chacun), TOK-82 chiffres de la vitrine (1) | en attente | |
+
+Jalons finis : aucun pour l'instant.
 
 ## Tâches de fond
 | # | Tâche | Dernier passage | Note |

@@ -268,38 +268,24 @@ Lot 21 (TOK-121) — suite de la mesure
 Commentaire libre :
 ```
 
-## Linear : notion de lot et source de vérité (18/11, demande de Thomas)
+## Linear : jalons glissants 1-2-3 (18/11, décision de Thomas, note 0054)
 
-Fait sur la demande de Thomas (« crée un tag Lot dans Linear ») :
-- Groupe d'étiquettes **« Lot »** (choix unique, comme « Sujet ») : `Lot 08` à `Lot 26`, `Lot 15a`, `Lot C1` à `Lot C3`
-  (en rouge pour la chaîne combos). Numéros sur deux chiffres pour que le tri alphabétique suive l'ordre de la file.
-- **Un lot = un ticket.** TOK-123 couvrait quatre lots : découpé en sous-tickets TOK-129 (lot 23, B2), TOK-130 (lot 24,
-  B1), TOK-131 (lot 25, B4), TOK-132 (lot 26, B3) ; C1 de l'audit reste sur TOK-123.
-- Étiquetés : TOK-124 (8), 114 (9), 92 (10), 103 (11), 55 (12), 125 (13), 35 (14 et 14 bis), 126 (15), 115 (15a),
-  128 (16), 86 (17, et C2 bis), 117 (18), 127 (19), 122 (20), 121 (21), 120 (22), 90 (C1), 118 (C2), 119 (C3).
-- Non étiquetés : lots 1 à 7 (sprint 1, benchmark, journal de décisions : pas de ticket un pour un, tous dans `main`).
+Remplace l'essai du matin (une étiquette « Lot NN » par ticket) : étiquettes enlevées des tickets, groupe « Lot » retiré.
+- Trois jalons dans le projet : **Jalon 1** (en cours), **Jalon 2**, **Jalon 3**. Un jalon = un groupe de fonctionnalités
+  composé selon la charge, tous sujets confondus. Une fonctionnalité a le jalon 1, 2 ou 3, ou pas de jalon (non planifiée).
+- Quand le Jalon 1 est fini, ses tickets sortent du jalon, le contenu du 2 passe dans le 1, celui du 3 dans le 2, et un
+  nouveau 3 est composé. Historique jalon par jalon dans `etat.md`.
+- Charge dans le champ « estimate » de Linear : S = 1, M = 2, L = 3 points (la barre d'avancement en tient compte).
+- Composition au 18/11 :
+  - Jalon 1 : TOK-120 Ban Radar en rangs (3), TOK-132 pont et simulateur (2), TOK-129 signaux précoces (2), TOK-93 fraîcheur des tables (1) ;
+  - Jalon 2 : TOK-130 fenêtre d'arrivée par survie (3), TOK-131 intervalles de prévision (2), TOK-116 parts OCG servies (2) ;
+  - Jalon 3 : TOK-133 vérification des données, TOK-134 doc désynchronisée, TOK-135 tests (créés, 1 chacun), TOK-82 chiffres de la vitrine (1).
+- TOK-123 découpé en sous-tickets TOK-129 à 132 (B2, B1, B4, B3) ; C1 reste sur TOK-123.
 
-À régler par Thomas dans l'interface (l'outil ne crée pas de vue) : une vue « Pipe des lots », filtre « Lot est
-renseigné », regroupement par **statut**, tri par étiquette ; ou tableau groupé par le groupe « Lot ».
+Décidé par défaut (à confirmer) :
+- **« Fini » = tous les tickets du jalon fusionnés dans la branche d'intégration et vérifiés (In Review)**, sans attendre le push ;
+- dans un jalon, une session par groupe de tickets qui touchent les mêmes fichiers (120 + 132 ensemble), un commit par ticket.
 
-```
-### Linear source de vérité de l'avancement ?
-[x] Oui pour le **statut** des lots et tickets (Todo / In Progress / In Review / Done, étiquette Lot) ; le dépôt garde le
-    **contenu** (briefs, journaux, formulaires, chiffres) et Linear y renvoie. `etat.md` se réduit à ce que Linear ne porte
-    pas : ordre de la file, motif de chaque parallélisme, commits de fusion, sauvegardes de base. BACKLOG.md renvoie à Linear
-    (il le dit déjà) et ne recopie plus les statuts.
-[ ] Oui pour tout (statut et contenu dans Linear, dépôt pour le code seul)
-[ ] Non : garder `etat.md` et BACKLOG.md comme référence, Linear en miroir
-Commentaire libre :
-
-### Lots déjà terminés (1 à 7)
-[x] Ne pas les étiqueter (tous dans main, rien à reprendre)
-[ ] Créer « Lot 01-07 » et l'appliquer aux tickets du sprint 1
-Commentaire libre :
-```
-
-Conditions pour que Linear tienne ce rôle (raison de la recommandation) :
-- l'orchestrateur met à jour le ticket à chaque étape (lancement, fusion, application en base), comme `etat.md` aujourd'hui ;
-- la collaboratrice doit avoir accès à Linear (TOK-108), sinon elle n'a pas l'état ;
-- le connecteur Linear se déconnecte parfois : une session sans Linear note dans `etat.md` et l'orchestrateur reporte ;
-- règle de statut inchangée : Done = dans `main` ; In Review = dans `claude/moteur-18-11` seulement.
+À faire par Thomas dans Linear (l'outil ne sait ni retirer un jalon d'un ticket ni supprimer un jalon) : **supprimer les
+jalons « File de nuit 16-17/11 » et « File du 18/11 (moteur de combos) »**, ce qui détache leurs tickets. L'échéance du
+13/01/2027 reste sur TOK-119.

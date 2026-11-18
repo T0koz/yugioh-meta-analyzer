@@ -699,6 +699,21 @@ D3, chaîne `refresh_decks.py` / `refresh_all.py`, 20 tables servies, r ≈ 0,53
 - Toute nouvelle route ou table : la ligne de `api-contracts.md` (tableau des endpoints) et la section de
   `data-models.md` vont avec.
 
+### 🧪 Tests de l'API (TOK-135, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+`backend/tests` : 74 → 125 tests passés + 1 `xfail`, sur les deux bases, sans réseau ni modification du code testé.
+Nouveaux fichiers : `test_price_history.py`, `test_labels_mapping.py`, `test_db.py`, `test_routes_synthetic.py` (routes
+sur bases en mémoire : filtres, tri, bornes, 404/422), `test_api_invariants.py` (base réelle : tier = `tier_for`, trous
+de prix = `find_gaps`, libellés boutique, seuils du backtest), `test_build_serving_db.py`.
+- **Bug signalé (`xfail`)** : `/cards/search` et `resolve_card_name` mettent la saisie telle quelle dans un `LIKE` :
+  « % » et « _ » ne sont pas échappés (« %% » renvoie toutes les cartes, `/cards/%25` une carte au lieu d'un 404).
+- **`test_build_serving_db.py` voit une table citée par un routeur et absente de `SERVED_TABLES` même si elle n'existe
+  pas encore** (ce que `check_coverage` ne voit pas) ; un alias SQL inédit dans un routeur s'ajoute à `NOT_TABLES`, une
+  table lue seulement si elle existe à `OPTIONAL_TABLES` (`meta_prediction_intervals` aujourd'hui).
+- Les routes se testent sans base avec `app.dependency_overrides[get_db]` et une connexion `:memory:`
+  (`check_same_thread=False`, `row_factory = sqlite3.Row`).
+→ détail : `docs/planning/fond/2026-11-18-tests.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

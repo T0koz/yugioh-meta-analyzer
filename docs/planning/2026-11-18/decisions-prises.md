@@ -700,3 +700,75 @@ Commentaire libre :
 [ ] Laisser tel quel
 Commentaire libre :
 ```
+
+## Jalon 7 — TOK-144 : verdicts J1 et J2 mesurés contre l'oracle
+
+Rapports : `docs/moteur-combos/j1-rapport.md` § 8 (règle figée avant la comparaison, commit `5fb4193`) et § 9
+(résultats) ; `docs/moteur-combos/j2-rapport.md` § 9. Commande : `python scripts/combos_jalon7.py`. Relu par
+`data-scientist-ygo` (comptage conforme, intervalles recalculés).
+
+En bref : sur l'échantillon (20 effets tirés, 86 situations jouées par l'oracle), **3 effets en erreur sur 20**, Wilson
+95 % [5,2 % ; 36,0 %] → **J1 non atteint** (critère : borne haute ≤ 20 %). Deux causes : le moteur ignorait le terrain
+adverse (`Super Polymerization`, `The Fallen & The Virtuous`) ; « bannir jusqu'à N » lu comme « 0 à N »
+(`Hyperinvoked Aeon`). Corrigées (commit `b31e5df`), **non revalidées** par l'oracle. J2 : 23 séquences sur 23 légales
+pas à pas dans l'oracle ; condition principale inchangée, 4 sur 5 (développement) et **1 sur 5 hors échantillon**.
+
+Décidé par défaut (à confirmer) :
+- `Ecclesia and the Dark Dragon` remplit la règle `verifiee` mais reste `formalisee` (différence de modèle J2-a) ;
+- J2-a non corrigé dans ce jalon (changerait le graphe d'exploration et tous les chiffres J2) ;
+- pour la question Q2 (R22), seuls les effets que `questions-residuelles.md` nomme bloquent `verifiee` (lecture large :
+  tout effet déclenché facultatif, qui bloquerait presque toutes les cartes) ;
+- les statuts sont écrits dans `data/combos.db` du worktree ; après fusion, à relancer sur le dépôt principal
+  (`python scripts/combos_harnais.py` puis `python scripts/combos_jalon7.py --ecrire-statuts`).
+
+```
+1. J1 (37 cartes formalisées, taux d'erreur chiffré)
+[x] Déclarer J1 non atteint : 3 effets sur 20 en erreur, Wilson 95 % [5,2 % ; 36,0 %] (mesuré contre l'oracle, avant
+    correction) ; corrections faites, non revalidées
+[ ] Déclarer J1 atteint sur la base du taux après correction (0 sur 20) — déconseillé : chiffre optimiste par
+    construction, pas une mesure
+Commentaire libre :
+
+2. Remesurer J1 après les corrections
+[x] Nouveau tirage de 20 effets non vus (graine nouvelle, fixée avant le tirage), situations écrites et jouées par une
+    session de l'oracle isolée, même règle de comptage ; 0 erreur sur 20 donnerait une borne haute de 16,1 %
+[ ] Rejouer seulement les 3 situations en désaccord dans l'oracle (confirme les corrections, ne remesure pas le taux)
+[ ] Ne pas remesurer avant J2
+Commentaire libre :
+
+3. J2 (le moteur retrouve seul les combos des guides publics)
+[ ] Atteint
+[x] Atteint sous réserve : toutes les séquences retrouvées sont légales dans l'oracle ; réserve = la longueur
+    (4 à 7 transitions retrouvées seules, 8 à 11 seulement avec une cible) et 1 sur 5 hors échantillon
+[ ] Non atteint
+Commentaire libre :
+
+4. Statuts `verifiee` (base `data/combos.db`, rien d'affiché)
+[x] Garder les 20 cartes `verifiee` (règle figée, moteur mesuré) et `Ecclesia and the Dark Dragon` en `formalisee`
+    jusqu'à la correction de J2-a
+[ ] Passer aussi `Ecclesia and the Dark Dragon` en `verifiee` (elle remplit la règle à la lettre)
+[ ] Aucune carte `verifiee` tant que J1 n'est pas atteint
+Commentaire libre :
+
+5. Différence de modèle J2-a (retour d'`Ecclesia and the Dark Dragon` en Phase de Fin)
+[x] La corriger dans un lot dédié : effet obligatoire de Phase de Fin ordonnable, puis rejouer J2 (≈ 12 min + passage
+    long) et faire rejouer les 8 séquences concernées par l'oracle
+[ ] Laisser tel quel (les 23 plateaux sont identiques ; seules des zones diffèrent si le retour est joué en dernier)
+Commentaire libre :
+
+6. Terrain adverse dans les autres effets (`Three Champions` 2, `Luluwalilith` 1, `Aeon` 1, `Mirrorjade` 1…)
+[x] Ticket à part : même défaut que E32 / E49, sans incidence au tour 1 du pilote ; à faire avant tout essai avec
+    un adversaire
+[ ] Plus tard (hors pilote)
+Commentaire libre :
+
+7. Questions résiduelles (Q1 à Q8, `questions-residuelles.md`)
+[x] Ne rien envoyer pour l'instant (décision 0055) ; si un lot part, Q1 et Q2 d'abord
+[ ] Envoyer Q1 et Q2 maintenant
+Commentaire libre :
+
+8. Suite et horloge de la règle d'arrêt (décision 0053, J2 avant le 13/01/2027)
+[x] Horloge maintenue au 13/01/2027 ; prochain jalon : remesure J1 (point 2) et correction de J2-a (point 5)
+[ ] Considérer J2 comme atteint et arrêter l'horloge
+Commentaire libre :
+```

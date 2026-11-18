@@ -91,6 +91,14 @@ def test_jalons_par_mouvement_et_plusieurs_par_transition():
     assert not respecte_jalons([A("0", "1")], (JalonPas("synchro", "invocation_synchro"),), etats)
     with pytest.raises(ValueError):
         Mouvement("W", "nulle_part")
+    # « une carte quelconque arrive du Cimetière » même si un autre monstre quitte le terrain dans la même transition
+    from moteur_combos.modele import ZonesJoueur as Z
+    e2 = Etat(cadre=Cadre(), joueurs=(Z(cimetiere=(Instance("M"),), cases=(("M1", Instance("G")),)),
+                                      Z(main_connue=False, deck_connu=False)), memoire=MemoireTour())
+    e3 = Etat(cadre=Cadre(), joueurs=(Z(cimetiere=(Instance("G"),), cases=(("M1", Instance("M")),)),
+                                      Z(main_connue=False, deck_connu=False)), memoire=MemoireTour())
+    assert Mouvement(None, "terrain", "cimetiere").vrai(e2, e3)
+    assert not Mouvement(None, "terrain", "cimetiere").vrai(e3, e3)
 
 
 def test_guides_j2_plein_bien_formes():

@@ -85,14 +85,16 @@ class Jalon:
 ZONES_MOUVEMENT = ("main", "deck", "extra", "cimetiere", "bannies", "terrain")
 
 
-def compter(etat, zone: str, carte: str | None) -> int:
-    """Exemplaires de `carte` (toutes cartes si None) dans une zone du joueur 0."""
+def _noms(etat, zone: str) -> list[str]:
     j = etat.joueurs[0]
     if zone == "terrain":
-        noms = [i.carte for _, i in j.cases] + [o.instance.carte for o in etat.zones_monstre_extra
-                                                 if o.controleur == 0]
-    else:
-        noms = [i.carte for i in getattr(j, zone)]
+        return [i.carte for _, i in j.cases] + [o.instance.carte for o in etat.zones_monstre_extra if o.controleur == 0]
+    return [i.carte for i in getattr(j, zone)]
+
+
+def compter(etat, zone: str, carte: str | None) -> int:
+    """Exemplaires de `carte` (toutes cartes si None) dans une zone du joueur 0."""
+    noms = _noms(etat, zone)
     return len(noms) if carte is None else noms.count(carte)
 
 
@@ -109,6 +111,11 @@ class Mouvement:
             raise ValueError(f"zone inconnue : {self.vers} / {self.depuis}")
 
     def vrai(self, avant, apres) -> bool:
+        if self.carte is None:
+            # « une carte, quelle qu'elle soit » : au moins un nom qui arrive (et quitte `depuis`), jamais un solde
+            # global (une destruction dans la même transition le masquerait : bug trouvé sur G8, jalon 10).
+            noms = {i for i in _noms(apres, self.vers)}
+            return any(Mouvement(n, self.vers, self.depuis).vrai(avant, apres) for n in noms)
         if compter(apres, self.vers, self.carte) <= compter(avant, self.vers, self.carte):
             return False
         return self.depuis is None or compter(apres, self.depuis, self.carte) < compter(avant, self.depuis, self.carte)
@@ -153,6 +160,17 @@ def respecte_jalons(chemin, jalons, etats=None) -> bool:
         while k < len(jalons) and jalons[k].colle_pas(a, avant, apres):
             k += 1
     return k == len(jalons)
+
+
+def jalons_restants(chemin, jalons, etats=None) -> int:
+    """Nombre de jalons pas encore passés le long du chemin (même correspondance gloutonne que `respecte_jalons`)."""
+    k = 0
+    for a in chemin:
+        avant = etats[a.source] if etats is not None else None
+        apres = etats[a.cible] if etats is not None and a.cible is not None else None
+        while k < len(jalons) and jalons[k].colle_pas(a, avant, apres):
+            k += 1
+    return len(jalons) - k
 
 
 def fin_de_tour_possible(cat, etat) -> bool:

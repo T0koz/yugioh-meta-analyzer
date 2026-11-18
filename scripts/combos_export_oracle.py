@@ -34,7 +34,10 @@ ROLES = {"cout": "coût", "materiel": "matériel"}
 ESSAIS = (("dirigee", "main du guide, recherche vers le plateau du guide"),
           ("largeur", "main du guide, parcours en largeur sans cible"),
           ("reelle_dirigee", "main réelle de 5 cartes, recherche vers le plateau du guide"),
-          ("reelle_largeur", "main réelle de 5 cartes, parcours en largeur sans cible"))
+          ("reelle_largeur", "main réelle de 5 cartes, parcours en largeur sans cible"),
+          ("dirigee_900", "main du guide, recherche vers le plateau du guide, budget long de 900 s"),
+          ("largeur_sans_filtres", "main du guide, parcours en largeur sans les filtres déclarés"),
+          ("guidee", "main du guide, recherche guidée par les jalons du guide — diagnostic, hors mesure de J2"))
 
 
 def case(c: str | None) -> str:
@@ -60,6 +63,9 @@ def ligne_pas(p) -> str | None:
     lib = re.sub(r"^carte : ", "choix : ", lib)
     lib = lib.replace("position : attaque", "position : Attaque").replace("(attaque)", "(Attaque)")
     lib = lib.replace("placement : zone_monstre_extra", "placement : Zone Monstre Extra")
+    lib = lib.replace("reponse : passer", "réponse : je passe (rien n'est enchaîné)")
+    lib = re.sub(r"\((M|S)(\d)\)", lambda m: case(m.group(1) + m.group(2)).strip(), lib)
+    lib = re.sub(r"\((ZME_[GD])\)", lambda m: case(m.group(1)).strip(), lib)
     lib = re.sub(r" : (deck|main|terrain|cimetiere|extra|bannies) → (deck|main|terrain|cimetiere|extra|bannies)",
                  lambda m: f" : {ZONES[m.group(1)]} → {ZONES[m.group(2)]}", lib)
     mouvements = []
@@ -127,7 +133,10 @@ def rejouer(cat, depart, brut):
             if p.type == "declarer" and p.cartes and p.cartes[0][0] == d["carte"]:
                 zone = p.cartes[0][2]
                 break
-        lignes = [x for x in (ligne_pas(p) for p in res.pas) if x]
+        lignes = []
+        for x in (ligne_pas(p) for p in res.pas):
+            if x and (not lignes or lignes[-1] != x):   # une même ligne répétée (cible déclarée puis choisie) : une fois
+                lignes.append(x)
         etapes.append((titre_declaration(d, zone), lignes))
         etat = res.etat
     return etapes, etat

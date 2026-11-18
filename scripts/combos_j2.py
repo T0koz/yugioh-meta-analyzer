@@ -42,7 +42,7 @@ from moteur_combos.cartes import FORMALISATIONS  # noqa: E402
 from moteur_combos.catalogue import construire_catalogue  # noqa: E402
 from moteur_combos.deck import charger_deck, lire_textes, tous_les_noms  # noqa: E402
 from moteur_combos.exploration import FILTRES_PAR_DEFAUT, etat_depart, explorer, parties_au_hasard  # noqa: E402
-from moteur_combos.guides import G6_FIGE, TOUS_LES_GUIDES  # noqa: E402
+from moteur_combos.guides import G6_FIGE, TOUS_LES_GUIDES, jalons_restants  # noqa: E402
 from moteur_combos.stockage_combos import (  # noqa: E402
     Ecrivain, a_puis_directement_b, combos_passant_par, lire_combo, ouvrir_run,
 )
@@ -110,6 +110,9 @@ def main(argv=None) -> int:
     ap.add_argument("--sans-hasard", action="store_true", help="pas de joueur au hasard (passage à budget long)")
     ap.add_argument("--sans-largeur", action="store_true", help="recherche dirigée seulement")
     ap.add_argument("--avec-g6-fige", action="store_true", help="ajoute G6 avec sa cible figée (avant correction)")
+    ap.add_argument("--max-etats", type=int, default=200_000, help="borne du nombre d'états par exploration")
+    ap.add_argument("--guidee", action="store_true",
+                    help="diagnostic HORS J2 : recherche dirigée guidée par les jalons du guide (« guidée par la solution »)")
     ap.add_argument("--largeur-sans-filtres", action="store_true",
                     help="base naïve plus forte : parcours en largeur sans les filtres D4, même budget")
     args = ap.parse_args(argv)
@@ -133,7 +136,7 @@ def main(argv=None) -> int:
                  "cible": g.cible.description, "en_fin_de_tour": g.en_fin_de_tour,
                  "sources": [s.__dict__ for s in g.sources], "substitutions": list(g.substitutions),
                  "etapes_guide": len(g.etapes), "etapes_realisables": g.etapes_realisables}
-        essais = [("dirigee", "cible", args.secondes, depart)]
+        essais = [("guidee" if args.guidee else "dirigee", "cible", args.secondes, depart)]
         if not args.sans_largeur:
             essais.append(("largeur", "largeur", args.largeur, depart))
         if args.largeur_sans_filtres:
@@ -147,8 +150,10 @@ def main(argv=None) -> int:
         for nom, strat, budget, dep in essais:
             t_cpu = time.process_time()
             r = explorer(cat, dep, max_profondeur=args.profondeur, max_secondes=budget, cible=g.cible,
-                         arreter_a_la_cible=True, strategie=strat, accepter=accepter,
-                         filtres=() if nom == "largeur_sans_filtres" else FILTRES_PAR_DEFAUT)
+                         arreter_a_la_cible=True, strategie=strat, accepter=accepter, max_etats=args.max_etats,
+                         filtres=() if nom == "largeur_sans_filtres" else FILTRES_PAR_DEFAUT,
+                         priorite=(lambda rr, s: jalons_restants(rr.chemin(s), g.jalons, rr.etats))
+                         if nom == "guidee" else None)
             info = resume(r) | {"plateau": bool(r.cibles_atteintes), "sequence": bool(r.cibles_acceptees),
                                 "secondes_cpu": round(time.process_time() - t_cpu, 1)}
             if r.cibles_atteintes:
@@ -181,7 +186,7 @@ def main(argv=None) -> int:
             parties_au_hasard(cat, depart, graine=GRAINE_MAINS, max_secondes=args.largeur,
                                             cible=g.cible, accepter=accepter)
         sortie["guides"].append(ligne)
-        d = ligne["dirigee"]
+        d = ligne.get("dirigee") or ligne["guidee"]
         l = ligne.get("largeur", {"sequence": False, "plateau": False, "secondes": 0, "etats": 0, "arret": "—"})
         def etat(x):
             return ("séquence ✓" if x["sequence"] else ("plateau seul" if x["plateau"] else "✗"))

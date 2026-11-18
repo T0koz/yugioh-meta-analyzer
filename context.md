@@ -312,7 +312,7 @@ JavaScript transféré 180 ko, CLS 0.
   jamais `buy_score` (ordre d'affichage). Libellé `signal_label` toujours accompagné de « seuils provisoires, non validés
   hors échantillon ».
 - **Données figées** : `lib/proof-data.ts` (parts mensuelles de Kewl Tune, relevé du 16/11 : `meta_scores_ocg` n'est pas
-  servie) et `SITE_FACTS.banBacktest` (4 des 20 listes du backtest). À relever de nouveau quand la base change.
+  servie) et `SITE_FACTS.banTop25` (bilan top 25 par format, 20 listes du backtest, depuis le lot 16). À relever de nouveau quand la base change.
 - **Effets** (`components/home/effects.tsx`) : chacun part d'un HTML serveur complet ; `data-live` (posé en JS, ≥ 900 px,
   mouvement autorisé) est le seul interrupteur du récit au défilement. Styles `home-*` dans `globals.css`.
 - Tokens ajoutés : `--ocg` (série OCG uniquement), `--shadow-card`, `--holo`, `--tile-glow`. `CRITERIA` du Ban Radar est
@@ -533,6 +533,17 @@ Méthode déjà conformes. Rien n’est appliqué avant la validation de Thomas.
   échappe à l’extracteur. Un faux positif se déclare dans `ALLOW`, jamais en affaiblissant une règle.
 - « Yu-Gi-Oh! » est exclu de la règle du point d’exclamation (nom de marque).
 
+**Seconde moitié (2026-11-18, branche `claude/lot16-application-textes-8896be`, non fusionnée)** : T01 à T43 et B01 à B28
+appliqués (99 lignes marquées ✅ dans `docs/textes-avant-apres.md`, écarts au § 0) ; titre neutre « Méta Yu-Gi-Oh! TCG et
+OCG » (h1, partage, image) ; `check_copy.py --strict` **bloquant** dans `check.py` (853 textes, 0 occurrence) ; 35 captures
+sur 51 régénérées. Aucun `WEIGHTS`, aucune donnée ni API touchés.
+- **Verdict du Ban Radar écrit une fois** (`lib/ban-verdict.ts`, chiffres de `SITE_FACTS.banTop25`, backtest du 16/11) : accueil,
+  encart du Radar, onglet Historique, `/methode`. Dans l’Historique, il disparaît si les listes servies ne donnent plus les
+  mêmes sommes (`verdictMatches`) : après une nouvelle banlist, relancer le diagnostic, puis réécrire `banTop25` et le texte.
+- **Le titre de l’accueil** (`TITLE`, mots révélés un à un) échappe toujours à `check_copy.py` : à relire à la main.
+- Un worktree n’a pas de `frontend/node_modules` : `cp -cR <dépôt principal>/frontend/node_modules frontend/` (clone APFS,
+  ≈ 10 s, ignoré par Git) avant `tsc`, `eslint` ou les captures.
+
 ### 🧪 Audit de rigueur statistique (lot 19, 2026-11-17, branche `claude/lot19-audit-rigueur-e3bee6`, non fusionnée)
 
 Aucun score ne remplit « estimé, validé hors échantillon, comparé au naïf, incertitude affichée » ; pires écarts : signaux précoces (carte interdite en tête, banlist figée au 13 juin), fenêtre d'arrivée « 80 % » couvrant 62-67 % en 2024-2025, score boutique ≈ part OCG (ρ 0,94) → `docs/journal/audit-rigueur-statistique.md`.
@@ -563,7 +574,7 @@ décisions prises par défaut : `docs/planning/2026-11-17/decisions-prises.md` ;
   (poids inchangés, verdict de l'Historique tel que proposé) ; audit de rigueur (A1-A4 puis A5-A8) ; textes du lot 16 (tout appliquer,
   titre neutre « Méta Yu-Gi-Oh! TCG et OCG », `check_copy.py` bloquant) ; source de l'oracle TOK-86 (`edo9300/ygopro-core`, usage
   local hors dépôt) ; D1 à D7 du moteur de combos ; les 14 notes « à valider » de `docs/decisions/` (52 acceptées).
-- **Lots prêts à lancer** (un à la fois) : 16 seconde moitié (application des textes), 18 (fondations du moteur), 20 (correctifs
+- **Lots prêts à lancer** (un à la fois) : 20 (correctifs
   A1 à A8 de l'audit). Le lot 17 (TOK-86) est prêt aussi : `premake` 5.0.0 et `lua@5.4`
   installés le 17/11 (`/opt/homebrew/opt/lua@5.4`, non liée ; le cœur demande Lua 5.3 ou 5.4, pas la 5.5 de `brew install lua`).
 - **Encore en attente de Thomas** : lots de correctifs de la revue de code (rapport de la tâche de fond).

@@ -51,6 +51,16 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | C3 (TOK-119) | Que stocker dans `combos.db` ? | Les chemins retenus seulement : le chemin vers la cible (et vers la séquence), et pour chaque main réaliste un chemin le plus court par plateau final distinct (200 au plus) ; compteurs du parcours dans le rapport. Schéma inchangé (`gardien-donnees` non sollicité). | Le graphe complet fait des centaines de milliers d'arêtes ; les requêtes « A puis directement B » et « passe par X » portent sur les combos. |
 | C3 (TOK-119) | Verdict J2 ? | **« Atteint sous réserve », horloge du 13/01/2027 maintenue** (avis `data-scientist-ygo`) : J2 plein demande cible et jalons figés avant exécution (par un humain ou l'oracle), 5 combos de plus d'autres auteurs, un essai à 5 cartes, et battre nettement le joueur au hasard. | n = 5, guides non tirés au hasard, cible et jalons écrits par l'agent qui connaissait la réponse. |
 | Orchestrateur | Lancer C3 tout de suite, ou d'abord faire rejouer les situations J1 par l'oracle ? | D'abord l'oracle (lot C2 bis, Sonnet, seul), puis C3. Pas de deuxième session : aucune attente passive dans la chaîne. | Une erreur de formalisation trouvée par l'oracle doit être corrigée avant que l'exploration ne s'appuie dessus ; le brief de J1 prévoit la comparaison à l'oracle. |
+| Lot 16 (textes) | Accent du titre neutre de l'accueil (`TITLE`, mots révélés un à un) ? | « *TCG et OCG* » en italique de marque (`Em`), dans le h1 et dans l'image de partage. | Le titre neutre ne porte plus de mesure ; l'accent souligne les deux formats que le graphique compare. |
+| Lot 16 (textes) | Surtitre « Méta Yu-Gi-Oh! · données au … » au-dessus d'un h1 « Méta Yu-Gi-Oh! TCG et OCG » ? | Surtitre → « YGO Meta · données au … » ; surtitre de l'image de partage → « YGO Meta · decklists de tournoi ». Texte alternatif de l'image : titre neutre puis phrase de corrélation de T01. | Sinon le même nom se lit deux fois de suite ; aucun chiffre changé. |
+| Lot 16 (textes) | T18 demande « {n} cartes TCG notées », l'API ne sert pas ce total. | « Cartes TCG notées de 0 à 100 sur six critères, d'après {n_decks} decks de tournoi des 6 derniers mois ; les 50 premières sont affichées. » | Aucun changement d'API pour un lot de textes (le total demanderait un champ servi et `gardien-donnees`). |
+| Lot 16 (textes) | B02 à B09 : comment remplacer le tableau de 4 listes de l'accueil ? | Tableau de 2 lignes (TCG, OCG) : cartes touchées dans le top 25 de la veille, Ban Radar contre part des decks, en barres recalibrées sur le maximum ; listes où le Ban Radar fait mieux ; puis rang médian et phrase sur le hasard ; lien vers l'Historique dans la source. Chiffres figés `SITE_FACTS.banTop25` (comme le reste du bloc), relevés le 18/11 dans `ban_backtest_lists` de `serving.db` (29/16, 41/18, 6-1-3, 9-1-0, rang médian 3 et 8 sur 10). | La charte veut que le graphique explique ; l'accueil n'appelle pas l'endpoint de l'historique et en ajouter un appel changerait les captures et la charge de la page. |
+| Lot 16 (textes) | Verdict TOK-115 : quelle formulation, et où ? | Texte du point 5 validé, écrit une fois (`lib/ban-verdict.ts`) : onglet Historique (sous le bilan) et `/methode` (mesures dans « Résultat » de la section Ban Radar, phrase sur le hasard dans « Lecture » de la section historique, pour ne pas répéter). Encart du Radar : formulation B12 (même chiffres, « écart non établi »). Dans l'Historique, le verdict n'est affiché que si les listes servies redonnent les mêmes sommes. | Une phrase qualitative (« plus », « moins bien ») ne se recalcule pas : mieux vaut la masquer que la laisser fausse après la prochaine banlist. |
+| Lot 16 (textes) | B24, B27 : « top 25 TCG : 30 cartes avec, 28 sans » contredit le 29 affiché (le diagnostic départage les égalités autrement). | « le retirer change de 2 le nombre de cartes touchées dans le top 25 TCG ». | Même mesure (30 → 28), sans chiffre absolu qui contredise le bilan. |
+| Lot 16 (textes) | B18 : déplacer la phrase de légende au-dessus de la liste ? | Laissée dans l'encart. | La légende en ligne existe déjà sous la première carte (`CriteriaLegend`). |
+| Lot 16 (textes) | T35, T36 : écrire « 15 % » en dur ? | Calculé depuis `MIN_JACCARD` (`app/graph/page.tsx`). | Le seuil affiché suit le seuil appliqué. |
+| Lot 16 (textes) | Titre du simulateur coupé au trait d'union (« co- / occurrences ») sur mobile. | « co-occurrences » insécable (`whitespace-nowrap`). | Lisibilité ; aucun texte changé. |
+| Lot 16 (textes) | Temps passé. | ≈ 1 h 15 de session (lecture, application, captures, vérification, documentation). | Note demandée par le brief. |
 
 ## Formulaire
 
@@ -172,5 +182,26 @@ C3 (TOK-119) — verdict J2
 [x] Atteint sous réserve, horloge du 13/01/2027 maintenue (conditions d'un J2 plein listées dans `j2-rapport.md`)
 [ ] Atteint
 [ ] Non atteint
+Commentaire libre :
+
+Lot 16 (textes) — accent et surtitres de l'accueil
+[x] « TCG et OCG » accentué ; surtitres « YGO Meta · … » (accueil, image de partage)
+[ ] Aucun accent ; surtitres d'origine
+Commentaire libre :
+
+Lot 16 (textes) — bloc « Ban Radar rejoué » de l'accueil
+[x] Tableau TCG / OCG du top 25 (Ban Radar contre part des decks), chiffres figés dans SITE_FACTS.banTop25
+[ ] Texte seul (deux phrases), sans tableau
+[ ] Chiffres lus dans l'API de l'historique (un appel de plus sur l'accueil)
+Commentaire libre :
+
+Lot 16 (textes) — verdict TOK-115 masqué dans l'Historique si les sommes servies changent
+[x] Oui (relancer le diagnostic et réécrire le texte après chaque banlist)
+[ ] Non, toujours affiché
+Commentaire libre :
+
+Lot 16 (textes) — critère « pont »
+[x] « le retirer change de 2 le nombre de cartes touchées dans le top 25 TCG »
+[ ] « 30 avec, 28 sans » (chiffres du diagnostic)
 Commentaire libre :
 ```

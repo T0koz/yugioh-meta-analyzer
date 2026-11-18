@@ -18,7 +18,7 @@ Exception : le notebook 11 (signal précoce) a été extrait dans `scripts/build
 
 Ordre (dépendances) : fetch_new_cards → 02 → 04 (meta_scores) → banlist_features → 05 (prédictions) →
 10 (alertes boutique) → buy_signals → early_signals (signal précoce) → ban_radar → card_impact
-→ archetype_profiles (même fenêtre que la tier list, donc après 04) → log_predictions → build_serving_db --check → download_card_images (incrémental).
+→ archetype_profiles (même fenêtre que la tier list, donc après 04) → log_predictions → build_serving_db --check → download_card_images (incrémental) → banlist_announcements (réseau).
 Un seul écrivain sur yugioh.db : tout est séquentiel, arrêt au premier échec.
 """
 import argparse
@@ -55,6 +55,9 @@ STEPS = [
     ("serving_check", SC("scripts/build_serving_db.py", "--check")),
     # Dernier : un échec réseau sur les images ne doit pas bloquer les calculs ci-dessus. Incrémental.
     ("card_images", SC("scripts/download_card_images.py")),
+    # Lot 21 (TOK-121) : dates d'annonce des banlists (table `banlist_announcements`, hors base de service, lue par
+    # `diagnose_ban_radar.py --annonces`). Réseau (Yugipedia), rien n'en dépend : en dernier, une panne ne bloque rien.
+    ("banlist_announcements", SC("scripts/fetch_banlist_announcements.py")),
 ]
 
 

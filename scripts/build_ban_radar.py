@@ -250,7 +250,7 @@ def build(conn: sqlite3.Connection, as_of: str, fmt: str = "TCG") -> pd.DataFram
     return df.sort_values("ban_risk_score", ascending=False).reset_index()
 
 
-def backtest_lists(conn: sqlite3.Connection, fmt: str):
+def backtest_lists(conn: sqlite3.Connection, fmt: str, as_of_override: dict[str, str] | None = None):
     """Rejoue le score la veille de chaque banlist du format, liste par liste.
 
     Produit un dict par liste. Une liste écartée (fenêtre sous
@@ -259,8 +259,14 @@ def backtest_lists(conn: sqlite3.Connection, fmt: str):
     `ranking` est le classement complet de la veille (index = carte, ordre =
     rang) : seules les données antérieures à l'annonce y entrent.
     Partagé par `backtest()` (affichage) et `build_ban_history.py` (table servie).
+
+    `as_of_override` (lot 21, TOK-121) : {date d'entrée en vigueur: date de coupure} pour classer à une autre
+    date que « la veille de l'entrée en vigueur » (ex. la veille de l'annonce). Sans lui, comportement inchangé :
+    le backtest affiché et la table servie n'utilisent jamais ce paramètre.
     """
     for as_of, effective, hits in banlist_events(conn, fmt):
+        if as_of_override and effective in as_of_override:
+            as_of = as_of_override[effective]
         usage_decks = load_usage(conn, as_of, fmt).deck_id.nunique()
         if usage_decks < BACKTEST_MIN_DECKS or len(hits) < BACKTEST_MIN_HITS:
             yield {"format": fmt, "as_of": as_of, "effective": effective, "hits": hits,

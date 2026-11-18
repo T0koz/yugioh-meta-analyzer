@@ -3,7 +3,7 @@ import sqlite3
 from fastapi import APIRouter, Depends
 
 from app.db import get_db
-from app.labels import map_pred_direction
+from app.labels import PRED_GAP_THRESHOLD, direction_from_gap
 from app.schemas import (
     EvolutionPoint,
     EvolutionResponse,
@@ -11,9 +11,10 @@ from app.schemas import (
     PredictionsResponse,
     TierEntry,
     TierListResponse,
+    TierThreshold,
 )
 from app.slugs import slugify
-from app.tiering import MIN_WINDOW_DECKS, meta_score_for, tier_for, trend_for
+from app.tiering import MIN_WINDOW_DECKS, TIER_MIN_DECKS, TIER_THRESHOLDS, meta_score_for, tier_for, trends_corrected
 
 router = APIRouter(prefix="/meta", tags=["meta"])
 
@@ -100,8 +101,9 @@ def compute_tier_list(db: sqlite3.Connection, with_images: bool = True) -> tuple
     n_cur, n_prev = rows[0]["n_cur"], rows[0]["n_prev"]
     best_placement_score = max(1 / row["avg_placement"] for row in rows if row["avg_placement"] > 0)
 
+    trends = trends_corrected([(row["decks"], row["decks_prev"]) for row in rows], n_cur, n_prev)
     data = []
-    for row in rows:
+    for row, trend in zip(rows, trends):
         share = row["decks"] / n_cur
         data.append(
             TierEntry(
@@ -111,7 +113,7 @@ def compute_tier_list(db: sqlite3.Connection, with_images: bool = True) -> tuple
                 meta_score=meta_score_for(share, row["avg_placement"], best_placement_score),
                 share=share,
                 decks=row["decks"],
-                trend=trend_for(row["decks"], n_cur, row["decks_prev"], n_prev),
+                trend=trend,
                 image_url=get_archetype_image(db, row["archetype"]) if with_images else None,
             )
         )
@@ -125,7 +127,12 @@ def get_tier_list(db: sqlite3.Connection = Depends(get_db)) -> TierListResponse:
     if not rows:
         return TierListResponse(data=[], window_start="", window_end="", n_decks=0)
     return TierListResponse(
-        data=data, window_start=rows[0]["window_start"], window_end=rows[0]["window_end"], n_decks=rows[0]["n_cur"]
+        data=data,
+        window_start=rows[0]["window_start"],
+        window_end=rows[0]["window_end"],
+        n_decks=rows[0]["n_cur"],
+        tier_thresholds=[TierThreshold(tier=t, share=s) for t, s in TIER_THRESHOLDS],
+        tier_min_decks=TIER_MIN_DECKS,
     )
 
 
@@ -179,7 +186,7 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
     latest_month = db.execute("SELECT MAX(data_month) FROM meta_predictions").fetchone()[0]
     rows = db.execute(
         """
-        SELECT archetype, meta_score_current, pred_meta_score, pred_direction
+        SELECT archetype, meta_score_current, pred_meta_score
         FROM meta_predictions
         WHERE data_month = ?
         ORDER BY pred_meta_score DESC
@@ -192,7 +199,7 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
             archetype=row["archetype"],
             current=row["meta_score_current"],
             predicted=row["pred_meta_score"],
-            direction=map_pred_direction(row["pred_direction"]),
+            direction=direction_from_gap(row["meta_score_current"], row["pred_meta_score"]),
             image_url=get_archetype_image(db, row["archetype"]),
         )
         for row in rows
@@ -204,5 +211,9 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
     except sqlite3.OperationalError:  # base sans colonne computed_at : le front écrit « date inconnue »
         computed_at = None
     return PredictionsResponse(
-        data=data, model="70 % naïf + 30 % Ridge", data_month=latest_month, computed_at=computed_at
+        data=data,
+        model="70 % naïf + 30 % Ridge",
+        data_month=latest_month,
+        computed_at=computed_at,
+        direction_threshold=PRED_GAP_THRESHOLD,
     )

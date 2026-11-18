@@ -3,7 +3,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { fmtDate, fmtMonthRange, fmtNum, fmtRank } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
-import { SITE_FACTS } from "@/lib/site-facts";
+import { ARRIVAL_COVERAGE_RANGE, SITE_FACTS } from "@/lib/site-facts";
 import { CardArt } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { HoverPreviewProvider } from "@/components/hover-preview-context";
@@ -13,7 +13,7 @@ import { DataFooter, Page, PageHero, StatBand } from "@/components/ds/page";
 import { BanStatus, Tag } from "@/components/ds/tags";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { BoutiqueSignal, CardPriceHistory, PriceHistoryResponse } from "@/types";
-import { ArrivalTimeline, LABEL_TONE, type ArchetypeRow } from "./ArrivalTimeline";
+import { ARRIVAL_COVERAGE, ArrivalTimeline, LABEL_TONE, type ArchetypeRow } from "./ArrivalTimeline";
 import { PriceChart, SnapshotStrip, fmtDayShort, fmtEuro } from "./PriceChart";
 
 const SIGNAL_SOURCE = "decklists OCG (yugiohmeta.com), vues Cardmarket (YGOPRODeck)";
@@ -133,7 +133,7 @@ function ArchetypeSection({
         </div>
         <p className={MONO}>
           {group.rank != null && population != null && `${fmtRank(group.rank)} sur ${population} archétypes OCG · `}
-          {window ? `arrivée en TCG : ${window}, 8 fois sur 10` : "fenêtre d’arrivée indisponible"} ·{" "}
+          {window ? `arrivée en TCG : ${window}, couverture vérifiée de ${ARRIVAL_COVERAGE_RANGE}` : "fenêtre d’arrivée indisponible"} ·{" "}
           <Link
             href={`/archetype/${group.slug}`}
             className="text-soft underline decoration-line-2 underline-offset-4 transition-colors duration-200 hover:text-text hover:decoration-signal-hi"
@@ -216,14 +216,10 @@ export default async function BoutiquePage() {
               { value: fmtNum(groups.length), label: "Archétypes" },
               { value: fmtNum(cardCount), label: "Cartes" },
               { value: fmtNum(prices.snapshot_count), label: "Relevés de prix" },
-              {
-                value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 2),
-                label: `Corrélation OCG → TCG, IC 95 % ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}`,
-              },
             ]}
           />
           <p className={`mt-4 max-w-[80ch] ${MONO}`}>
-            {`Corrélation entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes. Signal de juin 2026 : ses cartes ont baissé de 35 % contre 1 % pour le marché.`}
+            {`Le classement OCG de cette page suit presque la seule part des decks OCG (corrélation de rang ${fmtNum(SITE_FACTS.ocgScoreShareRho, 2)} sur ${SITE_FACTS.ocgScoreArchetypes} archétypes) ; aucun test ne montre encore qu’il fait mieux. Le lien OCG → TCG (corrélation ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)}, IC 95 % ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}, ${SITE_FACTS.ocgTcgArchetypes} archétypes) est mesuré sur des archétypes déjà joués dans les deux formats : il ne porte pas sur ceux de cette page. Signal de juin 2026 : ses cartes ont baissé de 35 % contre 1 % pour le marché.`}
           </p>
         </PageHero>
 
@@ -233,9 +229,9 @@ export default async function BoutiquePage() {
           source={SIGNAL_SOURCE}
           date={computed_at ? `calcul du ${fmtDate(computed_at)}` : "date de calcul inconnue"}
           sample={label_rule ? `${fmtNum(groups.length)} archétypes sur ${label_rule.population} suivis en OCG` : `${fmtNum(groups.length)} archétypes`}
-          uncertainty="arrivée en TCG : segment : intervalle à 80 % ; rang OCG sans intervalle, seuils de libellé provisoires"
+          uncertainty={`arrivée en TCG : segment : délai de 8 cartes sur 10 parmi celles sorties en TCG, couverture vérifiée sur des cartes plus récentes : ${ARRIVAL_COVERAGE} ; rang OCG sans intervalle, seuils de libellé provisoires`}
         >
-          fenêtre d’arrivée : délai mesuré sur 1 897 cartes, 2022 à 2025, non vérifié sur des cas nouveaux
+          fenêtre d’arrivée : délai mesuré sur {fmtNum(SITE_FACTS.arrivalWindowCards)} cartes sorties en OCG de 2022 à 2025 puis en TCG ; les cartes jamais sorties en TCG ne sont pas comptées
         </DataFooter>
 
         {snapshotDates.length > 0 && prices.period_start && prices.period_end && (
@@ -276,7 +272,7 @@ export default async function BoutiquePage() {
                 <TableRow className="hover:bg-transparent">
                   <TableHead>Archétype</TableHead>
                   <TableHead>Signal</TableHead>
-                  <TableHead className="text-right">Arrivée TCG (8 fois sur 10)</TableHead>
+                  <TableHead className="text-right">Arrivée TCG (couverture {ARRIVAL_COVERAGE_RANGE})</TableHead>
                   <TableHead>Carte</TableHead>
                   <TableHead className="text-right">Dernier prix Cardmarket</TableHead>
                   <TableHead>Banlist TCG</TableHead>

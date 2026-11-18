@@ -11,13 +11,14 @@ import { Em } from "@/components/ds/em";
 import { DataFooter, Meter, Page, PageHero } from "@/components/ds/page";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { MethodNote } from "@/components/ds/explain";
+import { earlyTextNote } from "@/lib/early-signals";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { data, computed_at } = await api.earlySignals();
   const computed = computed_at ? `, calcul du ${fmtDate(computed_at)}` : "";
   return pageMetadata({
     title: "Signaux précoces",
-    description: `${data.length} cartes Yu-Gi-Oh! récentes notées de 0 à 100 : vues hebdomadaires, co-occurrences en decks de tournoi, tier de l’archétype${computed}. Sources : YGOPRODeck, ${DECK_SOURCE}.`,
+    description: `${data.length} cartes Yu-Gi-Oh! récentes notées de 0 à 100 : vues hebdomadaires, proximité de texte avec les cartes des archétypes de la méta, poids de l’archétype en OCG${computed}. Sources : YGOPRODeck, ${DECK_SOURCE}.`,
     path: "/early-signals",
   });
 }
@@ -27,7 +28,9 @@ const GRID =
   "grid grid-cols-[22px_34px_minmax(0,1fr)_72px] items-center gap-3 px-3 min-[760px]:grid-cols-[28px_34px_minmax(0,1.4fr)_minmax(120px,1fr)_110px] min-[760px]:gap-4 min-[760px]:px-4";
 
 export default async function EarlySignalsPage() {
-  const { data, computed_at } = await api.earlySignals();
+  const response = await api.earlySignals();
+  const { data, computed_at, as_of } = response;
+  const textNote = earlyTextNote(response);
 
   return (
     <HoverPreviewProvider>
@@ -42,10 +45,10 @@ export default async function EarlySignalsPage() {
           }
           intro={
             <>
-              {`${fmtNum(data.length)} cartes récentes notées de 0 à 100${computed_at ? `, calcul du ${fmtDate(computed_at)}` : ""} : vues sur une semaine, présence dans les decks de tournoi, tier de l’archétype. Score`}
+              {`${fmtNum(data.length)} cartes récentes notées de 0 à 100${computed_at ? `, calcul du ${fmtDate(computed_at)}` : ""} : vues sur une semaine, proximité de texte avec les cartes des archétypes de la méta, poids de l’archétype en OCG. Les cartes interdites ou limitées en TCG et celles déjà jouées dans au moins 3 % des decks TCG sont écartées. Score`}
               <InfoTooltip
                 term="Score"
-                text="Note de 0 à 100 : plus elle est haute, plus la carte est consultée et jouée avec les decks du moment."
+                text="Note de 0 à 100 : plus elle est haute, plus la carte est consultée, proche par son texte des cartes de la méta et issue d’un archétype qui pèse en OCG."
               />
             </>
           }
@@ -86,13 +89,15 @@ export default async function EarlySignalsPage() {
           ))}
         </div>
         <DataFooter
-          source="vues par semaine (YGOPRODeck), co-occurrences dans les decklists de tournoi (yugiohmeta.com)"
-          date={computed_at ? `calcul du ${fmtDate(computed_at)}` : "date de calcul inconnue"}
-          sample={`${fmtNum(data.length)} cartes`}
+          source="vues par semaine et textes des cartes (YGOPRODeck), parts OCG des archétypes et decks TCG (yugiohmeta.com), banlist TCG (Yugipedia)"
+          date={`${computed_at ? `calcul du ${fmtDate(computed_at)}` : "date de calcul inconnue"}${as_of ? `, decks jusqu’au ${fmtDate(as_of)}` : ""}`}
+          sample={response.cards_scored ? `${fmtNum(data.length)} cartes affichées sur ${fmtNum(response.cards_scored)} notées` : `${fmtNum(data.length)} cartes`}
           uncertainty="aucun intervalle : le score classe les cartes entre elles, il n’estime pas une quantité ; les vues sont un relevé unique"
         />
         <MethodNote anchor="signaux-precoces">
-          <p>Le score réunit trois mesures : les vues de la carte sur une semaine, sa présence dans les decks de la méta et le niveau de son archétype.</p>
+          <p>Le score réunit trois mesures : les vues de la carte sur une semaine, la proximité de son texte avec celui des cartes des 20 archétypes de la méta récente, et le poids de son archétype en OCG. Il ne compte pas les decks où la carte est jouée.</p>
+          <p>Cartes retenues : sorties en TCG dans les 168 jours qui précèdent le dernier deck relevé, ou pas encore sorties ; ni interdites ni limitées à cette date ; jouées dans moins de 3 % des decks TCG des 90 derniers jours.</p>
+          {textNote && <p>{textNote}</p>}
           <p>Les vues des cartes anciennes ne sont pas rafraîchies au même rythme que celles des cartes nouvelles.</p>
         </MethodNote>
       </Page>

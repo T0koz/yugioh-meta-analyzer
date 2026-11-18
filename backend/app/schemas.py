@@ -20,12 +20,21 @@ class TierEntry(BaseModel):
     image_url: Optional[str] = None
 
 
+class TierThreshold(BaseModel):
+    tier: str
+    share: float  # part minimale des decks de la fenêtre
+
+
 class TierListResponse(BaseModel):
     data: list[TierEntry]
     # Fenêtre de calcul : mois « AAAA-MM » du premier et du dernier mois cumulés.
     window_start: str
     window_end: str
     n_decks: int
+    # Lot 20 (A8) : seuils de tier (app/tiering.py) pour que le front marque « à la limite » un archétype
+    # dont l'intervalle de Wilson (calculé côté front, lib/wilson.ts) chevauche un seuil.
+    tier_thresholds: list[TierThreshold] = []
+    tier_min_decks: Optional[int] = None
 
 
 class EvolutionPoint(BaseModel):
@@ -56,9 +65,12 @@ class PredictionEntry(BaseModel):
 class PredictionsResponse(BaseModel):
     data: list[PredictionEntry]
     model: str
-    # Mois observé (« AAAA-MM ») : la prévision porte sur le mois suivant.
+    # Dernier mois complet observé (« AAAA-MM ») : la prévision porte sur le mois suivant, qui est en
+    # général le mois en cours au moment du calcul, déjà en partie relevé (audit de rigueur, A6).
     data_month: Optional[str] = None
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
+    # Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse » (lot 20).
+    direction_threshold: Optional[float] = None
 
 
 class BoutiqueSignal(BaseModel):
@@ -146,6 +158,12 @@ class EarlySignal(BaseModel):
 class EarlySignalsResponse(BaseModel):
     data: list[EarlySignal]
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
+    # Lot 20 (A1) : date de référence du calcul (dernier deck TCG relevé). None sur une base antérieure.
+    as_of: Optional[str] = None
+    # Nombre de cartes notées (la réponse n'en sert que les 50 premières) et, parmi elles, celles dont
+    # la proximité de texte avec les cartes de la méta est positive (0 : le terme ne pèse rien).
+    cards_scored: Optional[int] = None
+    text_signal_cards: Optional[int] = None
 
 
 class CommunityImpact(BaseModel):

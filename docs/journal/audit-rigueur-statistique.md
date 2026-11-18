@@ -317,3 +317,41 @@ Commentaire libre :
 - Les recalculs du sous-agent (couverture de la fenêtre, ρ = 0,94) n'ont pas été refaits par la session. Trois constats ont été contrôlés sur la base : le rang et le statut de Kewl Tune Rotary, la valeur de `data_month`, la phrase de `methode/page.tsx:407`.
 - Le recalcul des tiers porte sur un seul instant (fenêtre de 396 decks, `serving.db` du dépôt principal).
 - Aucun ticket n'est créé dans Linear (connecteur déconnecté).
+
+## Correctifs A1 à A8 (lot 20, TOK-122, 2026-11-18)
+
+Branche `claude/lot20-audit-a1-a8-cbc82f`, un commit par ticket. Session sur Opus 5.5 ; `data-scientist-ygo` a relu
+A1, A5, A6 et A8, `gardien-donnees` les champs servis (A1, A6, A8). Aucun `WEIGHTS` modifié, `BACKTEST_MIN_DECKS`
+inchangé, aucune écriture dans la base de référence (calculs vérifiés sur une copie dans le scratchpad).
+
+| Ticket | Fait | Critère de fin, mesuré | Écart à l'audit |
+|---|---|---|---|
+| A1 | Calcul extrait du notebook 11 dans `scripts/build_early_signals.py` (le notebook n'écrit plus) : référence = dernier deck TCG (2026-11-14), banlist TCG à cette date, cartes sorties en TCG avant la fenêtre de 168 jours exclues, cartes jouées dans ≥ 3 % des decks TCG légaux des 90 derniers jours exclues (seuil T3, 70 cartes). API : `as_of`, `cards_scored`, `text_signal_cards`. Textes alignés sur le calcul réel. | 0 carte Forbidden ou Limited sur 263 (3 exclues) ; deux exécutions identiques ; Kewl Tune absente. | Constat nouveau : la proximité de texte vaut 0 pour les 263 cartes retenues (`text_synergies`, produite par le notebook 07 hors chaîne, n'atteint 0,1 pour aucune) : le score revient à 54 % vues, 46 % OCG. Dit sur la page, poids inchangés. |
+| A2 | « 8 archétypes sur 10 » et « 8 fois sur 10 » remplacés : délai de 8 cartes sur 10 parmi celles sorties en TCG ; couverture vérifiée écrite sur `/methode`, `ArrivalTimeline`, `/boutique`, page d'archétype, accueil. | Recalcul refait : P10-P90 2022-2023 (n = 1 078, 89 à 202 j) couvrent 67 % des cartes de 2024 (n = 367) et 62 % de 2025 (n = 470). | Aucun. Note : la fenêtre affichée (75-202, estimée sur 2022-2025) couvre 89 % des cartes de 2024 en échantillon, 62 % en 2025. |
+| A3 | r ≈ 0,53 retiré du StatBand de `/boutique` ; population dite (archétypes déjà joués dans les deux formats) ; « proche de la seule part OCG » déclaré (question 4). | Le bandeau ne présente plus le r comme mesure du signal. ρ recalculé : 0,9396 (n = 89). | Aucun. Bloc OCG → TCG de l'accueil non touché (formulaire). |
+| A4 | Simulateur : titre, introduction, libellés (« Centralité de pont, part du maximum », « Archétypes voisins ») et pied décrivent l'approximation par la betweenness précalculée ; « jamais confrontée à un ban réel ». | Plus aucune mention d'un recalcul du graphe. | Aucun. |
+| A5 | `log_predictions.py` : `predicted_label` = `signal_label` affiché ; payload `archetype_rank`, `rank_population`, `ocg_score`, `rank_computed_at`, `label_rule`, `label_source` ; `buy_label` gardé dans le payload. Script non lancé. | Vérifié par `collect()` en lecture seule : 12 + 3 lignes, mêmes libellés et rangs que l'API. Champs présents au prochain recalcul (Thomas). | `BOUTIQUE_MODEL` inchangé (une nouvelle version doublerait les prédictions déjà journalisées). |
+| A6 | Mois prévu dit « mois en cours, déjà en partie relevé » quand c'est le cas ; flèche calculée par l'API sur l'écart dessiné (seuil 0,003 = 0,3 × 0,01, servi et déclaré) ; tableau du gain avec intervalles sur `/methode`. | 0 archétype sur 19 ne change de direction. Gain TCG seuls : −6 % (0,10 à 0,30 point de score ×100), niveau +0,012 [−0,014 ; +0,041]. | **L'IC [−0,00116 ; −0,00051] (−4 %) cité par le critère vient de l'ancienne table TCG + OCG d'avant TOK-80, plus reproductible** (sur la `meta_scores` actuelle : −0,00186 [−0,00295 ; −0,00071]). Non affiché ; seul le résultat TCG seul (évaluation du 16/11, recompté) l'est. Formulaire. |
+| A7 | `/methode` : chaque réglage « fixé à la main » avec sa date (10 lignes) ; Ban Radar : 3 listes sur 20 postérieures au réglage ; commentaire « ±0,10 » corrigé dans `build_ban_radar.py`. | Chaque réglage de la question 5 daté sur `/methode`. | Aucun. |
+| A8 | Tendance : Benjamini-Hochberg (q = 0,05) sur les archétypes testés, dans `compute_tier_list` (tier list, archétype, decks) ; « limite » quand l'intervalle de Wilson à 95 % contient un seuil de tier (seuils servis par l'API, Wilson côté front), à partir de 5 decks. | Marquage visible : 13 archétypes (T1 1, T3 4, Rogue 8). Tendance après correction : 10 sur 10 gardées (plus grande p retenue 0,018). | **Seuls 20 archétypes sont testés (≥ 10 decks cumulés sur les deux fenêtres), pas 60** : sans correction, ≈ 1 fausse tendance attendue, pas ≈ 3. Le tableau « environ 60 / environ 3 » de `/methode` est laissé tel quel en attendant le formulaire. BH tient malgré la dépendance (somme à 1) : 3,75 % de tirages avec au moins une fausse tendance sous l'hypothèse nulle (simulation, 4 000 tirages). |
+
+### Après fusion, sur la base de référence (orchestrateur, après sauvegarde)
+
+```bash
+python scripts/build_early_signals.py   # réécrit early_card_signals (colonne as_of, noms sans <P>/<C>/<Q>)
+python scripts/build_serving_db.py      # sinon l'API sert as_of = None et l'ancienne table
+```
+
+Aucune autre table à recalculer : A2 à A8 ne touchent que des textes, des constantes et des calculs à la volée de l'API.
+`scripts/log_predictions.py` (A5) prendra les nouveaux champs au prochain recalcul, lancé par Thomas.
+
+### À relire par la collaboratrice
+
+- A1 : règle « déjà en méta » (3 % des decks TCG légaux sur 90 jours, seuil T3) et sa réserve : la part sur 90 jours
+  sous-estime une carte sortie en cours de fenêtre (Verre, the Maid of Endymion : 3,1 % des 386 decks depuis sa sortie,
+  1,2 % sur 90 jours, donc gardée). Proposé pour B2 : part depuis max(début de fenêtre, sortie TCG), avec un plancher.
+- A1 : la première carte du classement (Elfnotes: Quatrain of Succession) est en TCG depuis juillet et n'est jouée dans
+  aucun des 1 019 decks des 90 derniers jours ; elle ne passe que par la fenêtre de 168 jours. Signal plutôt contraire (B2).
+- A2 : recalcul de la couverture (67 % / 62 %), identique à l'audit.
+- A6 : passage de l'IC « mélangé » au résultat TCG seul ; « 6 % » = 0,00198 / 0,03233 (MAE de la persistance, TCG seuls).
+- A8 : choix de BH plutôt que Benjamini-Yekutieli (BY ne garderait que 6 signaux sur 10) ; marquage des Rogue proches de T3.

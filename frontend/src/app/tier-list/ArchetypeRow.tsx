@@ -9,7 +9,7 @@ import { TierTag, TrendLabel } from "@/components/ds/tags";
 import { NAV_FORWARD, SharedElement, archetypeArtName, archetypeTitleName } from "@/components/view-transitions";
 import { fmtNum, fmtPct } from "@/lib/format";
 import { wilsonInterval } from "@/lib/wilson";
-import type { TierEntry } from "@/types";
+import type { TierEntry, TierThreshold } from "@/types";
 
 // Colonnes : rang · vignette · nom · tier · barre (part de méta) · part · tendance.
 // Sous 760 px, tier et barre disparaissent (docs/design-system.md §4).
@@ -21,6 +21,7 @@ export function ArchetypeRow({
   rank,
   nDecks,
   maxShare,
+  limit,
   highlighted,
 }: {
   entry: TierEntry;
@@ -28,6 +29,8 @@ export function ArchetypeRow({
   /** Decks de la fenêtre, tous archétypes : n de la part. */
   nDecks: number;
   maxShare: number;
+  /** Seuil contenu dans l'intervalle à 95 % de la part : tier « à la limite » (A8). */
+  limit?: TierThreshold | null;
   highlighted: boolean;
 }) {
   const { setPreview } = useHoverPreview();
@@ -105,6 +108,17 @@ export function ArchetypeRow({
 
       <span className="hidden min-[760px]:block">
         <TierTag tier={entry.tier} />
+        {limit && (
+          <small
+            className="mt-1.5 block font-mono text-[12px] leading-none text-muted-text"
+            title={`À la limite : l’intervalle à 95 % de la part contient le seuil de ${limit.tier} (${fmtPct(limit.share * 100, 0)})`}
+          >
+            limite
+            <span className="sr-only">
+              {`, l’intervalle à 95 % de la part contient le seuil de ${limit.tier} (${fmtPct(limit.share * 100, 0)})`}
+            </span>
+          </small>
+        )}
       </span>
 
       <span className="hidden min-[760px]:block">

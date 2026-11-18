@@ -548,6 +548,8 @@ sur 51 régénérées. Aucun `WEIGHTS`, aucune donnée ni API touchés.
 
 Aucun score ne remplit « estimé, validé hors échantillon, comparé au naïf, incertitude affichée » ; pires écarts : signaux précoces (carte interdite en tête, banlist figée au 13 juin), fenêtre d'arrivée « 80 % » couvrant 62-67 % en 2024-2025, score boutique ≈ part OCG (ρ 0,94) → `docs/journal/audit-rigueur-statistique.md`.
 
+**Correctifs A1 à A8 (lot 20, TOK-122, 2026-11-18, branche `claude/lot20-audit-a1-a8-cbc82f`, non fusionnée)** : un commit par ticket ; `early_card_signals` produite par `scripts/build_early_signals.py` (référence = dernier deck, banlist à date, cartes déjà en méta exclues ; colonne `as_of`), couverture réelle de la fenêtre d'arrivée affichée (62-67 %), r ≈ 0,53 sorti du bandeau boutique, simulateur décrit comme une approximation, libellé affiché journalisé, flèche des prédictions sur l'écart dessiné, réglages manuels datés sur `/methode`, tendance de la tier list corrigée (Benjamini-Hochberg) et tiers « limite ». Après fusion : `build_early_signals.py` puis `build_serving_db.py`. Pièges : `text_synergies` (notebook 07, hors chaîne) ne couvre plus les cartes récentes, la proximité de texte vaut 0 ; l'IC « −4 % » de l'audit vient d'une table d'avant TOK-80 ; seuls 20 archétypes sont testés pour la tendance, pas 60 ; `PRED_GAP_THRESHOLD` (0,003) suit `W_MODEL` du notebook 05. Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (lot 20).
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

@@ -16,12 +16,21 @@ export interface TierEntry {
   image_url: string | null;
 }
 
+export interface TierThreshold {
+  tier: string;
+  /** Part minimale des decks de la fenêtre (0 à 1). */
+  share: number;
+}
+
 export interface TierListResponse {
   data: TierEntry[];
   /** Fenêtre de calcul : premier et dernier mois cumulés (« AAAA-MM »). */
   window_start: string;
   window_end: string;
   n_decks: number;
+  /** Seuils de tier (lot 20, A8) : absents d'une réponse figée plus ancienne. */
+  tier_thresholds?: TierThreshold[];
+  tier_min_decks?: number | null;
 }
 
 export interface EvolutionPoint {
@@ -51,9 +60,11 @@ export interface PredictionEntry {
 export interface PredictionsResponse {
   data: PredictionEntry[];
   model: string;
-  /** Mois observé (« AAAA-MM ») : la prévision porte sur le mois suivant. */
+  /** Dernier mois complet observé (« AAAA-MM ») : la prévision porte sur le mois suivant, en général le mois en cours au calcul. */
   data_month: string | null;
   computed_at: string | null;
+  /** Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse ». */
+  direction_threshold?: number | null;
 }
 
 export interface BoutiqueSignal {
@@ -134,6 +145,12 @@ export interface EarlySignal {
 export interface EarlySignalsResponse {
   data: EarlySignal[];
   computed_at: string | null;
+  /** Date de référence du calcul : dernier deck TCG relevé (lot 20). Absente avant. */
+  as_of?: string | null;
+  /** Cartes notées (la réponse sert les 50 premières). */
+  cards_scored?: number | null;
+  /** Cartes notées dont la proximité de texte avec les cartes de la méta est positive. */
+  text_signal_cards?: number | null;
 }
 
 export interface BanSimResult {

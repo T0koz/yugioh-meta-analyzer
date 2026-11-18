@@ -1,355 +1,358 @@
 {
  "data": [
   {
-   "card_name": "Kewl Tune Crackle",
-   "archetype": "Kewl Tune",
-   "early_score": 0.7946,
-   "views_week": 3129,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/39576656.jpg"
-  },
-  {
-   "card_name": "Elfnote Regina",
-   "archetype": "Elfnote",
-   "early_score": 0.7788,
-   "views_week": 6591,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/56651978.jpg"
-  },
-  {
-   "card_name": "Junoldo the Shadespirit Power Patron",
-   "archetype": "Elfnote",
-   "early_score": 0.7706,
-   "views_week": 8410,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/10266279.jpg"
-  },
-  {
-   "card_name": "Kewl Tune Rotary",
-   "archetype": "Kewl Tune",
-   "early_score": 0.7536,
-   "views_week": 8848,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/17209452.jpg"
-  },
-  {
-   "card_name": "Kewl Tune B2B",
-   "archetype": "Kewl Tune",
-   "early_score": 0.6105,
-   "views_week": 6583,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/65961304.jpg"
-  },
-  {
-   "card_name": "Elfnote June Pride",
-   "archetype": "Elfnote",
-   "early_score": 0.5913,
-   "views_week": 4664,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/5559570.jpg"
-  },
-  {
-   "card_name": "Jupredo the Shademachine Power Patron",
-   "archetype": "DoomZ",
-   "early_score": 0.5271,
-   "views_week": 11670,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/43871165.jpg"
-  },
-  {
-   "card_name": "Vidolium the Unstable Power Patron of Unity",
-   "archetype": "Power Patron",
-   "early_score": 0.4811,
-   "views_week": 20248,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/70488851.jpg"
-  },
-  {
-   "card_name": "Prohibited Power Patron Portal - Terminus",
-   "archetype": "Power Patron",
-   "early_score": 0.4793,
-   "views_week": 19236,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/25661743.jpg"
-  },
-  {
    "card_name": "Elfnotes: Quatrain of Succession",
    "archetype": "Elfnote",
-   "early_score": 0.4769,
+   "early_score": 0.4859,
    "views_week": 168,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/58809685.jpg"
   },
   {
-   "card_name": "Nervedo the Shadebeast Power Patron",
-   "archetype": "Artmage",
-   "early_score": 0.4671,
-   "views_week": 9650,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/17473466.jpg"
-  },
-  {
-   "card_name": "Mediclius the Extraordinary Power Patron",
-   "archetype": "Power Patron",
-   "early_score": 0.4663,
-   "views_week": 13190,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/4063756.jpg"
-  },
-  {
-   "card_name": "Purification Power Patron",
-   "archetype": "Power Patron",
-   "early_score": 0.4586,
-   "views_week": 10535,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/31822037.jpg"
-  },
-  {
-   "card_name": "Artmage Impasto -Recapture-",
-   "archetype": "Artmage",
-   "early_score": 0.4278,
-   "views_week": 3090,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/44654994.jpg"
-  },
-  {
-   "card_name": "Plundered Power Patron Plane - Vidolia",
-   "archetype": "Power Patron",
-   "early_score": 0.4257,
-   "views_week": 4058,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/51669847.jpg"
-  },
-  {
    "card_name": "Cielo, the Veil of Raise Moon",
    "archetype": "Raise Moon",
-   "early_score": 0.4248,
+   "early_score": 0.4386,
    "views_week": 2536,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/75934716.jpg"
   },
   {
-   "card_name": "Night Train Blue Traveler",
-   "archetype": "Train",
-   "early_score": 0.4151,
-   "views_week": 5620,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/81101309.jpg"
-  },
-  {
    "card_name": "Witchcrafter Marka",
    "archetype": "Witchcrafter",
-   "early_score": 0.3964,
+   "early_score": 0.4117,
    "views_week": 5822,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/6071005.jpg"
   },
   {
    "card_name": "Witchcrafter Walpurgis",
    "archetype": "Witchcrafter",
-   "early_score": 0.391,
+   "early_score": 0.4061,
    "views_week": 4978,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/32353566.jpg"
   },
   {
-   "card_name": "Darkness Resonator",
-   "archetype": "Resonator",
-   "early_score": 0.3837,
-   "views_week": 2002,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/83445539.jpg"
-  },
-  {
    "card_name": "Witchcrafter Celebration",
    "archetype": "Witchcrafter",
-   "early_score": 0.3832,
+   "early_score": 0.3979,
    "views_week": 3973,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/6958567.jpg"
   },
   {
    "card_name": "Graceful & Skull Dice",
    "archetype": "Dark Time Wizard",
-   "early_score": 0.3816,
+   "early_score": 0.3974,
    "views_week": 7670,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/76630812.jpg"
   },
   {
    "card_name": "Alligator's Dragon Knight",
    "archetype": "Dark Time Wizard",
-   "early_score": 0.3805,
+   "early_score": 0.3962,
    "views_week": 7419,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/4881365.jpg"
   },
   {
    "card_name": "Witchcrafter Pupils",
    "archetype": "Witchcrafter",
-   "early_score": 0.377,
+   "early_score": 0.3914,
    "views_week": 3319,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/69964858.jpg"
   },
   {
-   "card_name": "Clown Crew Biancaviso",
-   "archetype": "Clown Crew",
-   "early_score": 0.3764,
-   "views_week": 7319,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/82159583.jpg"
-  },
-  {
-   "card_name": "Clown Crew Flair",
-   "archetype": "Clown Crew",
-   "early_score": 0.3743,
-   "views_week": 6890,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/42759961.jpg"
-  },
-  {
    "card_name": "Witchcrafter Madame Rilliona",
    "archetype": "Witchcrafter",
-   "early_score": 0.3734,
+   "early_score": 0.3875,
    "views_week": 2983,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/33475154.jpg"
   },
   {
    "card_name": "Witchcrafter Terracottan",
    "archetype": "Witchcrafter",
-   "early_score": 0.3724,
+   "early_score": 0.3865,
    "views_week": 2898,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/70686400.jpg"
   },
   {
    "card_name": "Unchained Oni of Shyma",
    "archetype": "Unchained",
-   "early_score": 0.3703,
+   "early_score": 0.3859,
    "views_week": 6976,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/31531914.jpg"
   },
   {
    "card_name": "Sleepy Scapegoats",
    "archetype": "Dark Time Wizard",
-   "early_score": 0.3697,
+   "early_score": 0.3849,
    "views_week": 5427,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/3129527.jpg"
   },
   {
-   "card_name": "WAKE CUP! Kuro",
-   "archetype": "WAKE CUP!",
-   "early_score": 0.3691,
-   "views_week": 966,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/6361316.jpg"
-  },
-  {
    "card_name": "Unchained Zealot - Kamra",
    "archetype": "Unchained",
-   "early_score": 0.369,
+   "early_score": 0.3845,
    "views_week": 6727,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/68625623.jpg"
   },
   {
-   "card_name": "Clown Crew Rehearsal",
-   "archetype": "Clown Crew",
-   "early_score": 0.3669,
-   "views_week": 5546,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/20448151.jpg"
-  },
-  {
-   "card_name": "Witchcrafter Distortion",
-   "archetype": "Witchcrafter",
-   "early_score": 0.3667,
-   "views_week": 2457,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/69748261.jpg"
-  },
-  {
    "card_name": "Foolish Graverobber",
    "archetype": "Dark Time Wizard",
-   "early_score": 0.3656,
+   "early_score": 0.3806,
    "views_week": 4817,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/65118318.jpg"
   },
   {
-   "card_name": "Sacred Beasts Skyfall",
-   "archetype": "Sacred Beast",
-   "early_score": 0.3642,
-   "views_week": 925,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/3441553.jpg"
-  },
-  {
-   "card_name": "Reincarnation of the Unchained",
-   "archetype": "Unchained",
-   "early_score": 0.3639,
-   "views_week": 5799,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/67803035.jpg"
+   "card_name": "Witchcrafter Distortion",
+   "archetype": "Witchcrafter",
+   "early_score": 0.3805,
+   "views_week": 2457,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/69748261.jpg"
   },
   {
    "card_name": "Deep-Eyes White Dragon, the Blue Abyss",
    "archetype": "Blue-Eyes",
-   "early_score": 0.3634,
+   "early_score": 0.3798,
    "views_week": 11357,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/67886895.jpg"
   },
   {
+   "card_name": "Reincarnation of the Unchained",
+   "archetype": "Unchained",
+   "early_score": 0.3792,
+   "views_week": 5799,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/67803035.jpg"
+  },
+  {
    "card_name": "Fisherman of Legend",
    "archetype": "Dark Time Wizard",
-   "early_score": 0.3629,
+   "early_score": 0.3777,
    "views_week": 4455,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/76660178.jpg"
   },
   {
-   "card_name": "Clown Crew Malabarisme",
-   "archetype": "Clown Crew",
-   "early_score": 0.3619,
-   "views_week": 4809,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/83232904.jpg"
+   "card_name": "Sacred Beasts Skyfall",
+   "archetype": "Sacred Beast",
+   "early_score": 0.3763,
+   "views_week": 925,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/3441553.jpg"
   },
   {
    "card_name": "Unchained Oni of Shara",
    "archetype": "Unchained",
-   "early_score": 0.3609,
+   "early_score": 0.376,
    "views_week": 5314,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/95136979.jpg"
   },
   {
    "card_name": "Clown Crew Cappello",
    "archetype": "Clown Crew",
-   "early_score": 0.3578,
+   "early_score": 0.3726,
    "views_week": 4267,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/19491080.jpg"
   },
   {
    "card_name": "Blue-Eyes White Dragon, the White Phantom Beast",
    "archetype": "Blue-Eyes",
-   "early_score": 0.3555,
+   "early_score": 0.3716,
    "views_week": 9051,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/30397786.jpg"
   },
   {
-   "card_name": "Unchained Soul of Abominable Rage",
-   "archetype": "Unchained",
-   "early_score": 0.3533,
-   "views_week": 4270,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/21419436.jpg"
-  },
-  {
-   "card_name": "Unchained Firelord of Yama",
-   "archetype": "Unchained",
-   "early_score": 0.353,
-   "views_week": 4225,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/94014327.jpg"
-  },
-  {
    "card_name": "Akasuna the Battle Ashtra",
    "archetype": "Ashtra",
-   "early_score": 0.3527,
+   "early_score": 0.369,
    "views_week": 10726,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/38331244.jpg"
   },
   {
+   "card_name": "Unchained Soul of Abominable Rage",
+   "archetype": "Unchained",
+   "early_score": 0.3681,
+   "views_week": 4270,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/21419436.jpg"
+  },
+  {
    "card_name": "Mikumari the Banisher Ashtra",
    "archetype": "Ashtra",
-   "early_score": 0.3514,
+   "early_score": 0.3677,
    "views_week": 10324,
    "image_url": "https://images.ygoprodeck.com/images/cards_small/38114652.jpg"
   },
   {
-   "card_name": "Clown Crew Meteor",
-   "archetype": "Clown Crew",
-   "early_score": 0.3502,
-   "views_week": 3425,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/93172951.jpg"
+   "card_name": "Unchained Firelord of Yama",
+   "archetype": "Unchained",
+   "early_score": 0.3677,
+   "views_week": 4225,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/94014327.jpg"
   },
   {
-   "card_name": "Hey, Space Trunade!",
-   "archetype": "Cyclone",
-   "early_score": 0.35,
-   "views_week": 25617,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/2729965.jpg"
+   "card_name": "Yoa the Plague Ashtra",
+   "archetype": "Ashtra",
+   "early_score": 0.3623,
+   "views_week": 8889,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/1710647.jpg"
   },
   {
-   "card_name": "Clown Crew Diabolo",
-   "archetype": "Clown Crew",
+   "card_name": "Blue-Eyes Toon Ultimate Dragon",
+   "archetype": "Blue-Eyes",
+   "early_score": 0.3614,
+   "views_week": 6831,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/71808988.jpg"
+  },
+  {
+   "card_name": "The Phantom Knights of Doomed Soleret",
+   "archetype": "Phantom Knights",
+   "early_score": 0.3594,
+   "views_week": 7889,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/83566725.jpg"
+  },
+  {
+   "card_name": "Ashtra's Domain",
+   "archetype": "Ashtra",
+   "early_score": 0.3588,
+   "views_week": 8070,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/37839434.jpg"
+  },
+  {
+   "card_name": "Destiny HERO - Doom Overlord",
+   "archetype": "Destiny HERO",
+   "early_score": 0.3566,
+   "views_week": 4585,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/62542673.jpg"
+  },
+  {
+   "card_name": "Unchained Hunger",
+   "archetype": "Unchained",
+   "early_score": 0.3551,
+   "views_week": 2983,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/93898740.jpg"
+  },
+  {
+   "card_name": "Reversal Box",
+   "archetype": "Dark Time Wizard",
+   "early_score": 0.3546,
+   "views_week": 2354,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/2606417.jpg"
+  },
+  {
+   "card_name": "Jinzo - Energy Shocker",
+   "archetype": "Dark Time Wizard",
+   "early_score": 0.3516,
+   "views_week": 2163,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/40275470.jpg"
+  },
+  {
+   "card_name": "Regulus, the Prince of Endymion",
+   "archetype": "Endymion",
+   "early_score": 0.3511,
+   "views_week": 12369,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/96228804.jpg"
+  },
+  {
+   "card_name": "Funny Dark Rabbit",
+   "archetype": null,
    "early_score": 0.35,
-   "views_week": 3404,
-   "image_url": "https://images.ygoprodeck.com/images/cards_small/31533473.jpg"
+   "views_week": 15625,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/45536531.jpg"
+  },
+  {
+   "card_name": "Animimicat",
+   "archetype": null,
+   "early_score": 0.3499,
+   "views_week": 15560,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/72921536.jpg"
+  },
+  {
+   "card_name": "Ashtraja Susanoo",
+   "archetype": "Ashtra",
+   "early_score": 0.3492,
+   "views_week": 6194,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/17020474.jpg"
+  },
+  {
+   "card_name": "Ashtraya Mikumari-no-Mikoto",
+   "archetype": "Ashtra",
+   "early_score": 0.3487,
+   "views_week": 6115,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/43419178.jpg"
+  },
+  {
+   "card_name": "Destiny HERO - Destro-Dogma",
+   "archetype": "Destiny HERO",
+   "early_score": 0.3468,
+   "views_week": 3501,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/25158975.jpg"
+  },
+  {
+   "card_name": "Perfect Toon World",
+   "archetype": null,
+   "early_score": 0.3464,
+   "views_week": 14141,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/7293697.jpg"
+  },
+  {
+   "card_name": "Dark Time Wizard",
+   "archetype": "Magician",
+   "early_score": 0.345,
+   "views_week": 13628,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/40235813.jpg"
+  },
+  {
+   "card_name": "Clown Crew Dristy",
+   "archetype": "Clown Crew",
+   "early_score": 0.3447,
+   "views_week": 1977,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/30109445.jpg"
+  },
+  {
+   "card_name": "Destiny HERO - Dreadnought Master",
+   "archetype": "Destiny HERO",
+   "early_score": 0.3439,
+   "views_week": 3234,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/54641720.jpg"
+  },
+  {
+   "card_name": "Destiny HERO - Dreadnought Servant",
+   "archetype": "Destiny HERO",
+   "early_score": 0.3405,
+   "views_week": 2945,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/98931282.jpg"
+  },
+  {
+   "card_name": "Dark-Eyes Illusionist Faceless Mage",
+   "archetype": null,
+   "early_score": 0.3392,
+   "views_week": 11607,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/34314989.jpg"
+  },
+  {
+   "card_name": "Dark Rebellion Xyz Dragon, Four Heavenly Dragons",
+   "archetype": "Phantom Knights",
+   "early_score": 0.3359,
+   "views_week": 4123,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/90091224.jpg"
+  },
+  {
+   "card_name": "Evil Box",
+   "archetype": null,
+   "early_score": 0.3343,
+   "views_week": 10133,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/8915275.jpg"
+  },
+  {
+   "card_name": "Ashtrashen - Gate to the Worlds Beyond",
+   "archetype": "Ashtra",
+   "early_score": 0.334,
+   "views_week": 4078,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/2906939.jpg"
+  },
+  {
+   "card_name": "Trirealm Rift Darkness",
+   "archetype": "Trirealm Rift",
+   "early_score": 0.3338,
+   "views_week": 906,
+   "image_url": "https://images.ygoprodeck.com/images/cards_small/60811211.jpg"
   }
  ],
- "computed_at": "2026-11-16"
+ "computed_at": "2026-11-18",
+ "as_of": "2026-11-14",
+ "cards_scored": 263,
+ "text_signal_cards": 0
 }

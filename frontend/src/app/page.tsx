@@ -176,7 +176,7 @@ export default async function Home() {
             <div className="enter [--i:4]">
               <StatBand
                 stats={[
-                  { value: <CountUp value={SITE_FACTS.decklists} />, label: "Decklists analysées" },
+                  { value: <CountUp value={SITE_FACTS.decklists} />, label: "Decklists relevées" },
                   { value: <CountUp value={SITE_FACTS.cardsTracked} />, label: "Cartes suivies" },
                   { value: <CountUp value={SITE_FACTS.ocgTcgCorrelation} digits={2} />, label: "Corrélation OCG → TCG (r)" },
                   { value: SITE_FACTS.ocgTcgLagRange, label: "Écart OCG → TCG" },
@@ -289,7 +289,7 @@ export default async function Home() {
                       Cartes jouées <Em>ensemble</Em> dans les mêmes decks.
                     </h3>
                     <p className="mt-3 max-w-[46ch] text-[15px] text-muted-text">
-                      {`${SITE_FACTS.graphCommunities} communautés de cartes détectées. En orange, les cartes « pont », qui en relient plusieurs.`}
+                      {`${SITE_FACTS.graphCommunities} communautés détectées sur ${fmtNum(SITE_FACTS.graphCards)} cartes (graphe non recalculé au rafraîchissement du 16 novembre 2026). En orange, les cartes « pont », qui en relient plusieurs.`}
                     </p>
                   </div>
                   <figure>
@@ -337,7 +337,7 @@ export default async function Home() {
               <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">Les données</h3>
               <dl className="mt-4 grid gap-px border-y border-line bg-line">
                 {[
-                  [fmtNum(SITE_FACTS.decklists), `decklists de tournoi, mai 2023 à novembre 2026 : ${fmtNum(SITE_FACTS.decklistsTcg)} en TCG, ${fmtNum(SITE_FACTS.decklistsOcg)} en OCG, légales à la date du tournoi.`],
+                  [fmtNum(SITE_FACTS.decklists), `decklists de tournoi, mai 2023 à novembre 2026 : ${fmtNum(SITE_FACTS.decklistsTcg)} en TCG, ${fmtNum(SITE_FACTS.decklistsOcg)} en OCG, dont ${fmtNum(SITE_FACTS.decklistsLegal)} légales à la date du tournoi, seules comptées dans les calculs.`],
                   [fmtNum(SITE_FACTS.cardsTracked), "cartes suivies : prix Cardmarket et statut sur la banlist."],
                   ["Lundi", "mise à jour hebdomadaire. Prédictions datées et archivées depuis le 1ᵉʳ novembre 2026."],
                 ].map(([value, text]) => (

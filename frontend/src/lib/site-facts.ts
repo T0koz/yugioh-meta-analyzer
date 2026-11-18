@@ -3,11 +3,17 @@
 // rafraîchie. Sources : context.md (« Nettoyage du backlog fiabilité »),
 // docs/evaluation-prediction.md (TOK-73), docs/tok-74-kewl-tune.md.
 export const SITE_FACTS = {
-  // Decklists légales + Genesys au 2026-11-14 (TCG 11 618, OCG 12 330).
+  // Decklists relevées au 2026-11-14, toutes légalités confondues (TCG 11 618, OCG 12 330). Parmi elles, 22 422 sont
+  // légales à la date du tournoi (`deck_legality.legal = 1` : TCG 10 369, OCG 12 053) et seules comptées dans les
+  // calculs ; 611 illégales, 915 Genesys non évaluables. Relevé du 2026-11-18 (TOK-82).
   decklists: 23_948,
   decklistsTcg: 11_618,
   decklistsOcg: 12_330,
-  cardsTracked: 13_797,
+  decklistsLegal: 22_422,
+  decklistsLegalTcg: 10_369,
+  decklistsLegalOcg: 12_053,
+  // Table `cards` au 2026-11-18 (cartes ajoutées chaque lundi par fetch_new_cards.py).
+  cardsTracked: 14_084,
   // Corrélation OCG → TCG à 4 mois, TCG pur : r ≈ 0,53, IC 95 % [0,43 ; 0,59],
   // 105 archétypes. L'ancien r = 0,771 (n = 43) n'est plus reproductible.
   ocgTcgCorrelation: 0.53,
@@ -29,8 +35,10 @@ export const SITE_FACTS = {
     { year: 2024, pct: 67, cards: 367 },
     { year: 2025, pct: 62, cards: 470 },
   ] as const,
-  // Non recalculé depuis le rafraîchissement : ne pas afficher de date de fraîcheur.
+  // Graphe du notebook 03, non recalculé au rafraîchissement du 2026-11-16 (TOK-136) : sa date de calcul n'est pas
+  // enregistrée, ne pas afficher de date de fraîcheur. 663 cartes réparties en 63 communautés.
   graphCommunities: 63,
+  graphCards: 663,
   // Ban Radar rejoué la veille des 10 banlists TCG du backtest (2024-04-15 au
   // 2026-10-19) : places du top 10 suivies d'une restriction, sur 10 × 10 places.
   // Ce sont des places, pas des cartes distinctes. À recalculer à chaque banlist.

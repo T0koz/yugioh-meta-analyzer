@@ -207,7 +207,7 @@ export default async function MethodePage() {
           items={[
             {
               term: "Decks de tournoi",
-              text: `${DECK_SOURCE} : ${fmtNum(SITE_FACTS.decklistsTcg)} listes TCG et ${fmtNum(SITE_FACTS.decklistsOcg)} listes OCG au 14 novembre 2026, collectées chaque lundi. Seules les listes légales à la date de leur tournoi sont comptées.`,
+              text: `${DECK_SOURCE} : ${fmtNum(SITE_FACTS.decklistsTcg)} listes TCG et ${fmtNum(SITE_FACTS.decklistsOcg)} listes OCG au 14 novembre 2026, collectées chaque lundi ; ${fmtNum(SITE_FACTS.decklistsLegal)} sont légales à la date de leur tournoi (${fmtNum(SITE_FACTS.decklistsLegalTcg)} TCG, ${fmtNum(SITE_FACTS.decklistsLegalOcg)} OCG) et seules comptées.`,
             },
             { term: "Banlists", text: "Yugipedia, TCG et OCG, reconstituées à chaque collecte ; une nouvelle liste devient automatiquement un point de validation." },
             {
@@ -492,7 +492,7 @@ export default async function MethodePage() {
         <Facts
           items={[
             { term: "Ce que mesure", text: "Deux cartes sont reliées quand, parmi les decks qui jouent l’une ou l’autre, au moins 15 % jouent les deux." },
-            { term: "Affichage", text: `Les 200 cartes les plus connectées ; ${SITE_FACTS.graphCommunities} communautés de cartes détectées.` },
+            { term: "Affichage", text: `Les 200 cartes les plus connectées ; ${SITE_FACTS.graphCommunities} communautés détectées sur ${fmtNum(SITE_FACTS.graphCards)} cartes (graphe non recalculé au rafraîchissement du 16 novembre 2026).` },
             { term: "Cartes pont", text: "Cartes qui relient des groupes de cartes qui, sans elles, se jouent rarement ensemble." },
             { term: "Limites", text: "La date du calcul n’est pas enregistrée dans la base servie ; un lien proche du seuil peut changer d’un calcul à l’autre." },
           ]}

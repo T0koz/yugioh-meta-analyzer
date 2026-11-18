@@ -550,6 +550,20 @@ Aucun score ne remplit « estimé, validé hors échantillon, comparé au naïf,
 
 **Correctifs A1 à A8 (lot 20, TOK-122, 2026-11-18, branche `claude/lot20-audit-a1-a8-cbc82f`, non fusionnée)** : un commit par ticket ; `early_card_signals` produite par `scripts/build_early_signals.py` (référence = dernier deck, banlist à date, cartes déjà en méta exclues ; colonne `as_of`), couverture réelle de la fenêtre d'arrivée affichée (62-67 %), r ≈ 0,53 sorti du bandeau boutique, simulateur décrit comme une approximation, libellé affiché journalisé, flèche des prédictions sur l'écart dessiné, réglages manuels datés sur `/methode`, tendance de la tier list corrigée (Benjamini-Hochberg) et tiers « limite ». Après fusion : `build_early_signals.py` puis `build_serving_db.py`. Pièges : `text_synergies` (notebook 07, hors chaîne) ne couvre plus les cartes récentes, la proximité de texte vaut 0 ; l'IC « −4 % » de l'audit vient d'une table d'avant TOK-80 ; seuls 20 archétypes sont testés pour la tendance, pas 60 ; `PRED_GAP_THRESHOLD` (0,003) suit `W_MODEL` du notebook 05. Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (lot 20).
 
+### 📅 Dates d'annonce des banlists (TOK-121, lot 21, 2026-11-18, branche `claude/lot21-dates-annonce-65588d`, non fusionnée)
+
+Table nouvelle `banlist_announcements` (`scripts/fetch_banlist_announcements.py`, Yugipedia + sources citées ; `banlist_history`
+intacte, hors `SERVED_TABLES`, dernière étape de `refresh_all.py`) ; `diagnose_ban_radar.py --annonces` classe la veille de
+l'annonce. Les 20 listes du backtest ont une date ou une raison écrite (16 avec le jour de publication des cartes, 4 TCG
+avec une borne haute seulement). Effet : OCG ≈ 5 rangs médians sur 1 100 (9 listes sur 10), TCG rien de net, aucun des 60 tests
+ne survit à la correction ; **verdict de l'Historique inchangé**.
+- **« Annoncée » ≠ cartes publiques.** Konami OCG publie la date de la liste ~10 jours avant son contenu, et Yugipedia écrit
+  « first announced » pour l'une ou l'autre (OCG 2026, TCG 2024-09 : date de sortie seule). La table a `announced_date` et
+  `content_date` ; toute mesure coupe à `content_date`. Jamais de date devinée : sans preuve, la colonne reste vide.
+- Coupure plus tôt = fenêtre de 6 mois et césure de tendance plus anciennes aussi : pas de lecture « annonce seule » sans placebo.
+- `build_ban_radar.backtest_lists(..., as_of_override)` : paramètre optionnel, défaut inchangé.
+→ détail complet : `docs/journal/dates-annonce-banlists-tok-121.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

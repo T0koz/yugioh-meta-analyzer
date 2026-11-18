@@ -77,6 +77,14 @@ Une ligne par décision imprévue : ticket, question, choix, raison. À valider 
 | Lot 20 (A8) | BH ou Benjamini-Yekutieli ? Marquer aussi les Rogue proches de T3 ? | BH (simulation : 3,75 % sous l'hypothèse nulle) ; Rogue marqués (8 sur 13). | Avis data-scientist ; BY ne garderait que 6 signaux sur 10. Variante « T0 à T3 seulement » au formulaire. |
 | Lot 20 (A8) | Tableau « environ 60 archétypes, environ 3 fausses tendances » de `/methode` : faux (20 testés, ≈ 1 attendue). | Laissé tel quel, formulaire. | Chiffre affiché différent de l'audit : pas de changement sans Thomas. |
 | Lot 20 | Temps passé. | ≈ 1 h 30 de session (lecture, huit correctifs, six relectures de sous-agents, deux passages de `check.py --all --visuel`, 24 captures régénérées, documentation). | Note demandée par le brief. |
+| Lot 21 (TOK-121) | « Date d'annonce » : laquelle retenir ? | Deux dates séparées dans la table : `announced_date` (ce que dit Yugipedia) et `content_date` (jour où les cartes sont devenues publiques). La mesure principale coupe à `content_date`. | Konami OCG publie la date de la liste ~10 jours avant son contenu ; Yugipedia écrit « first announced » pour l'une ou l'autre (OCG 2026, TCG septembre 2024 : date de sortie seule). Seule la publication des cartes change ce que les joueurs anticipent. |
+| Lot 21 (TOK-121) | 4 listes TCG sans phrase d'annonce (2024-04-15, 2026-02-02, 2026-05-18, 2026-09-21). | `content_date` vide avec `missing_reason` ; la date de la source citée est gardée à part (`first_source_date`, borne haute) et n'entre que dans le scénario `contenu+borne`, déclaré. | Règle du brief : jamais de date devinée. La borne est postérieure ou égale à l'annonce : elle sous-estime l'effet. |
+| Lot 21 (TOK-121) | Liste TCG du 2026-10-19 (révélée en 5 parties du 16 au 18 oct.) ; listes « le jour précédent » (2024-12, 2025-04). | Coupure au 16 oct. (« weekend of », premier jour de l'événement) ; « on the day prior » accepté seulement parce qu'une référence citée porte ce jour (8 déc., 6 avr.). | Choix le plus conservateur (retire le plus de decks) ; déduction relative acceptée seulement si une source la confirme. |
+| Lot 21 (TOK-121) | Où brancher l'étape dans `refresh_all.py` ? | En dernier (après les images), sans dépendance ; sauvegarde de la base à la première création seulement ; une page en échec garde sa ligne. | Réseau : une panne ne doit rien bloquer en aval ; la table se reconstruit chaque lundi, une sauvegarde de 270 Mo par semaine s'empilerait (relecture `gardien-donnees`). |
+| Lot 21 (TOK-121) | Table dans `SERVED_TABLES` ? | Non : aucun endpoint ne la lit (grep sur `backend/`) ; `serving.db` n'est pas à reconstruire. | Rien d'affiché ne change. |
+| Lot 21 (TOK-121) | Comment mesurer sans changer le backtest affiché ? | Paramètre optionnel `as_of_override` de `backtest_lists` (défaut inchangé) et option `--annonces` de `diagnose_ban_radar.py` (le diagnostic TOK-115 n'est pas relancé par défaut). | Le brief interdit de changer le comportement par défaut ; une seule fonction de backtest (pas de copie). |
+| Lot 21 (TOK-121) | Relecture `data-scientist-ygo` de la mesure. | Pas de fuite ; 60 tests du signe, aucun ne survit à Bonferroni (≈ 0,0008) ; le p = 0,008 du top 25 TCG (`contenu+borne`) ne se cite pas seul ; placebo manquant, à demander à la collaboratrice. Formulation retenue dans le journal. | Fenêtres de 6 mois qui se recouvrent, 10 listes par format : exploratoire. |
+| Lot 21 | Temps passé. | ≈ 40 min de session, dont ≈ 15 min d'attente réseau (Yugipedia, 170 pages à 0,5 s, deux relances après des réponses vides) ; deux relectures de sous-agents. | Note demandée par le brief. |
 
 ## Formulaire
 
@@ -245,5 +253,17 @@ Commentaire libre :
 Lot 20 (A1) — part « déjà en méta » d'une carte sortie en cours de fenêtre (réserve data-scientist)
 [x] Traiter dans B2 (part depuis la sortie TCG, avec un plancher de decks)
 [ ] Corriger tout de suite (nouveau seuil à fixer)
+Commentaire libre :
+
+Lot 21 (TOK-121) — la page Historique doit-elle passer de « veille de l'entrée en vigueur » à « veille de l'annonce » ?
+[x] Non, rien ne change : l'effet mesuré est faible et exploratoire (OCG ≈ 5 rangs médians, 9 listes sur 10, aucun des 60 tests ne survit à la correction ; TCG rien de net, coupure à 1 à 3 jours). Le verdict de l'Historique tient. Ne jamais écrire « avant l'annonce » pour le TCG.
+[ ] Oui, passer à « la veille de la publication des cartes » (`content_date`, scénario `contenu+borne`) dans un lot dédié : change les chiffres affichés (top 25 : OCG 41 → 46, TCG 29 → 33), `SITE_FACTS.banTop25`, le verdict et la table servie
+[ ] Oui, mais à la date écrite par Yugipedia (`announced_date`) : non recommandé, elle n'est que la date de sortie pour 4 listes sur 16
+Commentaire libre :
+
+Lot 21 (TOK-121) — suite de la mesure
+[x] Relecture par la collaboratrice d'abord (dépendance entre listes, comparaisons multiples, placebo, choix des scénarios, dates de la table : `docs/journal/dates-annonce-banlists-tok-121.md` § 4), puis décider
+[ ] Ajouter tout de suite un placebo et un test par blocs (nouveau lot de méthode)
+[ ] Abandonner (effet trop petit pour justifier plus de travail)
 Commentaire libre :
 ```

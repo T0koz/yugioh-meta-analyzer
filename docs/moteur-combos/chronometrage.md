@@ -216,3 +216,14 @@ Heures relevées avec `date` et l'heure des commits (début ≈ 03:08, à la fus
   plus pour J2 plein qu'une heure d'agent.
 - **Rejouer une séquence connue pas à pas est le meilleur test de l'explorateur** : c'est ainsi qu'est apparu le bug du
   préfixe, qu'aucun test unitaire n'aurait signalé (l'exploration « finissait » sans erreur).
+
+## Jalon n°6, l'oracle rejoue J2 et l'échantillon J1 du 18 novembre 2026 (TOK-142, TOK-143)
+
+Heures relevées avec `date`. Session armée d'avance (décision 0054) : attente passive du jalon n°5 de ≈ 18:59 à 20:05
+(boucle de surveillance, aucun travail), non comptée. Temps d'horloge d'un agent (Opus) ; aucune validation humaine.
+
+| # | Étape | Début | Fin | Durée (agent) | Produit | Temps humain de validation |
+|---|---|---|---|---|---|---|
+| 1 | Fusion de la branche d'intégration, lecture de la méthode (0055, lots 17 et C2 bis) et du lanceur hors dépôt | 20:05 | ≈ 20:08 | ≈ 3 min | — | — |
+| 2 | TOK-142 : traducteur automatique des 23 séquences, 5 passages de mise au point (replis déclarés), témoins négatifs, 3 réglages | ≈ 20:08 | 20:16 | ≈ 8 min | 23 / 23 en accord | — |
+| 3 | TOK-142 : section « J2 (18/11) » de `reponses-oracle.md` | 20:16 | 20:18 | ≈ 2 min | commit TOK-142 | lecture de J2-a |

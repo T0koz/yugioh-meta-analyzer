@@ -4,6 +4,9 @@
 avec un seul **désaccord franc (R23)** et trois nuances. Rien de Project Ignis n'est dans ce dépôt : ce fichier ne
 contient que des résultats (données), jamais du code du cœur, d'un script de carte ou de la base de cartes.
 
+> **Jalon n°6 (18/11) : sections « J2 (18/11) » (§ 8, séquences du jalon n°5, TOK-142) et « J1 échantillon » (§ 9,
+> TOK-143) en fin de fichier.**
+
 > **Suite du 18/11 (lot C2 bis) : voir la section « J1 (18/11) » en fin de fichier (§ 7)** : les 30 situations J1 et
 > les points N01 à N13, avec un désaccord ferme (N09, `Titaniklad` / `Mirrorjade`).
 
@@ -274,3 +277,105 @@ dépôt. 11 diffèrent ; classement par effet sur J1 :
   Les confiances « moyenne » ci-dessus désignent un comportement qui dépend d'un script plutôt que du cœur.
 - **Ce que ce passage ne couvre pas** : les valeurs d'ATK, les situations non reproduites faute de scénario (aucune
   parmi J01 à J30), et N12.
+
+---
+
+# J2 (18/11) — l'oracle rejoue pas à pas les 23 séquences du jalon n°5 (TOK-142, jalon n°6)
+
+**Statut : 23 séquences sur 23 en accord avec l'oracle.** Chaque action (149 pas en tout) est dans la liste que propose
+le cœur à son moment, chaque choix écrit est parmi les candidats du cœur, les déplacements de cartes sont les mêmes pas
+par pas, et le plateau final est le même (terrain avec les zones, main, Cimetière, bannies). **Aucun premier pas en
+désaccord.** Aucun cas où le texte OCG de la base de l'oracle change un verdict. Une différence de modèle à signaler
+(retour d'`Ecclesia and the Dark Dragon` en Phase de Fin, ci-dessous), sans effet sur les 23 plateaux.
+
+Même installation et mêmes réglages que les passages précédents (cœur `1e3bcfd`, scripts `ed5ed45b`, base `a40b0ef` ;
+Master Rule 5 + `DUEL_TCG_SEGOC_NONPUBLIC`, tour 1, nous commençons, adversaire sans carte). La session qui a joué ces
+séquences n'a lu ni `moteur_combos/` ni `scripts/combos_*.py` : elle n'a lu que `sequences-pour-oracle.md` (langage
+des règles). Rien de Project Ignis n'entre dans le dépôt.
+
+## 8.1 Désaccords et différences de modèle (à lire d'abord)
+
+**Aucun désaccord de légalité, de choix, de déplacement ni de plateau.**
+
+| N° | Ce qu'écrivent les séquences | Oracle | Ce que ça change |
+|---|---|---|---|
+| **J2-a** (différence de modèle) | `Ecclesia and the Dark Dragon`, bannie « jusqu'à la Phase de Fin », **revient au passage** en Phase de Fin, avant tout autre effet (8 séquences : G2.1, G2.2, G7.1, G8.1, G8.2, G9.1, G9.2, G10.1) | Le retour est un **effet obligatoire placé dans la liste des effets de Phase de Fin** (avec `Titaniklad`, `Blazing Cartesia`, `Incredible Ecclesia`, `Dogma`…) ; **le joueur choisit quand le jouer** parmi eux (le banc joue chaque effet de Phase de Fin dans sa propre chaîne). Joué en premier, il donne exactement les déplacements et le plateau des séquences (8 sur 8). | **Aucun écart sur les 23 plateaux** (le banc joue le retour en premier, ordre que l'oracle accepte). Mais l'oracle permet aussi de le jouer **après** les autres : au premier passage du banc (retour joué en dernier), G8.1 et G8.2 finissaient avec les mêmes cartes **dans d'autres zones** (`Quem` zone 1, `Cartesia` zone 2, `Ecclesia and the Dark Dragon` zone 3, au lieu de 2, 3, 1). Le moteur ne propose donc qu'un ordre parmi plusieurs : liste d'options plus courte que celle de l'oracle, sans conséquence sur les cartes, avec conséquence sur les zones (pertinent pour `Sprind`, colonnes). À trancher côté moteur (jalon n°7). |
+
+Autres constats, **sans désaccord** :
+- **Décisions à une seule option non écrites** : `The Golden Swordsoul` ramène `Incredible Ecclesia` (seul candidat, G2.1,
+  G2.2) ; `Branded in High Spirits` envoie `Rindbrumm` (seul candidat, G7.1). Le cœur pose bien la question, avec un
+  seul candidat, celui de la séquence. Conforme à la règle du moteur (une décision à une option n'est pas écrite).
+- **Coûts sur soi-même** : `Incredible Ecclesia` se Sacrifie et `The Golden Swordsoul` se bannit sans que le cœur demande
+  de choisir (3 séquences chacun) ; le choix écrit « coût : sacrifier / bannir X » n'est pas une question chez l'oracle.
+- **Effets facultatifs que le cœur propose et que les séquences n'utilisent pas** (refusés par le banc) : 3ᵉ effet de
+  `The Dragon that Devours the Dogma` en Phase de Fin (G1.1 à G1.4, après le dernier pas), 3ᵉ effet de `Blazing
+  Cartesia` (G5.1 à G5.4, G8.1, G8.2, G9.1, G9.2), réponses `Ash Blossom` / `Ghost Ogre` des mains réelles,
+  `Rindbrumm` au Cimetière (G8). Ce ne sont pas des désaccords ; ils indiquent au jalon n°7 des options que la liste du
+  moteur doit contenir à ces moments.
+- **Déclencheurs simultanés** : G7.1 (`The Golden Swordsoul` maillon 1, `Guiding Quem` maillon 2) et G7.1 étape 7
+  (`Quem` effet 2, puis `Three Champions` effet 1) : ordre accepté par le cœur, aussi sous `DUEL_TCG_SEGOC_FIRSTTRIGGER`.
+
+## 8.2 Les 23 séquences
+
+« Pas » = actions numérotées de la séquence. « Premier désaccord » = premier pas où l'oracle refuse l'action ou un choix,
+ou produit d'autres déplacements. Toutes les séquences ont été jouées jusqu'au bout.
+
+| Séquence | Pas | Légaux | Premier désaccord | Plateau final | Notes |
+|---|---|---|---|---|---|
+| G1.1 | 5 | 5 | aucun | identique | — |
+| G1.2 | 5 | 5 | aucun | identique | — |
+| G1.3 | 5 | 5 | aucun | identique | main réelle (`Ash`, `Ghost Ogre` non activés) |
+| G1.4 | 5 | 5 | aucun | identique | main réelle |
+| G2.1 | 8 | 8 | aucun | identique | J2-a ; choix unique (`Incredible Ecclesia` par `Golden Swordsoul`) |
+| G2.2 | 8 | 8 | aucun | identique | J2-a ; choix unique ; main réelle |
+| G3.1 | 6 | 6 | aucun | identique | — |
+| G3.2 | 7 | 7 | aucun | identique | `Ghost Ogre` de la main comme matériel de `Granguignol` : accepté ; « détruire ? » de `Three Champions` : oui |
+| G3.3 | 6 | 6 | aucun | identique | main réelle |
+| G4.1 | 5 | 5 | aucun | identique | — |
+| G4.2 | 5 | 5 | aucun | identique | main réelle |
+| G5.1 | 4 | 4 | aucun | identique | `Titaniklad` proposé par une question oui/non (seul effet de Phase de Fin) |
+| G5.2 | 4 | 4 | aucun | identique | idem |
+| G5.3 | 4 | 4 | aucun | identique | idem ; main réelle |
+| G5.4 | 4 | 4 | aucun | identique | idem ; main réelle |
+| G6.1 | 7 | 7 | aucun | identique | `Cocatorium` détruite par `TFTV` : bannie (comme écrit) |
+| G6.2 | 7 | 7 | aucun | identique | main réelle |
+| G7.1 | 11 | 11 | aucun | identique | J2-a ; choix unique (`Rindbrumm` par `High Spirits`) ; révélation de `Mulcharmy Fuwalos` acceptée |
+| G8.1 | 11 | 11 | aucun | identique | J2-a (zones différentes si le retour est joué en dernier, voir 8.1) |
+| G8.2 | 11 | 11 | aucun | identique | J2-a, idem |
+| G9.1 | 6 | 6 | aucun | identique | J2-a |
+| G9.2 | 6 | 6 | aucun | identique | J2-a ; main réelle |
+| G10.1 | 9 | 9 | aucun | identique | J2-a |
+| **Total** | **149** | **149** | **0** | **23 / 23** | |
+
+**Compte** : 23 séquences jouées, 0 non testable, 0 désaccord ; 1 différence de modèle (J2-a, 8 séquences concernées).
+
+## 8.3 Texte de l'oracle différent du texte TCG
+
+Cartes des séquences dont le texte de la base de l'oracle diffère (relevé du § 7.4) : `Incredible Ecclesia` (3ᵉ effet,
+« You can add » contre « Add », R23) est activée dans 8 séquences (G2.1, G2.2, G7.1, G8.1, G8.2, G9.1, G9.2, G10.1) :
+le verdict ne dépend pas du caractère obligatoire, puisque l'effet est joué. Aucune séquence ne termine son tour avec
+cet effet disponible et non joué. `Mirrorjade` (G7.1) : seul son Invocation Fusion est jouée, son 2ᵉ effet (texte
+différent) n'est pas exercé. **0 cas de texte OCG ≠ TCG qui change un verdict.**
+
+## 8.4 Méthode, contrôles, limites
+
+- **Traduction automatique** de `sequences-pour-oracle.md` en consignes (lanceur hors dépôt, `~/code/oracle-ignis/lanceur/jalon6/`) :
+  action numérotée → activation (filtrée par l'emplacement « depuis : … »), Invocation Normale, Invocation Synchro ou
+  passage en Phase de Fin ; « choix : activer l'effet déclenché » → choix dans la liste de chaîne ou réponse « oui » ;
+  « choix / envoi / coût / cible / fusion / matériaux » → choix parmi les candidats du cœur ; « option », « appliquer »,
+  « détruire » → réponse correspondante. Position Attaque ; plus basse zone libre, Zone Monstre Extra gauche pour un
+  monstre de l'Extra Deck. La convention « Zone Monstre principale k » = zone k−1 du cœur est **ma supposition** ;
+  elle donne les mêmes zones sur les 23 plateaux.
+- **Comparé** : présence de chaque action dans la liste du cœur ; présence de chaque carte choisie parmi les candidats ;
+  déplacements pas par pas (carte, origine, destination, relevés des messages `MOVE` du cœur) ; plateau final.
+- **Replis déclarés** : (1) choix pris dans les déplacements écrits quand la séquence n'écrit pas la décision (3 cas,
+  listés en 8.1, tous à candidat unique) ; (2) choix unique ; (3) retour d'`Ecclesia and the Dark Dragon` joué en
+  premier quand la séquence l'écrit au passage en Phase de Fin (8 séquences).
+- **Témoins négatifs** (le banc sait-il dire non ?) : coût de `Fallen of the White Dragon` remplacé par `Garura` (ne
+  mentionne pas `Albaz`) → refusé ; `Dogmatika Ecclesia` retirée du Deck (G4.1) → choix impossible ; étapes 3 et 4 de
+  G10.1 inversées → Invocation Synchro absente de la liste ; G5.1 sans son étape 2 → plateau différent. **4 sur 4 détectés.**
+  Limite du repli (1) : une séquence qui écrirait un mauvais choix **et** le déplacement correspondant au bon choix ne
+  serait pas vue ; les 3 choix concernés ont été vérifiés un par un (candidat unique).
+- **Réglages** : rejoué sous Master Rule 5 seul et sous Master Rule 5 + `DUEL_TCG_SEGOC_FIRSTTRIGGER` : **23 sur 23** dans les deux cas.
+- **Limites** : un seul oracle (scripts communautaires) ; adversaire sans carte, donc aucune réponse adverse testée ;
+  ATK non lus ; zones comparées sous la convention ci-dessus ; un passage par séquence (cœur déterministe).

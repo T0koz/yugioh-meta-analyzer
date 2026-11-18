@@ -436,3 +436,50 @@ Commentaire libre :
 [ ] Ne rien écrire pour l'instant
 Commentaire libre :
 ```
+
+## Jalon 2 — TOK-131 (B4) : intervalles de prévision par archétype
+
+Journal : `docs/journal/intervalles-tok-131.md` ; script `scripts/build_prediction_intervals.py` (lecture seule, ≈ 6 s).
+Conformité séquentielle sur les résidus du walk-forward (prévision servie, TCG), calibration sur les mois antérieurs,
+24 mois de test (2024-11 → 2026-10, 507 prévisions). Méthode retenue par la règle figée avant mesure : **Mondrian par
+terciles de niveau**, couverture **75,7 % [67,7 ; 82,0]** pour 80 % visés (critère ± 5 points atteint de justesse,
+non démontré) ; tiers haut 72,8 %, 5 premiers du mois 68,3 %. Naïves : « le mois dernier » ± quantile 78,7 % (battue
+au score de Winkler, −1,59 [−2,72 ; −0,43]), gaussienne 82,8 % (écart non démontré). Ratés concentrés sur 4 mois de
+rupture de méta (30-59 %). Rien d'affiché ne change : API et dessin prêts derrière l'option
+`NEXT_PUBLIC_PREDICTION_INTERVALS=1` (capture : `tok-131-intervalles-option.jpg`).
+
+Décidé par défaut (à confirmer) :
+- calibration cumulée (une fenêtre de 12 mois donne 80,1 %, sans différence) ; amorce de 3 mois ;
+- troncature de la borne basse à 0 (sans effet sur la couverture, la cible étant ≥ 0) ;
+- deux variantes asymétriques ajoutées après lecture, marquées exploratoires et non retenues ;
+- dessin derrière l'option : trait épais `--cat-1` à 35 % d'opacité derrière l'haltère, légende « fourchette visée à 80 % ».
+
+```
+1. Dessiner les intervalles par archétype sur /predictions ?
+[ ] Non : garder « aucun intervalle par archétype » et réévaluer dans 6 mois
+[x] Oui, derrière l'option, avec la couverture OBSERVÉE dans le libellé (jamais « 80 % » seul)
+[ ] Oui, sans réserve
+Commentaire libre :
+
+2. Niveau
+[x] 80 % visé, méthode Mondrian (retenue par la règle figée)
+[ ] 90 % visé (≈ 82 % observé sur les 5 premiers) : choix fait après lecture des résultats, à confirmer sur les mois à venir
+[ ] Les deux, 90 % en trait fin
+Commentaire libre :
+
+3. Libellé de couverture
+[x] « Fourchette visée à 80 % ; rejouée sur 24 mois (507 prévisions), elle a contenu la valeur réalisée 3 fois
+    sur 4, 2 fois sur 3 pour les 5 premiers archétypes du mois »
+[ ] « Intervalle à 80 % » (faux pour les gros archétypes)
+[ ] Pas de libellé chiffré, renvoi vers /methode
+Commentaire libre :
+
+4. Suites
+[x] Ticket : corriger le notebook 05 (entraînement sur la cible partielle de novembre, 25 lignes périmées de 2026-08/09)
+[x] Pré-enregistrer Mondrian asymétrique et le niveau 90 %, puis les réévaluer sur les mois à venir
+Commentaire libre :
+
+Si « oui » : notebook 05 → `python scripts/build_prediction_intervals.py --write --reference` (après sauvegarde) →
+ajouter `meta_prediction_intervals` à SERVED_TABLES (et une règle dans check_freshness.py) → `build_serving_db.py` →
+build avec NEXT_PUBLIC_PREDICTION_INTERVALS=1.
+```

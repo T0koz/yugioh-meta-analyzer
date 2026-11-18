@@ -60,6 +60,10 @@ class PredictionEntry(BaseModel):
     predicted: float
     direction: Trend
     image_url: Optional[str] = None
+    # Intervalle de prévision (TOK-131, conformité par terciles de niveau, même échelle que `predicted`) :
+    # NULL tant que `meta_prediction_intervals` n'est pas dans la base servie.
+    interval_lo: Optional[float] = None
+    interval_hi: Optional[float] = None
 
 
 class PredictionsResponse(BaseModel):
@@ -71,6 +75,9 @@ class PredictionsResponse(BaseModel):
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
     # Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse » (lot 20).
     direction_threshold: Optional[float] = None
+    # Niveau visé (0,8) et méthode des intervalles (TOK-131) ; NULL sans table d'intervalles.
+    interval_level: Optional[float] = None
+    interval_method: Optional[str] = None
 
 
 class BoutiqueSignal(BaseModel):

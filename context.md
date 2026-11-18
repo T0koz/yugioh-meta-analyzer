@@ -642,6 +642,24 @@ l'écart [−60 ; +15]) ; 2025-2026 : 18 fenêtres justes sur 23 (78 %) pour 89 
 - La probabilité Kaplan-Meier est trop confiante d'environ 11 points : ne jamais l'afficher comme couverture.
 → détail complet : `docs/journal/fenetre-survie-tok-130.md`
 
+### 📏 Intervalles de prévision par archétype (TOK-131, B4, Jalon 2, 2026-11-18, branche `claude/jalon-2-survie-intervalles-ocg-af6a73`, non fusionnée)
+
+`scripts/build_prediction_intervals.py` (≈ 6 s, lecture seule ; `--write [--reference]` écrit la table nouvelle
+`meta_prediction_intervals`, non servie) : conformité séquentielle sur les résidus du walk-forward de la prévision
+servie (TCG, fonctions importées d'`evaluate_prediction.py`), calibration sur les mois antérieurs. Retenue par règle
+figée : Mondrian par terciles de niveau, **75,7 % [67,7 ; 82,0]** pour 80 % visés sur 24 mois (507 prévisions) ; 5
+premiers du mois 68,3 %. Rien d'affiché ne change : `GET /meta/predictions` sert `interval_lo/hi` seulement si la table
+existe, `/predictions` ne les dessine qu'avec `NEXT_PUBLIC_PREDICTION_INTERVALS=1`. Formulaire : `decisions-prises.md`
+(Jalon 2, TOK-131).
+- **Une couverture moyenne de 80 % ne prouve rien ici** : les deux naïves y sont aussi (78,7 et 82,8 %). Les ratés sont
+  sur les gros archétypes et sur 4 mois de rupture de méta, où tous les archétypes bougent ensemble (échangeabilité
+  violée) ; le centre de la prévision, à 30 % du retour à la moyenne, est biaisé vers la persistance en tête de méta.
+- **Ne jamais écrire `meta_prediction_intervals` sur la référence avant le formulaire** : le routeur la cite, donc
+  `build_serving_db.py` refusera de construire tant qu'elle n'est pas dans `SERVED_TABLES`.
+- Le notebook 05 entraîne le modèle de production sur des lignes qui incluent la cible partielle du mois en cours
+  (effet 0,11 point en moyenne, négligeable pour les intervalles, à corriger à part).
+→ détail complet : `docs/journal/intervalles-tok-131.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

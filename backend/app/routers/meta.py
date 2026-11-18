@@ -181,6 +181,27 @@ def get_evolution(db: sqlite3.Connection = Depends(get_db)) -> EvolutionResponse
     return EvolutionResponse(data=data, images=images, decks_by_month=decks_by_month)
 
 
+# TOK-131 : méthode retenue par la règle figée de scripts/build_prediction_intervals.py.
+INTERVAL_METHOD = "MONDRIAN"
+
+
+def load_prediction_intervals(db: sqlite3.Connection, data_month: str | None) -> dict[str, sqlite3.Row]:
+    """Intervalles de prévision par archétype (TOK-131), vides tant que la table n'est pas servie.
+
+    Ordre de mise en place : notebook 05, `build_prediction_intervals.py --write --reference`, ajout de
+    `meta_prediction_intervals` à SERVED_TABLES, `build_serving_db.py`. Le front ne les dessine que
+    derrière NEXT_PUBLIC_PREDICTION_INTERVALS=1 (formulaire de Thomas).
+    """
+    try:
+        rows = db.execute(
+            "SELECT archetype, lo, hi, level FROM meta_prediction_intervals WHERE data_month = ? AND method = ?",
+            (data_month, INTERVAL_METHOD),
+        ).fetchall()
+    except sqlite3.OperationalError:  # table absente : base antérieure à TOK-131
+        return {}
+    return {row["archetype"]: row for row in rows}
+
+
 @router.get("/predictions", response_model=PredictionsResponse)
 def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResponse:
     latest_month = db.execute("SELECT MAX(data_month) FROM meta_predictions").fetchone()[0]
@@ -194,6 +215,7 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
         (latest_month,),
     ).fetchall()
 
+    intervals = load_prediction_intervals(db, latest_month)
     data = [
         PredictionEntry(
             archetype=row["archetype"],
@@ -201,9 +223,12 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
             predicted=row["pred_meta_score"],
             direction=direction_from_gap(row["meta_score_current"], row["pred_meta_score"]),
             image_url=get_archetype_image(db, row["archetype"]),
+            interval_lo=intervals[row["archetype"]]["lo"] if row["archetype"] in intervals else None,
+            interval_hi=intervals[row["archetype"]]["hi"] if row["archetype"] in intervals else None,
         )
         for row in rows
     ]
+    level = next(iter(intervals.values()))["level"] if intervals else None
     try:
         computed_at = db.execute(
             "SELECT MAX(computed_at) FROM meta_predictions WHERE data_month = ?", (latest_month,)
@@ -216,4 +241,6 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
         data_month=latest_month,
         computed_at=computed_at,
         direction_threshold=PRED_GAP_THRESHOLD,
+        interval_level=level,
+        interval_method=INTERVAL_METHOD if intervals else None,
     )

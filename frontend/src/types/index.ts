@@ -55,6 +55,9 @@ export interface PredictionEntry {
   predicted: number;
   direction: Trend;
   image_url: string | null;
+  /** Intervalle de prévision (TOK-131), même échelle que `predicted` ; absent sans table servie. */
+  interval_lo?: number | null;
+  interval_hi?: number | null;
 }
 
 export interface PredictionsResponse {
@@ -65,6 +68,9 @@ export interface PredictionsResponse {
   computed_at: string | null;
   /** Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse ». */
   direction_threshold?: number | null;
+  /** Niveau visé (0,8) et méthode des intervalles (TOK-131) ; null sans table servie. */
+  interval_level?: number | null;
+  interval_method?: string | null;
 }
 
 export interface BoutiqueSignal {

@@ -21,13 +21,19 @@ export function PredictionsChart({
   rows,
   observedLabel,
   targetLabel,
+  intervalLevel = null,
 }: {
   rows: PredictionEntry[];
   observedLabel: string;
   targetLabel: string;
+  /** Niveau visé des intervalles (TOK-131) ; null = pas d'intervalle dessiné (défaut, en attente du formulaire). */
+  intervalLevel?: number | null;
 }) {
-  // meta_score plafonne vers 0,15 : l'échelle part de zéro et s'arrête au maximum affiché.
-  const top = (max(rows, (r) => Math.max(r.current, r.predicted)) ?? 0) * 100;
+  const showIntervals = intervalLevel != null;
+  // meta_score plafonne vers 0,15 : l'échelle part de zéro et s'arrête au maximum affiché
+  // (borne haute des intervalles comprise quand ils sont dessinés).
+  const top =
+    (max(rows, (r) => Math.max(r.current, r.predicted, showIntervals ? (r.interval_hi ?? 0) : 0)) ?? 0) * 100;
   const x = scaleLinear().domain([0, top || 1]).nice(4).range([1.5, 98.5]);
   const ticks = x.ticks(4);
   const topDelta = (max(rows, (r) => Math.abs(r.predicted - r.current)) ?? 0) * 100;
@@ -49,6 +55,14 @@ export function PredictionsChart({
           </svg>
           prévu {targetLabel}
         </span>
+        {showIntervals && (
+          <span className="inline-flex items-center gap-1.5">
+            <svg aria-hidden width="18" height="10" className="shrink-0">
+              <line x1="1" x2="17" y1="5" y2="5" stroke="var(--cat-1)" strokeWidth="6" strokeLinecap="round" opacity="0.35" />
+            </svg>
+            fourchette visée à {fmtNum(intervalLevel * 100, 0)} %
+          </span>
+        )}
       </p>
       <div className={`${GRID} border-b border-line py-2.5 ${HEAD}`}>
         <span>Archétype</span>
@@ -118,6 +132,18 @@ export function PredictionsChart({
                 {ticks.map((tick) => (
                   <line key={tick} x1={pct(x(tick))} x2={pct(x(tick))} y1="0" y2="24" stroke="var(--line)" />
                 ))}
+                {showIntervals && row.interval_lo != null && row.interval_hi != null && (
+                  <line
+                    x1={pct(x(row.interval_lo * 100))}
+                    x2={pct(x(row.interval_hi * 100))}
+                    y1="12"
+                    y2="12"
+                    stroke="var(--cat-1)"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    opacity="0.35"
+                  />
+                )}
                 <line x1={pct(x(current))} x2={pct(x(predicted))} y1="12" y2="12" stroke={tone} strokeWidth="2" />
                 <circle cx={pct(x(current))} cy="12" r="4" fill="var(--ink)" stroke="var(--soft)" strokeWidth="1.5" />
                 <circle cx={pct(x(predicted))} cy="12" r="4.5" fill="var(--text)" stroke="var(--ink)" strokeWidth="1" />

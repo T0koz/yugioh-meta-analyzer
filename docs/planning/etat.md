@@ -29,7 +29,7 @@
 | C2 bis | Oracle sur les situations J1 et N01-N13 | ✅ fusionné dans `claude/moteur-18-11` (travail `dad808c`) | Sonnet 5.5 | 30 situations J1 : 26 accords, J07 accord partiel (R23, texte OCG), J26 **désaccord ferme (N09 : un monstre insensible peut être choisi par un effet sans cible)**, N04 en litige (Attribut déjà porté), N12 non testable ; valeurs d'ATK non lues par le lanceur |
 | C3 | Combos : J2, exploration (TOK-119) | ✅ fusionné dans `claude/moteur-18-11` (travail `767248a`…`26609d9`) | Opus 5.5 + sous-agent `data-scientist-ygo` | étape 0 : N09 corrigé, N04 tranché par le texte TCG ; **J2 atteint sous réserve** : 4 combos de guides sur 5 retrouvés sans cible (Wilson 95 % : 38 à 96 %), 5 sur 5 vers la cible, 0 sur 5 pour un joueur au hasard ; aucun combo de guide entièrement réalisable avec la liste pilote (cartes absentes : `Albion the Branded Dragon`, `Branded in Red`, `Branded Retribution`, `Khaos Starsource`) ; 186 tests pytest, `check.py --all` vert ; **formulaire C3 pour Thomas** (`docs/moteur-combos/j2-rapport.md` § 7) |
 
-Dernière mise à jour : 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Jalon 1 : TOK-120 + TOK-132 fusionnés ; TOK-129 + TOK-93 à lancer. Aucune session en cours. Ni `main` ni push.
+Dernière mise à jour : 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Jalon 1 : TOK-120 + TOK-132 fusionnés ; session en cours : TOK-129 + TOK-93 (j1-tok129-93, une seule session). Ni `main` ni push.
 
 ## Jalons (Linear, glissants — décision 0054)
 Un jalon = un groupe de fonctionnalités composé selon la charge (S = 1, M = 2, L = 3 points). Fini = tous ses tickets
@@ -37,7 +37,7 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 
 | Jalon | Tickets (charge) | Statut | Sessions |
 |---|---|---|---|
-| 1 | TOK-120 Ban Radar en rangs (3, brief `sprint-4/22`), TOK-132 pont et simulateur (2, `sprint-4/26`), TOK-129 signaux précoces (2, `sprint-4/23`), TOK-93 fraîcheur des tables (1) | en cours (feu vert de Thomas le 18/11) | 120 + 132 : ✅ fusionnés le 18/11 (`c06d41b`, `5db289b`, session j1-tok120-132, Opus), `check.py --all` vert, backtest identique ; formulaires lots 22 et 26 en attente. Reste 129 + 93 (session à lancer) |
+| 1 | TOK-120 Ban Radar en rangs (3, brief `sprint-4/22`), TOK-132 pont et simulateur (2, `sprint-4/26`), TOK-129 signaux précoces (2, `sprint-4/23`), TOK-93 fraîcheur des tables (1) | en cours (feu vert de Thomas le 18/11) | 120 + 132 : ✅ fusionnés le 18/11 (`c06d41b`, `5db289b`, session j1-tok120-132, Opus), `check.py --all` vert, backtest identique ; formulaires lots 22 et 26 en attente. 129 + 93 : session j1-tok129-93 lancée le 18/11 (Opus, worktree depuis `claude/moteur-18-11`) |
 | 2 | TOK-130 fenêtre par survie (3, `sprint-4/24`), TOK-131 intervalles (2, `sprint-4/25`), TOK-116 parts OCG servies (2) | en attente | |
 | 3 | TOK-133 données, TOK-134 doc, TOK-135 tests (1 chacun), TOK-82 chiffres de la vitrine (1) | en attente | |
 

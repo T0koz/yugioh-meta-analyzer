@@ -674,6 +674,63 @@ L'exemple Kewl Tune de l'accueil lit `GET /archetypes/kewl-tune` (`history` en T
 - Nouvelle fixture de test visuel : `kewl-tune` ajouté à `ARCHETYPES` dans `scripts/visual_tests.py`.
 → détail complet : `docs/journal/parts-ocg-servies-tok-116.md`
 
+### 🔍 Vérification des données du 18/11 (TOK-133, Jalon 3, 2026-11-18, branche `claude/jalon-3-entretien-vitrine-280593`, non fusionnée)
+
+Rapport seul, lecture seule : `docs/planning/fond/2026-11-18-donnees.md`. 20 tables servies identiques entre `yugioh.db`
+et `serving.db` (schéma et empreinte des lignes) ; fraîcheur par `check_freshness.py --sans-journal` (aucune périmée
+hors tolérances) ; bornes respectées (parts, scores, prix, exemplaires).
+- **13 cartes jouées n'ont pas de fiche dans `cards`** (`Bystial Druiswurm`, 4 974 decks ; 4 `Artmage …` ; `Empire of
+  Endymion` contre `Endymion Empire`…) : sans image ni lien, mais le score du Ban Radar n'est pas touché (statut lu dans
+  `banlist_history`). Proposé : table de correspondance des noms et contrôle « cartes jouées sans fiche ».
+- **`cards.ban_tcg` est figé au 13/06** comme `views_week` (12 désaccords avec la banlist en vigueur) : le site lit
+  `banlist_history`, mais `evaluate_prediction.py` et `combos_extract_deck.py` lisent encore `cards.ban_tcg`.
+- 116 cartes sans illustration carrée chez YGOPRODeck (4 affichées) ; 40 decks à moins de 40 cartes de Main Deck.
+- `build_serving_db.py --check` ouvre `data/yugioh.db` du checkout : dans un worktree, passer par un lien ou par
+  `check_coverage` sur une connexion `mode=ro`.
+
+### 📚 Documentation réalignée sur le code (TOK-134, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+`docs/api-contracts.md` (16 endpoints au lieu de 8, paramètres et champs réels), `docs/data-models.md` (effectifs du
+18/11, colonnes changées, 12 tables ajoutées), `docs/architecture.md`, `README.md`, `docs/ONBOARDING.md` (stack Next 16 /
+D3, chaîne `refresh_decks.py` / `refresh_all.py`, 20 tables servies, r ≈ 0,53 au lieu de 0,771). Écart par écart :
+`docs/planning/fond/2026-11-18-documentation.md`. Doc seulement.
+- **Écarts restés dans le code** (docstrings) : `check.py` dit les textes « non bloquants » (ils le sont depuis le
+  lot 16) et « 45 captures » (51) ; `build_serving_db.py` dit « 12 tables, ~9 Mo » (20, ~12 Mo).
+- Toute nouvelle route ou table : la ligne de `api-contracts.md` (tableau des endpoints) et la section de
+  `data-models.md` vont avec.
+
+### 🧪 Tests de l'API (TOK-135, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+`backend/tests` : 74 → 125 tests passés + 1 `xfail`, sur les deux bases, sans réseau ni modification du code testé.
+Nouveaux fichiers : `test_price_history.py`, `test_labels_mapping.py`, `test_db.py`, `test_routes_synthetic.py` (routes
+sur bases en mémoire : filtres, tri, bornes, 404/422), `test_api_invariants.py` (base réelle : tier = `tier_for`, trous
+de prix = `find_gaps`, libellés boutique, seuils du backtest), `test_build_serving_db.py`.
+- **Bug signalé (`xfail`)** : `/cards/search` et `resolve_card_name` mettent la saisie telle quelle dans un `LIKE` :
+  « % » et « _ » ne sont pas échappés (« %% » renvoie toutes les cartes, `/cards/%25` une carte au lieu d'un 404).
+- **`test_build_serving_db.py` voit une table citée par un routeur et absente de `SERVED_TABLES` même si elle n'existe
+  pas encore** (ce que `check_coverage` ne voit pas) ; un alias SQL inédit dans un routeur s'ajoute à `NOT_TABLES`, une
+  table lue seulement si elle existe à `OPTIONAL_TABLES` (`meta_prediction_intervals` aujourd'hui).
+- Les routes se testent sans base avec `app.dependency_overrides[get_db]` et une connexion `:memory:`
+  (`check_same_thread=False`, `row_factory = sqlite3.Row`).
+→ détail : `docs/planning/fond/2026-11-18-tests.md`
+
+### 🪧 Chiffres de vitrine remesurés (TOK-82, Jalon 3, 2026-11-18, même branche, non fusionnée)
+
+Chaque chiffre de `frontend/src/lib/site-facts.ts` remesuré sur la base de référence (lecture seule) : r = 0,53
+[0,43 ; 0,59] sur 105 archétypes (relancé avec `evaluate_prediction.py --part B`), « 2 à 6 mois », ρ 0,94, top 10
+6 contre 19, `banTop25` et 23 948 decklists **identiques**. Deux écarts affichés : cartes suivies 13 797 → 14 084 ; « légales
+à la date du tournoi » accolé aux 23 948 listes, dont 22 422 seulement sont légales (611 illégales, 915 Genesys).
+Formulaire : `docs/planning/2026-11-18/decisions-prises.md` (Jalon 3 — TOK-82) ; le commit du front, **dernier de la
+branche**, applique les cases pré-cochées et ne se fusionne qu'après le formulaire. Notebook 11 : déjà marqué remplacé,
+n'écrit rien, aucune correction.
+- **Depuis TOK-80, « cible mélangée » et « TCG pur » donnent le même r** dans `evaluate_prediction.py` (`meta_scores`
+  est TCG pur) : la ligne « mélangée » de la sortie n'est plus un contrôle de contamination.
+- **Un total relevé n'est pas un total utilisé** : 23 948 listes relevées, 22 422 légales et seules comptées. Toute phrase
+  qui donne un effectif dit lequel.
+- Les chiffres du Ban Radar se remesurent avec `build_ban_radar.backtest_lists` (top 10 par type : `top_archetype` nul
+  ou non dans le classement de la veille) et la table `ban_backtest_lists` (`banTop25`).
+→ détail complet : `docs/journal/chiffres-vitrine-tok-82.md`
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

@@ -511,3 +511,59 @@ Commentaire libre :
 [ ] Fenêtre glissante (16 derniers mois), textes calculés depuis les données
 Commentaire libre :
 ```
+
+## Jalon 3 — TOK-82 : chiffres de vitrine (`frontend/src/lib/site-facts.ts`) et notebook 11
+
+Journal : `docs/journal/chiffres-vitrine-tok-82.md`. Chaque chiffre de `SITE_FACTS` remesuré le 18/11 sur la base de
+référence (lecture seule, dernier deck du 14/11). Identiques : r = 0,53 [0,43 ; 0,59] sur 105 archétypes (relancé avec
+`evaluate_prediction.py --part B`), « 2 à 6 mois », ρ 0,94 sur 89 archétypes, top 10 du Ban Radar 6 contre 19,
+`banTop25` (TCG 29 contre 16, OCG 41 contre 18 ; `verdictMatches` reste vrai), 23 948 decklists. Deux écarts affichés :
+cartes suivies 13 797 contre 14 084, et « légales à la date du tournoi » accolé aux 23 948 listes, dont 22 422 seulement
+sont légales. Fenêtre d'arrivée : laissée au formulaire TOK-130 (point 1). Le commit du front
+(`feat(TOK-82): chiffres de vitrine (en attente du formulaire)`, dernier de la branche) applique les cases pré-cochées ;
+ne le fusionner qu'après ce formulaire.
+
+Décidé par défaut (à confirmer) :
+- le relevé n'a pas été relu par `data-scientist-ygo` (lancement de sous-agent refusé dans la session) : chiffres
+  recalculés avec les scripts existants, aucun calcul nouveau ;
+- le commentaire faux de `site-facts.ts` (« Decklists légales + Genesys ») est corrigé dans le commit du front (sans
+  effet à l'écran).
+
+```
+1. Cartes suivies (accueil : compteur et section des sources)
+[x] 14 084 (table `cards` au 18/11)
+[ ] 13 982 (cartes avec un prix Cardmarket) et libellé « cartes avec un prix Cardmarket »
+[ ] Garder 13 797
+Commentaire libre :
+
+2. « 23 948 decklists … légales à la date du tournoi » (accueil, sources) et « … Seules les listes légales à la date
+   de leur tournoi sont comptées » après 11 618 + 12 330 (`/methode`) : 1 526 de ces listes sont illégales (611) ou
+   Genesys (915)
+[x] Garder les totaux relevés et écrire la part légale : accueil « 23 948 decklists de tournoi, mai 2023 à novembre
+    2026 : 11 618 en TCG, 12 330 en OCG, dont 22 422 légales à la date du tournoi, seules comptées dans les calculs. » ;
+    `/methode` « … 11 618 listes TCG et 12 330 listes OCG au 14 novembre 2026, collectées chaque lundi ; 22 422 sont
+    légales à la date de leur tournoi (10 369 TCG, 12 053 OCG) et seules comptées. » ; compteur de l'accueil
+    « Decklists analysées » → « Decklists relevées »
+[ ] Afficher partout les listes légales : 22 422 (10 369 TCG, 12 053 OCG)
+[ ] Laisser tel quel
+Commentaire libre :
+
+3. Corrélation OCG → TCG : 0,53, IC 95 % [0,43 ; 0,59], 105 archétypes, « 2 à 6 mois »
+[x] Garder (recalcul du 18/11 identique : 0,529 [0,427 ; 0,589], n = 652)
+[ ] Remplacer « 2 à 6 mois » par « 1 à 6 mois » (r interne 0,60 à lag 1, IC chevauchants de 1 à 6)
+Commentaire libre :
+
+4. « 63 communautés de cartes détectées » (accueil, tuile du graphe ; `/methode`, glossaire du graphe) : exact pour
+   le graphe affiché (663 cartes), mais le graphe n'a pas de date et n'a pas été recalculé au rafraîchissement du
+   16/11 (le graphe recalculé aurait 1 402 nœuds, TOK-136)
+[x] Garder 63 en le qualifiant : « 63 communautés détectées sur 663 cartes (graphe non recalculé au rafraîchissement
+    du 16 novembre 2026). »
+[ ] Retirer le chiffre jusqu'au recalcul du graphe (TOK-136)
+[ ] Laisser tel quel
+Commentaire libre :
+
+5. Notebook 11 (déjà marqué « remplacé », n'écrit plus aucune table, fenêtres relatives à la date du jour)
+[x] Laisser tel quel
+[ ] Le déplacer dans `notebooks/archive/`
+Commentaire libre :
+```

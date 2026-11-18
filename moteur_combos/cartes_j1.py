@@ -909,12 +909,15 @@ def _spoly_cout(p, lieu, nom):
             for n in sorted(set(main))]
 
 
+SPOLY_ZONES = ("terrain", "terrain_adverse")   # « from either field » (jalon n°7, E32)
+
+
 def _spoly_candidats(p):
     return [f for n in sorted({i.carte for i in p.j.extra}) if (f := p.cat.get(n)) and f.est_fusion]
 
 
 def _spoly_possible(p, lieu, nom):
-    possibles, indet, _ = p.analyser_fusions(_spoly_candidats(p), _materiaux(p, ("terrain",)), None)
+    possibles, indet, _ = p.analyser_fusions(_spoly_candidats(p), _materiaux(p, SPOLY_ZONES), None)
     if any(o.couverte for o in possibles):
         return True
     return None if (possibles or indet) else False
@@ -924,7 +927,7 @@ SPOLY_F = Formalisation(
     nom=SPOLY, text_sha256="4a04f201798a8dd85953c1f25d469cd47d8402963aea66bf8a99ea6f7cd179d4",
     effets=(
         Effet(1, "activation_carte", ("main", "terrain"), (), vitesse=2, cout=_spoly_cout, possible=_spoly_possible,
-              resolution=lambda p, m: p.fusionner(_spoly_candidats(p), _materiaux(p, ("terrain",)), None),
+              resolution=lambda p, m: p.fusionner(_spoly_candidats(p), _materiaux(p, SPOLY_ZONES), None),
               sans_reponse=True,
               note="Magie Jeu-Rapide. Coût : défausser 1 carte (R17) ; Invocation Fusion avec des monstres des deux "
                    "terrains (pas la main). Personne ne peut répondre à l'activation (R19)."),
@@ -946,18 +949,24 @@ def _tftv_cibles_1(p, lieu, nom):
         if lieu[0] == "main" and i.carte == nom and c.startswith("S"):
             continue
         out.append(Option(f"{i.carte} ({c})", True, None, (c, i.carte)))
+    # « 1 face-up card on the field » : le terrain adverse aussi (jalon n°7, E49).
+    adv = p.etat.joueurs[1]
+    for c, i in p.monstres(1) + [x for x in adv.cases if x[0] not in ("M1", "M2", "M3", "M4", "M5")]:
+        if i.face == "visible":
+            out.append(Option(f"{i.carte} ({c} adverse)", True, None, (c, i.carte, "adverse")))
     return out
 
 
 def _tftv_detruire(p, m):
-    c, n = m.donnees["cible"]
-    inst = p.instance_en(("terrain", c), n)
+    c, n, *adverse = m.donnees["cible"]
+    zone = "terrain_adverse" if adverse else "terrain"
+    inst = p.instance_en((zone, c), n)
     if inst is None:
         p.notes.append(f"The Fallen & The Virtuous : la cible {n} n'est plus sur le terrain")
         return
     if p.insensible(inst, TFTV):
         return
-    p.detruire(n, c, "cible", TFTV)
+    p.detruire(n, c, "cible", TFTV, adverse=bool(adverse))
 
 
 def _tftv_condition_2(p, lieu, nom):
@@ -1308,8 +1317,9 @@ def _aeon_groupe(p, membres) -> bool | None:
 def _aeon_bannir(p, m):
     inst = next((i for _, i in p.monstres() if i.carte == AEON and i.arrivee == "invocation_fusion"), None)
     n = int(next((x.valeur for x in inst.modifications if x.champ == "materiaux"), "0")) if inst else 0
-    for _ in range(n):
-        options = [Option("terminer")]
+    for k in range(n):
+        # « up to » : au moins 1 carte (jalon n°7, E68 : l'oracle impose au moins 1, au plus le nombre de matériels).
+        options = [Option("terminer")] if k > 0 else []
         for c, i in p.monstres() + list(p.j.cases):   # N09 : les cartes insensibles restent choisissables
             options.append(Option(f"{i.carte} ({c})", p.declaree(i.carte), None, ("terrain", c, i.carte)))
         for i in sorted({i.carte for i in p.j.cimetiere}):

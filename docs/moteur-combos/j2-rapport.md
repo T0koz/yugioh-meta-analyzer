@@ -287,3 +287,57 @@ temps CPU selon le combo.
 côté moteur : les combos de 4 à 7 transitions sont retrouvés seuls ; les combos de 9 à 11 transitions sont jouables
 dans le moteur (G7, G8, G10) mais ne sont retrouvés qu'avec une cible (G8 en 120 s, G7 en 900 s) ou un guidage (G10).
 
+
+## 9. Jalon n°7 (TOK-144) : verdict, mesuré contre l'oracle
+
+> 18/11/2026, session du jalon n°7. Condition principale : § 0, telle quelle (largeur sans cible, 60 s, profondeur 16,
+> filtres D4 ; « retrouvé » = cible remplie et jalons en sous-suite ; G6 compté tel que figé). Condition ajoutée par
+> la règle figée (`j1-rapport.md` § 8) : la séquence doit être **légale pas à pas dans l'oracle** et finir sur **le même
+> plateau** ; un pas illégal = combo non retrouvé. Source : `reponses-oracle.md` § 8 (jalon n°6), lue avant d'écrire la
+> règle (déclaré).
+
+### 9.1 Rejeu par l'oracle
+
+**23 séquences sur 23 en accord** : 149 pas, tous dans la liste des actions que propose l'oracle, tous les choix parmi
+ses candidats, mêmes déplacements, même plateau final ; 0 premier pas en désaccord, 0 cas où le texte OCG de sa base
+change un verdict. Les séquences de la condition principale (main du guide, largeur sans cible) sont parmi elles :
+G1.2, G3.1, G4.1, G5.2, G9.1 (et G6.1, cible corrigée) — les séquences identiques entre deux recherches ne sont écrites
+qu'une fois dans `sequences-pour-oracle.md`.
+
+### 9.2 Chiffre de J2
+
+| Condition principale, confirmée par l'oracle | G1-G5 (développement) | G6-G10 (figés, hors échantillon) | Total sur 10 |
+|---|---|---|---|
+| Retrouvés **et** légaux pas à pas, même plateau (G6 figé = manqué) | **4 sur 5** [37,6 ; 96,4] | **1 sur 5** [3,6 ; 62,4] | **5 sur 10** [23,7 ; 76,3] |
+| G6 corrigé (cible plus facile, jamais seul) | 4 sur 5 | 2 sur 5 | 6 sur 10 |
+| Recherche dirigée 900 s (exploratoire), séquences légales | 5 sur 5 | 3 / 4 sur 5 | 8 / 9 sur 10 |
+
+Wilson à 95 % entre crochets. L'oracle ne change aucun chiffre du § 8 : il ne retire aucune séquence, il les confirme.
+Le seul chiffre hors échantillon reste **1 sur 5**.
+
+### 9.3 Différence de modèle J2-a (à trancher côté moteur)
+
+Retour d'`Ecclesia and the Dark Dragon` (bannie « jusqu'à la Phase de Fin ») : le moteur la fait revenir **au passage**
+en Phase de Fin ; l'oracle en fait un **effet obligatoire de Phase de Fin**, que le joueur place où il veut parmi les
+autres effets de Phase de Fin. Joué en premier, il redonne exactement les 8 séquences concernées ; joué en dernier, G8
+finit avec les mêmes cartes dans d'autres zones. Le moteur propose donc **moins d'options** que l'oracle (un ordre au
+lieu de plusieurs) : rien n'est faux sur les 23 plateaux, mais la liste est incomplète, ce qui compte pour `Sprind`
+(colonnes). **Non corrigé dans ce jalon** (changement du graphe d'exploration, donc de tous les chiffres J2 à
+rejouer) ; `Ecclesia and the Dark Dragon` reste `formalisee` (`j1-rapport.md` § 9.7). Proposé au formulaire.
+
+### 9.4 Les corrections du jalon n°7 ne touchent pas J2
+
+Les trois corrections (terrain adverse pour `Super Polymerization` et `The Fallen & The Virtuous`, minimum d'`Aeon`)
+n'agissent que si l'adversaire a des cartes ou si `Aeon` est Invoquée. Contrôle : la condition principale rejouée
+après correction (`python scripts/combos_j2.py --guides G1,G3,G4,G5,G9 --sans-hasard --sans-main-reelle --mains 0
+--sans-ecriture`) retrouve les cinq séquences avec **exactement** les mêmes nombres d'états qu'au § 8.2 (G1 10 704,
+G3 19 853, G4 13 123, G5 3 959, G9 6 524).
+
+### 9.5 Verdict proposé
+
+Le § 0 ne fixe pas de seuil chiffré ; la règle figée interdisait d'en inventer un après coup. Ce que les données
+disent : toutes les séquences retrouvées sont légales pour une implémentation indépendante des règles (aucune n'est un
+artefact du moteur) ; les combos de 4 à 7 transitions sont retrouvés seuls, ceux de 8 à 11 ne le sont qu'avec une
+cible ; hors échantillon, 1 combo sur 5 en condition principale. **Proposition : J2 « atteint sous réserve »**, la
+réserve étant la longueur (1 sur 5 hors échantillon), et l'horloge de la règle d'arrêt maintenue au 13/01/2027
+(décision 0053). Formulaire : `docs/planning/2026-11-18/decisions-prises.md`, « Jalon 7 — TOK-144 ».

@@ -63,8 +63,9 @@ FILTRES_DISPONIBLES: dict[str, str] = {
                                     "comme matériel (ligne écartée, à lever si un combo en dépend).",
     "pas_d_annulation_de_soi": "`Luluwalilith` : « ne pas annuler » seulement (annuler ses propres cartes au tour 1 "
                                "sans adversaire).",
-    "aeon_sans_bannissement": "`Hyperinvoked Aeon`, effet 1 : « terminer » tout de suite (bannir ses propres cartes "
-                              "ou celles de son Cimetière ; chaque sous-ensemble serait une branche).",
+    "aeon_sans_bannissement": "`Hyperinvoked Aeon`, effet 1 : non activé (il bannit au moins 1 carte, jalon n°7 : "
+                              "ses propres cartes ou celles de son Cimetière ; chaque sous-ensemble serait une "
+                              "branche). Avant le jalon n°7 : activé puis « terminer » tout de suite.",
     "pioche_une_branche": "Pioche (`Garura`) : une seule branche (première carte de la liste triée), étiquetée "
                           "« hasard » ; un combo ne doit pas dépendre d'une pioche.",
 }
@@ -97,6 +98,8 @@ def options_filtrees(d: Decision, filtres: frozenset[str]) -> list[str]:
         return ["terminer"]
     if q == "pioche" and "pioche_une_branche" in filtres:
         return sorted(valeurs)[:1]
+    if q == "activer_declenche" and "aeon_sans_bannissement" in filtres:
+        valeurs = [v for v in valeurs if v != "Hyperinvoked Aeon/1"] or valeurs
     if q == "activer_declenche" and "cartes_de_reponse_inertes" in filtres:
         valeurs = [v for v in valeurs if v.split("/")[0] not in CARTES_DE_REPONSE] or valeurs
     return valeurs

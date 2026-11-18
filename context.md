@@ -313,6 +313,29 @@ Réponses : `reponses-oracle.md` § 8 et § 9.
 - Le lanceur sait maintenant lire l'ATK (requête d'état du cœur) ; il ne sait pas donner un historique d'invocation à
   un monstre adverse (E18 non testable). Banc : `~/code/oracle-ignis/lanceur/jalon6/` (hors dépôt).
 
+**Jalon n°7, verdicts J1 et J2 côté moteur (TOK-144, 2026-11-18, branche `claude/jalon-7-verdicts-j1-j2-2291ea`, non
+fusionnée)** : règle de comptage figée et commitée avant la comparaison (`j1-rapport.md` § 8, `5fb4193`, empreinte
+`bac542c5…`) ; les 86 situations de l'échantillon traduites en décisions (`moteur_combos/echantillon_oracle.py`,
+`python scripts/combos_jalon7.py`). **J1 : 3 effets tirés sur 20 en erreur, Wilson 95 % [5,2 % ; 36,0 %] → non
+atteint** (82 accords, 3 désaccords E32, E49, E68, 1 non tranchée E18 ; pessimiste 4 sur 20). Corrigés (`b31e5df`) :
+terrain adverse pour `Super Polymerization` et `The Fallen & The Virtuous`, minimum 1 pour `Aeon` ; après correction
+0 sur 20, **non revalidé, pas une mesure**. **J2 : 23 séquences sur 23 légales dans l'oracle**, chiffres inchangés
+(4 sur 5, 1 sur 5 hors échantillon), proposition « atteint sous réserve », horloge du 13/01/2027 maintenue. **20 cartes
+`verifiee`** dans `data/combos.db` du worktree (`Ecclesia and the Dark Dragon` réservée pour J2-a). Relu par
+`data-scientist-ygo`. Formulaire : `decisions-prises.md` « Jalon 7 — TOK-144 ».
+- **Le moteur ignorait le terrain adverse** et rendait « non activable » au lieu de dire sa limite (E32, E49) : corrigé
+  pour deux effets seulement ; `Three Champions` 2, `Luluwalilith` 1, `Aeon` 1, `Mirrorjade` 1 l'ignorent encore.
+  Un monstre adverse est un vrai exemplaire (`proprietaire=1`) ; il va dans le Cimetière de l'adversaire sans émettre
+  d'événement (ses déclencheurs ne sont pas joués).
+- **« Up to N » = au moins 1** (E68) : à vérifier sur toute autre formalisation qui offre « terminer » dès le premier
+  choix.
+- **« Posé » ≠ « arrivée non précisée »** : `arrivee=None` veut dire « inconnue » et rend des options à légalité
+  inconnue (`Sprind`) ; un monstre placé sans invocation se traduit `arrivee="autre"`, sans `venue_extra_deck`.
+- **Le taux après correction n'est jamais le taux de J1** : remesurer demande un nouveau tirage d'effets non vus.
+- **`verifiee` est écrit par `combos_jalon7.py --ecrire-statuts`**, jamais par le harnais (qui ne l'écrase pas) :
+  après fusion, relancer `combos_harnais.py` puis `combos_jalon7.py --ecrire-statuts` sur le dépôt principal.
+- Le repère « 1 erreur sur 20 → 24,9 % » des rapports est Clopper-Pearson ; Wilson donne 23,6 %.
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree

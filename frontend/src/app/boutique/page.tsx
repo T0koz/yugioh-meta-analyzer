@@ -216,14 +216,10 @@ export default async function BoutiquePage() {
               { value: fmtNum(groups.length), label: "Archétypes" },
               { value: fmtNum(cardCount), label: "Cartes" },
               { value: fmtNum(prices.snapshot_count), label: "Relevés de prix" },
-              {
-                value: fmtNum(SITE_FACTS.ocgTcgCorrelation, 2),
-                label: `Corrélation OCG → TCG, IC 95 % ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}`,
-              },
             ]}
           />
           <p className={`mt-4 max-w-[80ch] ${MONO}`}>
-            {`Corrélation entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes. Signal de juin 2026 : ses cartes ont baissé de 35 % contre 1 % pour le marché.`}
+            {`Le classement OCG de cette page suit presque la seule part des decks OCG (corrélation de rang ${fmtNum(SITE_FACTS.ocgScoreShareRho, 2)} sur ${SITE_FACTS.ocgScoreArchetypes} archétypes) ; aucun test ne montre encore qu’il fait mieux. Le lien OCG → TCG (corrélation ${fmtNum(SITE_FACTS.ocgTcgCorrelation, 2)}, IC 95 % ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[0], 2)} à ${fmtNum(SITE_FACTS.ocgTcgCorrelationCi[1], 2)}, ${SITE_FACTS.ocgTcgArchetypes} archétypes) est mesuré sur des archétypes déjà joués dans les deux formats : il ne porte pas sur ceux de cette page. Signal de juin 2026 : ses cartes ont baissé de 35 % contre 1 % pour le marché.`}
           </p>
         </PageHero>
 

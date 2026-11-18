@@ -15,6 +15,11 @@ export const SITE_FACTS = {
   ocgTcgArchetypes: 105,
   // Le signal est à peu près constant de 2 à 6 mois : « 4 mois » était un artefact du choix du max.
   ocgTcgLagRange: "2 à 6 mois",
+  // Audit de rigueur (A3) : le classement OCG du signal boutique suit presque la seule part des decks OCG.
+  // Corrélation de rang (Spearman) entre `ocg_score` et `share_ocg`, 89 archétypes de `ocg_archetype_scores`,
+  // recalculée au lot 20 le 2026-11-18 (0,9396). À recalculer quand le notebook 10 change.
+  ocgScoreShareRho: 0.94,
+  ocgScoreArchetypes: 89,
   // Fenêtre d'arrivée OCG → TCG (notebook 10, P10-P90 = 75-202 jours sur 1 897 cartes 2022-2025 sorties en
   // TCG). Couverture hors échantillon (audit de rigueur, A2, recalculée au lot 20 le 2026-11-18) : P10-P90
   // estimés sur les cartes sorties en OCG en 2022-2023 (n = 1 078, 89 à 202 jours), appliqués aux cartes de

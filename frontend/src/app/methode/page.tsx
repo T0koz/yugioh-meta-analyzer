@@ -413,6 +413,10 @@ export default async function MethodePage() {
               term: "Couverture vérifiée",
               text: `Fenêtre estimée sur les cartes de 2022-2023, puis appliquée aux cartes suivantes : elle contient le délai de ${SITE_FACTS.arrivalCoverage.map((c) => `${c.pct} % des ${fmtNum(c.cards)} cartes de ${c.year}`).join(" et ")}, et non 80 %.`,
             },
+            {
+              term: "Comparaison naïve",
+              text: `Le classement suit presque la seule part des decks OCG : corrélation de rang ${fmtNum(SITE_FACTS.ocgScoreShareRho, 2)} sur ${SITE_FACTS.ocgScoreArchetypes} archétypes (recalcul du 18 novembre 2026). Aucun test ne montre encore qu’il fait mieux.`,
+            },
             { term: "Limites", text: "Rien n’est encore échu pour juger les signaux actuels." },
           ]}
         />
@@ -442,7 +446,9 @@ export default async function MethodePage() {
             date={`décalage de ${SITE_FACTS.ocgTcgLagRange}, recalcul du 16 novembre 2026`}
             sample={`${SITE_FACTS.ocgTcgArchetypes} archétypes`}
             uncertainty="segment : intervalle à 95 % ; l’ancienne valeur affichée (0,77 sur 43 archétypes) n’est plus reproductible"
-          />
+          >
+            mesuré sur des archétypes déjà joués en OCG et en TCG : ce lien ne valide pas le signal boutique, qui porte sur des archétypes pas encore sortis en TCG
+          </DataFooter>
         </Validation>
         <Validation title="Signal de juin 2026">
           <SimpleTable

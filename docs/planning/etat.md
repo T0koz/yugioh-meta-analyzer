@@ -38,7 +38,7 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 | Jalon | Tickets (charge) | Statut | Sessions |
 |---|---|---|---|
 | 1 (n°6) | Moteur, côté oracle (session isolée, ne lit pas `moteur_combos/`) : TOK-142 rejouer les 23 séquences J2 (2), TOK-143 situations par clause pour les 20 effets tirés, écrites avant de jouer (2) | en cours depuis le 18/11 (signal n°5 posé) | session `jalon-6` (isolée : ne lit jamais `moteur_combos/`) |
-| 2 (n°7) | TOK-144 verdicts J1 et J2 contre l'oracle, statuts `verifiee` (2) | composé, à armer au prochain message de Thomas | |
+| 2 (n°7) | TOK-144 verdicts J1 et J2 contre l'oracle, statuts `verifiee` (2) | armé le 18/11 | session `jalon-7` (attend `jalon n°6 fini` ; côté moteur : ne lit jamais `~/code/oracle-ignis/` ; règle de comptage figée et commitée avant toute comparaison) |
 | 3 (n°8) | vide, à composer par Thomas | | |
 
 Décision 0055 (18/11) : plus de juge humain sauf exception ; l'oracle valide (`verifiee` = accord avec l'oracle) ; côté moteur et
@@ -99,6 +99,7 @@ ce que contient déjà `claude/moteur-18-11` (lots 16, 17, 18, C1, C2, C2 bis, C
 | j1-tok129-93 + jalon-2 (18/11) | Demande de Thomas : sessions lancées sans l'attendre (décision 0054) ; jalon-2 attend passivement le commit `jalon n°1 fini` (Monitor), ne touche aucun fichier avant | oui (deux sessions, la seconde passive) |
 | jalon-2 + jalon-3 (18/11) | Armement d'avance (décision 0054, feu vert de Thomas) : jalon-3 attend passivement `jalon n°2 fini` (Monitor) | oui (deux sessions, la seconde passive) |
 | jalon-5 + jalon-6 (18/11) | Armement d'avance (décision 0054, feu vert de Thomas) : jalon-6 attend passivement `jalon n°5 fini` (Monitor) | oui (deux sessions, la seconde passive) |
+| jalon-6 + jalon-7 (18/11) | Armement d'avance (décision 0054, feu vert de Thomas) : jalon-7 attend passivement `jalon n°6 fini` (Monitor) ; session jalon-5 archivée, worktree supprimé | oui (deux sessions, la seconde passive) |
 
 Règle appliquée à partir du 17/11 (précision de Thomas) : un lot à la fois ; une deuxième session seulement pendant une attente longue et passive de la première, sur d'autres fichiers ; jamais plus de deux.
 

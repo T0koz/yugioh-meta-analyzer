@@ -56,9 +56,12 @@ class PredictionEntry(BaseModel):
 class PredictionsResponse(BaseModel):
     data: list[PredictionEntry]
     model: str
-    # Mois observé (« AAAA-MM ») : la prévision porte sur le mois suivant.
+    # Dernier mois complet observé (« AAAA-MM ») : la prévision porte sur le mois suivant, qui est en
+    # général le mois en cours au moment du calcul, déjà en partie relevé (audit de rigueur, A6).
     data_month: Optional[str] = None
     computed_at: Optional[str] = None  # date du calcul (« AAAA-MM-JJ »)
+    # Écart prévu − observé (échelle 0-1) au-delà duquel la direction est « hausse » ou « baisse » (lot 20).
+    direction_threshold: Optional[float] = None
 
 
 class BoutiqueSignal(BaseModel):

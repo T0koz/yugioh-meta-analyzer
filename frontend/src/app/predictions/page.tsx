@@ -31,10 +31,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PredictionsPage() {
-  const { data, data_month, computed_at } = await api.predictions();
+  const { data, data_month, computed_at, direction_threshold } = await api.predictions();
   const rows = [...data].sort((a, b) => b.predicted - a.predicted);
   const observed = data_month ? fmtMonthShort(data_month) : "dernier mois";
   const target = data_month ? fmtMonthShort(nextMonth(data_month)) : "mois suivant";
+  // Audit de rigueur, A6 : le mois prévu est en général le mois en cours au calcul, déjà en partie relevé
+  // (ses decks ne servent pas à la prévision). On le dit quand la date de calcul tombe dans ce mois.
+  const partial = Boolean(data_month && computed_at && computed_at.slice(0, 7) === nextMonth(data_month));
+  const targetNote = partial ? ", mois en cours au calcul, déjà en partie relevé mais non utilisé" : "";
 
   return (
     <Page>
@@ -42,7 +46,7 @@ export default async function PredictionsPage() {
         eyebrow="Méta · Prédictions"
         title={
           <>
-            Le score de chaque archétype, <Em>prévu</Em> pour le mois suivant.
+            Le score de chaque archétype, <Em>prévu</Em> pour {partial ? "le mois en cours" : "le mois suivant"}.
           </>
         }
         intro={
@@ -52,7 +56,8 @@ export default async function PredictionsPage() {
               term="Prévision"
               text="Valeur attendue si la situation récente se prolonge, en ramenant les écarts vers la moyenne."
             />{" "}
-            pour {target}. Le modèle n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
+            pour {target}
+            {targetNote}. Le modèle n’anticipe ni les ruptures ni l’arrivée d’un nouvel archétype.
           </>
         }
       />
@@ -60,15 +65,17 @@ export default async function PredictionsPage() {
       <PredictionsChart rows={rows} observedLabel={observed} targetLabel={target} />
       <DataFooter
         source="decklists de tournoi TCG, yugiohmeta.com"
-        date={`observé ${observed}, calcul du ${computed_at ? fmtDate(computed_at) : "date inconnue"}`}
+        date={`observé ${observed}, prévu ${target}${partial ? " (mois en cours, partiel)" : ""}, calcul du ${computed_at ? fmtDate(computed_at) : "date inconnue"}`}
         sample={`${rows.length} archétypes`}
         uncertainty="aucun intervalle par archétype : le modèle ne produit qu’une valeur ; son erreur moyenne est mesurée sur l’historique (page Méthode)"
       >
         anneau : observé ; point plein : prévu
+        {direction_threshold != null &&
+          ` ; direction : hausse ou baisse quand l’écart dessiné dépasse ${fmtNum(direction_threshold * 100, 1)} point, stable sinon (seuil fixé à la main)`}
       </DataFooter>
       <MethodNote anchor="predictions">
         <p>Prévision : surtout la valeur du mois observé, corrigée d’une part de retour à la moyenne.</p>
-        <p>Rejouée mois par mois sur l’historique, elle se trompe d’environ 5 % de moins que « rien ne change ».</p>
+        <p>Rejouée mois par mois sur 24 mois, elle se trompe d’environ 6 % de moins que « rien ne change » sur la variation du score. Sur les seuls decks TCG, elle ne classe pas les archétypes mieux que la valeur du mois observé.</p>
       </MethodNote>
 
       <details className="group mt-5">

@@ -3,7 +3,7 @@ import sqlite3
 from fastapi import APIRouter, Depends
 
 from app.db import get_db
-from app.labels import map_pred_direction
+from app.labels import PRED_GAP_THRESHOLD, direction_from_gap
 from app.schemas import (
     EvolutionPoint,
     EvolutionResponse,
@@ -179,7 +179,7 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
     latest_month = db.execute("SELECT MAX(data_month) FROM meta_predictions").fetchone()[0]
     rows = db.execute(
         """
-        SELECT archetype, meta_score_current, pred_meta_score, pred_direction
+        SELECT archetype, meta_score_current, pred_meta_score
         FROM meta_predictions
         WHERE data_month = ?
         ORDER BY pred_meta_score DESC
@@ -192,7 +192,7 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
             archetype=row["archetype"],
             current=row["meta_score_current"],
             predicted=row["pred_meta_score"],
-            direction=map_pred_direction(row["pred_direction"]),
+            direction=direction_from_gap(row["meta_score_current"], row["pred_meta_score"]),
             image_url=get_archetype_image(db, row["archetype"]),
         )
         for row in rows
@@ -204,5 +204,9 @@ def get_predictions(db: sqlite3.Connection = Depends(get_db)) -> PredictionsResp
     except sqlite3.OperationalError:  # base sans colonne computed_at : le front écrit « date inconnue »
         computed_at = None
     return PredictionsResponse(
-        data=data, model="70 % naïf + 30 % Ridge", data_month=latest_month, computed_at=computed_at
+        data=data,
+        model="70 % naïf + 30 % Ridge",
+        data_month=latest_month,
+        computed_at=computed_at,
+        direction_threshold=PRED_GAP_THRESHOLD,
     )

@@ -338,7 +338,7 @@ export default async function MethodePage() {
       <Section id="predictions" title="Prédictions">
         <Facts
           items={[
-            { term: "Ce que mesure", text: "Le score méta attendu le mois suivant si la situation récente se prolonge, en ramenant les écarts vers la moyenne." },
+            { term: "Ce que mesure", text: "Le score méta attendu le mois qui suit le dernier mois complet observé si la situation récente se prolonge, en ramenant les écarts vers la moyenne. Ce mois est en général le mois en cours au calcul : ses decks déjà relevés ne sont pas utilisés." },
             { term: "Construction", text: "Pour l’essentiel la valeur du mois observé, corrigée d’une part de retour à la moyenne apprise sur l’historique." },
             { term: "Incertitude", text: "Aucun intervalle par archétype : le modèle ne produit qu’une valeur." },
             { term: "Limites", text: "N’anticipe ni les ruptures (banlist, nouvelle extension) ni l’arrivée d’un nouvel archétype." },
@@ -346,18 +346,21 @@ export default async function MethodePage() {
         />
         <Validation title="Erreur, rejouée mois par mois sur l’historique">
           <SimpleTable
-            caption="Erreur de prévision comparée à deux références"
-            head={["Référence", "Erreur du modèle"]}
+            caption="Erreur de prévision comparée à deux références, avec intervalle à 95 %"
+            head={["Comparaison", "Résultat", "Intervalle à 95 %"]}
             rows={[
-              ["« rien ne change » (valeur du mois observé)", "environ 5 % de moins"],
-              ["retour à la moyenne seul", "équivalente"],
+              ["erreur sur la variation du score, contre « rien ne change »", "6 % de moins (0,20 point)", "0,10 à 0,30 point de moins"],
+              ["classement des archétypes par score prévu, contre « rien ne change »", "aucun écart démontré (écart de corrélation de rang +0,01)", "−0,01 à +0,04"],
+              ["contre le retour à la moyenne seul", "équivalente", "—"],
             ]}
           />
           <DataFooter
-            source="validation glissante dans le temps (notebook 05)"
-            date="dernier calcul du modèle"
-            uncertainty="gain faible : le modèle fait à peine mieux que la valeur du mois observé"
-          />
+            source="validation glissante dans le temps, decks TCG seuls, 24 mois de test, 519 prévisions"
+            date="évaluation du 16 novembre 2026"
+            uncertainty="intervalles à 95 % par rééchantillonnage des mois ; points de score ×100 ; gain faible et limité à la variation : en niveau, le modèle ne classe pas mieux que la valeur du mois observé"
+          >
+            la part du modèle (30 %) a été choisie sur ces mêmes 24 mois
+          </DataFooter>
         </Validation>
       </Section>
 

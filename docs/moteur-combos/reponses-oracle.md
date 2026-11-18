@@ -379,3 +379,153 @@ différent) n'est pas exercé. **0 cas de texte OCG ≠ TCG qui change un verdic
 - **Réglages** : rejoué sous Master Rule 5 seul et sous Master Rule 5 + `DUEL_TCG_SEGOC_FIRSTTRIGGER` : **23 sur 23** dans les deux cas.
 - **Limites** : un seul oracle (scripts communautaires) ; adversaire sans carte, donc aucune réponse adverse testée ;
   ATK non lus ; zones comparées sous la convention ci-dessus ; un passage par séquence (cœur déterministe).
+
+---
+
+# J1 échantillon (18/11) — l'oracle joue les 86 situations des 20 effets tirés (TOK-143, jalon n°6)
+
+**Statut : 85 situations jouées sur 86, 1 non testable (E18).** Les situations sont dans
+`situations-echantillon-j1.yaml`, écrites à partir du texte TCG **avant** de jouer et figées par le commit `59ef481`
+(sha256 `c3b49e76d98042c81da5f619c6a03ce9df2f67bd9c0b3588e42706fa95865515`). Ce passage **ne compare pas au moteur**
+(la session de l'oracle ne le lit pas) : il donne, pour chaque situation, ce que propose le cœur. Le jalon n°7
+exécutera le moteur sur les mêmes situations et comptera les accords (unité : l'effet). Mêmes réglages que § 8.
+
+## 9.1 À lire d'abord
+
+- **Non testable (1)** : **E18** (`DECCLESIA` effet 2, monstre de l'Extra Deck **chez l'adversaire**). Le cœur exige
+  que le monstre ait été réellement Invoqué depuis l'Extra Deck ; le lanceur sait poser un monstre adverse, pas lui
+  donner un historique d'invocation (témoin : un `RIND` posé **chez nous** ne remplit pas non plus la condition ; un
+  `RIND` réellement Invoqué par `BFUSION` la remplit). La moitié « l'un ou l'autre côté » de cette clause reste sans
+  réponse de l'oracle.
+- **Trois situations où la réponse de l'oracle diffère de la lecture écrite avant de jouer** (champ `attendu`, qui
+  n'est pas la référence) : E05, E08, E08b. Cause unique : `Ash Blossom` **en main** est un matériel de Fusion permis
+  pour `CARTESIA` (« monstres de la main ou du terrain »), ce que la lecture avait oublié. E05 : `DOGMA` est proposée
+  (`ALBAZ` + `CARTESIA` LUMIÈRE + `ASH` monstre à effet) ; E08 : `MIXOUSIA` est proposée (Magicien + `ASH` Zombie) ;
+  E08b : l'effet est **proposé** (`MIXOUSIA` avec `CARTESIA` + `ASH`), alors que la clause visée (matériel du
+  Cimetière exclu) supposait l'effet impossible. Variante **hors fichier**, déclarée : sans `ASH` en main, l'effet
+  n'est pas proposé (le Cimetière ne fournit pas de matériel). Le jalon n°7 compare le moteur à la réponse de
+  l'oracle, pas à la lecture.
+- **E85** : `CHAMPIONS` (effet 2) peut **cibler** `TITAN` insensible, mais le cœur ne pose **pas** la question
+  « détruire ? » : l'effet ne s'applique pas du tout à `TITAN` (ni annulation, ni destruction). À comparer tel quel
+  (un moteur qui poserait la question proposerait une décision de plus que l'oracle).
+- **Texte OCG ≠ TCG** : aucune des 20 clauses jouées ne porte sur un passage dont le texte diffère (relevé du § 7.4 :
+  `Titaniklad`, `Three Champions`, `Gold Sarcophagus` diffèrent par la forme seulement ; `Mirrorjade` et
+  `Incredible Ecclesia` par le sens, sur des effets non tirés). **0 cas.** Rappel : le texte TCG de la base du dépôt
+  nomme « The Three Brave Swordsouls » dans la limite de `CHAMPIONS` ; l'oracle applique la limite à la carte (E78).
+- **Clauses non exerçables** (déclarées dans l'en-tête du fichier, sans situation) : limites par tour de `GARURA/2`,
+  `MERC/2`, `TITAN/3`, `CHAMPIONS/1` (un exemplaire), bannissement face cachée et limite de `GSWORD/2`, « 3 matériels
+  ou plus » d'`AEON/1`.
+
+## 9.2 Ce que propose le cœur, situation par situation
+
+« proposé » / « non proposé » : l'action ou l'effet figure ou non dans la liste du cœur. Listes : noms distincts, ×n
+pour plusieurs exemplaires. ATK lus par une requête d'état du cœur (nouvelle dans le lanceur, voir 9.3).
+
+| Id | Effet | Réponse de l'oracle |
+|---|---|---|
+| E01 | ALUBER/1 | proposé ; liste : TFTV×3, BHIGH, BOPENING, BFUSION |
+| E02 | ALUBER/1 | proposé après l'Invocation Spéciale en Défense ; liste : TFTV×3, BFUSION, BHIGH |
+| E03 | ALUBER/1 | non proposé |
+| E04 | ALUBER/1 | non proposé (2e copie) |
+| E05 | CARTESIA/2 | proposé ; Fusions : DOGMA×2, MIXOUSIA, GRANG, SANCTIFIRE ; matériels de GRANG : ALBAZ (main), CARTESIA (terrain), ASH exclue |
+| E06 | CARTESIA/2 | proposé en réponse à l'effet d'ALUBER (maillon 2) |
+| E07 | CARTESIA/2 | non proposé : à la Phase de Fin, seul TITAN (question oui/non), aucune fenêtre avec CARTESIA |
+| E08 | CARTESIA/2 | proposé ; Fusions : MIXOUSIA, GRANG ; GARURA absente |
+| E08b | CARTESIA/2 | **proposé** (MIXOUSIA avec CARTESIA + ASH) ; variante sans ASH : non proposé |
+| E09 | CARTESIA/2 | non proposé (2e copie) |
+| E10 | BFUSION/1 | proposé ; Fusions : RIND, SANCTIFIRE ; matériels pris dans le Deck (ALBAZ, COCA) |
+| E11 | BFUSION/1 | proposé ; matériels de la main, du terrain et du Deck ; SANCTIFIRE avec ALBAZ (main) + CARTESIA (terrain) |
+| E12 | BFUSION/1 | Fusions : RIND, SANCTIFIRE ; DOGMA absente |
+| E13 | BFUSION/1 | EDD (et CHAMPIONS) proposées avant, absentes après |
+| E14 | BFUSION/1 | non proposé après l'Invocation Synchro |
+| E15 | BFUSION/1 | 2e copie non proposée |
+| E16 | BFUSION/1 | non proposé |
+| E17 | DECCLESIA/2 | proposé ; DECCLESIA Invoquée |
+| E18 | DECCLESIA/2 | **non testable** (voir 9.1) |
+| E19 | DECCLESIA/2 | non proposé |
+| E20 | DECCLESIA/2 | non proposé |
+| E21 | DECCLESIA/2 | 2e copie non proposée |
+| E22 | GARURA/2 | proposé (question oui/non après NADIR) ; 1 carte piochée |
+| E23 | GARURA/2 | proposé après la Fusion de MIRROR |
+| E24 | NADIR/1 | proposé ; envoyables : les 15 de l'Extra Deck ; ajoutables : QUEM, WHITE×2, ALBAZ, DECCLESIA |
+| E25 | NADIR/1 | ajoutables : QUEM, DECCLESIA |
+| E26 | NADIR/1 | ALBAZ du Cimetière dans la liste |
+| E27 | NADIR/1 | non proposé |
+| E28 | NADIR/1 | CARTESIA proposée en réponse (maillon 2), GRANG Invoquée, NADIR se résout ensuite |
+| E29 | NADIR/1 | EDD proposée avant, absente après |
+| E30 | NADIR/1 | 2e copie non proposée |
+| E31 | SPOLY/1 | non proposé |
+| E32 | SPOLY/1 | proposé ; Fusion : RIND seule ; SKITT adverse proposé comme matériel, envoyé au Cimetière adverse |
+| E33 | SPOLY/1 | non proposé |
+| E34 | SPOLY/1 | proposé ; aucune fenêtre de réponse après l'activation (BOPENING jamais proposée) |
+| E35 | SPOLY/1 | proposé en réponse à l'effet d'ALUBER |
+| E36 | GSWORD/2 | proposé (même liste que MERC) ; Invocables : CARTESIA (main) |
+| E37 | GSWORD/2 | proposé depuis le terrain ; Invocables : DECCLESIA (Cimetière) |
+| E38 | GSWORD/2 | non proposé (seul MERC) |
+| E39 | GSWORD/2 | non proposé après le bannissement de BOPENING |
+| E40 | TITAN/3 | proposé ; liste : ALBAZ, WHITE×2, QUEM ; option « ajouter » |
+| E41 | TITAN/3 | option « Invoquer Spécialement » ; QUEM Invoqué |
+| E42 | TITAN/3 | non proposé |
+| E43 | TITAN/3 | non proposé |
+| E44 | MERC/2 | proposé ; liste : ALBAZ, WHITE×2, CARTESIA×2, QUEM, IECCLESIA×2, SKITT, TBKITT, GSWORD ; DECCLESIA et MERC absentes |
+| E45 | MERC/2 | proposé ; même liste |
+| E46 | BOPENING/2 | question proposée ; RIND reste, BOPENING bannie |
+| E47 | BOPENING/2 | question proposée, refusée : RIND détruit, BOPENING reste |
+| E48 | BOPENING/2 | pas de question ; ALUBER détruit |
+| E49 | BOPENING/2 | pas de question ; RIND adverse détruit |
+| E50 | BOPENING/2 | question proposée (après le 1er effet de BOPENING ce tour) |
+| E51 | BHIGH/2 | proposé ; liste de Phase de Fin : BHIGH, TITAN |
+| E52 | BHIGH/2 | non proposé |
+| E53 | BHIGH/2 | non proposé |
+| E54 | BHIGH/2 | non proposé (seul DOGMA à la Phase de Fin) |
+| E55 | LULU/1 | proposé ; question « annuler ? » : non ; LULU 3000, ALUBER 2300 |
+| E56 | LULU/1 | cibles d'annulation : LULU, ALUBER |
+| E57 | LULU/1 | proposé (même liste que GRANG) ; LULU 3000, GRANG 3000 |
+| E58 | LULU/1 | non proposé |
+| E59 | LULU/1 | non proposé |
+| E60 | LULU/2 | proposé ; liste : DECCLESIA, IECCLESIA×2, CARTESIA×2, QUEM |
+| E61 | LULU/2 | CARTESIA de la main dans la liste et Invoquée |
+| E62 | LULU/2 | non proposé (seul TITAN) |
+| E63 | OGRE/1 | proposé ; QUEM détruit ; l'effet de QUEM se résout (ALBAZ envoyé) |
+| E64 | OGRE/1 | proposé depuis le terrain ; ALUBER détruit ; l'effet d'ALUBER se résout |
+| E65 | OGRE/1 | non proposé (seule ASH en réponse) |
+| E66 | OGRE/1 | non proposé (aucune fenêtre de réponse) |
+| E67 | OGRE/1 | 2e copie non proposée |
+| E68 | AEON/1 | proposé ; bannissables : AEON (terrain), SPOLY, GRANG, RIND, ASH (Cimetière) ; au moins 1, au plus 2 |
+| E69 | AEON/1 | 1 carte acceptée |
+| E70 | AEON/1 | 2e effet non proposé |
+| E71 | CHAMPIONS/1 | proposé ; liste : IECCLESIA, QUEM, DECCLESIA, CARTESIA×2 (Deck), IECCLESIA (Cimetière) |
+| E72 | CHAMPIONS/1 | CARTESIA du Cimetière |
+| E73 | CHAMPIONS/1 | non proposé après la résurrection par TFTV (CHAMPIONS est une cible de TFTV) |
+| E74 | CHAMPIONS/2 | cibles : CHAMPIONS, ALUBER ; question « détruire ? » ; ALUBER détruit |
+| E75 | CHAMPIONS/2 | question refusée ; ALUBER reste |
+| E76 | CHAMPIONS/2 | pas de question ; ALUBER reste |
+| E77 | CHAMPIONS/2 | question proposée (WHITE au Cimetière) |
+| E78 | CHAMPIONS/2 | 2e activation non proposée |
+| E79 | TITAN/1 | TITAN 3700 ; Fusions proposées : TITAN, DRAGOSTAPELIA, MIXOUSIA, MIRROR, SANCTIFIRE |
+| E80 | TITAN/1 | TITAN 3700 |
+| E81 | TITAN/1 | TITAN 2500 |
+| E82 | TITAN/2 | TITAN proposé à MIRROR, choisi, reste sur le terrain (3700) |
+| E83 | TITAN/2 | TITAN banni |
+| E84 | TITAN/2 | TITAN détruit |
+| E85 | TITAN/2 | TITAN ciblable par CHAMPIONS ; pas de question « détruire ? » ; TITAN reste |
+
+**Compte** : 86 situations, **85 jouées**, **1 non testable** (E18), **0 cas de texte OCG ≠ TCG** qui change une
+réponse. Les 20 effets ont tous au moins 2 situations jouées. Lecture écrite avant de jouer et réponse de l'oracle :
+82 accords sur 85 (écarts E05, E08, E08b, une seule cause).
+
+## 9.3 Méthode et limites
+
+- Chaque situation est jouée par un scénario court (lanceur hors dépôt, `~/code/oracle-ignis/lanceur/jalon6/`) qui place
+  le départ, joue l'action et relève les listes de choix, les fenêtres de chaîne et les déplacements (`MOVE`). « Posé »
+  = placé sans historique d'invocation ; quand l'historique compte (DECCLESIA/2, CHAMPIONS/1, TITAN/1 et 2), il est
+  produit en jouant réellement l'invocation.
+- **Correctif du lanceur** : la recherche de carte par nom du lanceur rapprochait aussi par l'**alias** de la base ;
+  `Fallen of the White Dragon` ayant `Fallen of Albaz` pour alias, un choix « ALBAZ » pouvait prendre WHITE. Corrigé pour
+  ce passage (rapprochement par nom exact) et pour le § 8. **Les passages précédents (lots 17 et C2 bis) utilisaient
+  l'ancienne recherche** : leurs listes (relevées sur les noms réels) ne sont pas en cause, mais un choix « ALBAZ » a pu
+  y jouer WHITE. Les deux cartes ont le même texte de jeu pour l'essentiel (WHITE est traité comme ALBAZ) ; aucune
+  réponse publiée n'en dépend à ma connaissance, à revérifier si un point litigieux porte sur ce choix.
+- **Requête d'état ajoutée** (ATK des monstres sur le terrain) : les valeurs d'ATK de LULU/1 et TITAN/1 sont lues dans
+  le cœur, ce que les passages précédents ne faisaient pas.
+- Un seul oracle ; adversaire passif (aucune réponse adverse) ; un passage par situation (cœur déterministe).

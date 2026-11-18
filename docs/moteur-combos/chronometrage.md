@@ -227,3 +227,14 @@ Heures relevées avec `date`. Session armée d'avance (décision 0054) : attente
 | 1 | Fusion de la branche d'intégration, lecture de la méthode (0055, lots 17 et C2 bis) et du lanceur hors dépôt | 20:05 | ≈ 20:08 | ≈ 3 min | — | — |
 | 2 | TOK-142 : traducteur automatique des 23 séquences, 5 passages de mise au point (replis déclarés), témoins négatifs, 3 réglages | ≈ 20:08 | 20:16 | ≈ 8 min | 23 / 23 en accord | — |
 | 3 | TOK-142 : section « J2 (18/11) » de `reponses-oracle.md` | 20:16 | 20:18 | ≈ 2 min | commit TOK-142 | lecture de J2-a |
+| 4 | TOK-143 : lecture de l'échantillon et des textes TCG, écriture des 86 situations, relecture des départs, commit figé | 20:18 | 20:26 | ≈ 8 min | commit `59ef481` | — |
+| 5 | TOK-143 : 86 situations jouées en 5 lots (lecture d'ATK ajoutée, correctif de l'alias du lanceur), 2 variantes déclarées | 20:26 | 20:33 | ≈ 7 min | 85 jouées, 1 non testable | — |
+| 6 | Section « J1 échantillon », `context.md`, `BACKLOG.md`, `check.py` | 20:33 | ≈ 20:40 | ≈ 7 min | commit TOK-143 | — |
+| | **Total (hors attente)** | 20:05 | ≈ 20:40 | **≈ 35 min** | 2 tickets, 3 commits | |
+
+**Enseignements pour les estimations** :
+- **Traduire automatiquement les séquences du moteur coûte moins que les jouer à la main** : 23 séquences, 149 pas,
+  en ≈ 8 minutes, parce que l'export est écrit en langage de règles régulier. Les écarts de la mise au point venaient
+  tous de la traduction (décisions à une option non écrites, retour obligatoire en Phase de Fin), pas du jeu.
+- **Écrire les situations avant de jouer prend autant que les jouer** (≈ 8 min contre ≈ 7 min pour 86) ; c'est le prix
+  de l'indépendance (situations figées par un commit avant toute réponse de l'oracle).

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
@@ -8,22 +9,27 @@ import { HoverPreviewPanel } from "@/components/hover-preview-panel";
 import { TabLink, TabRail } from "@/components/ds/control";
 import { Page } from "@/components/ds/page";
 import { BanRadarView } from "./BanRadarView";
-import { CardImpactView } from "./CardImpactView";
+import { CardDiffusionView } from "./CardDiffusionView";
 import { BanSimulatorView } from "./BanSimulatorView";
 import { BanHistoryView } from "./BanHistoryView";
 import { parseKind } from "./kind-filter";
 import type { BanSimResult } from "@/types";
 
-type Tab = "radar" | "historique" | "impact" | "simulateur";
+type Tab = "radar" | "historique" | "diffusion" | "simulateur";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "radar", label: "Ban Radar" },
   { id: "historique", label: "Historique" },
-  { id: "impact", label: "Cartes à impact" },
+  { id: "diffusion", label: "Diffusion" },
   { id: "simulateur", label: "Simulateur" },
 ];
 
+// Ancien nom de l'onglet « Diffusion » (« Cartes à impact » jusqu'au jalon n°8, TOK-132) : l'adresse reste valable et
+// redirige (308) vers la nouvelle, filtre `kind` compris.
+const LEGACY_TABS: Record<string, Tab> = { impact: "diffusion" };
+
 function parseTab(raw: string | string[] | undefined): Tab {
+  if (typeof raw === "string" && raw in LEGACY_TABS) return LEGACY_TABS[raw];
   return TABS.some((t) => t.id === raw) ? (raw as Tab) : "radar";
 }
 
@@ -38,7 +44,7 @@ export async function generateMetadata({
   if (tab === "simulateur") {
     return pageMetadata({
       title: "Simulateur de ban",
-      description: `Archétypes et decks de tournoi Yu-Gi-Oh! TCG reliés à une carte dans le graphe de co-occurrences et sa position de pont : estimation sur le graphe déjà calculé, sans recalcul. Source : ${DECK_SOURCE}, date de calcul non enregistrée.`,
+      description: `Position d’une carte Yu-Gi-Oh! TCG dans le graphe de co-occurrences déjà calculé, sans prévision de l’effet d’un ban, et archétypes de deck qui la jouent. Source : ${DECK_SOURCE}.`,
       path: "/ban?tab=simulateur",
     });
   }
@@ -51,12 +57,12 @@ export async function generateMetadata({
       path: "/ban?tab=historique",
     });
   }
-  if (tab === "impact") {
+  if (tab === "diffusion") {
     const { as_of, n_decks_window } = await api.cardImpact();
     return pageMetadata({
-      title: "Cartes à impact",
+      title: "Diffusion des cartes",
       description: `Cartes Yu-Gi-Oh! TCG classées par nombre d’archétypes et de decks qui les jouent, sur ${fmtNum(n_decks_window)} decks de tournoi, relevé du ${fmtDate(as_of)}. Source : ${DECK_SOURCE}.`,
-      path: "/ban?tab=impact",
+      path: "/ban?tab=diffusion",
     });
   }
   const { as_of, n_decks_window } = await api.banRadar();
@@ -86,11 +92,16 @@ export default async function BanPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
+  if (typeof params.tab === "string" && params.tab in LEGACY_TABS) {
+    const query = new URLSearchParams({ tab: LEGACY_TABS[params.tab] });
+    if (typeof params.kind === "string") query.set("kind", params.kind);
+    permanentRedirect(`/ban?${query}`);
+  }
   const tab = parseTab(params.tab);
   const cardParam = typeof params.card === "string" ? params.card : undefined;
 
   // Arrivée directe sur l'onglet simulateur via ?card= (recherche globale ou
-  // "simuler le ban →" de l'onglet impact) : on résout côté serveur pour ne
+  // « position dans le graphe → » de l'onglet Diffusion) : on résout côté serveur pour ne
   // pas faire attendre un aller-retour client avant d'afficher le résultat.
   let initialResult: BanSimResult | null = null;
   if (tab === "simulateur" && cardParam) {
@@ -107,7 +118,7 @@ export default async function BanPage({
         {tab === "historique" && (
           <BanHistoryView selected={typeof params.liste === "string" ? params.liste : undefined} tabs={tabs} />
         )}
-        {tab === "impact" && <CardImpactView view={parseKind(params.kind, "impact")} tabs={tabs} />}
+        {tab === "diffusion" && <CardDiffusionView view={parseKind(params.kind, "diffusion")} tabs={tabs} />}
         {tab === "simulateur" && (
           <BanSimulatorView
             key={cardParam ?? ""}

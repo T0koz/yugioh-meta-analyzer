@@ -182,12 +182,29 @@ class BanSimRequest(BaseModel):
     card_name: str
 
 
+class DeckArchetypeUsage(BaseModel):
+    """Archétype de deck qui joue la carte (Main ou Extra Deck), fenêtre de la tier list (TOK-132)."""
+
+    archetype: str
+    slug: str
+    lists: int  # k : listes de l'archétype qui jouent la carte
+    decks: int  # n : listes de l'archétype dans la fenêtre
+
+
 class BanSimResult(BaseModel):
     removed_card: str
     image_url: Optional[str] = None
+    # Archétypes `cards.archetype` (nomenclature YGOPRODeck) des cartes les plus co-jouées : 31 % seulement sont des
+    # archétypes de deck (TOK-132). Gardé pour compatibilité ; le front lit `deck_archetypes`.
     affected_archetypes: list[str]
     community_impact: CommunityImpact
     bridge_score: float
+    # Ajouts du jalon n°8 (TOK-132, A5.2), lus dans `archetype_card_profile` : vide si la carte n'est jouée par aucun
+    # archétype de la fenêtre, ou si la base de service est antérieure à TOK-114.
+    deck_archetypes: list[DeckArchetypeUsage] = []
+    deck_window_start: Optional[str] = None
+    deck_window_end: Optional[str] = None
+    deck_window_decks: Optional[int] = None
 
 
 class SearchResult(BaseModel):

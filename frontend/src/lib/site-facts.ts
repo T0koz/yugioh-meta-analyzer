@@ -40,6 +40,12 @@ export const SITE_FACTS = {
   // enregistrée, ne pas afficher de date de fraîcheur. 663 cartes réparties en 63 communautés.
   graphCommunities: 63,
   graphCards: 663,
+  // Score de diffusion (ancien « Impact », `card_impact.bridge_score`) confronté à 17 banlists (TOK-132,
+  // docs/journal/pont-simulateur-tok-132.md, validé le 19/11, bloc A5) : variation de la part de méta cumulée des
+  // archétypes porteurs, 3 mois après contre 3 mois avant, régressée sur la part des decks et le score standardisés ;
+  // coefficient du score +6,5 points par écart type, intervalle bootstrap par liste à 90 % [+4,5 ; +8,6] ;
+  // 158 cartes touchées avec au moins un porteur. Sens contraire d'un « impact ».
+  diffusionEffect: { points: 6.5, ci90: [4.5, 8.6] as const, cards: 158, lists: 17 },
   // Ban Radar rejoué la veille des 10 banlists TCG du backtest (2024-04-15 au
   // 2026-10-19) : places du top 10 suivies d'une restriction, sur 10 × 10 places.
   // Ce sont des places, pas des cartes distinctes. À recalculer à chaque banlist.

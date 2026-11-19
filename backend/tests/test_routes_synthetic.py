@@ -235,6 +235,66 @@ def test_simulate_ban_of_an_unknown_card_is_a_404(cards_client):
     assert cards_client.post("/api/v1/simulate-ban", json={}).status_code == 422
 
 
+def _with_graph(con: sqlite3.Connection) -> None:
+    con.executescript(
+        """
+        CREATE TABLE card_graph_metrics (card_name TEXT, betweenness REAL);
+        INSERT INTO card_graph_metrics VALUES ('Maliss <P> March Hare', 0.2), ('Branded Fusion', 0.4);
+        CREATE TABLE card_cooccurrence (card_a TEXT, card_b TEXT, jaccard REAL);
+        INSERT INTO card_cooccurrence VALUES ('Maliss <P> March Hare', 'Ashened City', 0.5);
+        CREATE TABLE graph_communities (community_id INTEGER, top_archetypes TEXT);
+        INSERT INTO graph_communities VALUES (3, 'Maliss, Ashened');
+        """
+    )
+
+
+def _with_profile(con: sqlite3.Connection) -> None:
+    con.execute(
+        """CREATE TABLE archetype_card_profile (archetype TEXT, zone TEXT, card_name TEXT, n_lists INTEGER,
+            n_decks INTEGER, share REAL, median_copies REAL, window_start TEXT, window_end TEXT,
+            n_decks_window INTEGER, computed_at TEXT)"""
+    )
+    con.executemany(
+        "INSERT INTO archetype_card_profile VALUES (?, ?, ?, ?, ?, 0, 3, '2026-10', '2026-11', 396, '2026-11-16')",
+        [
+            # Noms de deck_cards : sans les marques <P> de cards.name.
+            ("Maliss", "main", "Maliss P March Hare", 9, 9),
+            ("Maliss", "side", "Maliss P March Hare", 2, 9),  # Side Deck : pas compté
+            ("Live☆Twin", "main", "Maliss P March Hare", 3, 12),
+            ("Branded", "main", "Maliss P March Hare", 3, 40),
+            ("Branded", "main", "Branded Fusion", 40, 40),
+        ],
+    )
+
+
+def test_simulate_ban_lists_the_deck_archetypes_that_play_the_card():
+    con = _base()
+    _with_radar(con)
+    _with_graph(con)
+    _with_profile(con)
+    with _client(con) as client:
+        body = client.post("/api/v1/simulate-ban", json={"card_name": "Maliss <P> March Hare"}).json()
+    assert body["removed_card"] == "Maliss <P> March Hare"
+    # Tri : listes qui jouent la carte, puis taille de l'archétype ; effectif (k sur n) et slug servis.
+    assert body["deck_archetypes"] == [
+        {"archetype": "Maliss", "slug": "maliss", "lists": 9, "decks": 9},
+        {"archetype": "Branded", "slug": "branded", "lists": 3, "decks": 40},
+        {"archetype": "Live☆Twin", "slug": "live-twin", "lists": 3, "decks": 12},
+    ]
+    assert (body["deck_window_start"], body["deck_window_end"], body["deck_window_decks"]) == ("2026-10", "2026-11", 396)
+    # Champ historique conservé (additif seulement), plus affiché par le front.
+    assert isinstance(body["affected_archetypes"], list)
+
+
+def test_simulate_ban_without_profile_table_serves_no_deck_archetype():
+    con = _base()
+    _with_radar(con)
+    _with_graph(con)
+    with _client(con) as client:
+        body = client.post("/api/v1/simulate-ban", json={"card_name": "Ash Blossom & Joyous Spring"}).json()
+    assert body["deck_archetypes"] == [] and body["deck_window_decks"] is None
+
+
 # ── /meta/predictions ────────────────────────────────────────────────────────
 
 

@@ -3,7 +3,15 @@ import sqlite3
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.db import get_db
-from app.schemas import BanSimRequest, BanSimResult, CommunityImpact, SearchResponse, SearchResult
+from app.schemas import (
+    BanSimRequest,
+    BanSimResult,
+    CommunityImpact,
+    DeckArchetypeUsage,
+    SearchResponse,
+    SearchResult,
+)
+from app.slugs import slugify
 
 router = APIRouter(tags=["cards"])
 
@@ -21,6 +29,35 @@ def resolve_card_name(db: sqlite3.Connection, query: str) -> str | None:
         (f"%{query}%",),
     ).fetchone()
     return fuzzy["name"] if fuzzy else None
+
+
+# Archétypes de deck qui jouent la carte, fenêtre de la tier list (`archetype_card_profile`, TOK-114). Main et Extra
+# Deck seulement : une carte n'est jamais dans les deux, la somme est donc un nombre de listes ; le Side Deck n'est pas
+# compté (« jouer » la carte). Les noms de `deck_cards` n'ont pas les marques <P>/<C>/<Q> de `cards.name`.
+DECK_ARCHETYPES_SQL = """
+    SELECT archetype, SUM(n_lists) AS lists, MAX(n_decks) AS decks,
+           MAX(window_start) AS window_start, MAX(window_end) AS window_end, MAX(n_decks_window) AS n_decks_window
+    FROM archetype_card_profile
+    WHERE card_name = REPLACE(REPLACE(:name, '<', ''), '>', '') AND zone IN ('main', 'extra')
+    GROUP BY archetype
+    ORDER BY lists DESC, decks DESC, archetype
+"""
+
+
+def load_deck_archetypes(db: sqlite3.Connection, card_name: str) -> tuple[list[DeckArchetypeUsage], sqlite3.Row | None]:
+    try:
+        rows = db.execute(DECK_ARCHETYPES_SQL, {"name": card_name}).fetchall()
+    except sqlite3.OperationalError:  # base de service antérieure à TOK-114
+        return [], None
+    usages = [
+        DeckArchetypeUsage(archetype=r["archetype"], slug=slugify(r["archetype"]), lists=r["lists"], decks=r["decks"])
+        for r in rows
+    ]
+    window = rows[0] if rows else db.execute(
+        "SELECT MAX(window_start) AS window_start, MAX(window_end) AS window_end, MAX(n_decks_window) AS n_decks_window"
+        " FROM archetype_card_profile"
+    ).fetchone()
+    return usages, window
 
 
 # Enregistré avant /cards/{name} : sinon FastAPI matcherait "search" comme {name}.
@@ -118,10 +155,16 @@ def simulate_ban(payload: BanSimRequest, db: sqlite3.Connection = Depends(get_db
         if community_row:
             community_id = community_row["community_id"]
 
+    deck_archetypes, window = load_deck_archetypes(db, resolved)
+
     return BanSimResult(
         removed_card=resolved,
         image_url=image_url,
         affected_archetypes=sorted(archetypes)[:AFFECTED_ARCHETYPES_LIMIT],
         community_impact=CommunityImpact(community_id=community_id, fragmentation=fragmentation),
         bridge_score=bridge_score or 0.0,
+        deck_archetypes=deck_archetypes,
+        deck_window_start=window["window_start"] if window else None,
+        deck_window_end=window["window_end"] if window else None,
+        deck_window_decks=window["n_decks_window"] if window else None,
     )

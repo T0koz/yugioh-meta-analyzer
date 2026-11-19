@@ -94,3 +94,4 @@ Ce que ça change, ce qu'il faudra revoir et quand.
 | 0053 | 2026-11-18 | [Reprise du moteur de combos : ordre des lots, parallélisme et horloge](0053-reprise-du-moteur-de-combos-ordre-parallelisme-et-horloge.md) | acceptée |
 | 0054 | 2026-11-18 | [Linear : trois jalons glissants pour lire la file](0054-linear-jalons-glissants-1-2-3.md) | acceptée |
 | 0055 | 2026-11-18 | [Moteur de combos : validation par l'oracle, plus de juge humain sauf exception](0055-moteur-validation-par-l-oracle-sans-juge-humain.md) | acceptée |
+| 0056 | 2026-11-19 | [Mise en ligne : moteur en pause, corrections affichées du bloc A avant le premier déploiement](0056-mise-en-ligne-bloc-a-et-pause-du-moteur.md) | acceptée |

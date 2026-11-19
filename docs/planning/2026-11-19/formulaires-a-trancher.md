@@ -23,6 +23,8 @@ je refais la release (`v2026.11.19`) et tu pousses celle-là.
 
 ## Bloc A — avant la mise en ligne
 
+**✅ Validé par Thomas le 19/11 tel que pré-coché (« tout validé go »)** : décision 0056 ; appliqué par le jalon n°8.
+
 ### A1. Chiffres de vitrine (TOK-82) — § « Jalon 3 — TOK-82 »
 Aujourd'hui l'accueil affiche **13 797 cartes suivies** (la base en a 14 084) et **« 23 948 decklists légales »** (22 422
 seulement le sont : 611 illégales et 915 Genesys). Le correctif est prêt (`f485ca1`), avec les cases pré-cochées.

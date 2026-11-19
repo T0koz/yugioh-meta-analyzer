@@ -213,14 +213,39 @@ def test_search_respects_the_limit(cards_client):
     assert len(cards_client.get("/api/v1/cards/search?q=as&limit=1").json()["data"]) == 1
 
 
-@pytest.mark.xfail(
-    reason="Bug signalé (TOK-135) : `q` est injecté tel quel dans un motif LIKE, « % » et « _ » n'y sont pas "
-    "échappés. Une recherche « %% » renvoie toutes les cartes au lieu d'aucune (aucun nom ne contient « %% »). "
-    "Même cause dans resolve_card_name : /cards/%25 rend une carte au lieu d'un 404.",
-    strict=False,
+# Bug signalé par TOK-135 (xfail), corrigé par TOK-149 : « % », « _ » et « \\ » ne sont plus des jokers de LIKE.
+@pytest.mark.parametrize("q", ["%25%25", "__", "a_h", "%5C%5C", "as%25"])
+def test_search_treats_like_wildcards_as_plain_characters(cards_client, q):
+    assert cards_client.get(f"/api/v1/cards/search?q={q}").json() == {"data": []}
+
+
+def test_like_wildcards_still_match_literally():
+    con = _base()
+    con.executemany(
+        "INSERT INTO cards VALUES (?, NULL, 1, NULL)", [("Carte 100% réelle",), ("Nom_avec_tiret",), ("Barre \\ oblique",)]
+    )
+    with _client(con) as client:
+        found = lambda q: [r["name"] for r in client.get("/api/v1/cards/search", params={"q": q}).json()["data"]]  # noqa: E731
+        assert found("100%") == ["Carte 100% réelle"]
+        assert found("m_a") == ["Nom_avec_tiret"]
+        assert found("e \\ o") == ["Barre \\ oblique"]
+        assert client.get("/api/v1/cards/100%25 r").json()["name"] == "Carte 100% réelle"
+
+
+def test_card_lookup_with_a_wildcard_is_a_404(cards_client):
+    assert cards_client.get("/api/v1/cards/%25").status_code == 404
+    assert cards_client.get("/api/v1/cards/__").status_code == 404
+    assert cards_client.post("/api/v1/simulate-ban", json={"card_name": "%"}).status_code == 404
+
+
+@pytest.mark.parametrize(
+    "path", ["/api/v1/ban-radar", "/api/v1/card-impact", "/api/v1/graph/synergies", "/api/v1/cards/search?q=as"]
 )
-def test_search_treats_like_wildcards_as_plain_characters(cards_client):
-    assert cards_client.get("/api/v1/cards/search?q=%25%25").json() == {"data": []}
+@pytest.mark.parametrize("limit", [0, -1])
+def test_limit_below_one_is_rejected(radar_client, path, limit):
+    # `LIMIT -1` vaut « sans limite » en SQLite : /ban-radar?limit=-1 renvoyait toute la table (TOK-149).
+    sep = "&" if "?" in path else "?"
+    assert radar_client.get(f"{path}{sep}limit={limit}").status_code == 422
 
 
 def test_card_lookup_is_case_insensitive_and_404_when_unknown(cards_client):

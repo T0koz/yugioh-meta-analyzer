@@ -96,11 +96,11 @@ jamais. La résolution d'un slug est insensible à la casse.
 | GET | `/boutique/signals` | — (100 lignes au plus) | `boutique_buy_signals`, `ocg_archetype_scores`, `cards` | TOK-113 |
 | GET | `/boutique/prices` | — | `boutique_price_history` | TOK-103 |
 | GET | `/early-signals` | — (50 cartes) | `early_card_signals`, `cards` | lot 20 (A1) |
-| GET | `/ban-radar` | `limit` (50, ≤ 200), `min_score` (0-100), `status`, `kind` (`generic`\|`archetype`) | `ban_radar`, `cards` | TOK-53 |
+| GET | `/ban-radar` | `limit` (50, 1 à 200), `min_score` (0-100), `status`, `kind` (`generic`\|`archetype`) | `ban_radar`, `cards` | TOK-53 |
 | GET | `/ban-radar/history` | — | `ban_backtest_lists`, `ban_backtest_cards`, `cards` | TOK-55 |
-| GET | `/card-impact` | `limit` (50, ≤ 200), `kind` | `card_impact`, `cards` | — |
-| GET | `/graph/synergies` | `limit` (150, ≤ 500), `min_jaccard` (0,15, 0-1) | `card_graph_metrics`, `card_cooccurrence`, `cards` | — |
-| GET | `/cards/search` | `q` (≥ 1 caractère), `limit` (8, ≤ 25) | `cards` | TOK-49 |
+| GET | `/card-impact` | `limit` (50, 1 à 200), `kind` | `card_impact`, `cards` | — |
+| GET | `/graph/synergies` | `limit` (150, 1 à 500), `min_jaccard` (0,15, 0-1) | `card_graph_metrics`, `card_cooccurrence`, `cards` | — |
+| GET | `/cards/search` | `q` (≥ 1 caractère, « % », « _ » et « \\ » pris littéralement), `limit` (8, 1 à 25) | `cards` | TOK-49 |
 | GET | `/cards/{name}` | `name` | `cards` | — |
 | POST | `/simulate-ban` | corps `{"card_name": "…"}` | `cards`, `card_graph_metrics`, `graph_communities`, `card_impact`, `card_cooccurrence`, `archetype_card_profile` | — |
 

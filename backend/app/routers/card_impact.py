@@ -13,7 +13,7 @@ CARD_IMPACT_LIMIT_DEFAULT = 50
 
 @router.get("/card-impact", response_model=CardImpactResponse)
 def get_card_impact(
-    limit: int = Query(CARD_IMPACT_LIMIT_DEFAULT, le=200),
+    limit: int = Query(CARD_IMPACT_LIMIT_DEFAULT, ge=1, le=200),
     kind: Literal["generic", "archetype"] | None = Query(
         None,
         description="generic = staples sans deck d'attache, archetype = pièces de moteur",

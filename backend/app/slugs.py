@@ -10,15 +10,24 @@ ne le recalcule jamais, il n'y a donc qu'une seule règle. La résolution invers
 (slug → nom) se fait en comparant les slugs de tous les archétypes connus.
 """
 
+import hashlib
 import re
 import unicodedata
 
 
 def slugify(name: str) -> str:
-    """« Harpie/Amazoness » → « harpie-amazoness », « Live☆Twin » → « live-twin »."""
+    """« Harpie/Amazoness » → « harpie-amazoness », « Live☆Twin » → « live-twin ».
+
+    Un nom non vide sans aucun caractère a-z ou 0-9 (« ☆☆ », un nom en japonais) ne donne jamais un slug vide, qui
+    ferait un lien `/decks/` cassé (TOK-149) : repli sur « x- » + 10 caractères de son empreinte SHA-1, stable d'un
+    calcul à l'autre et déjà normalisé (`resolve` le retrouve). Aucun archétype n'est dans ce cas au 17/11 (231 noms).
+    """
     decomposed = unicodedata.normalize("NFKD", name)
     without_accents = "".join(c for c in decomposed if not unicodedata.combining(c))
-    return re.sub(r"[^a-z0-9]+", "-", without_accents.lower()).strip("-")
+    slug = re.sub(r"[^a-z0-9]+", "-", without_accents.lower()).strip("-")
+    if slug or not name.strip():
+        return slug
+    return "x-" + hashlib.sha1(name.encode("utf-8")).hexdigest()[:10]
 
 
 def resolve(slug: str, names: list[str]) -> str | None:

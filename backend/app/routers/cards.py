@@ -20,13 +20,19 @@ AFFECTED_ARCHETYPES_LIMIT = 10
 SEARCH_MIN_QUERY_LENGTH = 2
 
 
+def like_escape(text: str) -> str:
+    """Saisie à chercher telle quelle dans un motif LIKE (avec `ESCAPE '\\'`) : « % », « _ » et « \\ » ne sont
+    plus des jokers (TOK-149 ; « %% » renvoyait toutes les cartes)."""
+    return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 def resolve_card_name(db: sqlite3.Connection, query: str) -> str | None:
     exact = db.execute("SELECT name FROM cards WHERE LOWER(name) = LOWER(?)", (query,)).fetchone()
     if exact:
         return exact["name"]
     fuzzy = db.execute(
-        "SELECT name FROM cards WHERE LOWER(name) LIKE LOWER(?) ORDER BY LENGTH(name) ASC LIMIT 1",
-        (f"%{query}%",),
+        "SELECT name FROM cards WHERE LOWER(name) LIKE LOWER(?) ESCAPE '\\' ORDER BY LENGTH(name) ASC LIMIT 1",
+        (f"%{like_escape(query)}%",),
     ).fetchone()
     return fuzzy["name"] if fuzzy else None
 
@@ -64,7 +70,7 @@ def load_deck_archetypes(db: sqlite3.Connection, card_name: str) -> tuple[list[D
 @router.get("/cards/search", response_model=SearchResponse)
 def search_cards(
     q: str = Query(..., min_length=1),
-    limit: int = Query(8, le=25),
+    limit: int = Query(8, ge=1, le=25),
     db: sqlite3.Connection = Depends(get_db),
 ) -> SearchResponse:
     if len(q.strip()) < SEARCH_MIN_QUERY_LENGTH:
@@ -74,11 +80,11 @@ def search_cards(
         """
         SELECT name, archetype, image_url_small
         FROM cards
-        WHERE LOWER(name) LIKE LOWER(?)
-        ORDER BY (LOWER(name) LIKE LOWER(?)) DESC, views DESC
+        WHERE LOWER(name) LIKE LOWER(?) ESCAPE '\\'
+        ORDER BY (LOWER(name) LIKE LOWER(?) ESCAPE '\\') DESC, views DESC
         LIMIT ?
         """,
-        (f"%{q}%", f"{q}%", limit),
+        (f"%{like_escape(q)}%", f"{like_escape(q)}%", limit),
     ).fetchall()
 
     return SearchResponse(
@@ -149,8 +155,8 @@ def simulate_ban(payload: BanSimRequest, db: sqlite3.Connection = Depends(get_db
     community_id = -1
     if top_archetype:
         community_row = db.execute(
-            "SELECT community_id FROM graph_communities WHERE top_archetypes LIKE ? LIMIT 1",
-            (f"%{top_archetype}%",),
+            "SELECT community_id FROM graph_communities WHERE top_archetypes LIKE ? ESCAPE '\\' LIMIT 1",
+            (f"%{like_escape(top_archetype)}%",),
         ).fetchone()
         if community_row:
             community_id = community_row["community_id"]

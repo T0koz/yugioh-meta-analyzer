@@ -174,7 +174,10 @@ Prérequis : § 2 fait (projet relié **depuis la racine**), § 4 (variables), �
 ### 7.1 Ce que fait le script
 `python scripts/deploy_prebuilt.py` **ne lance aucune commande Vercel** par défaut. Il vérifie `vercel.json`, la CLI, le lien du projet à la racine
 et que `.vercel/` est ignoré par Git ; vérifie `data/serving.db` (toutes les tables de `SERVED_TABLES`, plus récente que `yugioh.db`) ; la copie dans
-`backend/data/serving.db` après avoir vérifié que Git ignore ce chemin ; vérifie que l'API locale répond ; puis **affiche** les commandes.
+`backend/data/serving.db` après avoir vérifié que Git ignore ce chemin ; vérifie que l'API locale répond **et qu'elle sert les mêmes
+valeurs témoins que `data/serving.db`** (`as_of` et `n_decks_window` du Ban Radar, `computed_at` des signaux boutique ; écart =
+échec bloquant, `--execute` refusé, TOK-148) ; puis **affiche** les commandes. Le témoin repère une API lancée sur une base
+différente ou plus ancienne ; sur `yugioh.db` du même jour, les tables servies sont identiques et le témoin concorde, à raison.
 `--execute preview` ou `--execute prod` les lance, seulement si tout est vert. Sortie réelle du 17/11, dans un worktree non relié :
 ```
 1. Configuration Vercel
@@ -192,6 +195,7 @@ et que `.vercel/` est ignoré par Git ; vérifie `data/serving.db` (toutes les t
   ✓ backend/data/serving.db copiée depuis …/data/serving.db
 4. API locale (interrogée par le build du site)
   ✓ http://localhost:8115/api/v1/meta/tier-list → 200
+  ✓ l'API locale sert les mêmes valeurs témoins que serving.db (as_of, n_decks_window, computed_at)   ← depuis TOK-148
 5. Commandes (depuis la racine du dépôt)
   # Prévisualisation (toujours d'abord)
   vercel pull --yes --environment=preview

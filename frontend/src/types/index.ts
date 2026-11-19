@@ -159,12 +159,28 @@ export interface EarlySignalsResponse {
   text_signal_cards?: number | null;
 }
 
+/** Archétype de deck qui joue la carte (Main ou Extra Deck), fenêtre de la tier list (jalon n°8, TOK-132). */
+export interface DeckArchetypeUsage {
+  archetype: string;
+  slug: string;
+  /** k : listes de l'archétype qui jouent la carte. */
+  lists: number;
+  /** n : listes de l'archétype dans la fenêtre. */
+  decks: number;
+}
+
 export interface BanSimResult {
   removed_card: string;
   image_url: string | null;
+  /** Archétypes YGOPRODeck des cartes co-jouées (31 % seulement sont des archétypes de deck) : plus affiché. */
   affected_archetypes: string[];
   community_impact: { community_id: number; fragmentation: number };
   bridge_score: number;
+  /** Absents d'une API antérieure au jalon n°8. */
+  deck_archetypes?: DeckArchetypeUsage[];
+  deck_window_start?: string | null;
+  deck_window_end?: string | null;
+  deck_window_decks?: number | null;
 }
 
 /** `generic` = staple sans deck d'attache, `archetype` = pièce de moteur. */

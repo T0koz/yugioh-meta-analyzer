@@ -12,7 +12,8 @@ Thomas, puis envoyer le résultat à Vercel.
      plus récente que `data/yugioh.db` (sinon : `python scripts/build_serving_db.py`) ;
   3. la copie dans `backend/data/serving.db` (embarquée dans la fonction de l'API), après avoir
      vérifié que Git ignore ce chemin (dépôt public) ;
-  4. vérifie que l'API locale répond (le build du site l'interroge : pages pré-générées) ;
+  4. vérifie que l'API locale répond (le build du site l'interroge : pages pré-générées) et qu'elle lit bien
+     `data/serving.db` : valeurs témoins datées comparées à la base, écart bloquant (TOK-148) ;
   5. affiche les commandes `vercel pull`, `vercel build`, `vercel deploy --prebuilt`.
 
 `--execute` n'est accepté que si toutes les vérifications passent. Seul Thomas le passe.
@@ -185,20 +186,75 @@ def check_database(c: Checks, copy: bool) -> None:
         c.fail(f"{rel} absente ou différente", f"mkdir -p backend/data && cp {serving} {rel}")
 
 
-def check_api(c: Checks, api_url: str) -> None:
+# Valeurs témoins (TOK-148) : un champ daté servi par l'API locale, comparé à la même valeur lue dans la base de
+# service, par la même requête que le routeur. Un écart veut dire que le build interroge une autre base que celle qui
+# part en ligne : pages construites et API déployée montreraient des données différentes. Échec bloquant.
+WITNESSES: list[tuple[str, tuple[str, ...], str]] = [
+    # (route sous /api/v1, champs de la réponse, requête sur serving.db rendant ces champs dans le même ordre)
+    ("/ban-radar?limit=1", ("as_of", "n_decks_window"),
+     "SELECT as_of, n_decks_window FROM ban_radar LIMIT 1"),           # routers/ban_radar.py
+    ("/boutique/signals", ("computed_at",),
+     "SELECT MAX(computed_at) FROM boutique_buy_signals"),             # routers/boutique.py, latest_computed_at
+]
+
+
+def fetch_json(url: str) -> object:
+    with urllib.request.urlopen(url, timeout=10) as res:
+        return json.loads(res.read())
+
+
+def witness_mismatches(api_url: str, serving: Path, fetch=fetch_json) -> list[str]:
+    """Écarts entre l'API locale et `serving` sur les valeurs témoins ; liste vide si tout concorde.
+
+    Une erreur réseau remonte telle quelle (l'appelant la traite comme une API injoignable)."""
+    conn = sqlite3.connect(f"file:{serving}?mode=ro", uri=True)
+    try:
+        problems = []
+        for route, fields, sql in WITNESSES:
+            body = fetch(f"{api_url}{route}")
+            served = tuple(body.get(f) if isinstance(body, dict) else None for f in fields)
+            try:
+                row = conn.execute(sql).fetchone()
+            except sqlite3.Error as err:
+                problems.append(f"{route} : lecture de serving.db impossible ({err})")
+                continue
+            expected = tuple(row) if row else (None,) * len(fields)
+            if served != expected or None in expected:
+                problems.append(
+                    f"{route} : API {dict(zip(fields, served))} contre serving.db {dict(zip(fields, expected))}"
+                )
+        return problems
+    finally:
+        conn.close()
+
+
+def check_api(c: Checks, api_url: str, fetch=fetch_json) -> None:
     print("4. API locale (interrogée par le build du site)")
+    serving = data_dir() / "serving.db"
+    start = f"cd backend && YGO_DB_PATH={serving} ../.venv/bin/uvicorn app.main:app --port 8000"
     probe = f"{api_url}/meta/tier-list"
     try:
-        with urllib.request.urlopen(probe, timeout=10) as res:
-            body = json.loads(res.read())
+        body = fetch(probe)
         c.ok(f"{probe} → 200")
         if isinstance(body, dict) and not any(body.values()):
             c.warn("réponse vide : l'API lit-elle la bonne base ?")
     except Exception as err:  # noqa: BLE001 — tout échec réseau se traite pareil
-        c.fail(f"{probe} injoignable ({err.__class__.__name__})",
-               f"cd backend && YGO_DB_PATH={data_dir() / 'serving.db'} ../.venv/bin/uvicorn app.main:app --port 8000")
-    c.warn("l'API doit lire data/serving.db (YGO_DB_PATH), la base qui part en ligne : sinon le site "
-           "construit et l'API déployée ne montrent pas les mêmes données")
+        c.fail(f"{probe} injoignable ({err.__class__.__name__})", start)
+        return
+    if not serving.exists():
+        c.fail("valeurs témoins non vérifiées : serving.db absente", "python scripts/build_serving_db.py")
+        return
+    try:
+        problems = witness_mismatches(api_url, serving, fetch)
+    except Exception as err:  # noqa: BLE001
+        c.fail(f"valeurs témoins injoignables ({err.__class__.__name__})", start)
+        return
+    if problems:
+        c.fail("l'API locale ne lit pas data/serving.db, la base qui part en ligne : " + " ; ".join(problems),
+               f"relancer l'API sur la base de service : {start}")
+    else:
+        fields = ", ".join(f for _, fs, _ in WITNESSES for f in fs)
+        c.ok(f"l'API locale sert les mêmes valeurs témoins que serving.db ({fields})")
 
 
 REQUIRED_VARS = {

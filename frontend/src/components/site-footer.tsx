@@ -14,7 +14,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     title: "Bans",
     links: [
       { href: "/ban", label: "Ban Radar" },
-      { href: "/ban?tab=impact", label: "Cartes à impact" },
+      { href: "/ban?tab=diffusion", label: "Diffusion des cartes" },
       { href: "/ban?tab=simulateur", label: "Simulateur de ban" },
     ],
   },

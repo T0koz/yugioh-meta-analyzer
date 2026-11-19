@@ -851,6 +851,32 @@ signal précoce Spearman 0,90 (14 des 20 premières restent) ; signal boutique S
 - Le backtest des vues (TOK-129) devient possible à partir du premier relevé archivé, pas avant.
 → détail complet : `docs/journal/views-week-tok-138.md`
 
+### 🚀 Jalon n°8, mise en ligne : bloc A appliqué (TOK-82, 122, 116, 130, 132, 149, 148, 2026-11-19, branche `claude/jalon-8-mise-en-ligne-ef5b0c`, non fusionnée)
+
+Bloc A de `docs/planning/2026-11-19/formulaires-a-trancher.md`, validé le 19/11 (décision 0056), un commit par point.
+Chiffres de vitrine (14 084 cartes, 22 422 listes légales sur 23 948 relevées, 63 communautés qualifiées) ; tableau
+« Tendances dues au hasard » retiré de `/methode` ; population du r ≈ 0,53 (« archétypes déjà joués dans les deux
+formats ») ; légende Kewl Tune « effectifs mensuels de 145 à 574 decks en OCG » (lus dans l'API) ; fenêtre d'arrivée
+qualifiée en archétypes (27 sur 36 en 2024-2026, 12 sur 18 pour 2026) ; onglet « Impact » → « Diffusion », simulateur
+sans prévision avec les archétypes de deck qui jouent la carte (« k sur n listes ») ; API durcie ; témoin de base dans
+`deploy_prebuilt.py`. Décisions par défaut et formulaire : `docs/planning/2026-11-19/decisions-prises.md`.
+- **Fenêtre d'arrivée : une seule source**, `SITE_FACTS.arrivalCoverage` → `ARRIVAL_COVERAGE` (forme longue) et
+  `ARRIVAL_COVERAGE_SHORT` (en-tête, métadonnées). `ARRIVAL_COVERAGE_RANGE` (62-67 %, en cartes) n'existe plus.
+- **`/ban?tab=impact` redirige (308) vers `/ban?tab=diffusion`** par `next.config.ts` (`has` sur la requête ; la
+  requête de la destination l'emporte, `kind` est transmis). Pas dans la page : `app/ban/loading.tsx` la met en
+  streaming et `permanentRedirect` y devient un 200 + meta refresh. Captures « ban-impact » renommées « ban-diffusion ».
+- **L'intervalle du +6,5 de TOK-132 est à 90 %** (bootstrap par liste), pas à 95 % : `SITE_FACTS.diffusionEffect.ci90`.
+- **`POST /simulate-ban` : champs additifs** `deck_archetypes` (k, n, slug), `deck_window_*`, lus dans
+  `archetype_card_profile` (Main + Extra, jamais les deux pour un archétype : invariant testé) ; `affected_archetypes`
+  gardé mais plus affiché (ne trouve pas le porteur des cartes à marque `<P>`, défaut ancien).
+- **Jokers `LIKE`** : toute saisie mise dans un motif passe par `like_escape` + `ESCAPE '\'` (`routers/cards.py`) ;
+  `limit` a `ge=1` partout (`LIMIT -1` = sans limite en SQLite). Slug jamais vide pour un nom non vide (« x- » + SHA-1).
+- **`deploy_prebuilt.py` compare des valeurs témoins** (`WITNESSES` : `as_of`/`n_decks_window` du Ban Radar,
+  `computed_at` boutique) entre l'API locale et `serving.db` ; écart bloquant. Une nouvelle table recalculée à part
+  peut y ajouter une ligne. Une API sur `yugioh.db` du même jour concorde : c'est voulu (mêmes données).
+- Tests de l'API : 135 sans base, 173 sur chaque base (dont `test_deploy_prebuilt.py`, sans réseau). `check.py --all
+  --visuel` vert sans étape ignorée (lien `data/yugioh.db` vers la référence, lecture seule) ; 24 captures régénérées.
+
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 
 Lots 1 à 19 fusionnés (`--no-ff`) dans la branche d'intégration `claude/front-nuit-17-11`, elle-même **fusionnée dans `main` le

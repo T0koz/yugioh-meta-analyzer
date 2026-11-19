@@ -30,3 +30,14 @@ def test_resolve_ignores_case_so_every_spelling_gives_the_same_page():
 
 def test_resolve_is_stable_on_collision():
     assert resolve("snake-eye", ["Snake-Eye", "Snake Eye"]) == "Snake-Eye"
+
+
+def test_a_name_without_ascii_letters_never_gets_an_empty_slug():
+    # TOK-149 : un slug vide ferait un lien « /decks/ » cassé.
+    slug = slugify("☆☆")
+    assert slug.startswith("x-") and len(slug) == 12
+    assert slugify("☆☆") == slug  # stable
+    assert slugify("★★") != slug
+    assert slugify("") == "" and slugify("   ") == ""
+    assert resolve(slug, ["Branded", "☆☆"]) == "☆☆"
+    assert resolve(slug.upper(), ["Branded", "☆☆"]) == "☆☆"

@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 import { artCropUrl } from "@/lib/card-images";
 import { fmtDate, fmtMonthRange, fmtMonthShort, fmtNum, fmtPct, fmtRank } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
-import { ARRIVAL_COVERAGE_RANGE } from "@/lib/site-facts";
+import { ARRIVAL_COVERAGE } from "@/lib/site-facts";
 import { CardArt, CardImage } from "@/components/card-art";
 import { CardChip } from "@/components/card-chip";
 import { ButtonLink, controlClass } from "@/components/ds/control";
@@ -354,13 +354,13 @@ export default async function ArchetypePage({ params }: Params) {
                   </div>
                   <div className="grid content-start gap-2 bg-ink-2 px-4 py-4">
                     <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-text">
-                      Arrivée en TCG, couverture vérifiée {ARRIVAL_COVERAGE_RANGE}
+                      Arrivée en TCG
                     </dt>
                     <dd className="text-[22px] leading-none font-medium tracking-[-0.02em]">
                       {fmtMonthRange(boutique.tcg_window_start, boutique.tcg_window_end) ?? "—"}
                       <span className="mt-2 block font-mono text-[12px] leading-[1.6] font-normal tracking-normal text-muted-text">
                         75 à 202 jours après le premier deck OCG, délai mesuré sur 1 897 cartes sorties de 2022 à 2025 ;
-                        non vérifié sur des cas nouveaux
+                        {` ${ARRIVAL_COVERAGE}`}
                       </span>
                     </dd>
                   </div>
@@ -413,7 +413,7 @@ export default async function ArchetypePage({ params }: Params) {
                   source="decklists OCG (yugiohmeta.com), vues et prix Cardmarket (YGOPRODeck)"
                   date={boutique.computed_at ? `calcul du ${fmtDate(boutique.computed_at)}` : "date de calcul inconnue"}
                   sample={`${fmtNum(boutique.signals.length)} cartes`}
-                  uncertainty={`arrivée en TCG : délai de 8 cartes sur 10 parmi celles sorties en TCG, couverture vérifiée sur des cartes plus récentes de ${ARRIVAL_COVERAGE_RANGE} ; rang et libellé sans intervalle, seuils provisoires`}
+                  uncertainty={`arrivée en TCG : délai de 8 cartes sur 10 parmi celles sorties en TCG, vérifiée par archétype : ${ARRIVAL_COVERAGE} ; rang et libellé sans intervalle, seuils provisoires`}
                 >
                   ordre dans le lot : la première carte de tous les signaux affichés vaut 100, ce n’est pas une force de
                   signal ·{" "}

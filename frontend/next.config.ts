@@ -28,6 +28,15 @@ const nextConfig: NextConfig = {
       // Le simulateur vit dans le Ban Center depuis la refonte Ember. La query
       // (?card=…) est transmise telle quelle par Next.
       { source: "/ban-simulator", destination: "/ban?tab=simulateur", permanent: true },
+      // « Cartes à impact » s'appelle « Diffusion » depuis le jalon n°8 (TOK-132). Redirection serveur (308) : dans
+      // la page, app/ban/loading.tsx la ferait passer en streaming (200 + meta refresh). Les valeurs de requête de
+      // la destination l'emportent sur celles d'origine (tab), les autres (kind) sont transmises.
+      {
+        source: "/ban",
+        has: [{ type: "query", key: "tab", value: "impact" }],
+        destination: "/ban?tab=diffusion",
+        permanent: true,
+      },
     ];
   },
 };

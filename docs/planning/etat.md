@@ -29,7 +29,9 @@
 | C2 bis | Oracle sur les situations J1 et N01-N13 | ✅ fusionné dans `claude/moteur-18-11` (travail `dad808c`) | Sonnet 5.5 | 30 situations J1 : 26 accords, J07 accord partiel (R23, texte OCG), J26 **désaccord ferme (N09 : un monstre insensible peut être choisi par un effet sans cible)**, N04 en litige (Attribut déjà porté), N12 non testable ; valeurs d'ATK non lues par le lanceur |
 | C3 | Combos : J2, exploration (TOK-119) | ✅ fusionné dans `claude/moteur-18-11` (travail `767248a`…`26609d9`) | Opus 5.5 + sous-agent `data-scientist-ygo` | étape 0 : N09 corrigé, N04 tranché par le texte TCG ; **J2 atteint sous réserve** : 4 combos de guides sur 5 retrouvés sans cible (Wilson 95 % : 38 à 96 %), 5 sur 5 vers la cible, 0 sur 5 pour un joueur au hasard ; aucun combo de guide entièrement réalisable avec la liste pilote (cartes absentes : `Albion the Branded Dragon`, `Branded in Red`, `Branded Retribution`, `Khaos Starsource`) ; 186 tests pytest, `check.py --all` vert ; **formulaire C3 pour Thomas** (`docs/moteur-combos/j2-rapport.md` § 7) |
 
-Dernière mise à jour : 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Jalons n°1 à 3 finis le 18/11 ; **release `v2026.11.18` préparée** (fusion de `claude/moteur-18-11` dans `main`, `d97b4a2`, tag local, notes `docs/releases/v2026.11.18.md`), à pousser par Thomas ; jalons n°4 à 7 finis et fusionnés (après la release) ; aucune session en cours (jalon n°8 à composer). Ni `main` ni push.
+Dernière mise à jour : 2026-11-19. **Moteur de combos en pause (décision de Thomas, 19/11) : priorité à la mise en ligne.** Tous les formulaires en attente sont rassemblés et classés dans `docs/planning/2026-11-19/formulaires-a-trancher.md` (bloc A avant la mise en ligne, bloc B avant le 31/12, C méthode, D moteur, E organisation). L'horloge du moteur (J2 avant le 13/01/2027) continue de courir pendant la pause.
+
+Mise à jour du 2026-11-18. **Chaîne combos C1 → C3 terminée et fusionnée** dans `claude/moteur-18-11` ; elle attend les formulaires de Thomas. Lots 16, 20 et 21 fusionnés. Jalons n°1 à 3 finis le 18/11 ; **release `v2026.11.18` préparée** (fusion de `claude/moteur-18-11` dans `main`, `d97b4a2`, tag local, notes `docs/releases/v2026.11.18.md`), à pousser par Thomas ; jalons n°4 à 7 finis et fusionnés (après la release) ; aucune session en cours (jalon n°8 à composer). Ni `main` ni push.
 
 ## Jalons (Linear, glissants — décision 0054)
 Un jalon = un groupe de fonctionnalités composé selon la charge (S = 1, M = 2, L = 3 points). Fini = tous ses tickets
@@ -37,7 +39,7 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 
 | Jalon | Tickets (charge) | Statut | Sessions |
 |---|---|---|---|
-| 1 (n°8) | vide, à composer par Thomas (proposé au formulaire « Jalon 7 » : remesure J1 sur 20 effets non vus, nouvelle graine ; correction J2-a puis rejeu J2 et des 8 séquences concernées dans l'oracle) | | aucune session armée (rien de composé) |
+| 1 (n°8) | vide ; proposé (formulaire du 19/11, E4) : mise en ligne (bloc A appliqué, release `v2026.11.19`). Moteur en pause ; à sa reprise, proposé au formulaire « Jalon 7 » : remesure J1 sur 20 effets non vus, nouvelle graine ; correction J2-a puis rejeu J2 et des 8 séquences concernées dans l'oracle) | | aucune session armée (rien de composé) |
 | 2 (n°9) | vide, à composer par Thomas | | |
 | 3 (n°10) | vide, à composer par Thomas | | |
 

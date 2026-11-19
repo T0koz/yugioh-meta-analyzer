@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { permanentRedirect } from "next/navigation";
 import { api } from "@/lib/api";
 import { fmtDate, fmtNum } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
@@ -24,8 +23,8 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "simulateur", label: "Simulateur" },
 ];
 
-// Ancien nom de l'onglet « Diffusion » (« Cartes à impact » jusqu'au jalon n°8, TOK-132) : l'adresse reste valable et
-// redirige (308) vers la nouvelle, filtre `kind` compris.
+// Ancien nom de l'onglet « Diffusion » (« Cartes à impact » jusqu'au jalon n°8, TOK-132) : `next.config.ts` redirige
+// (308) /ban?tab=impact vers la nouvelle adresse, filtre `kind` compris ; l'alias reste ici par sécurité.
 const LEGACY_TABS: Record<string, Tab> = { impact: "diffusion" };
 
 function parseTab(raw: string | string[] | undefined): Tab {
@@ -92,11 +91,6 @@ export default async function BanPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  if (typeof params.tab === "string" && params.tab in LEGACY_TABS) {
-    const query = new URLSearchParams({ tab: LEGACY_TABS[params.tab] });
-    if (typeof params.kind === "string") query.set("kind", params.kind);
-    permanentRedirect(`/ban?${query}`);
-  }
   const tab = parseTab(params.tab);
   const cardParam = typeof params.card === "string" ? params.card : undefined;
 

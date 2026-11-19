@@ -1,4 +1,4 @@
-# Mise en ligne — check-list à cocher (release v2026.11.18)
+# Mise en ligne — check-list à cocher (release v2026.11.19)
 
 Version courte de `docs/deploiement.md`, à suivre dans l'ordre, dans ton terminal. Durée estimée : environ 1 h, dont
 ≈ 30 min d'envoi des images. Rien de cette liste ne peut être fait par un agent (tes comptes, tes clés).
@@ -7,7 +7,7 @@ Une case = une commande ou un écran. En cas d'écart, le paragraphe du guide es
 ## A. Pousser la release (5 min)
 - [ ] `cd ~/code/yugioh-meta-analyzer && git checkout main`
 - [ ] `python scripts/check.py` → « Tout est bon »
-- [ ] `git push origin main --follow-tags` (pousse aussi le tag `v2026.11.18`)
+- [ ] `git push origin main --follow-tags` (pousse aussi le tag `v2026.11.19` ; `v2026.11.18`, jamais poussée, a été retirée)
 - [ ] `git checkout claude/moteur-18-11` (la branche de travail des sessions)
 
 ## B. Relier le projet Vercel depuis la racine (5 min) [§ 2]

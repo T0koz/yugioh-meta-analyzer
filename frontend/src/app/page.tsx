@@ -5,7 +5,7 @@ import { CRITERIA } from "@/lib/ban-criteria";
 import { fmtDate, fmtMonthRange, fmtNum } from "@/lib/format";
 import { PROOF_EXAMPLE, buildProof, type Proof } from "@/lib/proof-data";
 import { pageMetadata } from "@/lib/seo";
-import { ARRIVAL_COVERAGE_RANGE, SITE_FACTS } from "@/lib/site-facts";
+import { ARRIVAL_COVERAGE, SITE_FACTS } from "@/lib/site-facts";
 import { CardArt, CardArtFill } from "@/components/card-art";
 import { ButtonLink, controlClass } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
@@ -233,7 +233,7 @@ export default async function Home() {
                     </div>
                     <p className={`mt-3.5 ${SOURCE}`}>
                       {topBuy.signal_label && "Libellé : rang de l’archétype en OCG, seuils provisoires, non validés hors échantillon. "}
-                      {tcgWindow && `Fenêtre d’arrivée : couverture vérifiée de ${ARRIVAL_COVERAGE_RANGE} des cartes, et non 80 %. `}
+                      {tcgWindow && `Fenêtre d’arrivée vérifiée a posteriori : ${ARRIVAL_COVERAGE}. `}
                       Source : decklists OCG et prix Cardmarket, au {fmtDate(radar.as_of)}.
                     </p>
                   </div>

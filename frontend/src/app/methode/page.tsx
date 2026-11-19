@@ -5,7 +5,7 @@ import { fmtDate, fmtMonthShort, fmtNum, fmtPct } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
 import { BAN_VERDICT } from "@/lib/ban-verdict";
-import { SITE_FACTS } from "@/lib/site-facts";
+import { ARRIVAL_COVERAGE, SITE_FACTS } from "@/lib/site-facts";
 import { WEAK_MONTH_DECKS } from "@/lib/wilson";
 import { Em } from "@/components/ds/em";
 import { IntervalBar } from "@/components/ds/explain";
@@ -409,7 +409,7 @@ export default async function MethodePage() {
             { term: "Arrivée en TCG", text: `De 75 à 202 jours après le premier deck OCG : délai de 8 cartes sur 10 parmi les ${fmtNum(SITE_FACTS.arrivalWindowCards)} cartes sorties en OCG de 2022 à 2025 puis en TCG. La mesure porte sur des cartes, pas sur des archétypes, et ignore les cartes jamais sorties en TCG.` },
             {
               term: "Couverture vérifiée",
-              text: `Fenêtre estimée sur les cartes de 2022-2023, puis appliquée aux cartes suivantes : elle contient le délai de ${SITE_FACTS.arrivalCoverage.map((c) => `${c.pct} % des ${fmtNum(c.cards)} cartes de ${c.year}`).join(" et ")}, et non 80 %.`,
+              text: `Comptée en archétypes, l’unité affichée : ${ARRIVAL_COVERAGE}, et non 80 %. Les archétypes de 2024 et 2025 sont en partie dans les données d’estimation ; ceux de 2026, postérieurs au calcul, sont le seul contrôle hors échantillon.`,
             },
             {
               term: "Comparaison naïve",

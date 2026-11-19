@@ -27,13 +27,14 @@ export const SITE_FACTS = {
   ocgScoreShareRho: 0.94,
   ocgScoreArchetypes: 89,
   // Fenêtre d'arrivée OCG → TCG (notebook 10, P10-P90 = 75-202 jours sur 1 897 cartes 2022-2025 sorties en
-  // TCG). Couverture hors échantillon (audit de rigueur, A2, recalculée au lot 20 le 2026-11-18) : P10-P90
-  // estimés sur les cartes sorties en OCG en 2022-2023 (n = 1 078, 89 à 202 jours), appliqués aux cartes de
-  // 2024 et de 2025. Mesure par carte, parmi les cartes déjà sorties en TCG seulement (biais du survivant).
+  // TCG). Vérification comptée en archétypes, l'unité affichée (TOK-130, docs/journal/fenetre-survie-tok-130.md,
+  // validé le 19/11, bloc A4) : arrivée (la moitié des cartes inédites sorties en TCG) dans la fenêtre pour
+  // 27 archétypes sur 36 de 2024 à 2026 (16 cohortes ; 2024-2025 en partie dans l'échantillon d'estimation) et
+  // 12 sur 18 pour 2026 seule, postérieure au calcul. Remplace la couverture par carte (62-67 %, audit A2).
   arrivalWindowCards: 1_897,
   arrivalCoverage: [
-    { year: 2024, pct: 67, cards: 367 },
-    { year: 2025, pct: 62, cards: 470 },
+    { period: "2024-2026", hits: 27, archetypes: 36 },
+    { period: "2026", hits: 12, archetypes: 18 },
   ] as const,
   // Graphe du notebook 03, non recalculé au rafraîchissement du 2026-11-16 (TOK-136) : sa date de calcul n'est pas
   // enregistrée, ne pas afficher de date de fraîcheur. 663 cartes réparties en 63 communautés.
@@ -60,6 +61,9 @@ export const SITE_FACTS = {
   ],
 };
 
-// « 62 à 67 % » : couverture hors échantillon de la fenêtre d'arrivée, à écrire partout où la fenêtre s'affiche.
-const coverage = SITE_FACTS.arrivalCoverage.map((c) => c.pct);
-export const ARRIVAL_COVERAGE_RANGE = `${Math.min(...coverage)} à ${Math.max(...coverage)} %`;
+// Vérification de la fenêtre d'arrivée, à écrire partout où la fenêtre s'affiche (seule source de ces chiffres) :
+// « arrivée dans la fenêtre pour 27 archétypes sur 36 (2024-2026) ; 12 sur 18 pour 2026 ».
+const [coverageAll, coverageRecent] = SITE_FACTS.arrivalCoverage;
+export const ARRIVAL_COVERAGE = `arrivée dans la fenêtre pour ${coverageAll.hits} archétypes sur ${coverageAll.archetypes} (${coverageAll.period}) ; ${coverageRecent.hits} sur ${coverageRecent.archetypes} pour ${coverageRecent.period}`;
+// Forme courte, pour un en-tête de colonne ou une ligne de métadonnées ; la forme longue est dans le pied.
+export const ARRIVAL_COVERAGE_SHORT = `juste pour ${coverageAll.hits} archétypes sur ${coverageAll.archetypes}`;

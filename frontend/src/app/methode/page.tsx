@@ -258,18 +258,6 @@ export default async function MethodePage() {
             { term: "Limites", text: "La fenêtre courante compte quelques centaines de decks : un archétype à 2 % repose sur une dizaine de listes." },
           ]}
         />
-        <Validation title="Tendances dues au hasard">
-          <SimpleTable
-            caption="Nombre de tendances attendues par hasard"
-            head={["Archétypes comparés", "Niveau du test", "Fausses tendances attendues"]}
-            rows={[["environ 60", "5 %", "environ 3"]]}
-          />
-          <DataFooter
-            source="tier list"
-            date={`fenêtre ${fmtMonthShort(tierList.window_start)} à ${fmtMonthShort(tierList.window_end)}`}
-            uncertainty="ordre de grandeur, pas une mesure : il suppose des archétypes indépendants"
-          />
-        </Validation>
       </Section>
 
       <Section id="decks" title="Decks">

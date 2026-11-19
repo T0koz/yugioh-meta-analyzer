@@ -396,7 +396,7 @@ export default async function Home() {
                 <circle cx={SITE_FACTS.ocgTcgCorrelation * 400} cy="14" r="5.5" fill="var(--signal)" />
               </svg>
               <p className="mt-3 max-w-[56ch] text-[15px] text-soft">
-                {`Corrélation entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes.`}
+                {`Corrélation entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes déjà joués dans les deux formats.`}
               </p>
               <p className="mt-3 max-w-[56ch] text-[15px] text-soft">
                 Libellés Fort, Modéré, Faible des signaux boutique : seuils provisoires, non validés hors échantillon.

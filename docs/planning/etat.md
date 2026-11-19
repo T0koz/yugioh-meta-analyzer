@@ -39,7 +39,7 @@ fusionnés dans `claude/moteur-18-11` et vérifiés ; alors 2 → 1, 3 → 2, no
 
 | Jalon | Tickets (charge) | Statut | Sessions |
 |---|---|---|---|
-| 1 (n°8) | vide ; proposé (formulaire du 19/11, E4) : mise en ligne (bloc A appliqué, release `v2026.11.19`). Moteur en pause ; à sa reprise, proposé au formulaire « Jalon 7 » : remesure J1 sur 20 effets non vus, nouvelle graine ; correction J2-a puis rejeu J2 et des 8 séquences concernées dans l'oracle) | | aucune session armée (rien de composé) |
+| 1 (n°8) | **mise en ligne** (décision 0056) : TOK-82 (1), TOK-150 bloc A2-A5 (2), TOK-149 API (1), TOK-148 déploiement (1) ; puis release `v2026.11.19`. Moteur en pause ; à sa reprise, proposé au formulaire « Jalon 7 » : remesure J1 sur 20 effets non vus, nouvelle graine ; correction J2-a puis rejeu J2 et des 8 séquences concernées dans l'oracle) | | session `jalon-8` lancée le 19/11 (worktree depuis `claude/moteur-18-11`), seule session en cours |
 | 2 (n°9) | vide, à composer par Thomas | | |
 | 3 (n°10) | vide, à composer par Thomas | | |
 

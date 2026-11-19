@@ -524,8 +524,10 @@ function ProofSection({ proof }: { proof: Proof }) {
             <ProofChart proof={proof} />
             <figcaption className={`mt-3 ${SOURCE}`}>
               Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists
-              yugiohmeta.com, relevé du {fmtDate(proof.asOf)}. Incertitude non dessinée : les effectifs mensuels
-              n’ont pas été relevés avec cette série figée.
+              yugiohmeta.com, relevé du {fmtDate(proof.asOf)}.{" "}
+              {proof.ocgDecksRange
+                ? `Incertitude non dessinée : effectifs mensuels de ${fmtNum(proof.ocgDecksRange[0])} à ${fmtNum(proof.ocgDecksRange[1])} decks en OCG.`
+                : "Incertitude non dessinée."}
             </figcaption>
           </figure>
         </div>

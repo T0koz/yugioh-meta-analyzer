@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { fmtDate, fmtMonthRange, fmtRank } from "@/lib/format";
-import { ARRIVAL_COVERAGE } from "@/lib/site-facts";
+import { ARRIVAL_COVERAGE, ARRIVAL_COVERAGE_SHORT } from "@/lib/site-facts";
 import { Tag } from "@/components/ds/tags";
 import type { BuyLabel, SignalLabelRule } from "@/types";
 
@@ -79,9 +79,10 @@ export function ArrivalTimeline({
           <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-signal" />
           rang parmi les {rule?.population ?? "—"} archétypes OCG (graduations : {rule ? `${fmtRank(rule.strong_max_rank)} et ${fmtRank(rule.moderate_max_rank)}` : "—"})
         </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="h-2 w-5 rounded-[2px] bg-cat-2/60" />
-          arrivée en TCG : délai de 8 cartes sur 10 parmi celles sorties en TCG ; vérifiée par archétype : {ARRIVAL_COVERAGE}
+        <span className="inline-flex items-center gap-1.5 leading-[1.5]">
+          <span aria-hidden className="h-2 w-5 shrink-0 rounded-[2px] bg-cat-2/60" />
+          {/* Forme courte : la forme longue est dans le pied, juste sous la frise, et dans l'infobulle de chaque segment. */}
+          arrivée en TCG : délai de 8 cartes sur 10 parmi celles sorties en TCG ; fenêtre {ARRIVAL_COVERAGE_SHORT}
         </span>
         {computedAt && (
           <span className="inline-flex items-center gap-1.5">

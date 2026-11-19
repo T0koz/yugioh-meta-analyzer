@@ -127,3 +127,25 @@ def test_early_signals_are_sorted_and_counted():
     if body["cards_scored"] is not None:
         assert body["cards_scored"] >= len(body["data"])
         assert 0 <= (body["text_signal_cards"] or 0) <= body["cards_scored"]
+
+
+def test_simulator_deck_archetypes_count_lists_at_most_once():
+    # `/simulate-ban` additionne les listes de Main et d'Extra Deck (TOK-132, jalon n°8) : cela suppose qu'une carte
+    # n'est jamais dans les deux zones pour un même archétype. Le test signale la rupture au lieu de la masquer.
+    import sqlite3
+
+    con = sqlite3.connect(f"{DB_PATH.resolve().as_uri()}?mode=ro", uri=True)
+    try:
+        both = con.execute(
+            """SELECT COUNT(*) FROM (SELECT archetype, card_name FROM archetype_card_profile
+               WHERE zone IN ('main', 'extra') GROUP BY archetype, card_name HAVING COUNT(DISTINCT zone) > 1)"""
+        ).fetchone()[0]
+    finally:
+        con.close()
+    assert both == 0
+    body = client.post("/api/v1/simulate-ban", json={"card_name": "Ash Blossom & Joyous Spring"}).json()
+    assert body["deck_archetypes"], "Ash Blossom n'est jouée par aucun archétype de la fenêtre ?"
+    for usage in body["deck_archetypes"]:
+        assert 1 <= usage["lists"] <= usage["decks"], usage
+    lists = [u["lists"] for u in body["deck_archetypes"]]
+    assert lists == sorted(lists, reverse=True)

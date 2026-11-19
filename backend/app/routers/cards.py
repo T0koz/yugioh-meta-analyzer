@@ -53,7 +53,9 @@ DECK_ARCHETYPES_SQL = """
 def load_deck_archetypes(db: sqlite3.Connection, card_name: str) -> tuple[list[DeckArchetypeUsage], sqlite3.Row | None]:
     try:
         rows = db.execute(DECK_ARCHETYPES_SQL, {"name": card_name}).fetchall()
-    except sqlite3.OperationalError:  # base de service antérieure à TOK-114
+    except sqlite3.OperationalError as err:  # base de service antérieure à TOK-114 : seul cas toléré
+        if "no such table" not in str(err):
+            raise
         return [], None
     usages = [
         DeckArchetypeUsage(archetype=r["archetype"], slug=slugify(r["archetype"]), lists=r["lists"], decks=r["decks"])

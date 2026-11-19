@@ -63,8 +63,9 @@ FILTRES_DISPONIBLES: dict[str, str] = {
                                     "comme matériel (ligne écartée, à lever si un combo en dépend).",
     "pas_d_annulation_de_soi": "`Luluwalilith` : « ne pas annuler » seulement (annuler ses propres cartes au tour 1 "
                                "sans adversaire).",
-    "aeon_sans_bannissement": "`Hyperinvoked Aeon`, effet 1 : « terminer » tout de suite (bannir ses propres cartes "
-                              "ou celles de son Cimetière ; chaque sous-ensemble serait une branche).",
+    "aeon_sans_bannissement": "`Hyperinvoked Aeon`, effet 1 : non activé (il bannit au moins 1 carte, jalon n°7 : "
+                              "ses propres cartes ou celles de son Cimetière ; chaque sous-ensemble serait une "
+                              "branche). Avant le jalon n°7 : activé puis « terminer » tout de suite.",
     "pioche_une_branche": "Pioche (`Garura`) : une seule branche (première carte de la liste triée), étiquetée "
                           "« hasard » ; un combo ne doit pas dépendre d'une pioche.",
 }
@@ -97,6 +98,8 @@ def options_filtrees(d: Decision, filtres: frozenset[str]) -> list[str]:
         return ["terminer"]
     if q == "pioche" and "pioche_une_branche" in filtres:
         return sorted(valeurs)[:1]
+    if q == "activer_declenche" and "aeon_sans_bannissement" in filtres:
+        valeurs = [v for v in valeurs if v != "Hyperinvoked Aeon/1"] or valeurs
     if q == "activer_declenche" and "cartes_de_reponse_inertes" in filtres:
         valeurs = [v for v in valeurs if v.split("/")[0] not in CARTES_DE_REPONSE] or valeurs
     return valeurs
@@ -280,7 +283,7 @@ class _File:
         self.tas: list = []
         self.n = 0
 
-    def append(self, sid: str, etat: Etat, profondeur: int) -> None:
+    def append(self, sid: str, etat: Etat, profondeur: int, bonus: int = 0) -> None:
         if self.strategie == "largeur":
             self.fifo.append(sid)
         else:
@@ -288,7 +291,7 @@ class _File:
             # Priorité de type A* : profondeur + exemplaires de la cible encore manquants (le plus petit d'abord).
             # Un « meilleur d'abord » pur (manquants seuls) s'enfonçait dans des branches sans issue (G3).
             manquants = sum(c.minimum for c in self.cible.conditions) - score_cible(etat, self.cible)
-            heapq.heappush(self.tas, (profondeur + manquants, manquants, self.n, sid))
+            heapq.heappush(self.tas, (profondeur + manquants + bonus, manquants + bonus, self.n, sid))
 
     def popleft(self) -> str:
         return self.fifo.popleft() if self.strategie == "largeur" else heapq.heappop(self.tas)[3]
@@ -326,13 +329,16 @@ def cible_remplie(etat: Etat, cible: CibleExploration) -> bool:
 def explorer(cat: Catalogue, depart: Etat, max_profondeur: int = 12, max_secondes: float = 60.0,
              max_etats: int = 200_000, filtres: tuple[str, ...] = FILTRES_PAR_DEFAUT,
              cible: CibleExploration | None = None, arreter_a_la_cible: bool = False,
-             strategie: str = "largeur", accepter=None) -> Rapport:
+             strategie: str = "largeur", accepter=None, priorite=None) -> Rapport:
     """`strategie` : « largeur » (parcours en largeur, chemins les plus courts) ou « cible » (priorité de type A* :
     profondeur + exemplaires de la cible encore manquants, le plus petit d'abord).
     La stratégie change l'ordre de développement, jamais l'ensemble des actions légales ni les filtres.
     `accepter(rapport, etat_id)` : condition de plus sur le chemin (jalons d'un guide) ; un état qui remplit la cible
     est noté dans `cibles_atteintes`, et dans `cibles_acceptees` si son chemin passe aussi les jalons ; l'arrêt à la
-    cible attend un état accepté."""
+    cible attend un état accepté.
+    `priorite(rapport, etat_id)` (stratégie « cible » seulement) : terme ajouté à la priorité. Sert au diagnostic
+    « recherche guidée par la solution » (jalons du guide restants, TOK-140) : **hors mesure de J2**, puisque les jalons
+    sont la réponse du guide ; il montre seulement qu'une séquence est jouable avec les règles codées."""
     if strategie not in ("largeur", "cible"):
         raise ValueError(f"stratégie inconnue : {strategie}")
     if strategie == "cible" and cible is None:
@@ -387,7 +393,7 @@ def explorer(cat: Catalogue, depart: Etat, max_profondeur: int = 12, max_seconde
                         r.profondeur[aid] = r.profondeur[sid] + 1
                         r.parent[aid] = Arete(sid, aid, decl, iss.reponses, res.verdict, res.raison)
                         r.rouverts += 1
-                        file.append(aid, arrivee, r.profondeur[aid])
+                        file.append(aid, arrivee, r.profondeur[aid], priorite(r, aid) if priorite else 0)
                     continue
                 r.etats[aid] = arrivee
                 r.profondeur[aid] = r.profondeur[sid] + 1
@@ -395,14 +401,14 @@ def explorer(cat: Catalogue, depart: Etat, max_profondeur: int = 12, max_seconde
                 if cible is not None and cible_remplie(arrivee, cible):
                     r.cibles_atteintes.append(aid)
                     if accepter is not None and not accepter(r, aid):
-                        file.append(aid, arrivee, r.profondeur[aid])
+                        file.append(aid, arrivee, r.profondeur[aid], priorite(r, aid) if priorite else 0)
                         continue
                     r.cibles_acceptees.append(aid)
                     if arreter_a_la_cible:
                         r.secondes = time.monotonic() - t0
                         r.arret = "cible"
                         return r
-                file.append(aid, arrivee, r.profondeur[aid])
+                file.append(aid, arrivee, r.profondeur[aid], priorite(r, aid) if priorite else 0)
     r.secondes = time.monotonic() - t0
     return r
 

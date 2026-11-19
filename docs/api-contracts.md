@@ -96,13 +96,13 @@ jamais. La résolution d'un slug est insensible à la casse.
 | GET | `/boutique/signals` | — (100 lignes au plus) | `boutique_buy_signals`, `ocg_archetype_scores`, `cards` | TOK-113 |
 | GET | `/boutique/prices` | — | `boutique_price_history` | TOK-103 |
 | GET | `/early-signals` | — (50 cartes) | `early_card_signals`, `cards` | lot 20 (A1) |
-| GET | `/ban-radar` | `limit` (50, ≤ 200), `min_score` (0-100), `status`, `kind` (`generic`\|`archetype`) | `ban_radar`, `cards` | TOK-53 |
+| GET | `/ban-radar` | `limit` (50, 1 à 200), `min_score` (0-100), `status`, `kind` (`generic`\|`archetype`) | `ban_radar`, `cards` | TOK-53 |
 | GET | `/ban-radar/history` | — | `ban_backtest_lists`, `ban_backtest_cards`, `cards` | TOK-55 |
-| GET | `/card-impact` | `limit` (50, ≤ 200), `kind` | `card_impact`, `cards` | — |
-| GET | `/graph/synergies` | `limit` (150, ≤ 500), `min_jaccard` (0,15, 0-1) | `card_graph_metrics`, `card_cooccurrence`, `cards` | — |
-| GET | `/cards/search` | `q` (≥ 1 caractère), `limit` (8, ≤ 25) | `cards` | TOK-49 |
+| GET | `/card-impact` | `limit` (50, 1 à 200), `kind` | `card_impact`, `cards` | — |
+| GET | `/graph/synergies` | `limit` (150, 1 à 500), `min_jaccard` (0,15, 0-1) | `card_graph_metrics`, `card_cooccurrence`, `cards` | — |
+| GET | `/cards/search` | `q` (≥ 1 caractère, « % », « _ » et « \\ » pris littéralement), `limit` (8, 1 à 25) | `cards` | TOK-49 |
 | GET | `/cards/{name}` | `name` | `cards` | — |
-| POST | `/simulate-ban` | corps `{"card_name": "…"}` | `cards`, `card_graph_metrics`, `graph_communities`, `card_impact`, `card_cooccurrence` | — |
+| POST | `/simulate-ban` | corps `{"card_name": "…"}` | `cards`, `card_graph_metrics`, `graph_communities`, `card_impact`, `card_cooccurrence`, `archetype_card_profile` | — |
 
 `archetype_trend` et `meta_tier_list` sont dans `SERVED_TABLES` mais lues par aucun routeur (TOK-93).
 
@@ -220,10 +220,16 @@ La ligne de `cards` telle quelle (toutes les colonnes, sans schéma de réponse)
 ```json
 {"removed_card": "Ash Blossom & Joyous Spring", "image_url": "…",
  "affected_archetypes": ["Branded", "Tenpai Dragon"],
- "community_impact": {"community_id": 5, "fragmentation": 0.23}, "bridge_score": 0.00504}
+ "community_impact": {"community_id": 5, "fragmentation": 0.23}, "bridge_score": 0.00504,
+ "deck_archetypes": [{"archetype": "Elfnote", "slug": "elfnote", "lists": 82, "decks": 82}],
+ "deck_window_start": "2026-10", "deck_window_end": "2026-11", "deck_window_decks": 396}
 ```
-Approximation : `fragmentation` = betweenness normalisée sur le maximum ; archétypes voisins = archétypes des 30
-cartes les plus co-jouées (10 au plus). Aucune prévision validée (TOK-132).
+Description, pas une prévision (TOK-132) : `fragmentation` = betweenness normalisée sur le maximum ; `bridge_score` =
+score de diffusion de `card_impact`. `deck_archetypes` (ajouté au jalon n°8, additif) : archétypes de deck qui jouent la
+carte en Main ou Extra Deck, lus dans `archetype_card_profile` (fenêtre et listes de la tier list), `lists` = k listes
+qui la jouent, `decks` = n listes de l'archétype, triés par `lists` décroissant ; liste vide si la table manque.
+`affected_archetypes` (archétypes YGOPRODeck des 30 cartes les plus co-jouées, 10 au plus ; 31 % seulement sont des
+archétypes de deck) est gardé pour compatibilité, plus affiché par le front.
 
 ---
 

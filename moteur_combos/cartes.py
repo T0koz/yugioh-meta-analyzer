@@ -110,6 +110,8 @@ def _materiaux(p, zones: tuple[str, ...]) -> list:
     for zone in zones:
         if zone == "terrain":
             pris = [("terrain", c, i) for c, i in p.monstres()]
+        elif zone == "terrain_adverse":   # jalon n°7 (E32) : « from either field »
+            pris = [("terrain_adverse", c, i) for c, i in p.monstres(1)]
         else:
             pris = [(zone, None, i) for i in p._multi(zone)]
         for z, c, i in pris:

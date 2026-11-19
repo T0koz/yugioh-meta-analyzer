@@ -271,6 +271,71 @@ formulaire : `docs/moteur-combos/j2-rapport.md`.
   (actions clés du guide, en sous-suite) font la différence.
 - ≈ 1 200 états/s, facteur 3 à 4 par transition : le parcours en largeur ne dépasse pas 6 transitions en 60 s.
 
+**Jalon n°5, J2 plein côté moteur (TOK-139, TOK-140, TOK-141, 2026-11-18, branche `claude/jalon-5-moteur-j2-plein-53a6ad`,
+non fusionnée)** : cadre de la décision 0055 (plus de juge humain ; validation par l'oracle au jalon n°6, session isolée).
+5 combos de plus (G6-G10, masterduelmeta, mai-septembre 2026) transcrits **avant** toute lecture du code et figés
+(`combos-guides.md` § 5, commit `f19f864`, empreinte `89fa2326…`) ; 10 combos exécutés. Condition principale (largeur
+sans cible, 60 s) : G1-G5 **4 sur 5**, G6-G10 **1 sur 5** tel que figé (2 sur 5 G6 corrigé) ; dirigée 120 s 7 sur 10
+(8 corrigé) ; 900 s 8 sur 10 (9) ; hasard 2 sur 10 ; largeur sans filtres D4 0 sur 10 ; aucun écart démontré (McNemar,
+p ≥ 0,06). 23 séquences exportées pour l'oracle (`sequences-pour-oracle.md`, `scripts/combos_export_oracle.py`).
+**Verdict J2 : en attente de l'oracle.** 7 questions résiduelles préparées, non envoyées (`questions-residuelles.md`).
+Échantillon J1 pour l'oracle (TOK-143) : `echantillon-j1.md` (20 effets tirés, 57 effets et les situations jouées
+qui les exercent ; 0 jamais exercé, 3 seulement en partie : `Garura` 2, `Springans Kitt` 2, `Titaniklad` 3).
+Rapport : `j2-rapport.md` § 0 (protocole commité avant le passage long) et § 8.
+- **La longueur décide** : de 4 à 7 transitions, la largeur retrouve tout (6 sur 6) ; de 8 à 11, rien (0 sur 4). G10
+  (9 transitions) n'est pas retrouvé en 900 s (1,08 million d'états) mais il est jouable : la recherche guidée par les
+  jalons (`--guidee`, diagnostic **hors J2**) le trouve en 67 s.
+- **Une cible de guide transcrite peut être fausse** : G6 demandait « Cocatorium au Cimetière » (banni en quittant le
+  terrain) ; la cible figée est **prouvée inatteignable** (exploration épuisée). Correction par commit séparé
+  (`73cc104`), G6 compté manqué dans le chiffre principal (avis `data-scientist-ygo`).
+- **Un jalon « une carte quelconque arrive » ne se lit jamais sur un solde de zone** : une destruction dans la même
+  transition le masque (bug du jalon 10 de G8, trouvé et corrigé, `Mouvement(None, …)`).
+- **`explorer` a une borne de 200 000 états par défaut** : un budget « 900 s » sans `--max-etats` s'arrête avant. Mémoire
+  ≤ 1 Go par processus à 1 million d'états.
+- Mémoïsation exacte de la clé de tri de l'empreinte (`modele._cle_tri`) : ×1,24, mêmes empreintes. Pour G6-G10, la
+  cible s'évalue sur un état d'où le tour peut se terminer (`ComboGuide.accepteur(cat)`, pas `accepter`).
+
+**Jalon n°6, l'oracle rejoue J2 et l'échantillon J1 (TOK-142, TOK-143, 2026-11-18, branche
+`claude/jalon-6-oracle-j1-j2-ddcca5`, non fusionnée)** : session isolée (ni `moteur_combos/` ni `scripts/combos_*.py`
+lus). **J2 : 23 séquences sur 23 en accord avec l'oracle** (149 pas légaux, mêmes déplacements pas par pas, même
+plateau ; aucun premier pas en désaccord ; 4 témoins négatifs détectés ; mêmes résultats sous MR5 seul et
+`FIRSTTRIGGER`). **J1 : 86 situations écrites depuis le texte TCG et figées avant de jouer** (`situations-echantillon-j1.yaml`,
+commit `59ef481`, sha256 `c3b49e76…`), 85 jouées, 1 non testable (E18) ; le jalon n°7 exécutera le moteur dessus.
+Réponses : `reponses-oracle.md` § 8 et § 9.
+- **Retour d'`Ecclesia and the Dark Dragon` (J2-a)** : chez l'oracle, effet obligatoire de la liste de Phase de Fin
+  dont le joueur choisit le moment ; joué en dernier, mêmes cartes mais autres zones (G8.1, G8.2). Le moteur l'applique
+  au passage en Phase de Fin : une seule option là où l'oracle en a plusieurs.
+- **Le lanceur de l'oracle rapprochait les noms par l'alias** (`WHITE` a pour alias `ALBAZ`) : un choix « ALBAZ » pouvait
+  jouer WHITE. Corrigé pour ce passage ; les passages des lots 17 et C2 bis utilisaient l'ancienne recherche.
+- **`Ash Blossom` en main est un matériel de Fusion** pour `Cartesia` (main ou terrain) : trois lectures écrites avant
+  de jouer l'avaient oublié (E05, E08, E08b). Toute situation de Fusion « main ou terrain » doit compter les cartes de
+  réponse en main.
+- Le lanceur sait maintenant lire l'ATK (requête d'état du cœur) ; il ne sait pas donner un historique d'invocation à
+  un monstre adverse (E18 non testable). Banc : `~/code/oracle-ignis/lanceur/jalon6/` (hors dépôt).
+
+**Jalon n°7, verdicts J1 et J2 côté moteur (TOK-144, 2026-11-18, branche `claude/jalon-7-verdicts-j1-j2-2291ea`, non
+fusionnée)** : règle de comptage figée et commitée avant la comparaison (`j1-rapport.md` § 8, `5fb4193`, empreinte
+`bac542c5…`) ; les 86 situations de l'échantillon traduites en décisions (`moteur_combos/echantillon_oracle.py`,
+`python scripts/combos_jalon7.py`). **J1 : 3 effets tirés sur 20 en erreur, Wilson 95 % [5,2 % ; 36,0 %] → non
+atteint** (82 accords, 3 désaccords E32, E49, E68, 1 non tranchée E18 ; pessimiste 4 sur 20). Corrigés (`b31e5df`) :
+terrain adverse pour `Super Polymerization` et `The Fallen & The Virtuous`, minimum 1 pour `Aeon` ; après correction
+0 sur 20, **non revalidé, pas une mesure**. **J2 : 23 séquences sur 23 légales dans l'oracle**, chiffres inchangés
+(4 sur 5, 1 sur 5 hors échantillon), proposition « atteint sous réserve », horloge du 13/01/2027 maintenue. **20 cartes
+`verifiee`** dans `data/combos.db` du worktree (`Ecclesia and the Dark Dragon` réservée pour J2-a). Relu par
+`data-scientist-ygo`. Formulaire : `decisions-prises.md` « Jalon 7 — TOK-144 ».
+- **Le moteur ignorait le terrain adverse** et rendait « non activable » au lieu de dire sa limite (E32, E49) : corrigé
+  pour deux effets seulement ; `Three Champions` 2, `Luluwalilith` 1, `Aeon` 1, `Mirrorjade` 1 l'ignorent encore.
+  Un monstre adverse est un vrai exemplaire (`proprietaire=1`) ; il va dans le Cimetière de l'adversaire sans émettre
+  d'événement (ses déclencheurs ne sont pas joués).
+- **« Up to N » = au moins 1** (E68) : à vérifier sur toute autre formalisation qui offre « terminer » dès le premier
+  choix.
+- **« Posé » ≠ « arrivée non précisée »** : `arrivee=None` veut dire « inconnue » et rend des options à légalité
+  inconnue (`Sprind`) ; un monstre placé sans invocation se traduit `arrivee="autre"`, sans `venue_extra_deck`.
+- **Le taux après correction n'est jamais le taux de J1** : remesurer demande un nouveau tirage d'effets non vus.
+- **`verifiee` est écrit par `combos_jalon7.py --ecrire-statuts`**, jamais par le harnais (qui ne l'écrase pas) :
+  après fusion, relancer `combos_harnais.py` puis `combos_jalon7.py --ecrire-statuts` sur le dépôt principal.
+- Le repère « 1 erreur sur 20 → 24,9 % » des rapports est Clopper-Pearson ; Wilson donne 23,6 %.
+
 ### 🧭 Travail en sessions parallèles (retour d'expérience du 2026-11-16)
 
 Quatre sessions ont tourné en parallèle (front, collaboration, combos, signal boutique), chacune dans un worktree
@@ -730,6 +795,87 @@ n'écrit rien, aucune correction.
 - Les chiffres du Ban Radar se remesurent avec `build_ban_radar.backtest_lists` (top 10 par type : `top_archetype` nul
   ou non dans le classement de la veille) et la table `ban_backtest_lists` (`banTop25`).
 → détail complet : `docs/journal/chiffres-vitrine-tok-82.md`
+
+### 🕸 Graphe des cartes recalculé (TOK-136, jalon n°4, 2026-11-18, branche `claude/jalon-4-graphe-backtest-vues-e1f982`, non fusionnée)
+
+`scripts/build_graph_metrics.py` : notebook 03 en script (`card_graph_metrics`, `graph_communities` depuis
+`card_cooccurrence`, intermédiarité exacte, communautés reproductibles, même schéma). Mesuré sur une copie : 663 → 1 402
+nœuds, 63 → 151 communautés ; backtest presque inchangé (rangs médians ±8, TCG 2026-05-18 84 → 86/889, OCG 2026-07-01
+19 → 19, top 25 inchangés) mais `verdictMatches` décroche (OCG `medianBetter` 8 → 7) ; page du graphe : 48 des 150 nœuds
+restent. **Référence non recalculée** : formulaire « Jalon 4 — TOK-136 ».
+- **`refresh_all.PENDING_FORM`** : une étape qui change une table affichée y reste tant que son formulaire n'est pas
+  rempli (le job du lundi tourne depuis le dépôt principal, qui suit la branche d'intégration : fusionner vaudrait
+  accepter). Accepter = retirer le nom de `PENDING_FORM` et la tolérance de `check_freshness.py` dans le même commit
+  (test `test_pending_form_steps_are_skipped_and_tolerated`).
+- **sqlite3 (Python 3.13, mode par défaut) valide `DROP`/`CREATE` hors de la transaction de `with conn`** : toute
+  écriture qui remplace des tables doit ouvrir avec `isolation_level=None` et faire `BEGIN IMMEDIATE` … `COMMIT` /
+  `ROLLBACK` (défaut trouvé par `gardien-donnees`).
+- **Le critère pont du backtest lit le graphe du jour pour toutes les listes** (fuite TOK-120) ; le recalcul l'étend
+  (237 cartes de l'univers avec un pont non nul au lieu de 176). Effet mesuré ≤ 8 rangs.
+- Après acceptation, dans l'ordre : `build_graph_metrics.py`, `build_ban_radar.py`, `build_ban_history.py`,
+  `build_serving_db.py`, puis réécrire `SITE_FACTS.banTop25` et `graphCommunities`.
+→ détail complet : `docs/journal/graphe-recalcul-tok-136.md`
+
+### ⏱ Fenêtre du backtest : decks connus à la coupure (TOK-137, jalon n°4, 2026-11-18, même branche, non fusionnée)
+
+`build_ban_radar.backtest_lists(..., require_uploaded=False)` : à `True`, la fenêtre (date du tournoi) exige aussi la
+mise en ligne avant la coupure (`--backtest --connus-a-la-coupure`). Défaut inchangé, rien d'affiché ne change. Mesuré :
+2,5 % des decks retirés ; top 25 TCG 29 → 32, OCG 41 → 45 ; rang médian OCG meilleur que les staples sur 9 listes
+(p = 0,021) au lieu de 8 ; références 84/889 → 81/877 et 19/1236 → 19/1226. Formulaire « Jalon 4 — TOK-137 ».
+- **Le backtest actuel était pessimiste, pas optimiste** : les decks publiés après la coupure sont joués en fin de
+  fenêtre (OCG : après la publication du contenu de la liste) et jouent déjà moins les cartes visées. Ne pas présenter
+  l'écart comme un gain du radar.
+- `created` = date du tournoi, `uploaded` = mise en ligne (5,5 jours plus tard en moyenne) ; une coupure « connue à
+  la date X » filtre sur `uploaded`. Le classement du jour n'a pas de coupure : jamais `require_uploaded` dans `build`
+  pour lui.
+- Si le défaut change, la phrase de significativité du verdict (`ban-verdict.ts`) devient fausse (deux écarts OCG à
+  p = 0,021) : formulation au formulaire.
+→ détail complet : `docs/journal/fenetre-backtest-tok-137.md`
+
+### 👁 Vues de la semaine rafraîchies et datées (TOK-138, jalon n°4, 2026-11-18, même branche, non fusionnée)
+
+`scripts/fetch_card_views.py` : met à jour `cards.views_week` seule (par id, garde de nom, carte renumérotée rattrapée
+par le nom si une seule candidate) et archive chaque relevé dans la table nouvelle `card_views_snapshots`
+(`snapshot_date`, hors `SERVED_TABLES`). Étape `card_views` de `refresh_all.py`, après `fetch_new_cards`, verrouillée
+(`PENDING_FORM`) et non bloquante (`NON_BLOCKING`, nouveau). Mesuré sur une copie : 13 853 vues sur 14 084 changent ;
+signal précoce Spearman 0,90 (14 des 20 premières restent) ; signal boutique Spearman 0,995, aucun libellé changé.
+**Référence non relevée** : formulaire « Jalon 4 — TOK-138 ».
+- **YGOPRODeck renumérote des cartes** (Odd-Eyes Pendulum Dragon 16178681 → 16178683 au 18/11) : une jointure par id
+  seule garde à jamais l'ancienne valeur ; rattraper par le nom quand une seule carte de `cards` manque à l'API.
+- **Le notebook 10 lit aussi `views_week`** (force boutique × log des vues) : toute retouche des vues se mesure sur
+  `early_card_signals` ET sur `ocg_archetype_scores` / `boutique_alerts`.
+- **Un notebook exécuté par `nbconvert` tourne dans son propre dossier** : `os.getcwd()/../data/yugioh.db` vise le
+  checkout du notebook, et `sqlite3.connect` y crée une base vide si elle manque. Pour le lancer sur une copie, copier
+  le notebook dans un dossier `<x>/notebooks/` avec `<x>/data/yugioh.db`.
+- La fraîcheur des vues se date sur la table servie (`early_card_signals`), pas sur `cards`.
+- Le backtest des vues (TOK-129) devient possible à partir du premier relevé archivé, pas avant.
+→ détail complet : `docs/journal/views-week-tok-138.md`
+
+### 🚀 Jalon n°8, mise en ligne : bloc A appliqué (TOK-82, 122, 116, 130, 132, 149, 148, 2026-11-19, branche `claude/jalon-8-mise-en-ligne-ef5b0c`, non fusionnée)
+
+Bloc A de `docs/planning/2026-11-19/formulaires-a-trancher.md`, validé le 19/11 (décision 0056), un commit par point.
+Chiffres de vitrine (14 084 cartes, 22 422 listes légales sur 23 948 relevées, 63 communautés qualifiées) ; tableau
+« Tendances dues au hasard » retiré de `/methode` ; population du r ≈ 0,53 (« archétypes déjà joués dans les deux
+formats ») ; légende Kewl Tune « effectifs mensuels de 145 à 574 decks en OCG » (lus dans l'API) ; fenêtre d'arrivée
+qualifiée en archétypes (27 sur 36 en 2024-2026, 12 sur 18 pour 2026) ; onglet « Impact » → « Diffusion », simulateur
+sans prévision avec les archétypes de deck qui jouent la carte (« k sur n listes ») ; API durcie ; témoin de base dans
+`deploy_prebuilt.py`. Décisions par défaut et formulaire : `docs/planning/2026-11-19/decisions-prises.md`.
+- **Fenêtre d'arrivée : une seule source**, `SITE_FACTS.arrivalCoverage` → `ARRIVAL_COVERAGE` (forme longue) et
+  `ARRIVAL_COVERAGE_SHORT` (en-tête, métadonnées). `ARRIVAL_COVERAGE_RANGE` (62-67 %, en cartes) n'existe plus.
+- **`/ban?tab=impact` redirige (308) vers `/ban?tab=diffusion`** par `next.config.ts` (`has` sur la requête ; la
+  requête de la destination l'emporte, `kind` est transmis). Pas dans la page : `app/ban/loading.tsx` la met en
+  streaming et `permanentRedirect` y devient un 200 + meta refresh. Captures « ban-impact » renommées « ban-diffusion ».
+- **L'intervalle du +6,5 de TOK-132 est à 90 %** (bootstrap par liste), pas à 95 % : `SITE_FACTS.diffusionEffect.ci90`.
+- **`POST /simulate-ban` : champs additifs** `deck_archetypes` (k, n, slug), `deck_window_*`, lus dans
+  `archetype_card_profile` (Main + Extra, jamais les deux pour un archétype : invariant testé) ; `affected_archetypes`
+  gardé mais plus affiché (ne trouve pas le porteur des cartes à marque `<P>`, défaut ancien).
+- **Jokers `LIKE`** : toute saisie mise dans un motif passe par `like_escape` + `ESCAPE '\'` (`routers/cards.py`) ;
+  `limit` a `ge=1` partout (`LIMIT -1` = sans limite en SQLite). Slug jamais vide pour un nom non vide (« x- » + SHA-1).
+- **`deploy_prebuilt.py` compare des valeurs témoins** (`WITNESSES` : `as_of`/`n_decks_window` du Ban Radar,
+  `computed_at` boutique) entre l'API locale et `serving.db` ; écart bloquant. Une nouvelle table recalculée à part
+  peut y ajouter une ligne. Une API sur `yugioh.db` du même jour concorde : c'est voulu (mêmes données).
+- Tests de l'API : 135 sans base, 173 sur chaque base (dont `test_deploy_prebuilt.py`, sans réseau). `check.py --all
+  --visuel` vert sans étape ignorée (lien `data/yugioh.db` vers la référence, lecture seule) ; 24 captures régénérées.
 
 ### 🌙 File de nuit du 16-17/11 (orchestrateur) : fusionnée dans `main` le 17/11
 

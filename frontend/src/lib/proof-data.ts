@@ -26,6 +26,12 @@ export interface Proof {
   /** Indices des pics (premier mois du maximum). */
   ocgPeak: number;
   tcgPeak: number;
+  /**
+   * Plus petit et plus grand effectif mensuel OCG (tous archétypes) de la fenêtre, lus dans `total_decks` :
+   * la légende dit l'échelle de l'incertitude sans la dessiner. null si un mois de la fenêtre n'est pas servi
+   * (l'historique TCG de Kewl Tune ne commence qu'en décembre 2025, d'où l'OCG seul).
+   */
+  ocgDecksRange: readonly [number, number] | null;
 }
 
 function monthsOf(first: string, last: string): string[] {
@@ -58,6 +64,13 @@ function series(history: ArchetypeMonth[], months: string[]) {
   return shares.some((v) => v === null) ? null : (shares as number[]);
 }
 
+function totalsRange(history: ArchetypeMonth[], months: string[]): readonly [number, number] | null {
+  const byMonth = new Map(history.map((m) => [m.month, m.total_decks]));
+  const totals = months.map((month) => byMonth.get(month));
+  if (totals.some((n) => n === undefined || n <= 0)) return null;
+  return [Math.min(...(totals as number[])), Math.max(...(totals as number[]))] as const;
+}
+
 /** null si l'API ne couvre pas toute la fenêtre (base de service antérieure à TOK-116). */
 export function buildProof(response: ArchetypeResponse | null): Proof | null {
   if (!response || !response.ocg_history_computed_at) return null;
@@ -77,5 +90,6 @@ export function buildProof(response: ArchetypeResponse | null): Proof | null {
     tcg,
     ocgPeak,
     tcgPeak,
+    ocgDecksRange: totalsRange(response.ocg_history, months),
   };
 }

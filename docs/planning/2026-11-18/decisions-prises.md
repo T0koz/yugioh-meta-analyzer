@@ -567,3 +567,208 @@ Commentaire libre :
 [ ] Le déplacer dans `notebooks/archive/`
 Commentaire libre :
 ```
+
+## Jalon 4 — TOK-136 : recalcul de `card_graph_metrics` et `graph_communities`
+
+Journal : `docs/journal/graphe-recalcul-tok-136.md`. Script `scripts/build_graph_metrics.py` (notebook 03 en script),
+mesuré sur une copie de la base de référence (référence intacte). Relu par `data-scientist-ygo` (chiffres retrouvés,
+recommande le recalcul) et `gardien-donnees` (écriture rendue atomique après sa relecture).
+
+Effet mesuré : 663 → 1 402 nœuds, 63 → 151 communautés (32 de 2 cartes) ; backtest : rangs médians ±8 (TCG 2026-05-18
+84 → 86/889, OCG 2026-07-01 19 → 19), top 25 inchangés (TCG 29 contre 16, OCG 41 contre 18), listes OCG où le rang
+médian bat les staples 8 → 7, listes TCG où le top 25 bat les staples 6 → 7 ; classement du jour : Spearman 0,998,
+10 premiers identiques, 24 des 25 premiers, 15 libellés de risque changés ; page du graphe : 48 des 150 nœuds restent.
+Fuite connue (TOK-120) : le critère pont du backtest lit le graphe du jour pour les 20 listes ; après recalcul, elle
+touche plus de cartes (237 au lieu de 176 avec un pont non nul), effet mesuré ≤ 8 rangs.
+
+Décidé par défaut (à confirmer) :
+- étape `graph_metrics` ajoutée à `refresh_all.py` mais **verrouillée** (`PENDING_FORM`) : le job du lundi tourne
+  depuis le dépôt principal, sur la branche d'intégration ; sans verrou, la fusion recalculerait la référence ;
+- tolérance de `check_freshness.py` pour les deux tables **gardée** (la retirer ferait échouer le contrôle du lundi
+  tant que la référence n'est pas recalculée) ;
+- communautés : même algorithme que le notebook (Clauset-Newman-Moore, sans hasard), arêtes triées pour un résultat
+  reproductible ; pas de seuil de taille pour l'affichage.
+
+```
+1. Recalculer le graphe sur la base de référence
+[x] Oui, maintenant : retirer `graph_metrics` de `PENDING_FORM` et les deux tolérances de `check_freshness.py`
+    (un commit), puis lancer la séquence du compte rendu (graphe, ban_radar, ban_history, serving)
+[ ] Oui, mais seulement au prochain changement de poids du Ban Radar (le pont serait retiré au même moment)
+[ ] Non : garder la table de 663 nœuds (tolérance jusqu'au 31/12, à reconduire)
+Commentaire libre :
+
+2. Verdict de l'onglet Historique (`SITE_FACTS.banTop25`, `frontend/src/lib/ban-verdict.ts`) après recalcul
+[x] Réécrire les chiffres : OCG `medianBetter` 8 → 7, TCG `better` 6 → 7 ; la phrase reste vraie telle quelle
+    (« en OCG, il fait mieux sur les deux mesures », 7 sur 10 ; seul l'écart de top 25 OCG reste démontré, p = 0,021)
+[ ] Laisser le verdict masqué (`verdictMatches` faux) jusqu'au prochain diagnostic
+Commentaire libre :
+
+3. Chiffre « 63 communautés » (accueil, `/methode`, `SITE_FACTS.graphCommunities`)
+[x] Passer à 151 communautés sur 1 402 cartes, au même commit que le recalcul (retirer la mention « graphe non
+    recalculé » si le formulaire TOK-82 point 4 l'a ajoutée)
+[ ] Compter seulement les communautés d'au moins 3 cartes (119)
+Commentaire libre :
+
+4. Critère « pont » du Ban Radar (5 % du score, poids estimé négatif en rangs, fuite non datable, TOK-120 et TOK-132)
+[x] Ne rien changer maintenant ; le retirer au prochain changement de poids, avec backtest et formulaire
+[ ] Le retirer dès maintenant (changement de scoring : backtest et formulaire dédiés)
+Commentaire libre :
+```
+
+## Jalon 4 — TOK-137 : fenêtre du backtest limitée aux decks connus à la coupure
+
+Journal : `docs/journal/fenetre-backtest-tok-137.md`. Paramètre `require_uploaded` (défaut `False`) dans
+`build_ban_radar.backtest_lists` ; rien d'affiché ne change. Relu par `data-scientist-ygo` (chiffres retrouvés,
+mécanisme vérifié).
+
+Effet mesuré (20 listes) : 2,5 % des decks retirés (0,1 à 7,8 % par liste, aucune liste sous 600 decks) ; top 25 TCG
+29 → 32 (staples 16), OCG 41 → 45 (staples 18 → 17) ; rang médian meilleur que les staples : TCG 3 → 3, OCG 8 → 9
+(p = 0,021) ; écart OCG par liste −0,44 point d'univers [−0,76 ; −0,18], TCG nul. Références : TCG 2026-05-18 84/889 →
+81/877, OCG 2026-07-01 19/1236 → 19/1226. Les decks retirés sont joués en fin de fenêtre, en OCG surtout après la
+publication du contenu de la liste : **l'ancienne mesure était pessimiste ; ce n'est pas une amélioration du radar**.
+Avec TOK-136 en plus : TCG 32/16, 7 mieux / 1 moins bien, 3 ; OCG 44/17, 9 / 1, 9.
+
+Décidé par défaut (à confirmer) :
+- sens du filtre : le brief disait « filtrer sur la date du tournoi (aujourd'hui sur la mise en ligne) » ; le code
+  faisait l'inverse (fenêtre sur la date du tournoi, fuite par la mise en ligne, constat de TOK-120). Correctif dans le
+  sens du constat : date du tournoi dans la fenêtre ET mise en ligne avant la coupure ;
+- le classement du jour (`ban_radar` servi) n'est pas concerné (pas de coupure : sa date est le dernier deck).
+
+```
+1. Fenêtre du backtest (`backtest_lists`, `--backtest`, onglet Historique)
+[x] Adopter « connus à la coupure » comme défaut du backtest (passer `require_uploaded` à True par défaut dans
+    `backtest_lists` et `backtest` seulement ; le classement du jour reste tel quel), sur le principe, pas pour le gain
+[ ] Garder la fenêtre actuelle et documenter la fuite
+[ ] Attendre une mesure combinée avec la coupure « contenu » (TOK-121) avant de changer le défaut
+Commentaire libre :
+
+2. Si oui : ordre avec TOK-136
+[x] Une seule mise à jour du site avec les deux tickets : recalcul du graphe, défaut changé, `build_ban_history.py`,
+    `build_serving_db.py`, puis `SITE_FACTS.banTop25` réécrit avec les chiffres combinés (TCG radar 32, staples 16,
+    better 7, worse 1, medianBetter 3 ; OCG radar 44, staples 17, better 9, worse 1, medianBetter 9)
+[ ] Deux mises à jour séparées
+Commentaire libre :
+
+3. Phrase de significativité du verdict (`frontend/src/lib/ban-verdict.ts`, « significance »)
+[x] « Avec 10 listes par format, seuls les écarts en OCG (top 25 et rang médian, 9 listes sur 10 chacun) dépassent ce
+    que le hasard produit couramment ; aucun ne le fait si l'on tient compte des quatre comparaisons. »
+[ ] Autre formulation (à écrire)
+Commentaire libre :
+
+4. Chiffres de référence cités dans `context.md` et `CLAUDE.md` (84/889, 19/1236)
+[x] Les remplacer par 81/877 et 19/1226 au même commit que le changement de défaut (avec TOK-136 : à remesurer)
+[ ] Garder les deux séries côte à côte pendant un mois
+Commentaire libre :
+```
+
+## Jalon 4 — TOK-138 : vues de la semaine rafraîchies et archivées par date
+
+Journal : `docs/journal/views-week-tok-138.md`. Script `scripts/fetch_card_views.py` (met à jour `cards.views_week`
+seule, garde de nom, cartes renumérotées rattrapées par le nom, table nouvelle `card_views_snapshots`, une transaction),
+testé sur une copie avec un vrai relevé de l'API le 18/11 (référence intacte). Relu par `gardien-donnees` (5
+corrections, toutes appliquées).
+
+Effet mesuré : 13 853 vues sur 14 084 changent (juin → novembre). Signal précoce (263 cartes) : Spearman des rangs
+0,90, 14 des 20 premières cartes restent, top 20 avec 3 cartes Unchained de plus et 4 Dark Time Wizard de moins.
+Signal boutique (notebook 10) : Spearman 0,995, aucun libellé Fort / Modéré / Faible changé, mêmes 3 archétypes.
+
+Décidé par défaut (à confirmer) :
+- étape `card_views` dans `refresh_all.py` (après `fetch_new_cards`, même API, avant `early_signals`), verrouillée par
+  `PENDING_FORM` et **non bloquante** (`NON_BLOCKING`, nouveau) ;
+- tolérance `early_card_signals:vues` gardée (rattachée à TOK-138) ; le contrôle date les vues servies par le dernier
+  relevé archivé ;
+- l'instantané du 13/06 (`data/raw/cards.json`) n'est pas versé dans l'archive.
+
+```
+1. Rafraîchir les vues chaque lundi (déverrouiller l'étape `card_views`)
+[x] Oui : retirer `card_views` de `PENDING_FORM` et la tolérance `early_card_signals:vues` de `check_freshness.py`
+    (un commit), puis lancer la séquence du compte rendu sur la référence
+[ ] Oui, mais archiver seulement (table `card_views_snapshots`) sans toucher à `cards.views_week` tant que le critère
+    « vues » du signal précoce n'est pas revu (TOK-129)
+[ ] Non
+Commentaire libre :
+
+2. Premier point ancien dans l'archive
+[ ] Verser l'instantané `data/raw/cards.json` dans `card_views_snapshots` à la date de son commit (2026-06-13), avec
+    une colonne `source` pour le distinguer
+[x] Non : l'archive commence au premier relevé ; l'instantané reste dans Git et dans la première sauvegarde
+Commentaire libre :
+
+3. `fetch_new_cards` est bloquante dans `refresh_all.py` (une panne de l'API arrête la chaîne et `serving`), alors que
+   `refresh_decks.py` la déclare non bloquante
+[x] Ticket à part : l'ajouter à `NON_BLOCKING` de `refresh_all.py` (avis `gardien-donnees`)
+[ ] Laisser tel quel
+Commentaire libre :
+```
+
+## Jalon 7 — TOK-144 : verdicts J1 et J2 mesurés contre l'oracle
+
+Rapports : `docs/moteur-combos/j1-rapport.md` § 8 (règle figée avant la comparaison, commit `5fb4193`) et § 9
+(résultats) ; `docs/moteur-combos/j2-rapport.md` § 9. Commande : `python scripts/combos_jalon7.py`. Relu par
+`data-scientist-ygo` (comptage conforme, intervalles recalculés).
+
+En bref : sur l'échantillon (20 effets tirés, 86 situations jouées par l'oracle), **3 effets en erreur sur 20**, Wilson
+95 % [5,2 % ; 36,0 %] → **J1 non atteint** (critère : borne haute ≤ 20 %). Deux causes : le moteur ignorait le terrain
+adverse (`Super Polymerization`, `The Fallen & The Virtuous`) ; « bannir jusqu'à N » lu comme « 0 à N »
+(`Hyperinvoked Aeon`). Corrigées (commit `b31e5df`), **non revalidées** par l'oracle. J2 : 23 séquences sur 23 légales
+pas à pas dans l'oracle ; condition principale inchangée, 4 sur 5 (développement) et **1 sur 5 hors échantillon**.
+
+Décidé par défaut (à confirmer) :
+- `Ecclesia and the Dark Dragon` remplit la règle `verifiee` mais reste `formalisee` (différence de modèle J2-a) ;
+- J2-a non corrigé dans ce jalon (changerait le graphe d'exploration et tous les chiffres J2) ;
+- pour la question Q2 (R22), seuls les effets que `questions-residuelles.md` nomme bloquent `verifiee` (lecture large :
+  tout effet déclenché facultatif, qui bloquerait presque toutes les cartes) ;
+- les statuts sont écrits dans `data/combos.db` du worktree ; après fusion, à relancer sur le dépôt principal
+  (`python scripts/combos_harnais.py` puis `python scripts/combos_jalon7.py --ecrire-statuts`).
+
+```
+1. J1 (37 cartes formalisées, taux d'erreur chiffré)
+[x] Déclarer J1 non atteint : 3 effets sur 20 en erreur, Wilson 95 % [5,2 % ; 36,0 %] (mesuré contre l'oracle, avant
+    correction) ; corrections faites, non revalidées
+[ ] Déclarer J1 atteint sur la base du taux après correction (0 sur 20) — déconseillé : chiffre optimiste par
+    construction, pas une mesure
+Commentaire libre :
+
+2. Remesurer J1 après les corrections
+[x] Nouveau tirage de 20 effets non vus (graine nouvelle, fixée avant le tirage), situations écrites et jouées par une
+    session de l'oracle isolée, même règle de comptage ; 0 erreur sur 20 donnerait une borne haute de 16,1 %
+[ ] Rejouer seulement les 3 situations en désaccord dans l'oracle (confirme les corrections, ne remesure pas le taux)
+[ ] Ne pas remesurer avant J2
+Commentaire libre :
+
+3. J2 (le moteur retrouve seul les combos des guides publics)
+[ ] Atteint
+[x] Atteint sous réserve : toutes les séquences retrouvées sont légales dans l'oracle ; réserve = la longueur
+    (4 à 7 transitions retrouvées seules, 8 à 11 seulement avec une cible) et 1 sur 5 hors échantillon
+[ ] Non atteint
+Commentaire libre :
+
+4. Statuts `verifiee` (base `data/combos.db`, rien d'affiché)
+[x] Garder les 20 cartes `verifiee` (règle figée, moteur mesuré) et `Ecclesia and the Dark Dragon` en `formalisee`
+    jusqu'à la correction de J2-a
+[ ] Passer aussi `Ecclesia and the Dark Dragon` en `verifiee` (elle remplit la règle à la lettre)
+[ ] Aucune carte `verifiee` tant que J1 n'est pas atteint
+Commentaire libre :
+
+5. Différence de modèle J2-a (retour d'`Ecclesia and the Dark Dragon` en Phase de Fin)
+[x] La corriger dans un lot dédié : effet obligatoire de Phase de Fin ordonnable, puis rejouer J2 (≈ 12 min + passage
+    long) et faire rejouer les 8 séquences concernées par l'oracle
+[ ] Laisser tel quel (les 23 plateaux sont identiques ; seules des zones diffèrent si le retour est joué en dernier)
+Commentaire libre :
+
+6. Terrain adverse dans les autres effets (`Three Champions` 2, `Luluwalilith` 1, `Aeon` 1, `Mirrorjade` 1…)
+[x] Ticket à part : même défaut que E32 / E49, sans incidence au tour 1 du pilote ; à faire avant tout essai avec
+    un adversaire
+[ ] Plus tard (hors pilote)
+Commentaire libre :
+
+7. Questions résiduelles (Q1 à Q8, `questions-residuelles.md`)
+[x] Ne rien envoyer pour l'instant (décision 0055) ; si un lot part, Q1 et Q2 d'abord
+[ ] Envoyer Q1 et Q2 maintenant
+Commentaire libre :
+
+8. Suite et horloge de la règle d'arrêt (décision 0053, J2 avant le 13/01/2027)
+[x] Horloge maintenue au 13/01/2027 ; prochain jalon : remesure J1 (point 2) et correction de J2-a (point 5)
+[ ] Considérer J2 comme atteint et arrêter l'horloge
+Commentaire libre :
+```

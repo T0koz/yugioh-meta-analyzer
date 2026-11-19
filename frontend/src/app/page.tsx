@@ -5,7 +5,7 @@ import { CRITERIA } from "@/lib/ban-criteria";
 import { fmtDate, fmtMonthRange, fmtNum } from "@/lib/format";
 import { PROOF_EXAMPLE, buildProof, type Proof } from "@/lib/proof-data";
 import { pageMetadata } from "@/lib/seo";
-import { ARRIVAL_COVERAGE_RANGE, SITE_FACTS } from "@/lib/site-facts";
+import { ARRIVAL_COVERAGE, SITE_FACTS } from "@/lib/site-facts";
 import { CardArt, CardArtFill } from "@/components/card-art";
 import { ButtonLink, controlClass } from "@/components/ds/control";
 import { Em } from "@/components/ds/em";
@@ -176,7 +176,7 @@ export default async function Home() {
             <div className="enter [--i:4]">
               <StatBand
                 stats={[
-                  { value: <CountUp value={SITE_FACTS.decklists} />, label: "Decklists analysées" },
+                  { value: <CountUp value={SITE_FACTS.decklists} />, label: "Decklists relevées" },
                   { value: <CountUp value={SITE_FACTS.cardsTracked} />, label: "Cartes suivies" },
                   { value: <CountUp value={SITE_FACTS.ocgTcgCorrelation} digits={2} />, label: "Corrélation OCG → TCG (r)" },
                   { value: SITE_FACTS.ocgTcgLagRange, label: "Écart OCG → TCG" },
@@ -233,7 +233,7 @@ export default async function Home() {
                     </div>
                     <p className={`mt-3.5 ${SOURCE}`}>
                       {topBuy.signal_label && "Libellé : rang de l’archétype en OCG, seuils provisoires, non validés hors échantillon. "}
-                      {tcgWindow && `Fenêtre d’arrivée : couverture vérifiée de ${ARRIVAL_COVERAGE_RANGE} des cartes, et non 80 %. `}
+                      {tcgWindow && `Fenêtre d’arrivée vérifiée a posteriori : ${ARRIVAL_COVERAGE}. `}
                       Source : decklists OCG et prix Cardmarket, au {fmtDate(radar.as_of)}.
                     </p>
                   </div>
@@ -289,7 +289,7 @@ export default async function Home() {
                       Cartes jouées <Em>ensemble</Em> dans les mêmes decks.
                     </h3>
                     <p className="mt-3 max-w-[46ch] text-[15px] text-muted-text">
-                      {`${SITE_FACTS.graphCommunities} communautés de cartes détectées. En orange, les cartes « pont », qui en relient plusieurs.`}
+                      {`${SITE_FACTS.graphCommunities} communautés détectées sur ${fmtNum(SITE_FACTS.graphCards)} cartes (graphe non recalculé au rafraîchissement du 16 novembre 2026). En orange, les cartes « pont », qui en relient plusieurs.`}
                     </p>
                   </div>
                   <figure>
@@ -337,7 +337,7 @@ export default async function Home() {
               <h3 className="font-mono text-[11px] tracking-[0.1em] text-signal uppercase">Les données</h3>
               <dl className="mt-4 grid gap-px border-y border-line bg-line">
                 {[
-                  [fmtNum(SITE_FACTS.decklists), `decklists de tournoi, mai 2023 à novembre 2026 : ${fmtNum(SITE_FACTS.decklistsTcg)} en TCG, ${fmtNum(SITE_FACTS.decklistsOcg)} en OCG, légales à la date du tournoi.`],
+                  [fmtNum(SITE_FACTS.decklists), `decklists de tournoi, mai 2023 à novembre 2026 : ${fmtNum(SITE_FACTS.decklistsTcg)} en TCG, ${fmtNum(SITE_FACTS.decklistsOcg)} en OCG, dont ${fmtNum(SITE_FACTS.decklistsLegal)} légales à la date du tournoi, seules comptées dans les calculs.`],
                   [fmtNum(SITE_FACTS.cardsTracked), "cartes suivies : prix Cardmarket et statut sur la banlist."],
                   ["Lundi", "mise à jour hebdomadaire. Prédictions datées et archivées depuis le 1ᵉʳ novembre 2026."],
                 ].map(([value, text]) => (
@@ -396,7 +396,7 @@ export default async function Home() {
                 <circle cx={SITE_FACTS.ocgTcgCorrelation * 400} cy="14" r="5.5" fill="var(--signal)" />
               </svg>
               <p className="mt-3 max-w-[56ch] text-[15px] text-soft">
-                {`Corrélation entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes.`}
+                {`Corrélation entre le score d’un archétype en OCG et son score en TCG ${SITE_FACTS.ocgTcgLagRange} plus tard, sur ${SITE_FACTS.ocgTcgArchetypes} archétypes déjà joués dans les deux formats.`}
               </p>
               <p className="mt-3 max-w-[56ch] text-[15px] text-soft">
                 Libellés Fort, Modéré, Faible des signaux boutique : seuils provisoires, non validés hors échantillon.
@@ -524,8 +524,10 @@ function ProofSection({ proof }: { proof: Proof }) {
             <ProofChart proof={proof} />
             <figcaption className={`mt-3 ${SOURCE}`}>
               Part des decks de tournoi par mois, août 2025 à novembre 2026 (novembre incomplet). Source : decklists
-              yugiohmeta.com, relevé du {fmtDate(proof.asOf)}. Incertitude non dessinée : les effectifs mensuels
-              n’ont pas été relevés avec cette série figée.
+              yugiohmeta.com, relevé du {fmtDate(proof.asOf)}.{" "}
+              {proof.ocgDecksRange
+                ? `Incertitude non dessinée : effectifs mensuels de ${fmtNum(proof.ocgDecksRange[0])} à ${fmtNum(proof.ocgDecksRange[1])} decks en OCG.`
+                : "Incertitude non dessinée."}
             </figcaption>
           </figure>
         </div>

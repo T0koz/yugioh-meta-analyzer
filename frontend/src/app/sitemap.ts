@@ -15,7 +15,7 @@ const STATIC_PATHS = [
   "/graph",
   "/ban",
   "/ban?tab=historique",
-  "/ban?tab=impact",
+  "/ban?tab=diffusion",
   "/ban?tab=simulateur",
   "/methode",
 ];

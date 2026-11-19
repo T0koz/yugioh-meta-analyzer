@@ -5,7 +5,7 @@ import { fmtDate, fmtMonthShort, fmtNum, fmtPct } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { DECK_SOURCE } from "@/lib/site";
 import { BAN_VERDICT } from "@/lib/ban-verdict";
-import { SITE_FACTS } from "@/lib/site-facts";
+import { ARRIVAL_COVERAGE, SITE_FACTS } from "@/lib/site-facts";
 import { WEAK_MONTH_DECKS } from "@/lib/wilson";
 import { Em } from "@/components/ds/em";
 import { IntervalBar } from "@/components/ds/explain";
@@ -207,7 +207,7 @@ export default async function MethodePage() {
           items={[
             {
               term: "Decks de tournoi",
-              text: `${DECK_SOURCE} : ${fmtNum(SITE_FACTS.decklistsTcg)} listes TCG et ${fmtNum(SITE_FACTS.decklistsOcg)} listes OCG au 14 novembre 2026, collectées chaque lundi. Seules les listes légales à la date de leur tournoi sont comptées.`,
+              text: `${DECK_SOURCE} : ${fmtNum(SITE_FACTS.decklistsTcg)} listes TCG et ${fmtNum(SITE_FACTS.decklistsOcg)} listes OCG au 14 novembre 2026, collectées chaque lundi ; ${fmtNum(SITE_FACTS.decklistsLegal)} sont légales à la date de leur tournoi (${fmtNum(SITE_FACTS.decklistsLegalTcg)} TCG, ${fmtNum(SITE_FACTS.decklistsLegalOcg)} OCG) et seules comptées.`,
             },
             { term: "Banlists", text: "Yugipedia, TCG et OCG, reconstituées à chaque collecte ; une nouvelle liste devient automatiquement un point de validation." },
             {
@@ -258,18 +258,6 @@ export default async function MethodePage() {
             { term: "Limites", text: "La fenêtre courante compte quelques centaines de decks : un archétype à 2 % repose sur une dizaine de listes." },
           ]}
         />
-        <Validation title="Tendances dues au hasard">
-          <SimpleTable
-            caption="Nombre de tendances attendues par hasard"
-            head={["Archétypes comparés", "Niveau du test", "Fausses tendances attendues"]}
-            rows={[["environ 60", "5 %", "environ 3"]]}
-          />
-          <DataFooter
-            source="tier list"
-            date={`fenêtre ${fmtMonthShort(tierList.window_start)} à ${fmtMonthShort(tierList.window_end)}`}
-            uncertainty="ordre de grandeur, pas une mesure : il suppose des archétypes indépendants"
-          />
-        </Validation>
       </Section>
 
       <Section id="decks" title="Decks">
@@ -421,7 +409,7 @@ export default async function MethodePage() {
             { term: "Arrivée en TCG", text: `De 75 à 202 jours après le premier deck OCG : délai de 8 cartes sur 10 parmi les ${fmtNum(SITE_FACTS.arrivalWindowCards)} cartes sorties en OCG de 2022 à 2025 puis en TCG. La mesure porte sur des cartes, pas sur des archétypes, et ignore les cartes jamais sorties en TCG.` },
             {
               term: "Couverture vérifiée",
-              text: `Fenêtre estimée sur les cartes de 2022-2023, puis appliquée aux cartes suivantes : elle contient le délai de ${SITE_FACTS.arrivalCoverage.map((c) => `${c.pct} % des ${fmtNum(c.cards)} cartes de ${c.year}`).join(" et ")}, et non 80 %.`,
+              text: `Comptée en archétypes, l’unité affichée : ${ARRIVAL_COVERAGE}, et non 80 %. Les archétypes de 2024 et 2025 sont en partie dans les données d’estimation ; ceux de 2026, postérieurs au calcul, sont le seul contrôle hors échantillon.`,
             },
             {
               term: "Comparaison naïve",
@@ -492,7 +480,7 @@ export default async function MethodePage() {
         <Facts
           items={[
             { term: "Ce que mesure", text: "Deux cartes sont reliées quand, parmi les decks qui jouent l’une ou l’autre, au moins 15 % jouent les deux." },
-            { term: "Affichage", text: `Les 200 cartes les plus connectées ; ${SITE_FACTS.graphCommunities} communautés de cartes détectées.` },
+            { term: "Affichage", text: `Les 200 cartes les plus connectées ; ${SITE_FACTS.graphCommunities} communautés détectées sur ${fmtNum(SITE_FACTS.graphCards)} cartes (graphe non recalculé au rafraîchissement du 16 novembre 2026).` },
             { term: "Cartes pont", text: "Cartes qui relient des groupes de cartes qui, sans elles, se jouent rarement ensemble." },
             { term: "Limites", text: "La date du calcul n’est pas enregistrée dans la base servie ; un lien proche du seuil peut changer d’un calcul à l’autre." },
           ]}

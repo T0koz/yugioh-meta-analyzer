@@ -3,11 +3,17 @@
 // rafraîchie. Sources : context.md (« Nettoyage du backlog fiabilité »),
 // docs/evaluation-prediction.md (TOK-73), docs/tok-74-kewl-tune.md.
 export const SITE_FACTS = {
-  // Decklists légales + Genesys au 2026-11-14 (TCG 11 618, OCG 12 330).
+  // Decklists relevées au 2026-11-14, toutes légalités confondues (TCG 11 618, OCG 12 330). Parmi elles, 22 422 sont
+  // légales à la date du tournoi (`deck_legality.legal = 1` : TCG 10 369, OCG 12 053) et seules comptées dans les
+  // calculs ; 611 illégales, 915 Genesys non évaluables. Relevé du 2026-11-18 (TOK-82).
   decklists: 23_948,
   decklistsTcg: 11_618,
   decklistsOcg: 12_330,
-  cardsTracked: 13_797,
+  decklistsLegal: 22_422,
+  decklistsLegalTcg: 10_369,
+  decklistsLegalOcg: 12_053,
+  // Table `cards` au 2026-11-18 (cartes ajoutées chaque lundi par fetch_new_cards.py).
+  cardsTracked: 14_084,
   // Corrélation OCG → TCG à 4 mois, TCG pur : r ≈ 0,53, IC 95 % [0,43 ; 0,59],
   // 105 archétypes. L'ancien r = 0,771 (n = 43) n'est plus reproductible.
   ocgTcgCorrelation: 0.53,
@@ -21,16 +27,25 @@ export const SITE_FACTS = {
   ocgScoreShareRho: 0.94,
   ocgScoreArchetypes: 89,
   // Fenêtre d'arrivée OCG → TCG (notebook 10, P10-P90 = 75-202 jours sur 1 897 cartes 2022-2025 sorties en
-  // TCG). Couverture hors échantillon (audit de rigueur, A2, recalculée au lot 20 le 2026-11-18) : P10-P90
-  // estimés sur les cartes sorties en OCG en 2022-2023 (n = 1 078, 89 à 202 jours), appliqués aux cartes de
-  // 2024 et de 2025. Mesure par carte, parmi les cartes déjà sorties en TCG seulement (biais du survivant).
+  // TCG). Vérification comptée en archétypes, l'unité affichée (TOK-130, docs/journal/fenetre-survie-tok-130.md,
+  // validé le 19/11, bloc A4) : arrivée (la moitié des cartes inédites sorties en TCG) dans la fenêtre pour
+  // 27 archétypes sur 36 de 2024 à 2026 (16 cohortes ; 2024-2025 en partie dans l'échantillon d'estimation) et
+  // 12 sur 18 pour 2026 seule, postérieure au calcul. Remplace la couverture par carte (62-67 %, audit A2).
   arrivalWindowCards: 1_897,
   arrivalCoverage: [
-    { year: 2024, pct: 67, cards: 367 },
-    { year: 2025, pct: 62, cards: 470 },
+    { period: "2024-2026", hits: 27, archetypes: 36 },
+    { period: "2026", hits: 12, archetypes: 18 },
   ] as const,
-  // Non recalculé depuis le rafraîchissement : ne pas afficher de date de fraîcheur.
+  // Graphe du notebook 03, non recalculé au rafraîchissement du 2026-11-16 (TOK-136) : sa date de calcul n'est pas
+  // enregistrée, ne pas afficher de date de fraîcheur. 663 cartes réparties en 63 communautés.
   graphCommunities: 63,
+  graphCards: 663,
+  // Score de diffusion (ancien « Impact », `card_impact.bridge_score`) confronté à 17 banlists (TOK-132,
+  // docs/journal/pont-simulateur-tok-132.md, validé le 19/11, bloc A5) : variation de la part de méta cumulée des
+  // archétypes porteurs, 3 mois après contre 3 mois avant, régressée sur la part des decks et le score standardisés ;
+  // coefficient du score +6,5 points par écart type, intervalle bootstrap par liste à 90 % [+4,5 ; +8,6] ;
+  // 158 cartes touchées avec au moins un porteur. Sens contraire d'un « impact ».
+  diffusionEffect: { points: 6.5, ci90: [4.5, 8.6] as const, cards: 158, lists: 17 },
   // Ban Radar rejoué la veille des 10 banlists TCG du backtest (2024-04-15 au
   // 2026-10-19) : places du top 10 suivies d'une restriction, sur 10 × 10 places.
   // Ce sont des places, pas des cartes distinctes. À recalculer à chaque banlist.
@@ -52,6 +67,9 @@ export const SITE_FACTS = {
   ],
 };
 
-// « 62 à 67 % » : couverture hors échantillon de la fenêtre d'arrivée, à écrire partout où la fenêtre s'affiche.
-const coverage = SITE_FACTS.arrivalCoverage.map((c) => c.pct);
-export const ARRIVAL_COVERAGE_RANGE = `${Math.min(...coverage)} à ${Math.max(...coverage)} %`;
+// Vérification de la fenêtre d'arrivée, à écrire partout où la fenêtre s'affiche (seule source de ces chiffres) :
+// « arrivée dans la fenêtre pour 27 archétypes sur 36 (2024-2026) ; 12 sur 18 pour 2026 ».
+const [coverageAll, coverageRecent] = SITE_FACTS.arrivalCoverage;
+export const ARRIVAL_COVERAGE = `arrivée dans la fenêtre pour ${coverageAll.hits} archétypes sur ${coverageAll.archetypes} (${coverageAll.period}) ; ${coverageRecent.hits} sur ${coverageRecent.archetypes} pour ${coverageRecent.period}`;
+// Forme courte, pour un en-tête de colonne ou une ligne de métadonnées ; la forme longue est dans le pied.
+export const ARRIVAL_COVERAGE_SHORT = `juste pour ${coverageAll.hits} archétypes sur ${coverageAll.archetypes}`;

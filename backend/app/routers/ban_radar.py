@@ -32,7 +32,7 @@ WEIGHTS = {
 
 @router.get("/ban-radar", response_model=BanRadarResponse)
 def get_ban_radar(
-    limit: int = Query(BAN_RADAR_LIMIT_DEFAULT, le=200),
+    limit: int = Query(BAN_RADAR_LIMIT_DEFAULT, ge=1, le=200),
     min_score: float = Query(0, ge=0, le=100),
     status: str | None = Query(None, description="Filtre sur le statut TCG actuel"),
     kind: Literal["generic", "archetype"] | None = Query(

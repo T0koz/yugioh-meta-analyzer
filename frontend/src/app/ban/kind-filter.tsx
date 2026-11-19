@@ -5,7 +5,7 @@ import type { BanRadarKind } from "@/types";
 /** Vue du filtre : un `kind` de l'API, ou `all` (aucun filtre). */
 export type KindView = BanRadarKind | "all";
 
-// Partagé entre BanRadarView et CardImpactView : les deux notent les cartes
+// Partagé entre BanRadarView et CardDiffusionView : les deux notent les cartes
 // sur les mêmes critères et proposent le même filtre archétype/générique.
 const KIND_FILTERS: Record<KindView, { label: string; hint: string }> = {
   archetype: { label: "Pièces d'archétype", hint: "Au moins la moitié des decks qui la jouent sont d’un même archétype" },
@@ -18,11 +18,11 @@ const KIND_FILTERS: Record<KindView, { label: string; hint: string }> = {
  * Radar : les pièces d'archétype (décision 4 de l'audit front). Konami frappe
  * les pièces de moteur, pas les staples jouées partout ; ouvrir sur « Tout »
  * mettait Ash Blossom à 100/100 en tête de page.
- * Impact : tout, puisque la mesure compte justement les archétypes touchés.
+ * Diffusion : tout, puisque la mesure compte justement les archétypes qui jouent la carte.
  */
 export const KIND_ORDER = {
   radar: ["archetype", "generic", "all"],
-  impact: ["all", "archetype", "generic"],
+  diffusion: ["all", "archetype", "generic"],
 } as const satisfies Record<string, readonly KindView[]>;
 
 export type KindTab = keyof typeof KIND_ORDER;

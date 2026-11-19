@@ -147,9 +147,25 @@ class Instance:
         }
 
 
+_CLES_TRI: dict[Instance, str] = {}
+
+
+def _cle_tri(i: Instance) -> str:
+    """Clé de tri d'un exemplaire : son JSON canonique, mémoïsé (TOK-140). `Instance` est figée et hachable : deux
+    exemplaires égaux ont la même clé. Sans la mémoïsation, ce JSON coûtait ≈ 40 % du temps d'exploration."""
+    c = _CLES_TRI.get(i)
+    if c is None:
+        c = json.dumps(i.canon(), sort_keys=True, ensure_ascii=False)
+        if len(_CLES_TRI) >= 500_000:
+            _CLES_TRI.clear()
+        _CLES_TRI[i] = c
+    return c
+
+
 def _multi(instances: Iterable[Instance]) -> list[dict]:
-    """Multi-ensemble canonique : liste triée des exemplaires (les copies égales se confondent)."""
-    return sorted((i.canon() for i in instances), key=lambda d: json.dumps(d, sort_keys=True, ensure_ascii=False))
+    """Multi-ensemble canonique : liste triée des exemplaires (les copies égales se confondent). Même résultat que le
+    tri des `canon()` par leur JSON (test `test_multi_memoise_identique`)."""
+    return [i.canon() for i in sorted(instances, key=_cle_tri)]
 
 
 # ── Bloc B : zones ─────────────────────────────────────────────────────────────────────────────

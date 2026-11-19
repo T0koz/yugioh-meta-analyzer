@@ -137,3 +137,14 @@ def test_empreinte_stable_entre_deux_constructions():
 
 def test_cartes_lisant_la_position_declarees():
     assert CARTES_LISANT_LA_POSITION == {"Sprind the Irondash Dragon", "Albion the Sanctifire Dragon"}
+
+
+def test_multi_memoise_identique():
+    """TOK-140 : la clé de tri mémoïsée donne exactement l'ordre de l'ancien tri (JSON de chaque `canon()`)."""
+    import json as _json
+    from moteur_combos.modele import _multi
+    insts = [Instance("B"), Instance("A", position="attaque", face="visible"), Instance("A"), Instance("B"),
+             Instance("A", limites_exemplaire=(1,)), Instance("C", notes=("x",)), Instance("A")]
+    ancien = sorted((i.canon() for i in insts), key=lambda d: _json.dumps(d, sort_keys=True, ensure_ascii=False))
+    assert _multi(insts) == ancien
+    assert _multi(reversed(insts)) == ancien

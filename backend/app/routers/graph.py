@@ -13,7 +13,7 @@ MIN_JACCARD_DEFAULT = 0.15
 
 @router.get("/synergies", response_model=GraphResponse)
 def get_synergies(
-    limit: int = Query(NODE_LIMIT_DEFAULT, le=500),
+    limit: int = Query(NODE_LIMIT_DEFAULT, ge=1, le=500),
     min_jaccard: float = Query(MIN_JACCARD_DEFAULT, ge=0, le=1),
     db: sqlite3.Connection = Depends(get_db),
 ) -> GraphResponse:

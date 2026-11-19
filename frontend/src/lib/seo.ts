@@ -7,7 +7,7 @@ interface PageSeo {
   /** Titre complet, sans gabarit (accueil). */
   absoluteTitle?: string;
   description: string;
-  /** Chemin canonique, résolu sur `metadataBase` : « /tier-list », « /ban?tab=impact ». */
+  /** Chemin canonique, résolu sur `metadataBase` : « /tier-list », « /ban?tab=diffusion ». */
   path: string;
 }
 
